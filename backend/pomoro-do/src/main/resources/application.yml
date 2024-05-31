@@ -1,14 +1,20 @@
 server:
-  port: 8080
+  port: 8080 #애플리케이션 서버 포트번호 설정 (8080 포트에서 수신 대기하도록 설정)
 
 spring:
   application:
-    name: pomoro-do!
+    name: pomoro-do! #애플리케이션 이름 설정
   jackson:
+    #JSON 처리 시 사용할 시간대를 'Asia/Seoul'로 설정
     time-zone: Asia/Seoul
+
+#추후 데이터베이스 관련 설정 추가
 
 logging:
   level:
+    #패키지의 로깅 레벨을 DEBUG로 설정하여 상세한 정보 로깅
     com.tico.pomoro_do: DEBUG
+    #Hibernate가 생성하는 SQL 쿼리를 디버그 레벨에서 로깅
     org.hibernate.SQL: debug
+    #SQL 쿼리 실행 시 사용되는 파라미터 값을 트레이스 레벨에서 로깅하여 최대한 상세한 정보 제공
     org.hibernate.type: trace
