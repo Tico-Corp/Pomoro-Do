@@ -1,0 +1,55 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.6'
+	id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'com.tico'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// 웹 애플리케이션 개발
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// 유효성 검사
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// 스프링 시큐리티
+	//implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// 개발 중 애플리케이션의 자동 재시작, 리소스 변경 감지 등 제공
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// JPA
+	//implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// lombok 설정
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// 데이터베이스
+	// MySQL 데이터베이스 연결
+	//runtimeOnly 'com.mysql:mysql-connector-j'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
