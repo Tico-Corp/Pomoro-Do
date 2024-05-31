@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: pomoro-do!
+  jackson:
+    time-zone: Asia/Seoul
+
+logging:
+  level:
+    com.tico.pomoro_do: DEBUG
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
