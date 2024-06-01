@@ -1,6 +1,9 @@
 plugins {
     alias libs.plugins.android.application
     alias libs.plugins.kotlin
+    alias libs.plugins.kotlin.serialization
+    id 'kotlin-kapt'
+    alias libs.plugins.hilt
 }
 
 android {
@@ -57,4 +60,16 @@ dependencies {
     androidTestImplementation libs.compose.junit
     debugImplementation libs.compose.tooling
     debugImplementation libs.compose.manifest
+
+    // api 통신을 위한 라이브러리
+    implementation libs.bundles.api
+
+    // 종속성주입을 위한 라이브러리
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
 }

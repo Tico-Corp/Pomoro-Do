@@ -9,6 +9,14 @@ test-junit = "1.1.5"
 test-espresso = "3.5.1"
 android = "8.0.0"
 kotlin = "1.7.20"
+# api 통신을 위한 라이브러리
+retrofit = "2.9.0"
+kotlin-serialization = "1.8.10"
+kotlin-serialization-json = "1.5.1"
+kotlin-serealization-converter = "1.0.0"
+okhttp3 = "4.11.0"
+# 종속성주입을 위한 라이브러리
+hilt = "2.44"
 
 
 [libraries]
@@ -27,12 +35,22 @@ test-espresso = { group = "androidx.test.espresso", name = "espresso-core", vers
 compose-junit = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+# api 통신을 위한 라이브러리
+retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialization-json" }
+retrofit2-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "kotlin-serealization-converter" }
+okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
+# 종속성주입을 위한 라이브러리
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 
 
 [bundles]
 # jetpack compose로 생성했을 때 기본 제공되는 라이브러리들
 androidx = ["androidx-ktx", "androidx-lifecycle", "androidx-activity-compose",
     "compose-ui", "compose-graphic", "compose-preview", "compose-material3"]
+# api 통신을 위한 라이브러리
+api = ["retrofit2", "kotlin-serialization", "retrofit2-converter", "okhttp3"]
 
 
 [plugins]
@@ -40,3 +58,8 @@ androidx = ["androidx-ktx", "androidx-lifecycle", "androidx-activity-compose",
 android-application = { id = "com.android.application", version.ref = "android" }
 android-library = { id = "com.android.library", version.ref = "android" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+# api 통신을 위한 라이브러리
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
+# 종속성주입을 위한 라이브러리
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kapt = { id = "kotlin-kapt" }
