@@ -17,6 +17,9 @@ kotlin-serealization-converter = "1.0.0"
 okhttp3 = "4.11.0"
 # 종속성주입을 위한 라이브러리
 hilt = "2.44"
+# material3 최신 버전 적용을 위한 라이브러리
+material3 = "1.2.1"
+material3-navigation = "1.3.0-beta02"
 
 
 [libraries]
@@ -28,7 +31,6 @@ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = 
 compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-graphic = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 test-junit = { group = "androidx.test.ext", name = "junit", version.ref = "test-junit" }
 test-espresso = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "test-espresso" }
@@ -43,14 +45,21 @@ okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okht
 # 종속성주입을 위한 라이브러리
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+# material3 최신 버전 적용을 위한 라이브러리
+material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+material3-window = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3" }
+material3-navigation = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite", version.ref = "material3-navigation" }
 
 
 [bundles]
 # jetpack compose로 생성했을 때 기본 제공되는 라이브러리들
 androidx = ["androidx-ktx", "androidx-lifecycle", "androidx-activity-compose",
-    "compose-ui", "compose-graphic", "compose-preview", "compose-material3"]
+    "compose-ui", "compose-graphic", "compose-preview"]
+#    "compose-ui", "compose-graphic", "compose-preview", "compose-material3"]
 # api 통신을 위한 라이브러리
 api = ["retrofit2", "kotlin-serialization", "retrofit2-converter", "okhttp3"]
+# material3 최신 버전 적용을 위한 라이브러리
+material3 = ["material3", "material3-window", "material3-navigation"]
 
 
 [plugins]
