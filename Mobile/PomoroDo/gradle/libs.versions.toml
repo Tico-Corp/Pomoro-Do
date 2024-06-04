@@ -3,11 +3,11 @@
 core-ktx = "1.13.1"
 lifcycle-ktx = "2.8.1"
 activity-compose = "1.9.0"
-compose-bom = "2022.10.00"
+compose-bom = "2024.05.00"
 junit = "4.13.2"
 test-junit = "1.1.5"
 test-espresso = "3.5.1"
-android = "8.0.0"
+android = "8.4.0"
 kotlin = "1.7.20"
 # api 통신을 위한 라이브러리
 retrofit = "2.9.0"
@@ -55,7 +55,6 @@ material3-navigation = { group = "androidx.compose.material3", name = "material3
 # jetpack compose로 생성했을 때 기본 제공되는 라이브러리들
 androidx = ["androidx-ktx", "androidx-lifecycle", "androidx-activity-compose",
     "compose-ui", "compose-graphic", "compose-preview"]
-#    "compose-ui", "compose-graphic", "compose-preview", "compose-material3"]
 # api 통신을 위한 라이브러리
 api = ["retrofit2", "kotlin-serialization", "retrofit2-converter", "okhttp3"]
 # material3 최신 버전 적용을 위한 라이브러리
@@ -71,4 +70,3 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
 # 종속성주입을 위한 라이브러리
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-kapt = { id = "kotlin-kapt" }

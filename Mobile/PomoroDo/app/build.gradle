@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'com.tico.pomorodo'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.tico.pomorodo"
