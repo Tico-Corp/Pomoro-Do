@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'com.tico.pomorodo'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.tico.pomorodo"
@@ -67,6 +67,9 @@ dependencies {
     // 종속성주입을 위한 라이브러리
     implementation libs.hilt.android
     kapt libs.hilt.compiler
+
+    // material3 최신 버전 적용을 위한 라이브러리
+    implementation libs.bundles.material3
 }
 
 // Allow references to generated code
