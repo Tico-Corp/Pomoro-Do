@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">PomoroDo</string>
+    // splash
+    <string name="content_ic_title">뽀모로 Do! 타이틀 로고</string>
 </resources>
