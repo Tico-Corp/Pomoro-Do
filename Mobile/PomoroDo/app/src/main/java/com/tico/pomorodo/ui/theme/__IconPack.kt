@@ -4,11 +4,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.tico.pomorodo.ui.iconpack.IcTitle
 import kotlin.collections.List as ____KtList
 
-public object IconPack
+object IconPack
 
 private var __Logo: ____KtList<ImageVector>? = null
 
-public val IconPack.Logo: ____KtList<ImageVector>
+val IconPack.Logo: ____KtList<ImageVector>
     get() {
         if (__Logo != null) {
             return __Logo!!

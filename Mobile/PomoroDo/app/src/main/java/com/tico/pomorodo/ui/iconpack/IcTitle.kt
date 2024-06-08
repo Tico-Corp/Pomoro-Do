@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.ui.theme.IconPack
 
-public val IconPack.IcTitle: ImageVector
+val IconPack.IcTitle: ImageVector
     get() {
         if (_icTitle != null) {
             return _icTitle!!
