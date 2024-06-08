@@ -13,7 +13,7 @@ spring:
     database: mysql # 사용할 데이터베이스 유형을 MySQL로 설정
     database-platform: org.hibernate.dialect.MySQLDialect # Hibernate가 사용할 SQL 방언을 MySQLDialect로 설정
     hibernate:
-      ddl-auto: create # 데이터베이스 스키마 자동 업데이트 정책 설정 (create: 기존 테이블 삭제 후 생성 / update: 애플리케이션 시작 시 데이터베이스 스키마를 최신 상태로 유지)
+      ddl-auto: update # 데이터베이스 스키마 자동 업데이트 정책 설정 (create: 기존 테이블 삭제 후 생성 / update: 애플리케이션 시작 시 데이터베이스 스키마를 최신 상태로 유지)
     properties:
       hibernate:
         show-sql: true # SQL 쿼리를 콘솔에 출력
