@@ -331,3 +331,12 @@ val palettesNeutralVariant15 = Color(0xff2f241b)
 val palettesNeutralVariant10 = Color(0xff241912)
 val palettesNeutralVariant5 = Color(0xff180f08)
 val palettesNeutralVariant0 = Color(0xff000000)
+
+val trim = Color(0x80000000)
+
+val gray90 = Color(0xFFEDEDED)
+val gray70 = Color(0xFFD9D9D9)
+val gray50 = Color(0xFFB4B4B4)
+val gray30 = Color(0xFF898989)
+val gray20 = Color(0xFF5C5C5C)
+val gray10 = Color(0xFF474747)
