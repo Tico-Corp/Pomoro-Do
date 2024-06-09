@@ -2,4 +2,7 @@
     <string name="app_name">PomoroDo</string>
     // splash
     <string name="content_ic_title">뽀모로 Do! 타이틀 로고</string>
+    // log in
+    <string name="content_ic_logo_google">logo of google</string>
+    <string name="content_log_in_with_google">Log in with Google</string>
 </resources>
