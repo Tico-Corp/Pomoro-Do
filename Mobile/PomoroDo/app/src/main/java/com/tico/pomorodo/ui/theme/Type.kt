@@ -15,6 +15,10 @@ val laundryGothic = FontFamily(
     Font(R.font.laundrygothic_regular, FontWeight.Normal, FontStyle.Normal)
 )
 
+val roboto = FontFamily(
+    Font(R.font.roboto_medium, FontWeight.Medium, FontStyle.Normal)
+)
+
 // Set of Material typography styles to start with
 internal val Typography = PomoroDoTypography(
     regular48 = TextStyle(
@@ -171,6 +175,13 @@ internal val Typography = PomoroDoTypography(
         lineHeight = 11.5.sp,
         letterSpacing = 0.5.sp
     ),
+    robotoMedium14 = TextStyle(
+        fontFamily = roboto,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.sp
+    )
 )
 
 @Immutable
@@ -197,6 +208,7 @@ data class PomoroDoTypography(
     val bold14: TextStyle,
     val bold12: TextStyle,
     val bold10: TextStyle,
+    val robotoMedium14: TextStyle,
 )
 
 val LocalPomoroDoTypography = staticCompositionLocalOf {
@@ -223,5 +235,6 @@ val LocalPomoroDoTypography = staticCompositionLocalOf {
         bold14 = TextStyle.Default,
         bold12 = TextStyle.Default,
         bold10 = TextStyle.Default,
+        robotoMedium14 = TextStyle.Default,
     )
 }
