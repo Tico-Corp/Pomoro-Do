@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.tico.pomorodo.ui.auth.view.LogInScreen
+import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LogInScreen()
+                    SplashScreen()
                 }
             }
         }
