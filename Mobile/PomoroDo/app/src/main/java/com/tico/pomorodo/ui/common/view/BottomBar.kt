@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.bar
+package com.tico.pomorodo.ui.common.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
