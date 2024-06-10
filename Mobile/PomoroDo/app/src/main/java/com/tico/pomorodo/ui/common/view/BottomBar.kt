@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
@@ -20,9 +21,6 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.ui.AppState
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.theme.onBackgroundLight
-import com.tico.pomorodo.ui.theme.primaryLight
-import com.tico.pomorodo.ui.theme.secondaryContainerLight
 
 @Composable
 fun BottomBar(
@@ -30,7 +28,7 @@ fun BottomBar(
 ) {
     NavigationBar(
         modifier = Modifier.height(60.dp),
-        containerColor = secondaryContainerLight,
+        containerColor = MaterialTheme.colorScheme.secondaryContainer,
     ) {
         appState.bottomNavigationDestinationList.forEach { destination ->
             NavigationBarItem(
@@ -59,13 +57,13 @@ fun BottomBar(
                     }
                 },
                 colors = NavigationBarItemColors(
-                    selectedIconColor = primaryLight,
-                    selectedTextColor = primaryLight,
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
                     selectedIndicatorColor = Color.Unspecified,
-                    unselectedIconColor = onBackgroundLight,
-                    unselectedTextColor = onBackgroundLight,
-                    disabledIconColor = Color.Blue,
-                    disabledTextColor = Color.Blue
+                    unselectedIconColor = MaterialTheme.colorScheme.onBackground,
+                    unselectedTextColor = MaterialTheme.colorScheme.onBackground,
+                    disabledIconColor = Color.Unspecified,
+                    disabledTextColor = Color.Unspecified
                 )
             )
         }
@@ -75,5 +73,7 @@ fun BottomBar(
 @Composable
 @Preview(showBackground = true)
 fun BottomBarPreview() {
-    BottomBar(AppState(rememberNavController()))
+    PomoroDoTheme() {
+        BottomBar(AppState(rememberNavController()))
+    }
 }
