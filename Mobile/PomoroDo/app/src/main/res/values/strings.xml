@@ -5,4 +5,8 @@
     // log in
     <string name="content_ic_logo_google">logo of google</string>
     <string name="content_log_in_with_google">Log in with Google</string>
+    // bottom navigation bar
+    <string name="title_timer">타이머</string>
+    <string name="title_todo">할 일 목록</string>
+    <string name="title_my_info">내 정보</string>
 </resources>
