@@ -13,10 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.ui.AppState
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.theme.onBackgroundLight
@@ -47,7 +48,8 @@ fun BottomBar(
                     ) {
                         Icon(
                             modifier = Modifier.size(26.dp),
-                            painter = painterResource(id = destination.selectedIcon),
+                            imageVector = destination.iconVector,
+                            tint = Color.Unspecified,
                             contentDescription = stringResource(id = destination.iconTextId)
                         )
                         Text(
@@ -68,4 +70,10 @@ fun BottomBar(
             )
         }
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun BottomBarPreview() {
+    BottomBar(AppState(rememberNavController()))
 }

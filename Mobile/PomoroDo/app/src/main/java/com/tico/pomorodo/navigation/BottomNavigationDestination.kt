@@ -1,23 +1,27 @@
 package com.tico.pomorodo.navigation
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.ui.graphics.vector.ImageVector
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.iconpack.IcBottomMyInfo
+import com.tico.pomorodo.ui.iconpack.IcBottomTimer
+import com.tico.pomorodo.ui.iconpack.IcBottomTodo
+import com.tico.pomorodo.ui.theme.IconPack
 
 enum class BottomNavigationDestination(
-    @DrawableRes val selectedIcon: Int,
+    val iconVector: ImageVector,
     @StringRes val iconTextId: Int,
 ) {
     TIMER(
-        selectedIcon = R.drawable.ic_bottom_timer,
+        iconVector = IconPack.IcBottomTimer,
         iconTextId = R.string.title_timer,
     ),
     TODO(
-        selectedIcon = R.drawable.ic_bottom_todo,
+        iconVector = IconPack.IcBottomTodo,
         iconTextId = R.string.title_todo,
     ),
     MY_INFO(
-        selectedIcon = R.drawable.ic_bottom_my_info,
+        iconVector = IconPack.IcBottomMyInfo,
         iconTextId = R.string.title_my_info,
     )
 }
