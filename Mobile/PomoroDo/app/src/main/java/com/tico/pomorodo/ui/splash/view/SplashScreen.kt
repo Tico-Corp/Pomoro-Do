@@ -3,7 +3,6 @@ package com.tico.pomorodo.ui.splash.view
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +21,7 @@ internal fun SplashScreen(
     modifier: Modifier = Modifier
 ) {
     PomoroDoTheme {
-        Surface(color = MaterialTheme.colorScheme.surface) {
+        Surface(color = PomoroDoTheme.colorScheme.surface) {
             Icon(
                 imageVector = IconPack.IcTitle,
                 contentDescription = stringResource(R.string.content_ic_title),
