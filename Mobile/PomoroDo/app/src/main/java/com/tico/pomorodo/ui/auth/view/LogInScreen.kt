@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +36,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
 fun LogInScreen() {
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
+    Surface(modifier = Modifier.fillMaxSize(), color = PomoroDoTheme.colorScheme.surface) {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
             Icon(
                 imageVector = IconPack.IcTitle,

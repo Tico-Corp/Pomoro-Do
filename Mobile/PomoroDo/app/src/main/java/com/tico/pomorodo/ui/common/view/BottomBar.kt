@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemColors
@@ -28,7 +27,7 @@ fun BottomBar(
 ) {
     NavigationBar(
         modifier = Modifier.height(60.dp),
-        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+        containerColor = PomoroDoTheme.colorScheme.secondaryContainer,
     ) {
         appState.bottomNavigationDestinationList.forEach { destination ->
             NavigationBarItem(
@@ -46,7 +45,7 @@ fun BottomBar(
                     ) {
                         Icon(
                             modifier = Modifier.size(26.dp),
-                            imageVector = destination.iconVector,
+                            imageVector = PomoroDoTheme.iconPack[destination.iconString]!!,
                             tint = Color.Unspecified,
                             contentDescription = stringResource(id = destination.iconTextId)
                         )
@@ -57,11 +56,11 @@ fun BottomBar(
                     }
                 },
                 colors = NavigationBarItemColors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    selectedIconColor = PomoroDoTheme.colorScheme.primary,
+                    selectedTextColor = PomoroDoTheme.colorScheme.primary,
                     selectedIndicatorColor = Color.Unspecified,
-                    unselectedIconColor = MaterialTheme.colorScheme.onBackground,
-                    unselectedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unselectedIconColor = PomoroDoTheme.colorScheme.onBackground,
+                    unselectedTextColor = PomoroDoTheme.colorScheme.onBackground,
                     disabledIconColor = Color.Unspecified,
                     disabledTextColor = Color.Unspecified
                 )
