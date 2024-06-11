@@ -3,14 +3,15 @@ name: CI/CD with Gradle, Docker, AWS
 # develop-be 브랜치에 push 또는 PR 이벤트가 발생하면 워크플로우가 실행된다.
 on:
   push:
-    branches: [ "develop-be" ]
+  # fix-be/TICO-140-CI-CD 브랜치에서 테스트
+    branches: [ "fix-be/TICO-140-CI-CD" ]
   pull_request:
     branches: [ "develop-be" ]
 
 # 해당 Workflow의 Job 목록
 jobs:
   build:
-	  # 이 작업이 실행되는 환경을 정의: 최신 Ubuntu 환경
+  # 이 작업이 실행되는 환경을 정의: 최신 Ubuntu 환경
     runs-on: ubuntu-latest
     # 리포지토리에 대한 읽기 권한을 부여한다.
     permissions:
