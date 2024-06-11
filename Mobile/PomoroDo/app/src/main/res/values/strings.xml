@@ -9,4 +9,7 @@
     <string name="title_timer">타이머</string>
     <string name="title_todo">할 일 목록</string>
     <string name="title_my_info">내 정보</string>
+    // sign up
+    <string name="content_ic_profile_default">default icon in profile change page</string>
+    <string name="content_profile_change">변경</string>
 </resources>
