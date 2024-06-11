@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.iconpack
+package com.tico.pomorodo.ui.iconpack.lighticonpack
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
@@ -9,16 +9,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.tico.pomorodo.ui.theme.IconPack
+import com.tico.pomorodo.ui.theme.LightIconPack
 
-val IconPack.IcBottomTodo: ImageVector
+val LightIconPack.IcBottomTodoLight: ImageVector
     get() {
-        if (_icBottomTodo != null) {
-            return _icBottomTodo!!
+        if (_icBottomTodoLight != null) {
+            return _icBottomTodoLight!!
         }
-        _icBottomTodo = Builder(
-            name = "IcBottomTodo", defaultWidth = 22.0.dp, defaultHeight =
-            23.0.dp, viewportWidth = 22.0f, viewportHeight = 23.0f
+        _icBottomTodoLight = Builder(
+            name = "IcBottomTodoLight", defaultWidth = 22.0.dp,
+            defaultHeight = 23.0.dp, viewportWidth = 22.0f, viewportHeight = 23.0f
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF241912)), stroke = null, strokeLineWidth = 0.0f,
@@ -200,7 +200,7 @@ val IconPack.IcBottomTodo: ImageVector
             }
         }
             .build()
-        return _icBottomTodo!!
+        return _icBottomTodoLight!!
     }
 
-private var _icBottomTodo: ImageVector? = null
+private var _icBottomTodoLight: ImageVector? = null

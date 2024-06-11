@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.iconpack
+package com.tico.pomorodo.ui.iconpack.lighticonpack
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
@@ -9,16 +9,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.tico.pomorodo.ui.theme.IconPack
+import com.tico.pomorodo.ui.theme.LightIconPack
 
-val IconPack.IcBottomMyInfo: ImageVector
+val LightIconPack.IcBottomMyInfoLight: ImageVector
     get() {
-        if (_icBottomMyInfo != null) {
-            return _icBottomMyInfo!!
+        if (_icBottomMyInfoLight != null) {
+            return _icBottomMyInfoLight!!
         }
-        _icBottomMyInfo = Builder(
-            name = "IcBottomMyInfo", defaultWidth = 20.0.dp, defaultHeight =
-            20.0.dp, viewportWidth = 20.0f, viewportHeight = 20.0f
+        _icBottomMyInfoLight = Builder(
+            name = "IcBottomMyInfoLight", defaultWidth = 20.0.dp,
+            defaultHeight = 20.0.dp, viewportWidth = 20.0f, viewportHeight = 20.0f
         ).apply {
             path(
                 fill = SolidColor(Color(0xFF241912)), stroke = null, strokeLineWidth = 0.0f,
@@ -90,7 +90,7 @@ val IconPack.IcBottomMyInfo: ImageVector
             }
         }
             .build()
-        return _icBottomMyInfo!!
+        return _icBottomMyInfoLight!!
     }
 
-private var _icBottomMyInfo: ImageVector? = null
+private var _icBottomMyInfoLight: ImageVector? = null

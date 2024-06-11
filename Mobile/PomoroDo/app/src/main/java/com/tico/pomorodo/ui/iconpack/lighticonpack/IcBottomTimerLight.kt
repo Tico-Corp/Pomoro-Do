@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.iconpack
+package com.tico.pomorodo.ui.iconpack.lighticonpack
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
@@ -9,16 +9,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.tico.pomorodo.ui.theme.IconPack
+import com.tico.pomorodo.ui.theme.LightIconPack
 
-val IconPack.IcBottomTimer: ImageVector
+val LightIconPack.IcBottomTimerLight: ImageVector
     get() {
-        if (_icBottomTimer != null) {
-            return _icBottomTimer!!
+        if (_icBottomTimerLight != null) {
+            return _icBottomTimerLight!!
         }
-        _icBottomTimer = Builder(
-            name = "IcBottomTimer", defaultWidth = 21.0.dp, defaultHeight =
-            20.0.dp, viewportWidth = 21.0f, viewportHeight = 20.0f
+        _icBottomTimerLight = Builder(
+            name = "IcBottomTimerLight", defaultWidth = 21.0.dp,
+            defaultHeight = 20.0.dp, viewportWidth = 21.0f, viewportHeight = 20.0f
         ).apply {
             path(
                 fill = SolidColor(Color(0x00000000)), stroke = SolidColor(Color(0xFF241912)),
@@ -68,7 +68,7 @@ val IconPack.IcBottomTimer: ImageVector
             }
         }
             .build()
-        return _icBottomTimer!!
+        return _icBottomTimerLight!!
     }
 
-private var _icBottomTimer: ImageVector? = null
+private var _icBottomTimerLight: ImageVector? = null

@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -17,6 +19,7 @@ fun PomoroDoTheme(
     content: @Composable () -> Unit,
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val iconPack = if (darkTheme) DarkIconPack.AllIcons else LightIconPack.AllIcons
 
     val view = LocalView.current
     if (!view.isInEditMode) {
@@ -29,11 +32,14 @@ fun PomoroDoTheme(
 
     CompositionLocalProvider(
         LocalPomoroDoTypography provides Typography,
-        LocalPomoroDoColorScheme provides colorScheme
+        LocalPomoroDoColorScheme provides colorScheme,
+        LocalIconPack provides iconPack
     ) {
         Surface(content = content)
     }
 }
+
+val LocalIconPack = staticCompositionLocalOf { LightIconPack.AllIcons }
 
 object PomoroDoTheme {
     val typography: PomoroDoTypography
@@ -45,4 +51,9 @@ object PomoroDoTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalPomoroDoColorScheme.current
+
+    val iconPack: Map<String, ImageVector>
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalIconPack.current
 }
