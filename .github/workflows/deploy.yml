@@ -79,7 +79,7 @@ jobs:
       with:
         host: ${{ secrets.SSH_HOST }}  # 원격 서버의 호스트명
         username: ${{ secrets.SSH_USERNAME }}  # 원격 서버의 사용자명
-        key: ${{ secrets.SSH_PRIVATE_KEY }}  # 원격 서버의 비밀번호
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # 원격 서버의 비밀 키
         port: 22  # SSH 포트
         sync: false
         use_insecure_cipher: false
@@ -91,8 +91,4 @@ jobs:
           docker rm pomorodo-server || true  # 기존 컨테이너 삭제
           docker rmi ***/pomorodo:latest || true  # 기존 이미지 삭제
           docker pull ***/pomorodo:latest  # 최신 이미지 다운로드
-          docker run -d -p 8080:8080 --name pomorodo-server \  # 새 컨테이너 실행 (백그라운드 모드)
-          -e DB_URL=${{ secrets.DB_URL }} \
-          -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-          -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-          ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest
+          docker run -d -p 8080:8080 --name pomorodo-server -e DB_URL=${{ secrets.DB_URL }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} ${{ secrets.SSH_USERNAME }}/pomorodo:latest
