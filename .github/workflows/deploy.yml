@@ -89,6 +89,6 @@ jobs:
         script: |
           docker stop pomorodo-server || true  # 실행 중인 pomorodo-server 컨테이너 중지
           docker rm pomorodo-server || true  # 기존 컨테이너 삭제
-          docker rmi ***/pomorodo:latest || true  # 기존 이미지 삭제
-          docker pull ***/pomorodo:latest  # 최신 이미지 다운로드
-          docker run -d -p 8080:8080 --name pomorodo-server -e DB_URL=${{ secrets.DB_URL }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} ${{ secrets.SSH_USERNAME }}/pomorodo:latest
+          docker rmi ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest || true # 기존 이미지 삭제
+          docker pull ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest # 최신 이미지 다운로드
+          docker run -d -p 8080:8080 --name pomorodo-server -e DB_URL=${{ secrets.DB_URL }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest
