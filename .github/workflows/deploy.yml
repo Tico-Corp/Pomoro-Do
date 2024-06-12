@@ -10,7 +10,7 @@ on:
 # 해당 Workflow의 Job 목록
 jobs:
   build:
-	  # 이 작업이 실행되는 환경을 정의: 최신 Ubuntu 환경
+  # 이 작업이 실행되는 환경을 정의: 최신 Ubuntu 환경
     runs-on: ubuntu-latest
     # 리포지토리에 대한 읽기 권한을 부여한다.
     permissions:
@@ -37,17 +37,17 @@ jobs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('backend/pomorodo/**/*.gradle*', 'backend/pomorodo/**/gradle-wrapper.properties') }}
+        key: ${{ runner.os }}-gradle-${{ hashFiles('backend/pomoro-do/**/*.gradle*', 'backend/pomoro-do/**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
           
     # Gradle 래퍼 스크립트에 실행 권한 부여
     - name: Grant Execute Permission For Gradlew
-      run: chmod +x backend/pomorodo/gradlew
+      run: chmod +x backend/pomoro-do/gradlew
     
     # 테스트를 제외한 Gradle 빌드 수행 (CI 단계)
     - name: Build with Gradle
-      run: cd backend/pomorodo && ./gradlew build -x test
+      run: cd backend/pomoro-do && ./gradlew build -x test
 
     ### CD
     # Docker Hub에 로그인 (보안) (CD 단계 준비)
@@ -60,7 +60,7 @@ jobs:
     # SpringBoot 어플리케이션의 Docker 이미지를 빌드하고 Docker Hub에 푸시 (CD 단계 준비)
     - name: Build and Push Docker Image for SpringBoot
       run: |
-        cd backend/pomorodo
+        cd backend/pomoro-do
         set -e # 명령 실패 시 스크립트 종료
         # 현재 디렉토리에 있는 Dockerfile을 사용하여 Docker 이미지를 빌드
         docker build -t ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest .
@@ -76,22 +76,18 @@ jobs:
     - name: Docker Run
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.AWS_HOST }}
-        username: ${{ secrets.AWS_USERNAME }}
-        password: ${{ secrets.AWS_PASSWORD }}
+        host: ${{ secrets.SSH_HOST }}  # 원격 서버의 호스트명
+        username: ${{ secrets.SSH_USERNAME }}  # 원격 서버의 사용자명
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # 원격 서버의 비밀 키
+        port: 22  # SSH 포트
+        sync: false
+        use_insecure_cipher: false
+        timeout: 30s
+        command_timeout: 10m
+        debug: true  # 디버그 모드 활성화
         script: |
-          docker stop pomorodo-server || true # 실행 중인 pomorodo-server 컨테이너 중지
-          docker rm pomorodo-server || true # 기존 컨테이너 삭제
+          docker stop pomorodo-server || true  # 실행 중인 pomorodo-server 컨테이너 중지
+          docker rm pomorodo-server || true  # 기존 컨테이너 삭제
           docker rmi ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest || true # 기존 이미지 삭제
           docker pull ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest # 최신 이미지 다운로드
-          docker run -d -p 8080:8080 --name pomorodo-server \ # 새 컨테이너 실행 (백그라운드 모드)
-            -e DB_URL=${{ secrets.DB_URL }} \
-            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
-            -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
-            -e REGION=${{ secrets.REGION }} \
-            -e BUCKET_NAME=${{ secrets.BUCKET_NAME }} \
-            -e JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
-            -e JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
-            ${{ secrets.DOCKER_USERNAME}}/pomorodo:latest
+          docker run -d -p 8080:8080 --name pomorodo-server -e DB_URL=${{ secrets.DB_URL }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest
