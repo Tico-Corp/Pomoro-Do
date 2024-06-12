@@ -77,22 +77,22 @@ jobs:
     - name: Docker Run
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.AWS_HOST }}
-        username: ${{ secrets.AWS_USERNAME }}
-        password: ${{ secrets.AWS_PASSWORD }}
+        host: ${{ secrets.SSH_HOST }}  # 원격 서버의 호스트명
+        username: ${{ secrets.SSH_USERNAME }}  # 원격 서버의 사용자명
+        password: ${{ secrets.SSH_PASSWORD }}  # 원격 서버의 비밀번호
+        port: 22  # SSH 포트
+        sync: false
+        use_insecure_cipher: false
+        timeout: 30s
+        command_timeout: 10m
+        debug: true  # 디버그 모드 활성화
         script: |
-          docker stop pomorodo-server || true # 실행 중인 pomorodo-server 컨테이너 중지
-          docker rm pomorodo-server || true # 기존 컨테이너 삭제
-          docker rmi ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest || true # 기존 이미지 삭제
-          docker pull ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest # 최신 이미지 다운로드
-          docker run -d -p 8080:8080 --name pomorodo-server \ # 새 컨테이너 실행 (백그라운드 모드)
-            -e DB_URL=${{ secrets.DB_URL }} \
-            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-            # -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
-            # -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
-            # -e REGION=${{ secrets.REGION }} \
-            # -e BUCKET_NAME=${{ secrets.BUCKET_NAME }} \
-            # -e JWT_ACCESS_SECRET=${{ secrets.JWT_ACCESS_SECRET }} \
-            # -e JWT_REFRESH_SECRET=${{ secrets.JWT_REFRESH_SECRET }} \
-            ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest
+          docker stop pomorodo-server || true  # 실행 중인 pomorodo-server 컨테이너 중지
+          docker rm pomorodo-server || true  # 기존 컨테이너 삭제
+          docker rmi ***/pomorodo:latest || true  # 기존 이미지 삭제
+          docker pull ***/pomorodo:latest  # 최신 이미지 다운로드
+          docker run -d -p 8080:8080 --name pomorodo-server \  # 새 컨테이너 실행 (백그라운드 모드)
+          -e DB_URL=${{ secrets.DB_URL }} \
+          -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+          -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+          ${{ secrets.DOCKER_USERNAME }}/pomorodo:latest
