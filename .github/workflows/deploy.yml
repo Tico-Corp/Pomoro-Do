@@ -79,7 +79,7 @@ jobs:
       with:
         host: ${{ secrets.SSH_HOST }}  # 원격 서버의 호스트명
         username: ${{ secrets.SSH_USERNAME }}  # 원격 서버의 사용자명
-        password: ${{ secrets.SSH_PASSWORD }}  # 원격 서버의 비밀번호
+        key: ${{ secrets.SSH_PRIVATE_KEY }}  # 원격 서버의 비밀번호
         port: 22  # SSH 포트
         sync: false
         use_insecure_cipher: false
