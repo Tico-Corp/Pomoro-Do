@@ -3,8 +3,7 @@ name: CI/CD with Gradle, Docker, AWS
 # develop-be 브랜치에 push 또는 PR 이벤트가 발생하면 워크플로우가 실행된다.
 on:
   push:
-  # fix-be/TICO-140-CI-CD 브랜치에서 테스트
-    branches: [ "fix-be/TICO-140-CI-CD" ]
+    branches: [ "develop-be" ]
   pull_request:
     branches: [ "develop-be" ]
 
