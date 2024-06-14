@@ -4,19 +4,35 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -27,10 +43,17 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.iconpack.IcProfileDefault
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import com.tico.pomorodo.ui.theme.laundryGothic
 
 @Composable
 fun SignUpScreen() {
-
+    Column(
+        modifier = Modifier.padding(horizontal = 30.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        IconDefaultProfile()
+        ProfileEditText()
+    }
 }
 
 @Preview
@@ -60,7 +83,7 @@ fun IconDefaultProfile(defaultProfileUri: Uri? = null) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color(0x80000000)),
+                .background(color = PomoroDoTheme.colorScheme.trim),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -74,6 +97,38 @@ fun IconDefaultProfile(defaultProfileUri: Uri? = null) {
 
 @Preview
 @Composable
-fun ProfileEditTextBox() {
+fun ProfileEditText() {
+    val focusManager = LocalFocusManager.current
+    var text by rememberSaveable { mutableStateOf("") }
 
+    TextField(
+        value = text,
+        onValueChange = { text = it },
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 0.dp)
+            .background(color = Color.Unspecified),
+        textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+        label = { Text(text = "닉네임", fontFamily = laundryGothic) },
+        placeholder = {
+            Text(
+                text = "닉네임을 입력해주세요.",
+                color = PomoroDoTheme.colorScheme.gray50,
+                style = PomoroDoTheme.typography.laundryGothicRegular16
+            )
+        },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Done
+        ),
+        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+        singleLine = true,
+        shape = RoundedCornerShape(size = 5.dp),
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = PomoroDoTheme.colorScheme.background,
+            unfocusedContainerColor = PomoroDoTheme.colorScheme.background,
+            focusedIndicatorColor = PomoroDoTheme.colorScheme.primaryContainer,
+            focusedLabelColor = PomoroDoTheme.colorScheme.primaryContainer
+        )
+    )
 }
