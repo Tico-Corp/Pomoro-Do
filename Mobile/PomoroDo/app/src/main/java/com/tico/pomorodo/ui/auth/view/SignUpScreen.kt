@@ -17,10 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,7 +40,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -58,10 +59,10 @@ fun SignUpScreen() {
     ) {
         IconDefaultProfile()
         ProfileEditText()
+        SubmitButton(true)
     }
 }
 
-@Preview
 @Composable
 fun IconDefaultProfile(defaultProfileUri: Uri? = null) {
     Box(modifier = Modifier
@@ -101,7 +102,6 @@ fun IconDefaultProfile(defaultProfileUri: Uri? = null) {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun ProfileEditText() {
     var text by rememberSaveable { mutableStateOf("") }
@@ -147,5 +147,26 @@ fun ProfileEditText() {
             ),
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 14.dp)
         )
+    }
+}
+
+@Composable
+fun SubmitButton(enable: Boolean = false) {
+    TextButton(
+        onClick = { /*TODO*/ },
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 0.dp),
+        enabled = enable,
+        shape = RoundedCornerShape(10.dp),
+        colors = ButtonColors(
+            containerColor = PomoroDoTheme.colorScheme.primaryContainer,
+            contentColor = PomoroDoTheme.colorScheme.background,
+            disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
+            disabledContentColor = PomoroDoTheme.colorScheme.background
+        ),
+        contentPadding = PaddingValues(vertical = 12.dp)
+    ) {
+        Text(text = "가입", style = PomoroDoTheme.typography.laundryGothicRegular18)
     }
 }
