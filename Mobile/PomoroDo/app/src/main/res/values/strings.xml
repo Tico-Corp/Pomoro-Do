@@ -16,4 +16,36 @@
     <string name="content_user_name_label">닉네임</string>
     <string name="content_user_name_placeholder">닉네임을 입력해주세요.</string>
     <string name="content_button_sign_up">가입</string>
+    // todo
+    <string name="content_calendar_back">이전달</string>
+    <string name="content_calendar_front">다음달</string>
+    <string name="content_calendar_full_focus">목표 집중 완료 개수</string>
+    <string name="content_calendar_all_checked">할 일 완료 개수</string>
+    <string name="content_calendar_liked">좋아요 개수</string>
+    <string name="content_calendar_drop_down">월간 달력</string>
+    <string name="content_calendar_day">날짜</string>
+    <string name="content_calendar_sunday">일</string>
+    <string name="content_calendar_monday">월</string>
+    <string name="content_calendar_tuesday">화</string>
+    <string name="content_calendar_wednesday">수</string>
+    <string name="content_calendar_thursday">목</string>
+    <string name="content_calendar_friday">금</string>
+    <string name="content_calendar_saturday">토</string>
+    <string name="title_total_focus_time_text">총 집중 시간</string>
+    <string name="title_total_focus_time">%d:%d:%d</string>
+    <string name="content_view_history">기록보기</string>
+    <string name="content_add_todo_group_number">(%d)</string>
+    <string name="content_todo_unchecked">미완료</string>
+    <string name="content_todo_checked">완료</string>
+    <string name="content_todo_going">진행 중</string>
+    <string name="content_ic_group">그룹원 아이콘</string>
+    <string name="content_ic_favorite_filled">좋아요 아이콘</string>
+    <string name="content_ic_todo_more_info">더보기</string>
+    <string name="content_todo_placehold">할 일을 입력해주세요</string>
+    <string name="title_group_complete">완료(%d/%d)</string>
+    <string name="title_group_incomplete">미완료(%d/%d)</string>
+    <string name="content_ic_more_info">더보기 아이콘</string>
+    <string name="content_category_add">카테고리 추가</string>
+    <string name="content_category_manage">카테고리 관리</string>
+    <string name="content_ic_add_category">카테고리 추가 아이콘</string>
 </resources>
