@@ -10,6 +10,10 @@
     <string name="title_todo">할 일 목록</string>
     <string name="title_my_info">내 정보</string>
     // sign up
+    <string name="title_sign_up">회원 정보 입력</string>
     <string name="content_ic_profile_default">default icon in profile change page</string>
     <string name="content_profile_change">변경</string>
+    <string name="content_user_name_label">닉네임</string>
+    <string name="content_user_name_placeholder">닉네임을 입력해주세요.</string>
+    <string name="content_button_sign_up">가입</string>
 </resources>

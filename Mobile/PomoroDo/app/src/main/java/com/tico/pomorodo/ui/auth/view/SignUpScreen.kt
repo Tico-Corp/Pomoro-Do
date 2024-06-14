@@ -64,7 +64,7 @@ fun SignUpScreen() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "회원 정보 입력",
+            text = stringResource(R.string.title_sign_up),
             color = PomoroDoTheme.colorScheme.onBackground,
             style = PomoroDoTheme.typography.laundryGothicBold20
         )
@@ -143,10 +143,10 @@ fun ProfileEditText(text: MutableState<String>) {
             visualTransformation = VisualTransformation.None,
             interactionSource = interactionSource,
             isError = false,
-            label = { Text(text = "닉네임", fontFamily = laundryGothic) },
+            label = { Text(text = stringResource(R.string.content_user_name_label), fontFamily = laundryGothic) },
             placeholder = {
                 Text(
-                    text = "닉네임을 입력해주세요.",
+                    text = stringResource(R.string.content_user_name_placeholder),
                     color = PomoroDoTheme.colorScheme.gray50,
                     style = PomoroDoTheme.typography.laundryGothicRegular16
                 )
@@ -180,6 +180,6 @@ fun SubmitButton(enable: Boolean = false) {
         ),
         contentPadding = PaddingValues(vertical = 12.dp)
     ) {
-        Text(text = "가입", style = PomoroDoTheme.typography.laundryGothicRegular18)
+        Text(text = stringResource(R.string.content_button_sign_up), style = PomoroDoTheme.typography.laundryGothicRegular18)
     }
 }
