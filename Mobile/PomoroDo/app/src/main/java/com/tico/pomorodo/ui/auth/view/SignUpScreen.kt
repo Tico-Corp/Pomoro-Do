@@ -4,11 +4,14 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -54,12 +57,21 @@ import com.tico.pomorodo.ui.theme.laundryGothic
 @Composable
 fun SignUpScreen() {
     Column(
-        modifier = Modifier.padding(horizontal = 30.dp),
+        modifier = Modifier.padding(horizontal = 30.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Text(
+            text = "회원 정보 입력",
+            color = PomoroDoTheme.colorScheme.onBackground,
+            style = PomoroDoTheme.typography.laundryGothicBold20
+        )
+        Spacer(modifier = Modifier.height(20.dp))
         IconDefaultProfile()
+        Spacer(modifier = Modifier.height(18.dp))
         ProfileEditText()
-        SubmitButton(true)
+        Spacer(modifier = Modifier.height(20.dp))
+        SubmitButton()
     }
 }
 
