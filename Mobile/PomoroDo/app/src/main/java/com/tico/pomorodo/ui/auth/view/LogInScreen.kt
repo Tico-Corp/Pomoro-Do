@@ -27,8 +27,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.iconpack.IcLogoGoogle
-import com.tico.pomorodo.ui.iconpack.IcTitle
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcLogoGoogle
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTitle
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
