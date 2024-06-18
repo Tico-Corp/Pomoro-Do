@@ -93,7 +93,7 @@ fun CustomTimeText(
     minute: Int,
     textColor: Color,
     spacedBy: Dp,
-    vararg textStyles: TextStyle,
+    textStyles: TextStyle,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(spacedBy),
@@ -103,7 +103,7 @@ fun CustomTimeText(
             text = title,
             color = textColor,
             textAlign = TextAlign.Center,
-            style = textStyles.first()
+            style = textStyles
         )
 
         Text(
@@ -115,7 +115,7 @@ fun CustomTimeText(
             ),
             color = textColor,
             textAlign = TextAlign.Center,
-            style = textStyles.last()
+            style = textStyles
         )
     }
 }
