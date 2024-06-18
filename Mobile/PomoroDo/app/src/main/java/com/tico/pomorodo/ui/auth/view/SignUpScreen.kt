@@ -20,12 +20,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -48,6 +46,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcProfileDefault
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -73,7 +72,15 @@ fun SignUpScreen() {
         Spacer(modifier = Modifier.height(18.dp))
         ProfileEditText(text)
         Spacer(modifier = Modifier.height(20.dp))
-        SubmitButton(enable)
+        CustomTextButton(
+            text = stringResource(id = R.string.content_button_sign_up),
+            containerColor = PomoroDoTheme.colorScheme.primaryContainer,
+            contentColor = PomoroDoTheme.colorScheme.background,
+            disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
+            disabledContentColor = PomoroDoTheme.colorScheme.background,
+            textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
+            verticalPadding = 12.dp
+        ) { /*TODO*/ }
     }
 }
 
@@ -143,7 +150,12 @@ fun ProfileEditText(text: MutableState<String>) {
             visualTransformation = VisualTransformation.None,
             interactionSource = interactionSource,
             isError = false,
-            label = { Text(text = stringResource(R.string.content_user_name_label), fontFamily = laundryGothic) },
+            label = {
+                Text(
+                    text = stringResource(R.string.content_user_name_label),
+                    fontFamily = laundryGothic
+                )
+            },
             placeholder = {
                 Text(
                     text = stringResource(R.string.content_user_name_placeholder),
@@ -160,26 +172,5 @@ fun ProfileEditText(text: MutableState<String>) {
             ),
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 14.dp)
         )
-    }
-}
-
-@Composable
-fun SubmitButton(enable: Boolean = false) {
-    TextButton(
-        onClick = { /*TODO*/ },
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 0.dp),
-        enabled = enable,
-        shape = RoundedCornerShape(10.dp),
-        colors = ButtonColors(
-            containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-            contentColor = PomoroDoTheme.colorScheme.background,
-            disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
-            disabledContentColor = PomoroDoTheme.colorScheme.background
-        ),
-        contentPadding = PaddingValues(vertical = 12.dp)
-    ) {
-        Text(text = stringResource(R.string.content_button_sign_up), style = PomoroDoTheme.typography.laundryGothicRegular18)
     }
 }
