@@ -10,16 +10,6 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun TimerScreen() {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = stringResource(id = R.string.title_timer),
-            style = PomoroDoTheme.typography.laundryGothicBold48
-        )
-    }
-}
-
-@Composable
 fun TodoScreen() {
     Surface(modifier = Modifier.fillMaxSize()) {
         Text(
