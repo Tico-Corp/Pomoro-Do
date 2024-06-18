@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
@@ -34,12 +35,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.common.view.CustomTextButton
+import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTimerPin
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -51,16 +53,56 @@ import kotlin.math.sin
 
 @Composable
 fun TimerRootScreen() {
+    var concentrationTime by remember {
+        mutableIntStateOf(30)
+    }
+    var breakTime by remember {
+        mutableIntStateOf(0)
+    }
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 30.dp, vertical = 24.dp),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        PomodoroTimerScreen(
+            concentrationTime = concentrationTime,
+            breakTime = breakTime,
+            onBreakTimeChange = { position -> concentrationTime = position },
+            onConcentrationTimeChange = { position -> breakTime = position }
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        CustomTextButton(
+            text = "집중 시작하기",
+            backgroundColor = PomoroDoTheme.colorScheme.primaryContainer,
+            textColor = PomoroDoTheme.colorScheme.background,
+            textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
+            verticalPadding = 12.dp
+        ) { /*TODO*/ }
+    }
 }
 
 @Composable
-fun PomodoroTimerScreen() {
+fun PomodoroTimerScreen(
+    concentrationTime: Int,
+    breakTime: Int,
+    onConcentrationTimeChange: (Int) -> Unit,
+    onBreakTimeChange: (Int) -> Unit
+) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomPomodoroTimer()
+        CustomPomodoroTimer(
+            concentrationTime = concentrationTime,
+            breakTime = breakTime,
+            onConcentrationTimeChange = onConcentrationTimeChange,
+            onBreakTimeChange = onBreakTimeChange
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -115,20 +157,17 @@ fun TodayConcentrationInformation() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun CustomPomodoroTimer() {
+fun CustomPomodoroTimer(
+    concentrationTime: Int,
+    breakTime: Int,
+    onConcentrationTimeChange: (Int) -> Unit,
+    onBreakTimeChange: (Int) -> Unit,
+) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var concentrationTime by remember {
-            mutableIntStateOf(30)
-        }
-        var breakTime by remember {
-            mutableIntStateOf(0)
-        }
-
         EditableTextTimer(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
@@ -148,8 +187,8 @@ fun CustomPomodoroTimer() {
             circleRadius = 125.dp,
             initialValue = concentrationTime,
         ) { position ->
-            concentrationTime = position
-            breakTime = position
+            onConcentrationTimeChange(position)
+            onBreakTimeChange(position)
         }
     }
 }
