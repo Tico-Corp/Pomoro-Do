@@ -144,7 +144,7 @@ fun CustomTimeText(
         Text(
             text = String.format(
                 Locale.KOREA,
-                stringResource(id = R.string.format_hour_minute_second),
+                stringResource(id = R.string.format_hour_minute),
                 hour,
                 minute,
             ),
