@@ -2,9 +2,12 @@ package com.tico.pomorodo.ui.timer.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -20,11 +23,11 @@ fun CustomTimeText(
     minute: Int,
     second: Int,
     textColor: Color,
-    spacedBy: Dp,
+    spaceDp: Dp,
     textStyle: TextStyle,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(spacedBy),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -33,6 +36,8 @@ fun CustomTimeText(
             textAlign = TextAlign.Center,
             style = textStyle
         )
+
+        Spacer(modifier = Modifier.height(spaceDp))
 
         Text(
             text = String.format(
@@ -56,12 +61,12 @@ fun CustomTimeText(
     minute: Int,
     second: Int,
     textColor: Color,
-    spacedBy: Dp,
+    spaceDp: Dp,
     titleTextStyle: TextStyle,
     contentTextStyle: TextStyle,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(spacedBy),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -70,6 +75,8 @@ fun CustomTimeText(
             textAlign = TextAlign.Center,
             style = titleTextStyle
         )
+
+        Spacer(modifier = Modifier.height(spaceDp))
 
         Text(
             text = String.format(
@@ -92,11 +99,11 @@ fun CustomTimeText(
     hour: Int,
     minute: Int,
     textColor: Color,
-    spacedBy: Dp,
+    spaceDp: Dp,
     textStyles: TextStyle,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(spacedBy),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -105,6 +112,8 @@ fun CustomTimeText(
             textAlign = TextAlign.Center,
             style = textStyles
         )
+
+        Spacer(modifier = Modifier.height(spaceDp))
 
         Text(
             text = String.format(
@@ -126,12 +135,12 @@ fun CustomTimeText(
     hour: Int,
     minute: Int,
     textColor: Color,
-    spacedBy: Dp,
+    spaceDp: Dp,
     titleTextStyle: TextStyle,
     contentTextStyle: TextStyle,
 ) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(spacedBy),
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -140,6 +149,8 @@ fun CustomTimeText(
             textAlign = TextAlign.Center,
             style = titleTextStyle
         )
+
+        Spacer(modifier = Modifier.height(spaceDp))
 
         Text(
             text = String.format(
