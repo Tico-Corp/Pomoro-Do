@@ -34,6 +34,8 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -43,14 +45,118 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTimerPin
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import java.util.Locale
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
+enum class TimeFormat {
+    HMS, HM
+}
+
 @Composable
-fun TimerMainScreen() {
+fun TimerRootScreen() {
+
+}
+
+@Composable
+fun PomodoroTimerScreen() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CustomPomodoroTimer()
+        TodayConcentrationInformation()
+    }
+}
+
+@Composable
+fun TodayConcentrationInformation() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CustomTimeText(
+            type = TimeFormat.HMS,
+            title = stringResource(R.string.title_taget_concentration),
+            hour = 12,
+            minute = 0,
+            second = 0,
+            textColor = PomoroDoTheme.colorScheme.onBackground,
+            spacedBy = 4.dp,
+            PomoroDoTheme.typography.laundryGothicRegular18,
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(50.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CustomTimeText(
+                type = TimeFormat.HMS,
+                title = stringResource(R.string.title_total_concentration),
+                hour = 10,
+                minute = 0,
+                second = 0,
+                textColor = PomoroDoTheme.colorScheme.onBackground,
+                spacedBy = 4.dp,
+                PomoroDoTheme.typography.laundryGothicRegular18,
+            )
+            CustomTimeText(
+                type = TimeFormat.HMS,
+                title = stringResource(R.string.title_total_break),
+                hour = 3,
+                minute = 0,
+                second = 0,
+                textColor = PomoroDoTheme.colorScheme.onBackground,
+                spacedBy = 4.dp,
+                PomoroDoTheme.typography.laundryGothicRegular18,
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomTimeText(
+    type: TimeFormat,
+    title: String,
+    hour: Int,
+    minute: Int,
+    second: Int,
+    textColor: Color,
+    spacedBy: Dp,
+    vararg textStyles: TextStyle,
+) {
+    val stringFormat = when (type) {
+        TimeFormat.HMS -> stringResource(id = R.string.format_hour_minute_second)
+        TimeFormat.HM -> stringResource(id = R.string.format_hour_minute)
+    }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(spacedBy),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            color = textColor,
+            textAlign = TextAlign.Center,
+            style = textStyles.first()
+        )
+
+        Text(
+            text = String.format(
+                Locale.KOREA,
+                stringFormat,
+                hour,
+                minute,
+                second
+            ),
+            color = textColor,
+            textAlign = TextAlign.Center,
+            style = textStyles.last()
+        )
+    }
 
 }
 
@@ -89,6 +195,61 @@ fun CustomPomodoroTimer() {
         ) { position ->
             concentrationTime = position
             breakTime = position
+        }
+    }
+}
+
+@Composable
+fun EditableTextTimer(
+    concentrationTime: Int,
+    breakTime: Int,
+    concentrationColor: Color,
+    breakColor: Color
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.title_concentration_time),
+                color = concentrationColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular18
+            )
+            Text(
+                text = String.format(
+                    Locale.KOREA,
+                    stringResource(R.string.format_hour_minute),
+                    concentrationTime / 60,
+                    concentrationTime % 60
+                ),
+                color = concentrationColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular16
+            )
+        }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = stringResource(R.string.title_break_time),
+                color = breakColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular18
+            )
+            Text(
+                text = String.format(
+                    Locale.KOREA,
+                    stringResource(R.string.format_hour_minute),
+                    breakTime / 60,
+                    breakTime % 60
+                ),
+                color = breakColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular16
+            )
         }
     }
 }
@@ -260,58 +421,5 @@ fun CustomCircularDraggableTimer(
             contentDescription = stringResource(R.string.content_ic_timer_pin),
             tint = Color.Unspecified
         )
-    }
-}
-
-@Composable
-fun EditableTextTimer(
-    concentrationTime: Int,
-    breakTime: Int,
-    concentrationColor: Color,
-    breakColor: Color
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(R.string.title_concentration_time),
-                color = concentrationColor,
-                style = PomoroDoTheme.typography.laundryGothicRegular18
-            )
-            Text(
-                text = String.format(
-                    stringResource(R.string.format_hour_minute),
-                    concentrationTime / 60,
-                    concentrationTime % 60
-                ),
-                color = concentrationColor,
-                style = PomoroDoTheme.typography.laundryGothicRegular16
-            )
-        }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                text = stringResource(R.string.title_break_time),
-                color = breakColor,
-                style = PomoroDoTheme.typography.laundryGothicRegular18
-            )
-            Text(
-                text = String.format(
-                    stringResource(R.string.format_hour_minute),
-                    breakTime / 60,
-                    breakTime % 60
-                ),
-                color = breakColor,
-                style = PomoroDoTheme.typography.laundryGothicRegular16
-            )
-        }
     }
 }
