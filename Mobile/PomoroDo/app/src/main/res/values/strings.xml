@@ -16,5 +16,10 @@
     <string name="content_user_name_label">닉네임</string>
     <string name="content_user_name_placeholder">닉네임을 입력해주세요.</string>
     <string name="content_button_sign_up">가입</string>
+    // pomodoro timer
     <string name="content_ic_timer_pin">타이머의 중심 아이콘</string>
+    <string name="title_concentration_time">집중 시간</string>
+    <string name="title_break_time">휴식 시간</string>
+    // time format
+    <string name="format_hour_minute">%02d:%02d</string>
 </resources>

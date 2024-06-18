@@ -5,10 +5,16 @@ import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -45,17 +51,45 @@ import kotlin.math.sin
 
 @Composable
 fun TimerMainScreen() {
-    CustomCircularDraggableTimer(
-        modifier = Modifier
-            .size(300.dp)
-            .background(PomoroDoTheme.colorScheme.background),
-        timerColor = PomoroDoTheme.colorScheme.primaryContainer,
-        backgroundColor = PomoroDoTheme.colorScheme.background,
-        indicatorColor = PomoroDoTheme.colorScheme.onBackground,
-        circleRadius = 125.dp,
-        initialValue = 19,
-    ) { position ->
-        // do something with this position value
+
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CustomPomodoroTimer() {
+    Column(
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        var concentrationTime by remember {
+            mutableIntStateOf(30)
+        }
+        var breakTime by remember {
+            mutableIntStateOf(0)
+        }
+
+        EditableTextTimer(
+            concentrationTime = concentrationTime,
+            breakTime = breakTime,
+            concentrationColor = PomoroDoTheme.colorScheme.primaryContainer,
+            breakColor = PomoroDoTheme.colorScheme.secondaryContainer
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        CustomCircularDraggableTimer(
+            modifier = Modifier
+                .size(300.dp)
+                .background(PomoroDoTheme.colorScheme.background),
+            timerColor = PomoroDoTheme.colorScheme.primaryContainer,
+            backgroundColor = PomoroDoTheme.colorScheme.background,
+            indicatorColor = PomoroDoTheme.colorScheme.onBackground,
+            circleRadius = 125.dp,
+            initialValue = concentrationTime,
+        ) { position ->
+            concentrationTime = position
+            breakTime = position
+        }
     }
 }
 
@@ -130,6 +164,8 @@ fun CustomCircularDraggableTimer(
                             positionValue =
                                 (oldPositionValue + (changeAngle / (360f / (maxValue - minValue))).roundToInt())
                         }
+
+                        onPositionChange(positionValue)
                     },
                     onDragEnd = {
                         oldPositionValue = positionValue
@@ -191,7 +227,6 @@ fun CustomCircularDraggableTimer(
                 drawLine(color = color, start = start, end = end, strokeWidth = 1.3.dp.toPx())
             }
 
-            // Adding the numbers outside the circle
             for (i in 0 until (maxValue - minValue) step 10) {
                 val angleInDegrees = i * 360f / (maxValue - minValue).toFloat()
                 val angleInRadius = angleInDegrees * PI / 180f - PI / 2f
@@ -228,21 +263,55 @@ fun CustomCircularDraggableTimer(
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun Preview() {
-    PomoroDoTheme {
-        CustomCircularDraggableTimer(
-            modifier = Modifier
-                .size(300.dp)
-                .background(PomoroDoTheme.colorScheme.background),
-            timerColor = PomoroDoTheme.colorScheme.primaryContainer,
-            backgroundColor = PomoroDoTheme.colorScheme.background,
-            indicatorColor = PomoroDoTheme.colorScheme.onBackground,
-            circleRadius = 125.dp,
-            initialValue = 19,
-        ) { position ->
-            // do something with this position value
+fun EditableTextTimer(
+    concentrationTime: Int,
+    breakTime: Int,
+    concentrationColor: Color,
+    breakColor: Color
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.title_concentration_time),
+                color = concentrationColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular18
+            )
+            Text(
+                text = String.format(
+                    stringResource(R.string.format_hour_minute),
+                    concentrationTime / 60,
+                    concentrationTime % 60
+                ),
+                color = concentrationColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular16
+            )
+        }
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+
+            Text(
+                text = stringResource(R.string.title_break_time),
+                color = breakColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular18
+            )
+            Text(
+                text = String.format(
+                    stringResource(R.string.format_hour_minute),
+                    breakTime / 60,
+                    breakTime % 60
+                ),
+                color = breakColor,
+                style = PomoroDoTheme.typography.laundryGothicRegular16
+            )
         }
     }
 }
