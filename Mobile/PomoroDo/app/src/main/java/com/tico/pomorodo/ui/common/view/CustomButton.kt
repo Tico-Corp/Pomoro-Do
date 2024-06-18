@@ -49,7 +49,7 @@ fun CustomTextButton(
 @Composable
 fun CustomTextButton(
     text: String,
-    enable: Boolean = false,
+    enable: Boolean,
     containerColor: Color,
     contentColor: Color,
     disabledContainerColor: Color,
@@ -115,7 +115,7 @@ fun CustomTextButton(
 @Composable
 fun CustomTextButton(
     text: String,
-    enable: Boolean = false,
+    enable: Boolean,
     containerColor: Color,
     contentColor: Color,
     disabledContainerColor: Color,
