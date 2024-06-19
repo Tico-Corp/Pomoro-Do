@@ -12,14 +12,14 @@ import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.ui.theme.LightIconPack
 
-val LightIconPack.IcAddCategory: ImageVector
+val LightIconPack.IcCalendarDropDownLight: ImageVector
     get() {
-        if (_icAddCategory != null) {
-            return _icAddCategory!!
+        if (_icCalendarDropDownLight != null) {
+            return _icCalendarDropDownLight!!
         }
-        _icAddCategory = Builder(
-            name = "IcAddCategory", defaultWidth = 14.0.dp, defaultHeight =
-            14.0.dp, viewportWidth = 14.0f, viewportHeight = 14.0f
+        _icCalendarDropDownLight = Builder(
+            name = "IcCalendarDropDownLight", defaultWidth = 19.0.dp,
+            defaultHeight = 19.0.dp, viewportWidth = 19.0f, viewportHeight = 19.0f
         ).apply {
             group {
                 path(
@@ -27,25 +27,19 @@ val LightIconPack.IcAddCategory: ImageVector
                     strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(11.0827f, 7.5834f)
-                    horizontalLineTo(7.5827f)
-                    verticalLineTo(11.0834f)
-                    horizontalLineTo(6.416f)
-                    verticalLineTo(7.5834f)
-                    horizontalLineTo(2.916f)
-                    verticalLineTo(6.4167f)
-                    horizontalLineTo(6.416f)
-                    verticalLineTo(2.9167f)
-                    horizontalLineTo(7.5827f)
-                    verticalLineTo(6.4167f)
-                    horizontalLineTo(11.0827f)
-                    verticalLineTo(7.5834f)
+                    moveTo(5.8663f, 6.8005f)
+                    lineTo(9.5f, 10.4264f)
+                    lineTo(13.1338f, 6.8005f)
+                    lineTo(14.25f, 7.9168f)
+                    lineTo(9.5f, 12.6668f)
+                    lineTo(4.75f, 7.9168f)
+                    lineTo(5.8663f, 6.8005f)
                     close()
                 }
             }
         }
             .build()
-        return _icAddCategory!!
+        return _icCalendarDropDownLight!!
     }
 
-private var _icAddCategory: ImageVector? = null
+private var _icCalendarDropDownLight: ImageVector? = null
