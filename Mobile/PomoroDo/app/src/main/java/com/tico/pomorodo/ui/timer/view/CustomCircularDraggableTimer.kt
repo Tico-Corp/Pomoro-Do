@@ -2,7 +2,6 @@ package com.tico.pomorodo.ui.timer.view
 
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -127,7 +126,6 @@ fun CustomCircularDraggableTimer(
 
                         touchAngle = touchAngle.mod(360f)
 
-
                         isOuterCircle =
                             distanceBetweenDragStartAndCircleCenter > (outerCircleRadius / 2).dp.toPx()
                         oldPositionValue =
@@ -136,8 +134,8 @@ fun CustomCircularDraggableTimer(
                         val currentAngle = oldPositionValue * 360f / (maxValue - minValue)
                         changeAngle = touchAngle - currentAngle
 
-                        val lowerThreshold = currentAngle - (360f / (maxValue - minValue) * 5)
-                        val higherThreshold = currentAngle + (360f / (maxValue - minValue) * 5)
+                        val lowerThreshold = currentAngle - (360f / (maxValue - minValue) * 10)
+                        val higherThreshold = currentAngle + (360f / (maxValue - minValue) * 10)
 
                         if (dragStartAngle in lowerThreshold..higherThreshold) {
                             if (isOuterCircle) outerPositionValue =
@@ -151,11 +149,6 @@ fun CustomCircularDraggableTimer(
                         } else {
                             onInnerPositionChange(innerPositionValue)
                         }
-
-                        Log.d(
-                            "TimerTest",
-                            "currentAngle: $currentAngle, dragStartAngle: $dragStartAngle, distance: $distanceBetweenDragStartAndCircleCenter"
-                        )
                     },
                     onDragEnd = {
                         if (isOuterCircle) {
