@@ -78,7 +78,7 @@ fun TimerRootScreen() {
         Spacer(modifier = Modifier.height(20.dp))
 
         CustomTextButton(
-            text = "집중 시작하기",
+            text = stringResource(R.string.content_button_start),
             backgroundColor = PomoroDoTheme.colorScheme.primaryContainer,
             textColor = PomoroDoTheme.colorScheme.background,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,

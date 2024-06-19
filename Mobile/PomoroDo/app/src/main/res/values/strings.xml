@@ -20,10 +20,11 @@
     <string name="content_ic_timer_pin">타이머의 중심 아이콘</string>
     <string name="title_concentration_time">집중 시간</string>
     <string name="title_break_time">휴식 시간</string>
-    // time format
-    <string name="format_hour_minute">%02d:%02d</string>
-    <string name="format_hour_minute_second">%02d:%02d:%02d</string>
     <string name="title_taget_concentration">목표 집중 시간</string>
     <string name="title_total_concentration">총 집중 시간</string>
     <string name="title_total_break">총 휴식 시간</string>
+    <string name="content_button_start">집중 시작하기</string>
+    // time format
+    <string name="format_hour_minute">%02d:%02d</string>
+    <string name="format_hour_minute_second">%02d:%02d:%02d</string>
 </resources>
