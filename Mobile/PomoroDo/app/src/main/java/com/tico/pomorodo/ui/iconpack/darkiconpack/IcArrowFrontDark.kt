@@ -18,8 +18,8 @@ val DarkIconPack.IcArrowFrontDark: ImageVector
             return _icArrowFrontDark!!
         }
         _icArrowFrontDark = Builder(
-            name = "IcArrowFrontDark", defaultWidth = 19.0.dp, defaultHeight
-            = 19.0.dp, viewportWidth = 19.0f, viewportHeight = 19.0f
+            name = "IcArrowBackDark", defaultWidth = 19.0.dp, defaultHeight =
+            19.0.dp, viewportWidth = 19.0f, viewportHeight = 19.0f
         ).apply {
             group {
                 path(
@@ -27,13 +27,13 @@ val DarkIconPack.IcArrowFrontDark: ImageVector
                     strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(12.2002f, 13.1337f)
-                    lineTo(8.5744f, 9.5f)
-                    lineTo(12.2002f, 5.8663f)
-                    lineTo(11.084f, 4.75f)
-                    lineTo(6.334f, 9.5f)
-                    lineTo(11.084f, 14.25f)
-                    lineTo(12.2002f, 13.1337f)
+                    moveTo(6.8008f, 13.1337f)
+                    lineTo(10.4266f, 9.5f)
+                    lineTo(6.8008f, 5.8663f)
+                    lineTo(7.917f, 4.75f)
+                    lineTo(12.667f, 9.5f)
+                    lineTo(7.917f, 14.25f)
+                    lineTo(6.8008f, 13.1337f)
                     close()
                 }
             }
