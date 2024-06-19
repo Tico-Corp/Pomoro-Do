@@ -22,8 +22,7 @@
     <string name="content_calendar_full_focus">목표 집중 완료 개수</string>
     <string name="content_calendar_all_checked">할 일 완료 개수</string>
     <string name="content_calendar_liked">좋아요 개수</string>
-    <string name="content_calendar_drop_down">월간 달력</string>
-    <string name="content_calendar_day">날짜</string>
+    <string name="content_calendar_drop_down">달력 전환 아이콘</string>
     <string name="content_calendar_sunday">일</string>
     <string name="content_calendar_monday">월</string>
     <string name="content_calendar_tuesday">화</string>
@@ -48,4 +47,13 @@
     <string name="content_category_add">카테고리 추가</string>
     <string name="content_category_manage">카테고리 관리</string>
     <string name="content_ic_add_category">카테고리 추가 아이콘</string>
+    <string name="content_calendar_date_white">하양</string>
+    <string name="content_calendar_date_green">초록</string>
+    <string name="content_calendar_date_yellow">노랑</string>
+    <string name="content_calendar_date_orange">주황</string>
+    <string name="content_calendar_date_red">빨강</string>
+    <string name="content_calendar_weekly_title">%d년 %d월 %d주차</string>
+    <string name="content_me">나</string>
+    <string name="content_todo_more_info_edit">수정</string>
+    <string name="content_todo_more_info_delete">삭제</string>
 </resources>
