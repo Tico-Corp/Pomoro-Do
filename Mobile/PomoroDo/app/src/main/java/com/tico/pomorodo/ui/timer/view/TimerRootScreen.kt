@@ -34,7 +34,7 @@ fun TimerRootScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 30.dp, vertical = 24.dp),
+            .padding(start = 30.dp, end = 30.dp, top = 24.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -95,7 +95,7 @@ fun TodayConcentrationInformation() {
             textColor = PomoroDoTheme.colorScheme.onBackground,
             spaceDp = 4.dp,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
-        )
+        ) { /*TODO*/ }
 
         Spacer(modifier = Modifier.height(14.dp))
 

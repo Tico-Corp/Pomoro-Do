@@ -74,7 +74,7 @@ fun EditableTextTimer(
             spaceDp = 10.dp,
             titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             contentTextStyle = PomoroDoTheme.typography.laundryGothicRegular16
-        )
+        ) { /*TODO*/ }
 
         Spacer(modifier = Modifier.width(20.dp))
 
@@ -86,6 +86,6 @@ fun EditableTextTimer(
             spaceDp = 10.dp,
             titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             contentTextStyle = PomoroDoTheme.typography.laundryGothicRegular16
-        )
+        ) { /*TODO*/ }
     }
 }

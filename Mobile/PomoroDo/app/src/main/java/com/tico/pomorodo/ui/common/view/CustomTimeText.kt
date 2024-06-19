@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.common.view
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,46 @@ fun CustomTimeText(
     textStyle: TextStyle,
 ) {
     Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            color = textColor,
+            textAlign = TextAlign.Center,
+            style = textStyle
+        )
+
+        Spacer(modifier = Modifier.height(spaceDp))
+
+        Text(
+            text = String.format(
+                Locale.KOREA,
+                stringResource(id = R.string.format_hour_minute_second),
+                hour,
+                minute,
+                second
+            ),
+            color = textColor,
+            textAlign = TextAlign.Center,
+            style = textStyle
+        )
+    }
+}
+
+@Composable
+fun CustomTimeText(
+    title: String,
+    hour: Int,
+    minute: Int,
+    second: Int,
+    textColor: Color,
+    spaceDp: Dp,
+    textStyle: TextStyle,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.clickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -140,6 +181,45 @@ fun CustomTimeText(
     contentTextStyle: TextStyle,
 ) {
     Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            color = textColor,
+            textAlign = TextAlign.Center,
+            style = titleTextStyle
+        )
+
+        Spacer(modifier = Modifier.height(spaceDp))
+
+        Text(
+            text = String.format(
+                Locale.KOREA,
+                stringResource(id = R.string.format_hour_minute),
+                hour,
+                minute,
+            ),
+            color = textColor,
+            textAlign = TextAlign.Center,
+            style = contentTextStyle
+        )
+    }
+}
+
+@Composable
+fun CustomTimeText(
+    title: String,
+    hour: Int,
+    minute: Int,
+    textColor: Color,
+    spaceDp: Dp,
+    titleTextStyle: TextStyle,
+    contentTextStyle: TextStyle,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier.clickable { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
