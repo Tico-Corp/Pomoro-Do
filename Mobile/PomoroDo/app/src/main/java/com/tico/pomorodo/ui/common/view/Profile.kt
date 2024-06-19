@@ -1,0 +1,155 @@
+package com.tico.pomorodo.ui.common.view
+
+import android.net.Uri
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
+import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.iconpack.IcProfileDefault
+import com.tico.pomorodo.ui.theme.IconPack
+import com.tico.pomorodo.ui.theme.PomoroDoTheme
+
+@Composable
+fun ProfileVertical(
+    modifier: Modifier = Modifier,
+    size: Int,
+    defaultProfileUri: Uri? = null,
+    name: String,
+    textStyle: TextStyle,
+    isClicked: Boolean = false
+) {
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier,
+            contentAlignment = Alignment.Center
+        ) {
+            if (isClicked) {
+                FigureShape(
+                    shape = CircleShape,
+                    width = size + 4,
+                    height = size + 4,
+                    color = PomoroDoTheme.colorScheme.primaryContainer
+                )
+            } else {
+                Spacer(modifier = Modifier.size((size + 4).dp))
+            }
+            if (defaultProfileUri == null) {
+                SimpleIcon(
+                    modifier = Modifier.clip(CircleShape),
+                    size = size,
+                    imageVector = IconPack.IcProfileDefault,
+                    contentDescriptionId = R.string.content_ic_profile_default
+                )
+            } else {
+                GlideImage(
+                    modifier = Modifier.size(size.dp),
+                    imageModel = { defaultProfileUri },
+                    requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+                    imageOptions = ImageOptions(
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.Center
+                    )
+                )
+            }
+        }
+        SimpleText(
+            modifier = Modifier.width(size.dp),
+            text = name,
+            style = textStyle,
+            color = PomoroDoTheme.colorScheme.onBackground,
+            isEllipsis = true,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun ProfileHorizontal(
+    modifier: Modifier = Modifier,
+    size: Int,
+    defaultProfileUri: Uri? = null,
+    name: String,
+    textStyle: TextStyle
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (defaultProfileUri == null) {
+            SimpleIcon(
+                modifier = Modifier.clip(CircleShape),
+                size = size,
+                imageVector = IconPack.IcProfileDefault,
+                contentDescriptionId = R.string.content_ic_profile_default
+            )
+        } else {
+            GlideImage(
+                modifier = Modifier.size(size.dp),
+                imageModel = { defaultProfileUri },
+                requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center
+                )
+            )
+        }
+        SimpleText(
+            text = name,
+            style = textStyle,
+            color = PomoroDoTheme.colorScheme.onBackground
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileVerticalPreview(
+    defaultProfileUri: Uri? = null,
+    name: String = "나",
+    textStyle: TextStyle = PomoroDoTheme.typography.laundryGothicRegular14
+) {
+    PomoroDoTheme() {
+        ProfileVertical(
+            size = 50,
+            defaultProfileUri = null,
+            name = name,
+            textStyle = textStyle,
+            isClicked = true
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileHorizontalPreview(
+    defaultProfileUri: Uri? = null,
+    name: String = "",
+    textStyle: TextStyle = PomoroDoTheme.typography.laundryGothicRegular14
+) {
+    PomoroDoTheme() {
+        ProfileHorizontal(size = 36, defaultProfileUri = null, name = name, textStyle = textStyle)
+    }
+}
