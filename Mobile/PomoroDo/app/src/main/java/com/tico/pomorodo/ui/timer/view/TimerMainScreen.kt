@@ -2,6 +2,7 @@ package com.tico.pomorodo.ui.timer.view
 
 import android.graphics.Paint
 import android.graphics.Typeface
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -35,7 +36,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
@@ -48,6 +48,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.hypot
 import kotlin.math.roundToInt
 import kotlin.math.sin
 
@@ -57,7 +58,7 @@ fun TimerRootScreen() {
         mutableIntStateOf(30)
     }
     var breakTime by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(70)
     }
 
     Column(
@@ -70,8 +71,8 @@ fun TimerRootScreen() {
         PomodoroTimerScreen(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
-            onBreakTimeChange = { position -> concentrationTime = position },
-            onConcentrationTimeChange = { position -> breakTime = position }
+            onConcentrationTimeChange = { position -> concentrationTime = position },
+            onBreakTimeChange = { position -> breakTime = position }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -181,15 +182,16 @@ fun CustomPomodoroTimer(
             modifier = Modifier
                 .size(300.dp)
                 .background(PomoroDoTheme.colorScheme.background),
-            timerColor = PomoroDoTheme.colorScheme.primaryContainer,
+            outerTimerColor = PomoroDoTheme.colorScheme.primaryContainer,
+            innerTimerColor = PomoroDoTheme.colorScheme.secondaryContainer,
             backgroundColor = PomoroDoTheme.colorScheme.background,
             indicatorColor = PomoroDoTheme.colorScheme.onBackground,
-            circleRadius = 125.dp,
-            initialValue = concentrationTime,
-        ) { position ->
-            onConcentrationTimeChange(position)
-            onBreakTimeChange(position)
-        }
+            outerCircleRadius = 125,
+            outerInitialValue = concentrationTime,
+            innerInitialValue = breakTime,
+            onOuterPositionChange = { position -> onConcentrationTimeChange(position) },
+            onInnerPositionChange = { position -> onBreakTimeChange(position) }
+        )
     }
 }
 
@@ -231,14 +233,17 @@ fun EditableTextTimer(
 @Composable
 fun CustomCircularDraggableTimer(
     modifier: Modifier = Modifier,
-    timerColor: Color,
+    outerTimerColor: Color,
+    innerTimerColor: Color,
     backgroundColor: Color,
     indicatorColor: Color,
-    circleRadius: Dp,
+    outerCircleRadius: Int,
     minValue: Int = 0,
     maxValue: Int = 120,
-    initialValue: Int,
-    onPositionChange: (Int) -> Unit,
+    outerInitialValue: Int,
+    innerInitialValue: Int,
+    onOuterPositionChange: (Int) -> Unit,
+    onInnerPositionChange: (Int) -> Unit,
 ) {
     val context = LocalContext.current
     val laundryGothicTypeface = remember {
@@ -252,8 +257,24 @@ fun CustomCircularDraggableTimer(
         mutableStateOf(Offset.Zero)
     }
 
-    var positionValue by remember {
-        mutableIntStateOf(initialValue)
+    var oldPositionValue by remember {
+        mutableIntStateOf(0)
+    }
+
+    var outerPositionValue by remember {
+        mutableIntStateOf(outerInitialValue)
+    }
+
+    var outerOldPositionValue by remember {
+        mutableIntStateOf(outerInitialValue)
+    }
+
+    var innerPositionValue by remember {
+        mutableIntStateOf(innerInitialValue)
+    }
+
+    var innerOldPositionValue by remember {
+        mutableIntStateOf(innerInitialValue)
     }
 
     var changeAngle by remember {
@@ -264,8 +285,12 @@ fun CustomCircularDraggableTimer(
         mutableFloatStateOf(0f)
     }
 
-    var oldPositionValue by remember {
-        mutableIntStateOf(initialValue)
+    var distanceBetweenDragStartAndCircleCenter by remember {
+        mutableFloatStateOf(0f)
+    }
+
+    var isOuterCircle by remember {
+        mutableStateOf(false)
     }
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
@@ -274,6 +299,9 @@ fun CustomCircularDraggableTimer(
             .pointerInput(true) {
                 detectDragGestures(
                     onDragStart = { offset ->
+                        distanceBetweenDragStartAndCircleCenter =
+                            hypot(x = offset.x - circleCenter.x, y = offset.y - circleCenter.y)
+
                         dragStartAngle = -atan2(
                             x = circleCenter.y - offset.y,
                             y = circleCenter.x - offset.x
@@ -289,6 +317,12 @@ fun CustomCircularDraggableTimer(
 
                         touchAngle = touchAngle.mod(360f)
 
+
+                        isOuterCircle =
+                            distanceBetweenDragStartAndCircleCenter > (outerCircleRadius / 2).dp.toPx()
+                        oldPositionValue =
+                            if (isOuterCircle) outerOldPositionValue else innerOldPositionValue
+
                         val currentAngle = oldPositionValue * 360f / (maxValue - minValue)
                         changeAngle = touchAngle - currentAngle
 
@@ -296,15 +330,31 @@ fun CustomCircularDraggableTimer(
                         val higherThreshold = currentAngle + (360f / (maxValue - minValue) * 5)
 
                         if (dragStartAngle in lowerThreshold..higherThreshold) {
-                            positionValue =
+                            if (isOuterCircle) outerPositionValue =
+                                (oldPositionValue + (changeAngle / (360f / (maxValue - minValue))).roundToInt())
+                            else innerPositionValue =
                                 (oldPositionValue + (changeAngle / (360f / (maxValue - minValue))).roundToInt())
                         }
 
-                        onPositionChange(positionValue)
+                        if (isOuterCircle) {
+                            onOuterPositionChange(outerPositionValue)
+                        } else {
+                            onInnerPositionChange(innerPositionValue)
+                        }
+
+                        Log.d(
+                            "TimerTest",
+                            "currentAngle: $currentAngle, dragStartAngle: $dragStartAngle, distance: $distanceBetweenDragStartAndCircleCenter"
+                        )
                     },
                     onDragEnd = {
-                        oldPositionValue = positionValue
-                        onPositionChange(positionValue)
+                        if (isOuterCircle) {
+                            outerOldPositionValue = outerPositionValue
+                            onOuterPositionChange(outerPositionValue)
+                        } else {
+                            innerOldPositionValue = innerPositionValue
+                            onInnerPositionChange(innerPositionValue)
+                        }
                     }
                 )
             }
@@ -312,29 +362,49 @@ fun CustomCircularDraggableTimer(
             val width = size.width
             val height = size.height
             val circleThickness = width / 25f
-            val circleRadiusToPx = circleRadius.toPx()
+            val outerCircleRadiusToPx = outerCircleRadius.dp.toPx()
+            val innerCircleRadiusToPx = outerCircleRadiusToPx / 2
             circleCenter = Offset(x = width / 2f, y = height / 2f)
 
             drawCircle(
                 color = backgroundColor,
-                radius = circleRadiusToPx,
+                radius = outerCircleRadiusToPx,
                 center = circleCenter,
             )
 
             drawArc(
-                color = timerColor,
+                color = outerTimerColor,
                 startAngle = -90f,
-                sweepAngle = (360f / maxValue) * positionValue.toFloat(),
+                sweepAngle = (360f / maxValue) * outerPositionValue.toFloat(),
                 style = Fill,
                 useCenter = true,
-                size = Size(width = circleRadiusToPx * 2f, height = circleRadiusToPx * 2f),
+                size = Size(
+                    width = outerCircleRadiusToPx * 2f,
+                    height = outerCircleRadiusToPx * 2f
+                ),
                 topLeft = Offset(
-                    x = (width - circleRadiusToPx * 2f) / 2f,
-                    y = (height - circleRadiusToPx * 2f) / 2f
+                    x = (width - outerCircleRadiusToPx * 2f) / 2f,
+                    y = (height - outerCircleRadiusToPx * 2f) / 2f
                 )
             )
 
-            val outerRadius = circleRadiusToPx + circleThickness / 2f
+            drawArc(
+                color = innerTimerColor,
+                startAngle = -90f,
+                sweepAngle = (360f / maxValue) * innerPositionValue.toFloat(),
+                style = Fill,
+                useCenter = true,
+                size = Size(
+                    width = innerCircleRadiusToPx * 2f,
+                    height = innerCircleRadiusToPx * 2f
+                ),
+                topLeft = Offset(
+                    x = (width - innerCircleRadiusToPx * 2f) / 2f,
+                    y = (height - innerCircleRadiusToPx * 2f) / 2f
+                )
+            )
+
+            val outerRadius = outerCircleRadiusToPx + circleThickness / 2f
             val gap = 15f
 
             val shortIndicatorLength = 10f
