@@ -1,11 +1,11 @@
 package com.tico.pomorodo.ui.common.view
 
 import android.net.Uri
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -42,22 +43,18 @@ fun ProfileVertical(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
-            modifier = Modifier,
+            modifier = Modifier
+                .border(
+                    1.5.dp,
+                    color = if (isClicked) PomoroDoTheme.colorScheme.primaryContainer else Color.Unspecified,
+                    shape = CircleShape
+                )
+                .clip(CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            if (isClicked) {
-                FigureShape(
-                    shape = CircleShape,
-                    width = size + 4,
-                    height = size + 4,
-                    color = PomoroDoTheme.colorScheme.primaryContainer
-                )
-            } else {
-                Spacer(modifier = Modifier.size((size + 4).dp))
-            }
             if (defaultProfileUri == null) {
                 SimpleIcon(
-                    modifier = Modifier.clip(CircleShape),
+                    modifier = Modifier,
                     size = size,
                     imageVector = IconPack.IcProfileDefault,
                     contentDescriptionId = R.string.content_ic_profile_default

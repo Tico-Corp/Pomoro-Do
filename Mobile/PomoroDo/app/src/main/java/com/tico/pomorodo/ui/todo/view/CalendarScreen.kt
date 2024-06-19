@@ -1,6 +1,7 @@
 package com.tico.pomorodo.ui.todo.view
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -27,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.common.view.FigureShape
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
@@ -305,18 +306,18 @@ fun CalendarDayItem(
                 .align(Alignment.CenterHorizontally)
         ) {
             if (isToday && isSelected) {
-                FigureShape(
-                    height = 16,
-                    width = 16,
-                    shape = CircleShape,
-                    color = PomoroDoTheme.colorScheme.primaryContainer
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clip(CircleShape)
+                        .background(PomoroDoTheme.colorScheme.primaryContainer)
                 )
             } else if (isSelected) {
-                FigureShape(
-                    height = 16,
-                    width = 16,
-                    shape = CircleShape,
-                    color = PomoroDoTheme.colorScheme.onBackground
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clip(CircleShape)
+                        .background(PomoroDoTheme.colorScheme.primaryContainer)
                 )
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
