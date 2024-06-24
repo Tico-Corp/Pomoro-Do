@@ -9,26 +9,34 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import com.tico.pomorodo.ui.timer.viewmodel.Time
+import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 
+@Preview
 @Composable
 fun TimerRootScreen() {
-    var concentrationTime by remember {
-        mutableIntStateOf(30)
+    val timerViewModel: TimerViewModel = viewModel()
+    val concentrationTime by timerViewModel.concentrationTime.collectAsState()
+    val breakTime by timerViewModel.breakTime.collectAsState()
+    val (editConcentrationTimerDialogVisible, setEditConcentrationTimerDialogVisible) = remember {
+        mutableStateOf(false)
     }
-    var breakTime by remember {
-        mutableIntStateOf(70)
+    val (editBreakTimerDialogVisible, setEditBreakTimerDialogVisible) = remember {
+        mutableStateOf(false)
     }
 
     Column(
@@ -41,8 +49,21 @@ fun TimerRootScreen() {
         PomodoroTimerScreen(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
-            onConcentrationTimeChange = { position -> concentrationTime = position },
-            onBreakTimeChange = { position -> breakTime = position }
+            onConcentrationTimeChange = { time ->
+                timerViewModel.setConcentrationTime(
+                    hour = time / 60,
+                    minute = time % 60
+                )
+            },
+            onBreakTimeChange = { time ->
+                timerViewModel.setBreakTime(
+                    hour = time / 60,
+                    minute = time % 60
+                )
+            },
+            onConcentrationTimeClick = { setEditConcentrationTimerDialogVisible(true) },
+            onBreakTimeClick = { setEditBreakTimerDialogVisible(true) },
+            isEditTimerDialogVisible = editConcentrationTimerDialogVisible || editBreakTimerDialogVisible
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -55,14 +76,45 @@ fun TimerRootScreen() {
             verticalPadding = 12.dp
         ) { /*TODO*/ }
     }
+
+    if (editConcentrationTimerDialogVisible) {
+        EditTimerDialog(
+            title = stringResource(R.string.title_dialog_edit_concentration_time),
+            initialValue = concentrationTime,
+            onDismissRequest = {
+                setEditConcentrationTimerDialogVisible(false)
+            },
+            onConfirmation = { hour, minute ->
+                timerViewModel.setConcentrationTime(hour, minute)
+                setEditConcentrationTimerDialogVisible(false)
+            }
+        )
+    }
+
+    if (editBreakTimerDialogVisible) {
+        EditTimerDialog(
+            title = stringResource(R.string.title_dialog_edit_break_time),
+            initialValue = breakTime,
+            onDismissRequest = {
+                setEditBreakTimerDialogVisible(false)
+            },
+            onConfirmation = { hour, minute ->
+                timerViewModel.setBreakTime(hour, minute)
+                setEditBreakTimerDialogVisible(false)
+            }
+        )
+    }
 }
 
 @Composable
 fun PomodoroTimerScreen(
-    concentrationTime: Int,
-    breakTime: Int,
+    concentrationTime: Time,
+    breakTime: Time,
     onConcentrationTimeChange: (Int) -> Unit,
-    onBreakTimeChange: (Int) -> Unit
+    onBreakTimeChange: (Int) -> Unit,
+    onConcentrationTimeClick: () -> Unit,
+    onBreakTimeClick: () -> Unit,
+    isEditTimerDialogVisible: Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -72,7 +124,10 @@ fun PomodoroTimerScreen(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
             onConcentrationTimeChange = onConcentrationTimeChange,
-            onBreakTimeChange = onBreakTimeChange
+            onBreakTimeChange = onBreakTimeChange,
+            onConcentrationTimeClick = onConcentrationTimeClick,
+            onBreakTimeClick = onBreakTimeClick,
+            isEditTimerDialogVisible = isEditTimerDialogVisible
         )
 
         Spacer(modifier = Modifier.height(24.dp))
