@@ -1,19 +1,25 @@
 package com.tico.pomorodo.data.local.datasource
 
+import com.tico.pomorodo.data.local.entity.User
 import com.tico.pomorodo.ui.todo.view.Category
 import com.tico.pomorodo.ui.todo.view.TodoData
 import com.tico.pomorodo.ui.todo.view.TodoState
-import com.tico.pomorodo.ui.todo.view.User
 
 object DataSource {
     val userList = listOf<User>(
-        User(name = "차돌"),
-        User(name = "차돌"),
-        User(name = "구름이"),
-        User(name = "구름이"),
-        User(name = "구름이"),
-        User(name = "구름이"),
-        User(name = "모카커피")
+        User(id = "1", name = "차돌1"),
+        User(id = "2", name = "차돌2"),
+        User(id = "3", name = "구름이1"),
+        User(id = "4", name = "구름이2"),
+        User(id = "5", name = "구름이3"),
+        User(id = "6", name = "구름이4"),
+        User(id = "7", name = "모카커피1"),
+        User(id = "8", name = "모카커피2"),
+        User(id = "9", name = "모카커피3"),
+        User(id = "10", name = "모카커피4"),
+        User(id = "11", name = "모카커피5"),
+        User(id = "12", name = "a"),
+        User(id = "13", name = "b"),
     )
 
     val todoList = listOf<Category>(
