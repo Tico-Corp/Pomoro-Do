@@ -21,9 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.WheelTimePicker
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -40,6 +43,8 @@ fun EditTimerDialog(
     var currentMinute by remember { mutableIntStateOf(initialValue.minute) }
     var currentSecond by remember { mutableStateOf(initialValue.second) }
     val contentPadding = if (currentSecond == null) 20 else 12
+    var isTimeValid by remember { mutableStateOf(true) }
+    val timeLimit = if (currentSecond == null) 2 else 24
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
@@ -67,12 +72,44 @@ fun EditTimerDialog(
                 initialMinute = initialValue.minute,
                 initialSecond = initialValue.second,
                 contentPadding = contentPadding.dp,
-                onHourChanged = { hour -> currentHour = hour },
-                onMinuteChanged = { minute -> currentMinute = minute },
-                onSecondChanged = { second -> currentSecond = second }
+                onHourChanged = { hour ->
+                    currentHour = hour
+                    isTimeValid =
+                        if (currentSecond == null && currentHour * 60 + currentMinute <= 120) true
+                        else if (currentSecond != null && currentHour * 60 * 60 + currentMinute * 60 + currentSecond!! <= 86400) true
+                        else false
+                },
+                onMinuteChanged = { minute ->
+                    currentMinute = minute
+                    isTimeValid =
+                        if (currentSecond == null && currentHour * 60 + currentMinute <= 120) true
+                        else if (currentSecond != null && currentHour * 60 * 60 + currentMinute * 60 + currentSecond!! <= 86400) true
+                        else false
+                },
+                onSecondChanged = { second ->
+                    currentSecond = second
+                    isTimeValid =
+                        currentHour * 60 * 60 + currentMinute * 60 + currentSecond!! <= 86400
+                }
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+
+            if (!isTimeValid) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = String.format(
+                        stringResource(R.string.content_error_time_limit),
+                        timeLimit
+                    ),
+                    color = PomoroDoTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                    style = PomoroDoTheme.typography.laundryGothicRegular12
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+            } else {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -92,8 +129,11 @@ fun EditTimerDialog(
 
                 CustomTextButton(
                     text = "확인",
-                    backgroundColor = PomoroDoTheme.colorScheme.primaryContainer,
-                    textColor = PomoroDoTheme.colorScheme.background,
+                    enable = isTimeValid,
+                    containerColor = PomoroDoTheme.colorScheme.primaryContainer,
+                    contentColor = PomoroDoTheme.colorScheme.background,
+                    disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
+                    disabledContentColor = PomoroDoTheme.colorScheme.background,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                     horizontalPadding = 20.dp,
                     verticalPadding = 8.dp
