@@ -32,10 +32,14 @@ fun TimerRootScreen() {
     val timerViewModel: TimerViewModel = viewModel()
     val concentrationTime by timerViewModel.concentrationTime.collectAsState()
     val breakTime by timerViewModel.breakTime.collectAsState()
+    val concentrationGoal by timerViewModel.concentrationGoal.collectAsState()
     val (editConcentrationTimerDialogVisible, setEditConcentrationTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
     val (editBreakTimerDialogVisible, setEditBreakTimerDialogVisible) = remember {
+        mutableStateOf(false)
+    }
+    val (editConcentrationGoalDialogVisible, setEditConcentrationGoalDialogVisible) = remember {
         mutableStateOf(false)
     }
 
@@ -49,6 +53,7 @@ fun TimerRootScreen() {
         PomodoroTimerScreen(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
+            concentrationGoal = concentrationGoal,
             onConcentrationTimeChange = { time ->
                 timerViewModel.setConcentrationTime(
                     hour = time / 60,
@@ -61,9 +66,10 @@ fun TimerRootScreen() {
                     minute = time % 60
                 )
             },
+            isEditTimerDialogVisible = editConcentrationTimerDialogVisible || editBreakTimerDialogVisible,
             onConcentrationTimeClick = { setEditConcentrationTimerDialogVisible(true) },
             onBreakTimeClick = { setEditBreakTimerDialogVisible(true) },
-            isEditTimerDialogVisible = editConcentrationTimerDialogVisible || editBreakTimerDialogVisible
+            onConcentrationGoalClick = { setEditConcentrationGoalDialogVisible(true) }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -84,7 +90,7 @@ fun TimerRootScreen() {
             onDismissRequest = {
                 setEditConcentrationTimerDialogVisible(false)
             },
-            onConfirmation = { hour, minute ->
+            onConfirmation = { hour, minute, _ ->
                 timerViewModel.setConcentrationTime(hour, minute)
                 setEditConcentrationTimerDialogVisible(false)
             }
@@ -98,11 +104,26 @@ fun TimerRootScreen() {
             onDismissRequest = {
                 setEditBreakTimerDialogVisible(false)
             },
-            onConfirmation = { hour, minute ->
+            onConfirmation = { hour, minute, _ ->
                 timerViewModel.setBreakTime(hour, minute)
                 setEditBreakTimerDialogVisible(false)
             }
         )
+    }
+
+    if (editConcentrationGoalDialogVisible) {
+        EditTimerDialog(
+            title = "목표 집중 시간 설정",
+            initialValue = concentrationGoal,
+            onDismissRequest = {
+                setEditConcentrationGoalDialogVisible(false)
+            },
+            onConfirmation = { hour, minute, second ->
+                timerViewModel.setConcentrationGoal(hour, minute, second!!)
+                setEditConcentrationGoalDialogVisible(false)
+            }
+        )
+
     }
 }
 
@@ -110,11 +131,13 @@ fun TimerRootScreen() {
 fun PomodoroTimerScreen(
     concentrationTime: Time,
     breakTime: Time,
+    concentrationGoal: Time,
     onConcentrationTimeChange: (Int) -> Unit,
     onBreakTimeChange: (Int) -> Unit,
+    isEditTimerDialogVisible: Boolean,
     onConcentrationTimeClick: () -> Unit,
     onBreakTimeClick: () -> Unit,
-    isEditTimerDialogVisible: Boolean
+    onConcentrationGoalClick: () -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.Top,
@@ -125,32 +148,39 @@ fun PomodoroTimerScreen(
             breakTime = breakTime,
             onConcentrationTimeChange = onConcentrationTimeChange,
             onBreakTimeChange = onBreakTimeChange,
+            isEditTimerDialogVisible = isEditTimerDialogVisible,
             onConcentrationTimeClick = onConcentrationTimeClick,
             onBreakTimeClick = onBreakTimeClick,
-            isEditTimerDialogVisible = isEditTimerDialogVisible
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        TodayConcentrationInformation()
+        TodayConcentrationInformation(
+            concentrationGoal = concentrationGoal,
+            onConcentrationGoalClick = onConcentrationGoalClick
+        )
     }
 }
 
 @Composable
-fun TodayConcentrationInformation() {
+fun TodayConcentrationInformation(
+    concentrationGoal: Time,
+    onConcentrationGoalClick: () -> Unit
+) {
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CustomTimeText(
             title = stringResource(R.string.title_taget_concentration),
-            hour = 12,
-            minute = 0,
-            second = 0,
+            hour = concentrationGoal.hour,
+            minute = concentrationGoal.minute,
+            second = concentrationGoal.second!!,
             textColor = PomoroDoTheme.colorScheme.onBackground,
             spaceDp = 4.dp,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
-        ) { /*TODO*/ }
+            onClick = onConcentrationGoalClick
+        )
 
         Spacer(modifier = Modifier.height(14.dp))
 

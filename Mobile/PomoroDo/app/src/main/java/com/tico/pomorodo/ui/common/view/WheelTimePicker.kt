@@ -18,13 +18,16 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 fun WheelTimePicker(
     initialHour: Int,
     initialMinute: Int,
+    initialSecond: Int? = null,
     contentPadding: Dp,
     onHourChanged: (hour: Int) -> Unit,
-    onMinuteChanged: (minute: Int) -> Unit
+    onMinuteChanged: (minute: Int) -> Unit,
+    onSecondChanged: (second: Int) -> Unit
 ) {
     val pickerTextStyle = PomoroDoTheme.typography.laundryGothicRegular14
     val hour = rememberFWheelPickerState(initialIndex = initialHour)
     val minute = rememberFWheelPickerState(initialIndex = initialMinute)
+    val hourCount = if (initialSecond == null) 3 else 25
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(contentPadding),
@@ -32,7 +35,7 @@ fun WheelTimePicker(
     ) {
         FVerticalWheelPicker(
             modifier = Modifier.width(40.dp),
-            count = 3,
+            count = hourCount,
             state = hour,
             itemHeight = 42.dp,
             focus = {
@@ -77,5 +80,36 @@ fun WheelTimePicker(
                 onMinuteChanged(minute.currentIndex)
             }
         )
+
+        if (initialSecond != null) {
+            val second = rememberFWheelPickerState(initialIndex = initialSecond)
+
+            Text(
+                text = ":",
+                color = PomoroDoTheme.colorScheme.gray30,
+                style = pickerTextStyle
+            )
+
+            FVerticalWheelPicker(
+                modifier = Modifier.width(40.dp),
+                count = 60,
+                state = second,
+                itemHeight = 42.dp,
+                focus = {
+                    FWheelPickerFocusVertical(
+                        dividerColor = PomoroDoTheme.colorScheme.gray30,
+                        dividerSize = 1.5.dp
+                    )
+                },
+                content = { index ->
+                    Text(
+                        text = index.toString(),
+                        color = PomoroDoTheme.colorScheme.onBackground,
+                        style = pickerTextStyle
+                    )
+                    onSecondChanged(second.currentIndex)
+                }
+            )
+        }
     }
 }

@@ -25,9 +25,9 @@ fun CustomPomodoroTimer(
     breakTime: Time,
     onConcentrationTimeChange: (Int) -> Unit,
     onBreakTimeChange: (Int) -> Unit,
+    isEditTimerDialogVisible: Boolean,
     onConcentrationTimeClick: () -> Unit,
     onBreakTimeClick: () -> Unit,
-    isEditTimerDialogVisible: Boolean
 ) {
     val initialConcentrationTime = concentrationTime.hour * 60 + concentrationTime.minute
     val initialBreakTime = breakTime.hour * 60 + breakTime.minute

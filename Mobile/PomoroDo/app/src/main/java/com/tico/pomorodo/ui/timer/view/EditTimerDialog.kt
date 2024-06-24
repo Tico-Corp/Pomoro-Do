@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,10 +34,12 @@ fun EditTimerDialog(
     title: String,
     initialValue: Time,
     onDismissRequest: () -> Unit,
-    onConfirmation: (hour: Int, minute: Int) -> Unit,
+    onConfirmation: (hour: Int, minute: Int, second: Int?) -> Unit,
 ) {
     var currentHour by remember { mutableIntStateOf(initialValue.hour) }
     var currentMinute by remember { mutableIntStateOf(initialValue.minute) }
+    var currentSecond by remember { mutableStateOf(initialValue.second) }
+    val contentPadding = if (currentSecond == null) 20 else 12
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
@@ -62,9 +65,11 @@ fun EditTimerDialog(
             WheelTimePicker(
                 initialHour = initialValue.hour,
                 initialMinute = initialValue.minute,
-                contentPadding = 20.dp,
+                initialSecond = initialValue.second,
+                contentPadding = contentPadding.dp,
                 onHourChanged = { hour -> currentHour = hour },
                 onMinuteChanged = { minute -> currentMinute = minute },
+                onSecondChanged = { second -> currentSecond = second }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -93,7 +98,7 @@ fun EditTimerDialog(
                     horizontalPadding = 20.dp,
                     verticalPadding = 8.dp
                 ) {
-                    onConfirmation(currentHour, currentMinute)
+                    onConfirmation(currentHour, currentMinute, currentSecond)
                 }
             }
         }
