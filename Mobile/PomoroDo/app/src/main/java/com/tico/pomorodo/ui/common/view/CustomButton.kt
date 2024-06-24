@@ -92,9 +92,6 @@ fun CustomTextButton(
 ) {
     TextButton(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 0.dp),
         enabled = true,
         shape = RoundedCornerShape(10.dp),
         colors = ButtonColors(
@@ -127,9 +124,6 @@ fun CustomTextButton(
 ) {
     TextButton(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 0.dp),
         enabled = enable,
         shape = RoundedCornerShape(10.dp),
         colors = ButtonColors(
