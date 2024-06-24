@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.common.view
 
-import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -32,7 +30,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 fun ProfileVertical(
     modifier: Modifier = Modifier,
     size: Int,
-    defaultProfileUri: Uri? = null,
+    defaultProfileUri: String? = null,
     name: String,
     textStyle: TextStyle,
     isClicked: Boolean = false
@@ -86,7 +84,7 @@ fun ProfileVertical(
 fun ProfileHorizontal(
     modifier: Modifier = Modifier,
     size: Int,
-    defaultProfileUri: Uri? = null,
+    defaultProfileUri: String? = null,
     name: String,
     textStyle: TextStyle
 ) {
@@ -118,35 +116,5 @@ fun ProfileHorizontal(
             style = textStyle,
             color = PomoroDoTheme.colorScheme.onBackground
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileVerticalPreview(
-    defaultProfileUri: Uri? = null,
-    name: String = "나",
-    textStyle: TextStyle = PomoroDoTheme.typography.laundryGothicRegular14
-) {
-    PomoroDoTheme() {
-        ProfileVertical(
-            size = 50,
-            defaultProfileUri = null,
-            name = name,
-            textStyle = textStyle,
-            isClicked = true
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileHorizontalPreview(
-    defaultProfileUri: Uri? = null,
-    name: String = "",
-    textStyle: TextStyle = PomoroDoTheme.typography.laundryGothicRegular14
-) {
-    PomoroDoTheme() {
-        ProfileHorizontal(size = 36, defaultProfileUri = null, name = name, textStyle = textStyle)
     }
 }
