@@ -2,9 +2,10 @@ package com.tico.pomorodo.ui.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.local.datasource.DataSource
+import com.tico.pomorodo.data.local.entity.Category
+import com.tico.pomorodo.data.local.entity.InviteCategory
+import com.tico.pomorodo.data.local.entity.TodoData
 import com.tico.pomorodo.data.local.entity.User
-import com.tico.pomorodo.ui.todo.view.Category
-import com.tico.pomorodo.ui.todo.view.TodoData
 import com.tico.pomorodo.ui.todo.view.TodoState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +23,10 @@ class TodoViewModel() : ViewModel() {
     private var _categoryList = MutableStateFlow(DataSource.todoList)
     val categoryList: StateFlow<List<Category>>
         get() = _categoryList.asStateFlow()
+
+    private var _inviteGroupCategoryList = MutableStateFlow(DataSource.inviteList)
+    val inviteGroupCategoryList: StateFlow<List<InviteCategory>>
+        get() = _inviteGroupCategoryList.asStateFlow()
 
     private var _todoMakeVisible = MutableStateFlow(false)
     val todoMakeVisible: StateFlow<Boolean>
@@ -55,6 +60,7 @@ class TodoViewModel() : ViewModel() {
         _inputText.value = _inputText.value.trim()
         if (validateTodoInput(inputText.value)) {
             val newTodoData = TodoData(
+                id = "4",
                 name = inputText.value,
                 state = TodoState.UNCHECKED,
                 completeGroupNumber = 0
