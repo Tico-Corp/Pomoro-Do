@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.local.entity.TodoData
 import com.tico.pomorodo.ui.common.view.CustomDropdownMenuItem
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.DropdownMenuNoPaddingVertical
@@ -89,11 +90,11 @@ fun CategoryTag(
     title: String,
     groupNumber: Int,
     isAddButton: Boolean = true,
-    onAddClicked: () -> Unit
+    onAddClicked: (() -> Unit)? = null
 ) {
     Row(
         modifier = Modifier
-            .clickable { onAddClicked() }
+            .clickable { onAddClicked?.invoke() }
             .background(
                 PomoroDoTheme.colorScheme.secondaryContainer,
                 RoundedCornerShape(5.dp)
