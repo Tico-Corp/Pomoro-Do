@@ -255,6 +255,7 @@ fun SimpleNarrowTextButton(
     enabled: Boolean = true,
     borderColor: Color = Color.Unspecified,
     onClicked: () -> Unit,
+    paddingValues: PaddingValues
 ) {
     Box(
         modifier = modifier
@@ -262,9 +263,9 @@ fun SimpleNarrowTextButton(
             .border(1.dp, borderColor, RoundedCornerShape(10.dp))
             .background(
                 if (enabled) containColor else disabledContainerColor,
-                RoundedCornerShape(10.dp)
+                RoundedCornerShape(5.dp)
             )
-            .padding(vertical = 8.dp, horizontal = 20.dp)
+            .padding(paddingValues)
     ) {
         SimpleText(
             modifier = Modifier,
@@ -323,7 +324,8 @@ fun SimpleAlertDialog(
                         containColor = Color.Unspecified,
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         textColor = PomoroDoTheme.colorScheme.onBackground,
-                        onClicked = { onDismissRequest(false) }
+                        onClicked = { onDismissRequest(false) },
+                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp)
                     )
                     SimpleNarrowTextButton(
                         modifier = Modifier.wrapContentWidth(),
@@ -333,7 +335,8 @@ fun SimpleAlertDialog(
                         textColor = Color.White,
                         onClicked = onConfirmation,
                         enabled = enabled,
-                        disabledContainerColor = PomoroDoTheme.colorScheme.dialogGray70
+                        disabledContainerColor = PomoroDoTheme.colorScheme.dialogGray70,
+                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp)
                     )
                 }
             }
