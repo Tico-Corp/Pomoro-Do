@@ -74,7 +74,7 @@ dependencies {
     // url 을 사용한 이미지 로딩을 위한 라이브러리
     implementation libs.glide.compose
 
-    implementation libs.wheelpickercompose
+    implementation libs.compose.wheel.picker
 }
 
 // Allow references to generated code
