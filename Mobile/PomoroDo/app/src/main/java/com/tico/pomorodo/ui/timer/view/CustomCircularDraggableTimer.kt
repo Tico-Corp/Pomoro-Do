@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -53,6 +54,7 @@ fun CustomCircularDraggableTimer(
     innerInitialValue: Int,
     onOuterPositionChange: (Int) -> Unit,
     onInnerPositionChange: (Int) -> Unit,
+    isEditTimerDialogVisible: Boolean
 ) {
     val context = LocalContext.current
     val laundryGothicTypeface = remember {
@@ -100,6 +102,13 @@ fun CustomCircularDraggableTimer(
 
     var isOuterCircle by remember {
         mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = isEditTimerDialogVisible) {
+        outerPositionValue = outerInitialValue
+        outerOldPositionValue = outerPositionValue
+        innerPositionValue = innerInitialValue
+        innerOldPositionValue = innerPositionValue
     }
 
     Box(modifier = modifier, contentAlignment = Alignment.Center) {

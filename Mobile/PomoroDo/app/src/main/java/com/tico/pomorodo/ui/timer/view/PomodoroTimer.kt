@@ -17,14 +17,21 @@ import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import com.tico.pomorodo.ui.timer.viewmodel.Time
 
 @Composable
 fun CustomPomodoroTimer(
-    concentrationTime: Int,
-    breakTime: Int,
+    concentrationTime: Time,
+    breakTime: Time,
     onConcentrationTimeChange: (Int) -> Unit,
     onBreakTimeChange: (Int) -> Unit,
+    onConcentrationTimeClick: () -> Unit,
+    onBreakTimeClick: () -> Unit,
+    isEditTimerDialogVisible: Boolean
 ) {
+    val initialConcentrationTime = concentrationTime.hour * 60 + concentrationTime.minute
+    val initialBreakTime = breakTime.hour * 60 + breakTime.minute
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -33,7 +40,9 @@ fun CustomPomodoroTimer(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
             concentrationColor = PomoroDoTheme.colorScheme.primaryContainer,
-            breakColor = PomoroDoTheme.colorScheme.secondaryContainer
+            breakColor = PomoroDoTheme.colorScheme.secondaryContainer,
+            onConcentrationTimeClick = onConcentrationTimeClick,
+            onBreakTimeClick = onBreakTimeClick
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -47,20 +56,23 @@ fun CustomPomodoroTimer(
             backgroundColor = PomoroDoTheme.colorScheme.background,
             indicatorColor = PomoroDoTheme.colorScheme.onBackground,
             outerCircleRadius = 125,
-            outerInitialValue = concentrationTime,
-            innerInitialValue = breakTime,
-            onOuterPositionChange = { position -> onConcentrationTimeChange(position) },
-            onInnerPositionChange = { position -> onBreakTimeChange(position) }
+            outerInitialValue = initialConcentrationTime,
+            innerInitialValue = initialBreakTime,
+            onOuterPositionChange = onConcentrationTimeChange,
+            onInnerPositionChange = onBreakTimeChange,
+            isEditTimerDialogVisible = isEditTimerDialogVisible
         )
     }
 }
 
 @Composable
 fun EditableTextTimer(
-    concentrationTime: Int,
-    breakTime: Int,
+    concentrationTime: Time,
+    breakTime: Time,
     concentrationColor: Color,
-    breakColor: Color
+    breakColor: Color,
+    onConcentrationTimeClick: () -> Unit,
+    onBreakTimeClick: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
@@ -68,24 +80,26 @@ fun EditableTextTimer(
     ) {
         CustomTimeText(
             title = stringResource(R.string.title_concentration_time),
-            hour = concentrationTime / 60,
-            minute = concentrationTime % 60,
+            hour = concentrationTime.hour,
+            minute = concentrationTime.minute,
             textColor = concentrationColor,
             spaceDp = 10.dp,
             titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
-            contentTextStyle = PomoroDoTheme.typography.laundryGothicRegular16
-        ) { /*TODO*/ }
+            contentTextStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+            onClick = onConcentrationTimeClick
+        )
 
-        Spacer(modifier = Modifier.width(20.dp))
+        Spacer(modifier = Modifier.width(30.dp))
 
         CustomTimeText(
             title = stringResource(R.string.title_break_time),
-            hour = breakTime / 60,
-            minute = breakTime % 60,
+            hour = breakTime.hour,
+            minute = breakTime.minute,
             textColor = breakColor,
             spaceDp = 10.dp,
             titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
-            contentTextStyle = PomoroDoTheme.typography.laundryGothicRegular16
-        ) { /*TODO*/ }
+            contentTextStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+            onClick = onBreakTimeClick
+        )
     }
 }
