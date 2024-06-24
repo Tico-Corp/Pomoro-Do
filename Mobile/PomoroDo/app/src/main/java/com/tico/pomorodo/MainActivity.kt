@@ -14,7 +14,9 @@ import com.tico.pomorodo.navigation.TIMER_ROUTE
 import com.tico.pomorodo.ui.AppState
 import com.tico.pomorodo.ui.common.view.BottomBar
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
