@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.iconpack
+package com.tico.pomorodo.ui.iconpack.lighticonpack
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
@@ -10,17 +10,17 @@ import androidx.compose.ui.graphics.vector.ImageVector.Builder
 import androidx.compose.ui.graphics.vector.group
 import androidx.compose.ui.graphics.vector.path
 import androidx.compose.ui.unit.dp
-import com.tico.pomorodo.ui.theme.IconPack
+import com.tico.pomorodo.ui.theme.LightIconPack
 
-val IconPack.IcGroupSelectedUnchecked: ImageVector
+val LightIconPack.IcGroupSelectedUncheckedLight: ImageVector
     get() {
-        if (_icGroupSelectedUnchecked != null) {
-            return _icGroupSelectedUnchecked!!
+        if (_icGroupSelectedUncheckedLight != null) {
+            return _icGroupSelectedUncheckedLight!!
         }
-        _icGroupSelectedUnchecked = Builder(
-            name = "IcGroupSelectedUnchecked", defaultWidth =
-            20.0.dp, defaultHeight = 20.0.dp, viewportWidth = 20.0f, viewportHeight =
-            20.0f
+        _icGroupSelectedUncheckedLight = Builder(
+            name = "IcGroupSelectedUncheckedLight",
+            defaultWidth = 20.0.dp, defaultHeight = 20.0.dp, viewportWidth = 20.0f,
+            viewportHeight = 20.0f
         ).apply {
             group {
                 path(
@@ -39,7 +39,7 @@ val IconPack.IcGroupSelectedUnchecked: ImageVector
             }
         }
             .build()
-        return _icGroupSelectedUnchecked!!
+        return _icGroupSelectedUncheckedLight!!
     }
 
-private var _icGroupSelectedUnchecked: ImageVector? = null
+private var _icGroupSelectedUncheckedLight: ImageVector? = null
