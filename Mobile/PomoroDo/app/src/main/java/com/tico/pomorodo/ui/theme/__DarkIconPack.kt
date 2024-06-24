@@ -1,7 +1,13 @@
 package com.tico.pomorodo.ui.theme
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.tico.pomorodo.ui.iconpack.darkiconpack.BgCircularTimerDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcAddCategoryDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcAddTodoDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcArrowBackDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcArrowFrontDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcBottomMyInfoDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcBottomTimerDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcBottomTodoDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcCalendarDateGreenDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcCalendarDateOrangeDark
@@ -20,8 +26,8 @@ object DarkIconPack {
         mapOf(
             IC_BOTTOM_MY_INFO to IcBottomMyInfoDark,
             IC_BOTTOM_TODO to IcBottomTodoDark,
-            BG_CIRCULAR_TIMER to BgCircularTimerDark,
             IC_BOTTOM_TIMER to IcBottomTimerDark,
+            BG_CIRCULAR_TIMER to BgCircularTimerDark,
             IC_ARROW_FRONT to IcArrowFrontDark,
             IC_ARROW_BACK to IcArrowBackDark,
             IC_CALENDAR_DROP_DOWN to IcCalendarDropDownDark,

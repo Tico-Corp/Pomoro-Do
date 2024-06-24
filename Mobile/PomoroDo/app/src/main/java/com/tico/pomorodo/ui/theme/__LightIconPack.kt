@@ -1,6 +1,11 @@
 package com.tico.pomorodo.ui.theme
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.tico.pomorodo.ui.iconpack.lighticonpack.BgCircularTimerLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcAddCategoryLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcAddTodoLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcArrowBackLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcArrowFrontLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcBottomMyInfoLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcBottomTimerLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcBottomTodoLight
