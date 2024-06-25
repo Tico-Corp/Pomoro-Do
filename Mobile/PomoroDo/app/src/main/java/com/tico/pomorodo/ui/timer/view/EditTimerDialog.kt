@@ -2,6 +2,7 @@ package com.tico.pomorodo.ui.timer.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.WheelTimePicker
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.timer.viewmodel.Time
 
 @Composable
 fun EditTimerDialog(
@@ -94,21 +95,18 @@ fun EditTimerDialog(
             )
 
 
-            if (!isTimeValid) {
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = String.format(
-                        stringResource(R.string.content_error_time_limit),
-                        timeLimit
-                    ),
-                    color = PomoroDoTheme.colorScheme.error,
-                    textAlign = TextAlign.Center,
-                    style = PomoroDoTheme.typography.laundryGothicRegular12
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-            } else {
-                Spacer(modifier = Modifier.height(32.dp))
+            Box(modifier = Modifier.height(32.dp), contentAlignment = Alignment.Center) {
+                if (!isTimeValid) {
+                    Text(
+                        text = String.format(
+                            stringResource(R.string.content_error_time_limit),
+                            timeLimit
+                        ),
+                        color = PomoroDoTheme.colorScheme.error,
+                        textAlign = TextAlign.Center,
+                        style = PomoroDoTheme.typography.laundryGothicRegular12
+                    )
+                }
             }
 
             Row(
@@ -117,7 +115,7 @@ fun EditTimerDialog(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 CustomTextButton(
-                    text = "취소",
+                    text = stringResource(id = R.string.content_cancel),
                     backgroundColor = Color.Unspecified,
                     textColor = PomoroDoTheme.colorScheme.onBackground,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
@@ -128,7 +126,7 @@ fun EditTimerDialog(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 CustomTextButton(
-                    text = "확인",
+                    text = stringResource(id = R.string.content_ok),
                     enable = isTimeValid,
                     containerColor = PomoroDoTheme.colorScheme.primaryContainer,
                     contentColor = PomoroDoTheme.colorScheme.background,

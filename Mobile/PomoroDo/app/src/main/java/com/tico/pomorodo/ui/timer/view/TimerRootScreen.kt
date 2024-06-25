@@ -20,10 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.timer.viewmodel.Time
 import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 
 @Preview
@@ -113,7 +113,7 @@ fun TimerRootScreen() {
 
     if (editConcentrationGoalDialogVisible) {
         EditTimerDialog(
-            title = "목표 집중 시간 설정",
+            title = stringResource(R.string.title_concentration_goal_dialog),
             initialValue = concentrationGoal,
             onDismissRequest = {
                 setEditConcentrationGoalDialogVisible(false)

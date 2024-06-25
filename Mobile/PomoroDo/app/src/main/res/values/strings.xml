@@ -27,6 +27,7 @@
     <string name="title_dialog_edit_concentration_time">집중 시간 설정</string>
     <string name="title_dialog_edit_break_time">휴식 시간 설정</string>
     <string name="content_error_time_limit">설정 가능한 최대 시간(%s시간)을 초과했습니다.</string>
+    <string name="title_concentration_goal_dialog">목표 집중 시간 설정</string>
     // time format
     <string name="format_hour_minute">%02d:%02d</string>
     <string name="format_hour_minute_second">%02d:%02d:%02d</string>
