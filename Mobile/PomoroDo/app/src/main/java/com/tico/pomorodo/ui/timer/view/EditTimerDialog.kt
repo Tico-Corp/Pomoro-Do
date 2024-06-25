@@ -1,6 +1,7 @@
 package com.tico.pomorodo.ui.timer.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,6 +47,9 @@ fun EditTimerDialog(
     val contentPadding = if (currentSecond == null) 20 else 12
     var isTimeValid by remember { mutableStateOf(true) }
     val timeLimit = if (currentSecond == null) 2 else 24
+    val buttonTextColor =
+        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.onBackground
+        else PomoroDoTheme.colorScheme.onPrimary
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
@@ -56,7 +60,7 @@ fun EditTimerDialog(
                 .padding(horizontal = 40.dp)
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(15.dp))
-                .background(color = PomoroDoTheme.colorScheme.background)
+                .background(color = PomoroDoTheme.colorScheme.dialogSurface)
                 .padding(horizontal = 30.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -129,9 +133,9 @@ fun EditTimerDialog(
                     text = stringResource(id = R.string.content_ok),
                     enable = isTimeValid,
                     containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-                    contentColor = PomoroDoTheme.colorScheme.background,
+                    contentColor = buttonTextColor,
                     disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
-                    disabledContentColor = PomoroDoTheme.colorScheme.background,
+                    disabledContentColor = buttonTextColor,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                     horizontalPadding = 20.dp,
                     verticalPadding = 8.dp

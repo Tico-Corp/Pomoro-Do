@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.timer.view
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,9 @@ fun TimerRootScreen() {
     val (editConcentrationGoalDialogVisible, setEditConcentrationGoalDialogVisible) = remember {
         mutableStateOf(false)
     }
+    val buttonTextColor =
+        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.onBackground
+        else PomoroDoTheme.colorScheme.onPrimary
 
     Column(
         modifier = Modifier
@@ -77,7 +81,7 @@ fun TimerRootScreen() {
         CustomTextButton(
             text = stringResource(R.string.content_button_start),
             backgroundColor = PomoroDoTheme.colorScheme.primaryContainer,
-            textColor = PomoroDoTheme.colorScheme.background,
+            textColor = buttonTextColor,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             verticalPadding = 12.dp
         ) { /*TODO*/ }
