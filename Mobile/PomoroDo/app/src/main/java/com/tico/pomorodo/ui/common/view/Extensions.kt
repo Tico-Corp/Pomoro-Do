@@ -4,8 +4,8 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.input.pointer.pointerInput
-import com.tico.pomorodo.data.local.entity.SelectedUser
-import com.tico.pomorodo.data.local.entity.User
+import com.tico.pomorodo.data.model.SelectedUser
+import com.tico.pomorodo.data.model.User
 
 fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit = {}): Modifier {
     return this.pointerInput(Unit) {

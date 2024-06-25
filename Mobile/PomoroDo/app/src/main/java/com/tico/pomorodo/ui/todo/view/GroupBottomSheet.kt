@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.entity.User
+import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.common.view.ProfileHorizontal
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme

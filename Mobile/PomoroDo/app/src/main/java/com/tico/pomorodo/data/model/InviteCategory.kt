@@ -1,4 +1,4 @@
-package com.tico.pomorodo.data.local.entity
+package com.tico.pomorodo.data.model
 
 data class InviteCategory(
     val id: String,

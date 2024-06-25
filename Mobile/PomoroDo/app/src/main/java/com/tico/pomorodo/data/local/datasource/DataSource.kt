@@ -1,9 +1,9 @@
 package com.tico.pomorodo.data.local.datasource
 
-import com.tico.pomorodo.data.local.entity.Category
-import com.tico.pomorodo.data.local.entity.InviteCategory
-import com.tico.pomorodo.data.local.entity.TodoData
-import com.tico.pomorodo.data.local.entity.User
+import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.data.model.TodoData
+import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.todo.view.TodoState
 
 object DataSource {

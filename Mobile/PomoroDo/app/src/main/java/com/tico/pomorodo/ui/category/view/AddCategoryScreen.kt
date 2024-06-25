@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.local.datasource.DataSource
-import com.tico.pomorodo.data.local.entity.OpenSettings
-import com.tico.pomorodo.data.local.entity.SelectedUser
+import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton

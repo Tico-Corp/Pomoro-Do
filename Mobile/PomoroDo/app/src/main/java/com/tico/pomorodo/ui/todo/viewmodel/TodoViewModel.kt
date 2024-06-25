@@ -2,10 +2,10 @@ package com.tico.pomorodo.ui.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.local.datasource.DataSource
-import com.tico.pomorodo.data.local.entity.Category
-import com.tico.pomorodo.data.local.entity.InviteCategory
-import com.tico.pomorodo.data.local.entity.TodoData
-import com.tico.pomorodo.data.local.entity.User
+import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.data.model.TodoData
+import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.todo.view.TodoState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

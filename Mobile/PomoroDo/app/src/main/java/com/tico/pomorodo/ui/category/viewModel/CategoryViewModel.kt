@@ -2,9 +2,9 @@ package com.tico.pomorodo.ui.category.viewModel
 
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.local.datasource.DataSource
-import com.tico.pomorodo.data.local.entity.OpenSettings
-import com.tico.pomorodo.data.local.entity.SelectedUser
-import com.tico.pomorodo.data.local.entity.User
+import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.model.SelectedUser
+import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.common.view.toUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

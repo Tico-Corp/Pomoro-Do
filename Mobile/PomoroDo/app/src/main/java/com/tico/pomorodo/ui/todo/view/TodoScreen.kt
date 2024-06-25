@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.data.local.datasource.DataSource
-import com.tico.pomorodo.data.local.entity.Category
-import com.tico.pomorodo.data.local.entity.User
+import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.AppState
 import com.tico.pomorodo.ui.common.view.BottomBar
 import com.tico.pomorodo.ui.common.view.addFocusCleaner

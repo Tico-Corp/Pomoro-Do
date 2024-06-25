@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.entity.TodoData
+import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.ui.common.view.CustomDropdownMenuItem
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.DropdownMenuNoPaddingVertical

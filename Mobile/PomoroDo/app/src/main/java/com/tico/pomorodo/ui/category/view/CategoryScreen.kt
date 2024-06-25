@@ -30,8 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.entity.Category
-import com.tico.pomorodo.data.local.entity.InviteCategory
+import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.ui.common.view.SimpleNarrowTextButton
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY

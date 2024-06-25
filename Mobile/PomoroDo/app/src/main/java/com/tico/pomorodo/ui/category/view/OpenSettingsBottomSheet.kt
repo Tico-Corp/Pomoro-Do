@@ -27,7 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.entity.OpenSettings
+import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText

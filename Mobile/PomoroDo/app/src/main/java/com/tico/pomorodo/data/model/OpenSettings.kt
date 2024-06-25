@@ -1,4 +1,4 @@
-package com.tico.pomorodo.data.local.entity
+package com.tico.pomorodo.data.model
 
 import androidx.annotation.StringRes
 import com.tico.pomorodo.R
