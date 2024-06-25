@@ -60,7 +60,7 @@
     <string name="content_ic_more_info">더보기 아이콘</string>
     <string name="content_category_add">카테고리 추가</string>
     <string name="content_category_manage">카테고리 관리</string>
-    <string name="content_ic_add_category">카테고리 추가 아이콘</string>
+    <string name="content_ic_ok">확인 아이콘</string>
     <string name="content_calendar_date_white">하양</string>
     <string name="content_calendar_date_green">초록</string>
     <string name="content_calendar_date_yellow">노랑</string>
@@ -70,4 +70,56 @@
     <string name="content_me">나</string>
     <string name="content_todo_more_info_edit">수정</string>
     <string name="content_todo_more_info_delete">삭제</string>
+
+    // category
+    <string name="content_category_normal">일반</string>
+    <string name="content_category_group">그룹</string>
+    <string name="content_category_invited_group">초대받은 그룹</string>
+    <string name="content_accept">수락</string>
+    <string name="content_reject">거절</string>
+    <string name="title_category">카테고리</string>
+    <string name="title_add_category">카테고리 추가</string>
+    <string name="content_ic_add_category">카테고리 추가 아이콘</string>
+    <string name="title_info_category">카테고리 정보/설정</string>
+    <string name="content_input_category_title">카테고리 제목 입력</string>
+    <string name="content_ic_arrow_back">뒤로가기</string>
+    <string name="title_type">유형</string>
+    <string name="title_open_settings">공개설정</string>
+    <string name="content_full_open">전체공개</string>
+    <string name="content_follower_open">팔로워 공개</string>
+    <string name="content_only_me_open">나만보기</string>
+    <string name="content_only_group_message">그룹 카테고리는 그룹원들에게만 공개됩니다.</string>
+    <string name="content_group_open">그룹공개</string>
+    <string name="content_ic_drop_down">하단 창 열기 아이콘</string>
+    <string name="content_ic_drop_down_disable">비활성화된 아이콘</string>
+    <string name="content_group_member">그룹원</string>
+    <string name="content_group_member_number">%d명</string>
+    <string name="content_color">색상</string>
+    <string name="content_group_out">그룹 나가기</string>
+    <string name="title_group_out">그룹 카테고리 나가기</string>
+    <string name="title_group_member_choose">그룹원 선택</string>
+    <string name="content_ic_selected_group_member_cancel">그룹원 선택 취소 아이콘</string>
+    <string name="content_search_group_member">닉네임 검색</string>
+    <string name="content_ic_group_selected_checked">선택</string>
+    <string name="content_ic_group_selected_unchecked">미선택</string>
+    <string name="title_group_reader">그룹장</string>
+    <string name="title_check_group_member">그룹원(%d)</string>
+    <string name="title_group_delete">그룹 삭제</string>
+    <string name="content_no_search_message">검색 결과가 없습니다.</string>
+    <string name="content_ic_no_search">검색 결과 없음 아이콘</string>
+    <string name="content_ic_all_clean">모두 지우기</string>
+    <string name="content_all_delete">모두 삭제하기</string>
+    <string name="content_incompleted_todo_delete">미완료 할 일만 삭제하기</string>
+    <string name="content_no_delete">삭제하지 않기</string>
+    <string name="content_group_out_message">“%s" 그룹에서 나갑니다.\n기존 할 일을 삭제하시겠습니까?</string>
+    <string name="content_group_delete_second_message">삭제하려는 그룹의 이름을 입력하세요.\n“%s”</string>
+    <string name="content_group_delete_placehold">그룹 이름을 따라 입력하세요.</string>
+    <string name="content_group_delete_first_message">그룹을 삭제하시겠습니까?\n모든 그룹원들의 할 일이 모두 삭제됩니다.</string>
+    <string name="content_do_delete">삭제하기</string>
+
+    // common
+    <string name="content_next">다음</string>
+    <string name="content_cancel">취소</string>
+    <string name="content_ok">확인</string>
+    <string name="content_delete">삭제</string>
 </resources>
