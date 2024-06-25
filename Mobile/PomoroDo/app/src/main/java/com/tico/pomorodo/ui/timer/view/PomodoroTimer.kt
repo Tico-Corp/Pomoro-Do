@@ -1,7 +1,6 @@
 package com.tico.pomorodo.ui.timer.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,12 +32,6 @@ fun CustomPomodoroTimer(
     val initialConcentrationTime = concentrationTime.hour * 60 + concentrationTime.minute
     val initialBreakTime = breakTime.hour * 60 + breakTime.minute
     val concentrationColor = PomoroDoTheme.colorScheme.primaryContainer
-    val breakColor =
-        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.secondary
-        else PomoroDoTheme.colorScheme.secondaryContainer
-    val backgroundColor =
-        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.gray70
-        else PomoroDoTheme.colorScheme.onPrimary
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -48,7 +41,7 @@ fun CustomPomodoroTimer(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
             concentrationColor = concentrationColor,
-            breakColor = breakColor,
+            breakColor = PomoroDoTheme.colorScheme.breakTimeColor,
             onConcentrationTimeClick = onConcentrationTimeClick,
             onBreakTimeClick = onBreakTimeClick
         )
@@ -60,8 +53,8 @@ fun CustomPomodoroTimer(
                 .size(300.dp)
                 .background(PomoroDoTheme.colorScheme.background),
             outerTimerColor = concentrationColor,
-            innerTimerColor = breakColor,
-            backgroundColor = backgroundColor,
+            innerTimerColor = PomoroDoTheme.colorScheme.breakTimeColor,
+            backgroundColor = PomoroDoTheme.colorScheme.timerBackgroundColor,
             indicatorColor = PomoroDoTheme.colorScheme.onBackground,
             outerCircleRadius = 125,
             outerInitialValue = initialConcentrationTime,

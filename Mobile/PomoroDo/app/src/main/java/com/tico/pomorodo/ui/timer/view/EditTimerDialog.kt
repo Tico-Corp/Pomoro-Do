@@ -47,9 +47,6 @@ fun EditTimerDialog(
     val contentPadding = if (currentSecond == null) 20 else 12
     var isTimeValid by remember { mutableStateOf(true) }
     val timeLimit = if (currentSecond == null) 2 else 24
-    val buttonTextColor =
-        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.onBackground
-        else PomoroDoTheme.colorScheme.onPrimary
 
     Dialog(
         onDismissRequest = { onDismissRequest() },
@@ -133,9 +130,9 @@ fun EditTimerDialog(
                     text = stringResource(id = R.string.content_ok),
                     enable = isTimeValid,
                     containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-                    contentColor = buttonTextColor,
+                    contentColor = Color.White,
                     disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
-                    disabledContentColor = buttonTextColor,
+                    disabledContentColor = Color.White,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                     horizontalPadding = 20.dp,
                     verticalPadding = 8.dp
