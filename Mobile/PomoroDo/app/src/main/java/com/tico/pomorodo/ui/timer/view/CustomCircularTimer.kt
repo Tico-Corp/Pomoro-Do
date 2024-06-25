@@ -203,7 +203,7 @@ fun CustomCircularDraggableTimer(
             drawArc(
                 color = innerTimerColor,
                 startAngle = -90f,
-                sweepAngle = (360f / maxValue) * innerPositionValue.toFloat(),
+                sweepAngle = (360f / (maxValue - minValue)) * innerPositionValue.toFloat(),
                 style = Fill,
                 useCenter = true,
                 size = Size(
@@ -270,6 +270,58 @@ fun CustomCircularDraggableTimer(
                     }
                 }
             }
+        }
+
+        Icon(
+            imageVector = IconPack.IcTimerPin,
+            contentDescription = stringResource(R.string.content_ic_timer_pin),
+            tint = Color.Unspecified
+        )
+    }
+}
+
+@Composable
+fun CustomCircularTimer(
+    modifier: Modifier = Modifier,
+    timerColor: Color,
+    backgroundColor: Color,
+    circleRadius: Int,
+    minValue: Int = 0,
+    maxValue: Int = 7200,
+    initialValue: Int,
+) {
+    var circleCenter by remember {
+        mutableStateOf(Offset.Zero)
+    }
+
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val width = size.width
+            val height = size.height
+            val outerCircleRadiusToPx = circleRadius.dp.toPx()
+            circleCenter = Offset(x = width / 2f, y = height / 2f)
+
+            drawCircle(
+                color = backgroundColor,
+                radius = outerCircleRadiusToPx,
+                center = circleCenter,
+            )
+
+            drawArc(
+                color = timerColor,
+                startAngle = -90f,
+                sweepAngle = (360f / (maxValue - minValue)) * initialValue.toFloat(),
+                style = Fill,
+                useCenter = true,
+                size = Size(
+                    width = outerCircleRadiusToPx * 2f,
+                    height = outerCircleRadiusToPx * 2f
+                ),
+                topLeft = Offset(
+                    x = (width - outerCircleRadiusToPx * 2f) / 2f,
+                    y = (height - outerCircleRadiusToPx * 2f) / 2f
+                )
+            )
         }
 
         Icon(

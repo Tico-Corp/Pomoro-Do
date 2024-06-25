@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.timer.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -49,9 +48,7 @@ fun CustomPomodoroTimer(
         Spacer(modifier = Modifier.height(20.dp))
 
         CustomCircularDraggableTimer(
-            modifier = Modifier
-                .size(300.dp)
-                .background(PomoroDoTheme.colorScheme.background),
+            modifier = Modifier.size(300.dp),
             outerTimerColor = concentrationColor,
             innerTimerColor = PomoroDoTheme.colorScheme.breakTimeColor,
             backgroundColor = PomoroDoTheme.colorScheme.timerBackgroundColor,
