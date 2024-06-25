@@ -32,9 +32,9 @@ import com.tico.pomorodo.data.model.DayOfWeeks
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.iconpack.IcAllCheckTodoState
-import com.tico.pomorodo.ui.iconpack.IcCalendarChecked
-import com.tico.pomorodo.ui.iconpack.IcFavoriteFilled
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcCalendarChecked
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcAllCheckTodoState
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
 import com.tico.pomorodo.ui.theme.IC_ARROW_BACK
 import com.tico.pomorodo.ui.theme.IC_ARROW_FRONT
 import com.tico.pomorodo.ui.theme.IC_CALENDAR_DATE_RED

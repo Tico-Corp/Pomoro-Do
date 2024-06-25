@@ -31,8 +31,8 @@ import com.tico.pomorodo.ui.common.view.DropdownMenuNoPaddingVertical
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.iconpack.IcFavoriteFilled
-import com.tico.pomorodo.ui.iconpack.IcGroup
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcGroup
 import com.tico.pomorodo.ui.theme.IC_ADD_TODO
 import com.tico.pomorodo.ui.theme.IC_TODO_CHECKED
 import com.tico.pomorodo.ui.theme.IC_TODO_GOING

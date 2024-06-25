@@ -53,8 +53,8 @@ import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.common.view.toSelectedUser
-import com.tico.pomorodo.ui.iconpack.IcGroupSelectedChecked
-import com.tico.pomorodo.ui.iconpack.IcNoSearch
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcGroupSelectedChecked
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcNoSearch
 import com.tico.pomorodo.ui.theme.IC_ALL_CLEAN
 import com.tico.pomorodo.ui.theme.IC_GROUP_SELECTED_UNCHECKED
 import com.tico.pomorodo.ui.theme.IC_OK

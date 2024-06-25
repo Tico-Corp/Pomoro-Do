@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.iconpack
+package com.tico.pomorodo.ui.iconpack.commonIconPack
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathFillType.Companion.EvenOdd

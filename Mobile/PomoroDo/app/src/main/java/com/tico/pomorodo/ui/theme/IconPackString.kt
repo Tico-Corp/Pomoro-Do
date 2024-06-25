@@ -4,6 +4,8 @@ const val IC_BOTTOM_TIMER = "ic_bottom_timer"
 const val IC_BOTTOM_TODO = "ic_bottom_todo"
 const val IC_BOTTOM_MY_INFO = "ic_bottom_my_info"
 
+const val BG_CIRCULAR_TIMER = "bg_circular_timer"
+
 const val IC_ARROW_FRONT = "ic_arrow_front"
 const val IC_ARROW_BACK = "ic_arrow_back"
 const val IC_CALENDAR_DROP_DOWN = "ic_calendar_drop_down"

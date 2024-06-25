@@ -4,12 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.tico.pomorodo.ui.splash.view.SplashScreen
+import androidx.navigation.compose.rememberNavController
+import com.tico.pomorodo.navigation.AppNavHost
+import com.tico.pomorodo.navigation.TIMER_ROUTE
+import com.tico.pomorodo.ui.AppState
+import com.tico.pomorodo.ui.common.view.BottomBar
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,9 +26,21 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = PomoroDoTheme.colorScheme.background
                 ) {
-                    SplashScreen()
+                    val navController = rememberNavController()
+                    val appState = AppState(navController)
+
+                    Scaffold(
+                        bottomBar = { BottomBar(appState) },
+                        containerColor = PomoroDoTheme.colorScheme.background
+                    ) { innerPadding ->
+                        AppNavHost(
+                            appState = appState,
+                            Modifier.padding(innerPadding),
+                            startDestination = TIMER_ROUTE
+                        )
+                    }
                 }
             }
         }

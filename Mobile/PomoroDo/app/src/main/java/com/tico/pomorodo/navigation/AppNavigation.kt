@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.tico.pomorodo.ui.MyInfoScreen
-import com.tico.pomorodo.ui.TimerScreen
 import com.tico.pomorodo.ui.TodoScreen
+import com.tico.pomorodo.ui.timer.view.TimerRootScreen
 
 const val TIMER_ROUTE = "timer_route"
 const val TODO_ROUTE = "todo_route"
@@ -20,7 +20,7 @@ fun NavGraphBuilder.timerScreen() {
     composable(
         route = TIMER_ROUTE
     ) {
-        TimerScreen()
+        TimerRootScreen()
     }
 }
 

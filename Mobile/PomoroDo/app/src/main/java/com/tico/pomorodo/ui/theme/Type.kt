@@ -11,8 +11,8 @@ import androidx.compose.ui.unit.sp
 import com.tico.pomorodo.R
 
 val laundryGothic = FontFamily(
-    Font(R.font.laundrygothic_bold, FontWeight.Bold, FontStyle.Normal),
-    Font(R.font.laundrygothic_regular, FontWeight.Normal, FontStyle.Normal)
+    Font(R.font.laundry_gothic_bold, FontWeight.Bold, FontStyle.Normal),
+    Font(R.font.laundry_gothic_regular, FontWeight.Normal, FontStyle.Normal)
 )
 
 val roboto = FontFamily(
