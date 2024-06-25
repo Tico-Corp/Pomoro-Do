@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.todo.view
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +25,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.CalendarFocusState
+import com.tico.pomorodo.data.model.DayOfWeeks
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
@@ -37,11 +37,7 @@ import com.tico.pomorodo.ui.iconpack.IcCalendarChecked
 import com.tico.pomorodo.ui.iconpack.IcFavoriteFilled
 import com.tico.pomorodo.ui.theme.IC_ARROW_BACK
 import com.tico.pomorodo.ui.theme.IC_ARROW_FRONT
-import com.tico.pomorodo.ui.theme.IC_CALENDAR_DATE_GREEN
-import com.tico.pomorodo.ui.theme.IC_CALENDAR_DATE_ORANGE
 import com.tico.pomorodo.ui.theme.IC_CALENDAR_DATE_RED
-import com.tico.pomorodo.ui.theme.IC_CALENDAR_DATE_WHITE
-import com.tico.pomorodo.ui.theme.IC_CALENDAR_DATE_YELLOW
 import com.tico.pomorodo.ui.theme.IC_CALENDAR_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -317,7 +313,7 @@ fun CalendarDayItem(
                     modifier = Modifier
                         .size(16.dp)
                         .clip(CircleShape)
-                        .background(PomoroDoTheme.colorScheme.primaryContainer)
+                        .background(PomoroDoTheme.colorScheme.onBackground)
                 )
             } else {
                 Spacer(modifier = Modifier.height(16.dp))
@@ -339,43 +335,6 @@ fun CalendarDayItem(
     }
 }
 
-enum class DayOfWeeks(@StringRes val dayId: Int) {
-    SUNDAY(R.string.content_calendar_sunday),
-    MONDAY(R.string.content_calendar_monday),
-    TUESDAY(R.string.content_calendar_tuesday),
-    WEDNESDAY(R.string.content_calendar_wednesday),
-    THURSDAY(R.string.content_calendar_thursday),
-    FRIDAY(R.string.content_calendar_friday),
-    SATURDAY(R.string.content_calendar_saturday),
-}
-
-enum class CalendarFocusState(
-    val iconString: String,
-    @StringRes val iconTextId: Int,
-) {
-    WHITE(
-        iconString = IC_CALENDAR_DATE_WHITE,
-        iconTextId = R.string.content_calendar_date_white,
-    ),
-    GREEN(
-        iconString = IC_CALENDAR_DATE_GREEN,
-        iconTextId = R.string.content_calendar_date_green,
-    ),
-    YELLOW(
-        iconString = IC_CALENDAR_DATE_YELLOW,
-        iconTextId = R.string.content_calendar_date_yellow,
-    ),
-    ORANGE(
-        iconString = IC_CALENDAR_DATE_ORANGE,
-        iconTextId = R.string.content_calendar_date_orange,
-    ),
-    RED(
-        iconString = IC_CALENDAR_DATE_RED,
-        iconTextId = R.string.content_calendar_date_red,
-    )
-}
-
-@Preview
 @Composable
 fun TodoCalendarScreen() {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }

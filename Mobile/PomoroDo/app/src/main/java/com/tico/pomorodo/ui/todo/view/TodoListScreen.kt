@@ -1,12 +1,8 @@
 package com.tico.pomorodo.ui.todo.view
 
-import android.content.Context
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,14 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TextFieldDefaults.indicatorLine
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,13 +21,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.ui.common.view.CustomDropdownMenuItem
+import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.DropdownMenuNoPaddingVertical
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
@@ -101,40 +90,38 @@ fun CategoryTag(
     title: String,
     groupNumber: Int,
     isAddButton: Boolean = true,
-    onAddClicked: () -> Unit
+    onAddClicked: (() -> Unit)? = null
 ) {
-    Box(modifier = Modifier) {
-        Row(
-            modifier = Modifier
-                .clickable { onAddClicked() }
-                .background(
-                    PomoroDoTheme.colorScheme.secondaryContainer,
-                    RoundedCornerShape(5.dp)
-                )
-                .padding(horizontal = 10.dp, vertical = 5.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
+    Row(
+        modifier = Modifier
+            .clickable { onAddClicked?.invoke() }
+            .background(
+                PomoroDoTheme.colorScheme.secondaryContainer,
+                RoundedCornerShape(5.dp)
+            )
+            .padding(horizontal = 10.dp, vertical = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        SimpleText(
+            modifier = Modifier,
+            text = title,
+            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            color = PomoroDoTheme.colorScheme.secondary
+        )
+        if (groupNumber > 0) {
             SimpleText(
                 modifier = Modifier,
-                text = title,
-                style = PomoroDoTheme.typography.laundryGothicRegular12,
+                text = stringResource(id = R.string.content_add_todo_group_number, groupNumber),
+                style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.secondary
             )
-            if (groupNumber > 0) {
-                SimpleText(
-                    modifier = Modifier,
-                    text = stringResource(id = R.string.content_add_todo_group_number, groupNumber),
-                    style = PomoroDoTheme.typography.laundryGothicRegular12,
-                    color = PomoroDoTheme.colorScheme.secondary
-                )
-            }
-            if (isAddButton) {
-                Image(
-                    imageVector = PomoroDoTheme.iconPack[IC_ADD_TODO]!!,
-                    contentDescription = null
-                )
-            }
+        }
+        if (isAddButton) {
+            Image(
+                imageVector = PomoroDoTheme.iconPack[IC_ADD_TODO]!!,
+                contentDescription = null
+            )
         }
     }
 }
@@ -145,6 +132,17 @@ fun TodoMake(
     inputText: String,
     onValueChange: (String) -> Unit,
 ) {
+    val textFieldColors = TextFieldDefaults.colors(
+        focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
+        unfocusedTextColor = PomoroDoTheme.colorScheme.onBackground,
+        disabledTextColor = PomoroDoTheme.colorScheme.gray10,
+        errorTextColor = PomoroDoTheme.colorScheme.error50,
+        focusedContainerColor = Color.Transparent,
+        unfocusedContainerColor = Color.Transparent,
+        cursorColor = PomoroDoTheme.colorScheme.primaryContainer,
+        unfocusedIndicatorColor = PomoroDoTheme.colorScheme.onBackground,
+        focusedIndicatorColor = PomoroDoTheme.colorScheme.primaryContainer
+    )
     Row(
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.Top
@@ -155,79 +153,20 @@ fun TodoMake(
             imageVector = PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]!!,
             contentDescriptionId = R.string.content_todo_unchecked
         )
-        UnderlinedTextField(
+        CustomTextField(
             modifier = Modifier.weight(1f),
             value = inputText,
             onValueChange = onValueChange,
-            placeholder = stringResource(id = R.string.content_todo_placehold),
-            callback = callback
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun UnderlinedTextField(
-    modifier: Modifier = Modifier,
-    value: String,
-    onValueChange: (String) -> Unit,
-    callback: () -> Unit,
-    placeholder: String,
-    enabled: Boolean = true,
-) {
-    val colors = TextFieldDefaults.colors(
-        focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
-        unfocusedTextColor = PomoroDoTheme.colorScheme.onBackground,
-        disabledTextColor = PomoroDoTheme.colorScheme.gray10,
-        errorTextColor = PomoroDoTheme.colorScheme.error,
-        focusedContainerColor = Color.Transparent,
-        unfocusedContainerColor = Color.Transparent,
-        cursorColor = PomoroDoTheme.colorScheme.primaryContainer,
-        unfocusedIndicatorColor = PomoroDoTheme.colorScheme.onBackground,
-        focusedIndicatorColor = PomoroDoTheme.colorScheme.primaryContainer
-    )
-    val interactionSource = remember { MutableInteractionSource() }
-
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier
-            .indicatorLine(
-                enabled = enabled,
-                isError = false,
-                interactionSource = interactionSource,
-                colors = colors
-            ),
-        visualTransformation = VisualTransformation.None,
-        interactionSource = interactionSource,
-        enabled = enabled,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                callback()
-                onValueChange("")
-                Log.d("TAG", "UnderlinedTextField: done")
-            },
-        )
-    ) { innerTextField ->
-        TextFieldDefaults.DecorationBox(
-            value = value,
-            visualTransformation = VisualTransformation.None,
-            innerTextField = innerTextField,
-            enabled = enabled,
             placeholder = {
                 SimpleText(
-                    text = placeholder,
+                    text = stringResource(id = R.string.content_todo_placehold),
                     style = PomoroDoTheme.typography.laundryGothicRegular14,
                     color = PomoroDoTheme.colorScheme.gray50
                 )
             },
-            singleLine = false,
-            colors = colors,
-            interactionSource = interactionSource,
-            contentPadding = TextFieldDefaults.contentPaddingWithoutLabel(
-                start = 2.dp, top = 0.dp, end = 2.dp, bottom = 3.dp
-            )
+            callback = callback,
+            colors = textFieldColors,
+            singleLine = false
         )
     }
 }

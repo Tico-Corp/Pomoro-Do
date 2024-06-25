@@ -392,6 +392,7 @@ internal val LightColorScheme = PomoroDoColorScheme(
     gray30 = gray30,
     gray20 = gray20,
     gray10 = gray10,
+    error50 = palettesError50
 )
 
 internal val DarkColorScheme = PomoroDoColorScheme(
@@ -443,6 +444,7 @@ internal val DarkColorScheme = PomoroDoColorScheme(
     gray30 = gray50,
     gray20 = gray70,
     gray10 = gray90,
+    error50 = palettesError50
 )
 
 @Immutable
@@ -495,6 +497,7 @@ data class PomoroDoColorScheme(
     val gray30: Color,
     val gray20: Color,
     val gray10: Color,
+    val error50: Color,
 )
 
 val LocalPomoroDoColorScheme = staticCompositionLocalOf {
@@ -547,5 +550,6 @@ val LocalPomoroDoColorScheme = staticCompositionLocalOf {
         gray30 = Color.Unspecified,
         gray20 = Color.Unspecified,
         gray10 = Color.Unspecified,
+        error50 = Color.Unspecified,
     )
 }
