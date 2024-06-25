@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.common.view
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -68,13 +67,8 @@ fun CustomTimeText(
     textStyle: TextStyle,
     onClick: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Column(
-        modifier = Modifier.clickable(
-            interactionSource = interactionSource,
-            indication = null
-        ) { onClick() },
+        modifier = Modifier.clickableWithoutRipple { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -225,13 +219,8 @@ fun CustomTimeText(
     contentTextStyle: TextStyle,
     onClick: () -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-
     Column(
-        modifier = Modifier.clickable(
-            interactionSource = interactionSource,
-            indication = null
-        ) { onClick() },
+        modifier = Modifier.clickableWithoutRipple { onClick() },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

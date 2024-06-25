@@ -3,6 +3,7 @@ package com.tico.pomorodo.ui.common.view
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.FocusManager
@@ -35,10 +36,11 @@ fun SelectedUser.toUser(): User =
     User(id = this.id, name = this.name, profileUrl = this.profileUrl)
 
 fun Modifier.clickableWithoutRipple(
-    interactionSource: MutableInteractionSource,
     onClick: () -> Unit
 ) = composed(
     factory = {
+        val interactionSource = remember { MutableInteractionSource() }
+
         this.then(
             Modifier.clickable(
                 interactionSource = interactionSource,
