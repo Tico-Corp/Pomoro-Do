@@ -38,7 +38,7 @@ fun CustomPomodoroTimer(
         else PomoroDoTheme.colorScheme.secondaryContainer
     val backgroundColor =
         if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.gray70
-        else PomoroDoTheme.colorScheme.background
+        else PomoroDoTheme.colorScheme.onPrimary
 
     Column(
         verticalArrangement = Arrangement.Top,
