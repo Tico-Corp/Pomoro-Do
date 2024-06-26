@@ -1,7 +1,6 @@
 package com.tico.pomorodo.ui.todo.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,8 +31,9 @@ import com.tico.pomorodo.data.model.DayOfWeeks
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.iconpack.commonIconPack.IcCalendarChecked
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcAllCheckTodoState
+import com.tico.pomorodo.ui.iconpack.commonIconPack.IcCalendarChecked
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
 import com.tico.pomorodo.ui.theme.IC_ARROW_BACK
 import com.tico.pomorodo.ui.theme.IC_ARROW_FRONT
@@ -111,7 +111,7 @@ fun CalendarDate(
             enabled = true
         )
         SimpleText(
-            modifier = Modifier.clickable { onTitleDateClicked() },
+            modifier = Modifier.clickableWithoutRipple { onTitleDateClicked() },
             text = titleDate,
             style = PomoroDoTheme.typography.laundryGothicBold12,
             color = PomoroDoTheme.colorScheme.onBackground
@@ -268,7 +268,7 @@ fun CalendarDayItem(
 
     Column(
         modifier = Modifier
-            .clickable { onDateSelected(date) },
+            .clickableWithoutRipple { onDateSelected(date) },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(3.dp)
     ) {

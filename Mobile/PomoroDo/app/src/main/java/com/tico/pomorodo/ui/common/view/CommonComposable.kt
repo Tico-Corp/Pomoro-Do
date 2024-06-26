@@ -3,7 +3,6 @@ package com.tico.pomorodo.ui.common.view
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -226,7 +225,7 @@ fun SimpleWideTextButton(
 ) {
     Box(
         modifier = modifier
-            .clickable { onClicked() }
+            .clickableWithoutRipple { onClicked() }
             .border(1.dp, borderColor, RoundedCornerShape(10.dp))
             .background(
                 containColor,
@@ -259,7 +258,7 @@ fun SimpleNarrowTextButton(
 ) {
     Box(
         modifier = modifier
-            .clickable { if (enabled) onClicked() }
+            .clickableWithoutRipple { if (enabled) onClicked() }
             .border(1.dp, borderColor, RoundedCornerShape(10.dp))
             .background(
                 if (enabled) containColor else disabledContainerColor,

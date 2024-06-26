@@ -1,7 +1,6 @@
 package com.tico.pomorodo.ui.category.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +30,7 @@ import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +70,7 @@ fun OpenSettingsBottomSheet(
                 color = PomoroDoTheme.colorScheme.onBackground
             )
             Row(
-                modifier = Modifier.clickable { selectedOption = OpenSettings.FULL },
+                modifier = Modifier.clickableWithoutRipple { selectedOption = OpenSettings.FULL },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -93,7 +93,9 @@ fun OpenSettingsBottomSheet(
             }
             HorizontalDivider(color = PomoroDoTheme.colorScheme.dialogGray90)
             Row(
-                modifier = Modifier.clickable { selectedOption = OpenSettings.FOLLOWER },
+                modifier = Modifier.clickableWithoutRipple {
+                    selectedOption = OpenSettings.FOLLOWER
+                },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -116,7 +118,7 @@ fun OpenSettingsBottomSheet(
             }
             HorizontalDivider(color = PomoroDoTheme.colorScheme.dialogGray90)
             Row(
-                modifier = Modifier.clickable { selectedOption = OpenSettings.ME },
+                modifier = Modifier.clickableWithoutRipple { selectedOption = OpenSettings.ME },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -139,7 +141,7 @@ fun OpenSettingsBottomSheet(
             }
             Box(
                 modifier = Modifier
-                    .clickable { onOkButtonClicked(selectedOption) }
+                    .clickableWithoutRipple { onOkButtonClicked(selectedOption) }
                     .background(
                         PomoroDoTheme.colorScheme.primaryContainer,
                         RoundedCornerShape(5.dp)

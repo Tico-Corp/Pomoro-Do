@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.todo.view
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -17,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.common.view.ProfileVertical
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
@@ -28,7 +28,7 @@ fun TodoProfileItems(userList: List<User>, selectedIndex: Int, onClicked: (Int) 
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ProfileVertical(
-            modifier = Modifier.clickable { onClicked(-1) },
+            modifier = Modifier.clickableWithoutRipple { onClicked(-1) },
             size = size,
             name = stringResource(R.string.content_me),
             textStyle = PomoroDoTheme.typography.laundryGothicBold14,
@@ -47,7 +47,7 @@ fun TodoProfileItems(userList: List<User>, selectedIndex: Int, onClicked: (Int) 
         ) {
             repeat(userList.size) { userIndex ->
                 ProfileVertical(
-                    modifier = Modifier.clickable { onClicked(userIndex) },
+                    modifier = Modifier.clickableWithoutRipple { onClicked(userIndex) },
                     size = size,
                     name = userList[userIndex].name,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular14,

@@ -3,6 +3,7 @@ package com.tico.pomorodo.ui.todo.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import com.tico.pomorodo.ui.common.view.DropdownMenuNoPaddingVertical
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcGroup
 import com.tico.pomorodo.ui.theme.IC_ADD_TODO
@@ -55,13 +57,18 @@ fun TotalFocusStatus(hour: Int, minute: Int, second: Int) {
         ) {
             SimpleText(
                 modifier = Modifier,
-                textId = R.string.title_total_focus_time_text,
+                textId = R.string.title_total_concentration,
                 style = PomoroDoTheme.typography.laundryGothicBold16,
                 color = PomoroDoTheme.colorScheme.onBackground
             )
             SimpleText(
                 modifier = Modifier,
-                text = stringResource(id = R.string.title_total_focus_time, hour, minute, second),
+                text = stringResource(
+                    id = R.string.format_hour_minute_second,
+                    hour,
+                    minute,
+                    second
+                ),
                 color = PomoroDoTheme.colorScheme.primaryContainer,
                 style = PomoroDoTheme.typography.laundryGothicBold16
             )
@@ -92,9 +99,12 @@ fun CategoryTag(
     isAddButton: Boolean = true,
     onAddClicked: (() -> Unit)? = null
 ) {
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
     Row(
         modifier = Modifier
-            .clickable { onAddClicked?.invoke() }
+            .clickable(interactionSource, indication = null) { onAddClicked?.invoke() }
             .background(
                 PomoroDoTheme.colorScheme.secondaryContainer,
                 RoundedCornerShape(5.dp)
@@ -217,7 +227,7 @@ fun TodoItem(
         }
         if (todoData.likedNumber > 0) {
             Column(
-                modifier = Modifier.clickable {},
+                modifier = Modifier.clickableWithoutRipple { onLikedClicked() },
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -295,7 +305,7 @@ fun TodoDropDownMoreInfo(
 @Composable
 private fun TodoCheckBox(state: TodoState, onStateChanged: (TodoState) -> Unit) {
     SimpleIcon(
-        modifier = Modifier.clickable {
+        modifier = Modifier.clickableWithoutRipple {
             onStateChanged(state)
         },
         size = 26,
