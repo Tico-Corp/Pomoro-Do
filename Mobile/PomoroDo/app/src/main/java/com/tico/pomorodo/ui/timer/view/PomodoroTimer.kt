@@ -31,6 +31,7 @@ fun CustomPomodoroTimer(
 ) {
     val initialConcentrationTime = concentrationTime.hour * 60 + concentrationTime.minute
     val initialBreakTime = breakTime.hour * 60 + breakTime.minute
+    val concentrationColor = PomoroDoTheme.colorScheme.primaryContainer
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -39,8 +40,8 @@ fun CustomPomodoroTimer(
         EditableTextTimer(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
-            concentrationColor = PomoroDoTheme.colorScheme.primaryContainer,
-            breakColor = PomoroDoTheme.colorScheme.secondaryContainer,
+            concentrationColor = concentrationColor,
+            breakColor = PomoroDoTheme.colorScheme.breakTimeColor,
             onConcentrationTimeClick = onConcentrationTimeClick,
             onBreakTimeClick = onBreakTimeClick
         )
@@ -51,9 +52,9 @@ fun CustomPomodoroTimer(
             modifier = Modifier
                 .size(300.dp)
                 .background(PomoroDoTheme.colorScheme.background),
-            outerTimerColor = PomoroDoTheme.colorScheme.primaryContainer,
-            innerTimerColor = PomoroDoTheme.colorScheme.secondaryContainer,
-            backgroundColor = PomoroDoTheme.colorScheme.background,
+            outerTimerColor = concentrationColor,
+            innerTimerColor = PomoroDoTheme.colorScheme.breakTimeColor,
+            backgroundColor = PomoroDoTheme.colorScheme.timerBackgroundColor,
             indicatorColor = PomoroDoTheme.colorScheme.onBackground,
             outerCircleRadius = 125,
             outerInitialValue = initialConcentrationTime,

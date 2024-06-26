@@ -1,6 +1,7 @@
 package com.tico.pomorodo.ui.timer.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -56,7 +57,7 @@ fun EditTimerDialog(
                 .padding(horizontal = 40.dp)
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(15.dp))
-                .background(color = PomoroDoTheme.colorScheme.background)
+                .background(color = PomoroDoTheme.colorScheme.dialogSurface)
                 .padding(horizontal = 30.dp, vertical = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -129,9 +130,9 @@ fun EditTimerDialog(
                     text = stringResource(id = R.string.content_ok),
                     enable = isTimeValid,
                     containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-                    contentColor = PomoroDoTheme.colorScheme.background,
+                    contentColor = Color.White,
                     disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
-                    disabledContentColor = PomoroDoTheme.colorScheme.background,
+                    disabledContentColor = Color.White,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                     horizontalPadding = 20.dp,
                     verticalPadding = 8.dp
