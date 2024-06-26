@@ -43,9 +43,9 @@ import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
+import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.common.view.SimpleWideTextButton
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.common.view.toSelectedUser
 import com.tico.pomorodo.ui.theme.IC_OK
@@ -231,13 +231,13 @@ fun InfoCategoryScreen(
             )
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             if (type) {
-                SimpleWideTextButton(
-                    containColor = PomoroDoTheme.colorScheme.error50,
-                    textId = R.string.content_do_delete,
+                CustomTextButton(
+                    text = stringResource(id = R.string.content_do_delete),
+                    containerColor = PomoroDoTheme.colorScheme.error50,
+                    contentColor = Color.White,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                    textColor = Color.White,
-                    borderColor = Color.Unspecified,
-                    onClicked = {}
+                    verticalPadding = 12.dp,
+                    onClick = {}
                 )
             } else {
                 CategoryGroupNumber(
@@ -254,31 +254,35 @@ fun InfoCategoryScreen(
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
                 if (isGroupReader) {
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        SimpleWideTextButton(
+                        CustomTextButton(
                             modifier = Modifier.weight(1f),
-                            textId = R.string.content_group_out,
+                            text = stringResource(id = R.string.content_group_out),
+                            containerColor = Color.Unspecified,
                             textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                            textColor = PomoroDoTheme.colorScheme.error50,
+                            contentColor = PomoroDoTheme.colorScheme.error50,
                             borderColor = PomoroDoTheme.colorScheme.error50,
-                            onClicked = { onGroupOutClicked(true) }
+                            onClick = { onGroupOutClicked(true) },
+                            verticalPadding = 12.dp,
                         )
-                        SimpleWideTextButton(
+                        CustomTextButton(
                             modifier = Modifier.weight(1f),
-                            containColor = PomoroDoTheme.colorScheme.error50,
-                            textId = R.string.content_do_delete,
+                            containerColor = PomoroDoTheme.colorScheme.error50,
+                            text = stringResource(id = R.string.content_do_delete),
                             textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                            textColor = Color.White,
-                            borderColor = Color.Unspecified,
-                            onClicked = { onGroupDeleteClicked(true) }
+                            contentColor = Color.White,
+                            onClick = { onGroupDeleteClicked(true) },
+                            verticalPadding = 12.dp,
                         )
                     }
                 } else {
-                    SimpleWideTextButton(
-                        textId = R.string.content_group_out,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                        textColor = PomoroDoTheme.colorScheme.error50,
+                    CustomTextButton(
+                        text = stringResource(id = R.string.content_group_out),
+                        containerColor = Color.Unspecified,
+                        contentColor = PomoroDoTheme.colorScheme.error50,
                         borderColor = PomoroDoTheme.colorScheme.error50,
-                        onClicked = { onGroupOutClicked(true) }
+                        textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+                        onClick = { onGroupOutClicked(true) },
+                        verticalPadding = 12.dp,
                     )
                 }
             }

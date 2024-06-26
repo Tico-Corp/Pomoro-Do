@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -26,13 +25,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
-import com.tico.pomorodo.ui.common.view.SimpleNarrowTextButton
+import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -150,20 +150,23 @@ fun InvitedCategoryItem(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            SimpleNarrowTextButton(
-                textId = R.string.content_reject,
+            CustomTextButton(
+                text = stringResource(id = R.string.content_reject),
+                containerColor = Color.Unspecified,
+                contentColor = PomoroDoTheme.colorScheme.onBackground,
                 textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                textColor = PomoroDoTheme.colorScheme.onBackground,
-                onClicked = onRejectButtonClicked,
-                paddingValues = PaddingValues(vertical = 5.dp, horizontal = 12.dp)
+                verticalPadding = 5.dp,
+                horizontalPadding = 12.dp,
+                onClick = onRejectButtonClicked
             )
-            SimpleNarrowTextButton(
-                textId = R.string.content_accept,
+            CustomTextButton(
+                text = stringResource(id = R.string.content_accept),
                 textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                textColor = Color.White,
-                onClicked = onAcceptButtonClicked,
-                containColor = PomoroDoTheme.colorScheme.primaryContainer,
-                paddingValues = PaddingValues(vertical = 5.dp, horizontal = 12.dp)
+                contentColor = Color.White,
+                onClick = onAcceptButtonClicked,
+                containerColor = PomoroDoTheme.colorScheme.primaryContainer,
+                verticalPadding = 5.dp,
+                horizontalPadding = 12.dp
             )
         }
     }

@@ -1,7 +1,9 @@
-package com.tico.pomorodo.ui.category.view
+package com.tico.pomorodo.ui.common.view
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,21 +15,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.common.view.CustomTextButton
-import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun GroupOutDialog(
-    groupName: String,
-    onAllDeleteClicked: () -> Unit,
-    onIncompletedTodoDeleteClicked: () -> Unit,
-    onNoDeleteClicked: () -> Unit,
+fun SimpleAlertDialog(
+    @StringRes
+    dialogTitleId: Int,
+    @StringRes
+    confirmTextId: Int,
+    @StringRes
+    dismissTextId: Int,
+    enabled: Boolean = true,
+    onConfirmation: () -> Unit,
+    content: @Composable () -> Unit,
     onDismissRequest: (Boolean) -> Unit,
 ) {
     val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
@@ -47,51 +50,38 @@ fun GroupOutDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SimpleText(
-                    textId = R.string.title_group_out,
+                    textId = dialogTitleId,
                     style = PomoroDoTheme.typography.laundryGothicBold20,
                     color = PomoroDoTheme.colorScheme.onBackground,
                 )
                 Spacer(modifier = Modifier.height(14.dp))
-                SimpleText(
-                    modifier = Modifier,
-                    text = stringResource(id = R.string.content_group_out_message, groupName),
-                    style = PomoroDoTheme.typography.laundryGothicRegular14,
-                    color = PomoroDoTheme.colorScheme.onBackground,
-                    textAlign = TextAlign.Center
-                )
+                content()
                 Spacer(modifier = Modifier.height(20.dp))
-                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(
+                    modifier = Modifier.align(Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     CustomTextButton(
-                        text = stringResource(id = R.string.content_all_delete),
-                        containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-                        contentColor = Color.White,
+                        text = stringResource(id = dismissTextId),
+                        containerColor = Color.Unspecified,
+                        contentColor = PomoroDoTheme.colorScheme.onBackground,
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
-                        onClick = onAllDeleteClicked
-                    )
-                    CustomTextButton(
-                        text = stringResource(id = R.string.content_incompleted_todo_delete),
-                        containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-                        contentColor = Color.White,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                        verticalPadding = 8.dp,
-                        onClick = onIncompletedTodoDeleteClicked
-                    )
-                    CustomTextButton(
-                        text = stringResource(id = R.string.content_no_delete),
-                        containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-                        contentColor = Color.White,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                        verticalPadding = 8.dp,
-                        onClick = onNoDeleteClicked
-                    )
-                    CustomTextButton(
-                        text = stringResource(id = R.string.content_cancel),
-                        containerColor = PomoroDoTheme.colorScheme.primaryContainer,
-                        contentColor = Color.White,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                        verticalPadding = 8.dp,
+                        horizontalPadding = 20.dp,
                         onClick = { onDismissRequest(false) }
+                    )
+                    CustomTextButton(
+                        text = stringResource(id = confirmTextId),
+                        containerColor = PomoroDoTheme.colorScheme.primaryContainer,
+                        contentColor = Color.White,
+                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
+                        verticalPadding = 8.dp,
+                        horizontalPadding = 20.dp,
+                        enabled = enabled,
+                        onClick = onConfirmation,
+                        disabledContentColor = Color.White,
+                        disabledContainerColor = PomoroDoTheme.colorScheme.dialogGray70
                     )
                 }
             }
