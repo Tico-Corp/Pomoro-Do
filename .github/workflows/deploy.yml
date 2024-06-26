@@ -1,11 +1,16 @@
 name: CI/CD with Gradle, Docker, AWS
 
 # develop-be 브랜치에 push 또는 PR 이벤트가 발생하면 워크플로우가 실행된다.
+# backend 폴더 내의 변경 사항이 있을 때만 워크플로우가 실행
 on:
   push:
     branches: [ "develop-be" ]
+    paths:
+      - 'backend/**'
   pull_request:
     branches: [ "develop-be" ]
+    paths:
+      - 'backend/**'
 
 # 해당 Workflow의 Job 목록
 jobs:
