@@ -10,10 +10,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +27,7 @@ import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.theme.palettesNeutral20
 import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun ConcentrationTimerScreen(
@@ -42,11 +46,34 @@ fun ConcentrationTimerScreen(
     val timerBackgroundColor =
         if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.gray70
         else PomoroDoTheme.colorScheme.onPrimary
-    val timeToSecond = concentrationTime.hour * 60 * 60 +
-            concentrationTime.minute * 60 +
-            (concentrationTime.second ?: 0)
-    val maxValue by remember {
-        mutableIntStateOf(timeToSecond)
+    var hour by remember { mutableIntStateOf(concentrationTime.hour) }
+    var minute by remember { mutableIntStateOf(concentrationTime.minute) }
+    var second by remember { mutableIntStateOf(concentrationTime.second ?: 0) }
+    val timeToSecond = hour * 60 * 60 + minute * 60 + second
+    var isFinished by remember { mutableStateOf(false) }
+    val maxValue by remember { mutableIntStateOf(timeToSecond) }
+
+    LaunchedEffect(key1 = second) {
+        delay(1000)
+
+        if (second != 0) {
+            second--
+        } else {
+            if (minute != 0) {
+                minute--;
+                second = 59;
+            } else {
+                if (hour != 0) {
+                    hour--
+                    minute = 59
+                    second = 59
+                } else {
+                    isFinished = true
+                }
+            }
+        }
+
+        timerViewModel.setConcentrationTime(hour, minute, second)
     }
 
     Column(
