@@ -60,8 +60,8 @@ fun ConcentrationTimerScreen(
             second--
         } else {
             if (minute != 0) {
-                minute--;
-                second = 59;
+                minute--
+                second = 59
             } else {
                 if (hour != 0) {
                     hour--
