@@ -287,8 +287,8 @@ fun SimpleAlertDialog(
     dismissTextId: Int,
     enabled: Boolean = true,
     onConfirmation: () -> Unit,
-    content: @Composable () -> Unit,
     onDismissRequest: (Boolean) -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
     Dialog(
