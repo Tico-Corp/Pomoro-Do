@@ -5,24 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +24,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TextFieldDefaults.indicatorLine
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -45,9 +36,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
 fun SimpleIcon(
@@ -274,72 +262,5 @@ fun SimpleNarrowTextButton(
             style = textStyle,
             color = textColor
         )
-    }
-}
-
-@Composable
-fun SimpleAlertDialog(
-    @StringRes
-    dialogTitleId: Int,
-    @StringRes
-    confirmTextId: Int,
-    @StringRes
-    dismissTextId: Int,
-    enabled: Boolean = true,
-    onConfirmation: () -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
-    content: @Composable () -> Unit,
-) {
-    val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
-    Dialog(
-        onDismissRequest = { onDismissRequest(false) },
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        Card(
-            modifier = Modifier.padding(horizontal = 40.dp),
-            shape = RoundedCornerShape(15.dp),
-            colors = colors,
-        ) {
-            Column(
-                modifier = Modifier
-                    .padding(horizontal = 30.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                SimpleText(
-                    textId = dialogTitleId,
-                    style = PomoroDoTheme.typography.laundryGothicBold20,
-                    color = PomoroDoTheme.colorScheme.onBackground,
-                )
-                Spacer(modifier = Modifier.height(14.dp))
-                content()
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier.align(Alignment.End),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    SimpleNarrowTextButton(
-                        textId = dismissTextId,
-                        containColor = Color.Unspecified,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                        textColor = PomoroDoTheme.colorScheme.onBackground,
-                        onClicked = { onDismissRequest(false) },
-                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp)
-                    )
-                    SimpleNarrowTextButton(
-                        modifier = Modifier.wrapContentWidth(),
-                        containColor = PomoroDoTheme.colorScheme.primaryContainer,
-                        textId = confirmTextId,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                        textColor = Color.White,
-                        onClicked = onConfirmation,
-                        enabled = enabled,
-                        disabledContainerColor = PomoroDoTheme.colorScheme.dialogGray70,
-                        paddingValues = PaddingValues(vertical = 8.dp, horizontal = 20.dp)
-                    )
-                }
-            }
-        }
     }
 }
