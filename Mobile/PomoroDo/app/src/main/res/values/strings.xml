@@ -45,8 +45,6 @@
     <string name="content_calendar_thursday">목</string>
     <string name="content_calendar_friday">금</string>
     <string name="content_calendar_saturday">토</string>
-    <string name="title_total_focus_time_text">총 집중 시간</string>
-    <string name="title_total_focus_time">%d:%d:%d</string>
     <string name="content_view_history">기록보기</string>
     <string name="content_add_todo_group_number">(%d)</string>
     <string name="content_todo_unchecked">미완료</string>
@@ -112,11 +110,29 @@
     <string name="content_all_delete">모두 삭제하기</string>
     <string name="content_incompleted_todo_delete">미완료 할 일만 삭제하기</string>
     <string name="content_no_delete">삭제하지 않기</string>
-    <string name="content_group_out_message">“%s" 그룹에서 나갑니다.\n기존 할 일을 삭제하시겠습니까?</string>
+    <string name="content_group_out_message">\"%s\" 그룹에서 나갑니다.\n기존 할 일을 삭제하시겠습니까?</string>
     <string name="content_group_delete_second_message">삭제하려는 그룹의 이름을 입력하세요.\n“%s”</string>
     <string name="content_group_delete_placehold">그룹 이름을 따라 입력하세요.</string>
     <string name="content_group_delete_first_message">그룹을 삭제하시겠습니까?\n모든 그룹원들의 할 일이 모두 삭제됩니다.</string>
     <string name="content_do_delete">삭제하기</string>
+
+    // history
+    <string name="title_history">기록</string>
+    <string name="title_timeline">타임라인</string>
+    <string name="title_max_concentration">최대 집중 시간</string>
+    <string name="title_max_break">최대 휴식 시간</string>
+    <string name="title_today">%d월 %d일 (%s)</string>
+    <string name="content_during_time">%02d시간 %02d분</string>
+    <string name="content_pm_time">PM %02d:%02d</string>
+    <string name="content_wave">~</string>
+    <string name="content_ic_time_line_break">타임라인 휴식 아이콘</string>
+    <string name="content_ic_time_line_concentration">타임라인 집중 아이콘</string>
+    <string name="content_timeline_minute_second">%02d분 %02d초</string>
+    <string name="content_timeline_hour_minute_second">%02d시간 %02d분 %02d초</string>
+    <string name="content_todo_edit">한 일 수정</string>
+    <string name="content_history_delete">기록 삭제</string>
+    <string name="content_history_delete_message">기록을 삭제하시겠습니까?\n기록을 삭제하면 타임라인에서 사라집니다.</string>
+    <string name="content_break">휴식</string>
 
     // common
     <string name="content_next">다음</string>

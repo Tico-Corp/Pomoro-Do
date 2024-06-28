@@ -27,6 +27,7 @@ import com.tico.pomorodo.ui.iconpack.darkiconpack.IcGroupSelectedCancleDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcGroupSelectedUncheckedDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcMoreInfoDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcOkDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcTimelineMoreDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcTodoCheckedDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcTodoGoingDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcTodoMoreInfoDark
@@ -67,6 +68,7 @@ object DarkIconPack {
             IC_GROUP_SELECTED_UNCHECKED to IcGroupSelectedUncheckedDark,
             IC_ARROW_RIGHT to IcArrowRightDark,
             IC_ALL_CLEAN to IcAllCleanDark,
+            IC_TIMELINE_MORE_INFO to IcTimelineMoreDark
         )
     }
 

@@ -27,6 +27,7 @@ import com.tico.pomorodo.ui.iconpack.lighticonpack.IcGroupSelectedCancleLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcGroupSelectedUncheckedLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcMoreInfoLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcOkLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTimelineMoreLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoCheckedLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoGoingLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoMoreInfoLight
@@ -67,6 +68,7 @@ object LightIconPack {
             IC_GROUP_SELECTED_UNCHECKED to IcGroupSelectedUncheckedLight,
             IC_ARROW_RIGHT to IcArrowRightLight,
             IC_ALL_CLEAN to IcAllCleanLight,
+            IC_TIMELINE_MORE_INFO to IcTimelineMoreLight
         )
     }
 
