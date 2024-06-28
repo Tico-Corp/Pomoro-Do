@@ -14,6 +14,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.data.model.User
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit = {}): Modifier {
     return this.pointerInput(Unit) {
@@ -40,6 +43,7 @@ fun SelectedUser.toUser(): User =
     User(id = this.id, name = this.name, profileUrl = this.profileUrl)
 
 fun Modifier.clickableWithoutRipple(
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) = composed(
     factory = {
@@ -47,6 +51,7 @@ fun Modifier.clickableWithoutRipple(
 
         this.then(
             Modifier.clickable(
+                enabled = enabled,
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = { onClick() }
@@ -77,3 +82,5 @@ fun Modifier.clickableWithRipple(
         )
     }
 )
+
+fun LocalDateTime.getTimeFormat(): String = format(DateTimeFormatter.ofPattern("a h:mm", Locale.US))
