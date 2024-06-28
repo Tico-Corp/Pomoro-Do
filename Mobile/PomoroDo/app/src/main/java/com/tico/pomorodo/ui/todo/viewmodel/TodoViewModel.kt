@@ -20,7 +20,7 @@ class TodoViewModel() : ViewModel() {
     val userList: StateFlow<List<User>>
         get() = _userList.asStateFlow()
 
-    private var _categoryList = MutableStateFlow(DataSource.todoList)
+    private var _categoryList = MutableStateFlow(DataSource.categoryList)
     val categoryList: StateFlow<List<Category>>
         get() = _categoryList.asStateFlow()
 
