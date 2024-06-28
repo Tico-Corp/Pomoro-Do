@@ -321,7 +321,3 @@ private fun TodoCheckBox(state: TodoState, onStateChanged: (TodoState) -> Unit) 
         }
     )
 }
-
-enum class TodoState {
-    UNCHECKED, GOING, CHECKED
-}

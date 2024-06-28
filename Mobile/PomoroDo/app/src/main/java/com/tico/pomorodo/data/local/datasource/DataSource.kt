@@ -6,7 +6,7 @@ import com.tico.pomorodo.data.model.TimeLineData
 import com.tico.pomorodo.data.model.TimeLineType
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.User
-import com.tico.pomorodo.ui.todo.view.TodoState
+import com.tico.pomorodo.data.model.TodoState
 import java.time.LocalDateTime
 
 object DataSource {
