@@ -25,19 +25,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.TodoData
-import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.SimpleDropDownMoreInfo
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.common.view.clickableWithRipple
-import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcGroup
 import com.tico.pomorodo.ui.theme.IC_ADD_TODO
-import com.tico.pomorodo.ui.theme.IC_TODO_CHECKED
-import com.tico.pomorodo.ui.theme.IC_TODO_GOING
 import com.tico.pomorodo.ui.theme.IC_TODO_MORE_INFO
 import com.tico.pomorodo.ui.theme.IC_TODO_UNCHECKED
 import com.tico.pomorodo.ui.theme.IconPack
@@ -194,15 +189,9 @@ fun TodoListItem(
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TodoItem(
-            iconSize = 26,
-            todoData = todoData,
-            enabled = !isFriend,
-            onStateChanged = onStateChanged,
-            textStyle = PomoroDoTheme.typography.laundryGothicRegular14
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        if (isGroup && !isFriend) {
+        BasicTodoItem(todoData = todoData, onStateChanged = onStateChanged)
+
+        if (isGroup) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -294,29 +283,4 @@ fun TodoItem(
             color = PomoroDoTheme.colorScheme.onBackground
         )
     }
-}
-
-@Composable
-private fun TodoCheckBox(
-    size: Int,
-    state: TodoState,
-    onStateChanged: (TodoState) -> Unit,
-    enabled: Boolean
-) {
-    SimpleIcon(
-        modifier = Modifier.clickableWithoutRipple(enabled) {
-            onStateChanged(state)
-        },
-        size = size,
-        imageVector = when (state) {
-            TodoState.UNCHECKED -> PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]!!
-            TodoState.GOING -> PomoroDoTheme.iconPack[IC_TODO_GOING]!!
-            TodoState.CHECKED -> PomoroDoTheme.iconPack[IC_TODO_CHECKED]!!
-        },
-        contentDescriptionId = when (state) {
-            TodoState.UNCHECKED -> R.string.content_todo_unchecked
-            TodoState.GOING -> R.string.content_todo_going
-            TodoState.CHECKED -> R.string.content_todo_checked
-        }
-    )
 }
