@@ -194,11 +194,7 @@ fun CategoryOpenSettings(
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Row(
-                modifier = Modifier.clickableWithoutRipple {
-                    if (enabled) {
-                        onClicked()
-                    }
-                },
+                modifier = Modifier.clickableWithoutRipple(enabled) { onClicked() },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
