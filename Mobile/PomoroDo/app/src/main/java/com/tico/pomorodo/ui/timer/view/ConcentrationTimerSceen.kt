@@ -1,7 +1,6 @@
 package com.tico.pomorodo.ui.timer.view
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +30,6 @@ import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.theme.palettesNeutral20
 import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 import kotlinx.coroutines.delay
 
@@ -39,25 +38,13 @@ fun ConcentrationTimerScreen(
     timerViewModel: TimerViewModel,
 ) {
     val concentrationTime by timerViewModel.concentrationTime.collectAsState()
-    val timerTextColor =
-        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.onBackground
-        else PomoroDoTheme.colorScheme.background
-    val buttonTextColor =
-        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.onBackground
-        else PomoroDoTheme.colorScheme.onPrimary
-    val backgroundColor =
-        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.background
-        else palettesNeutral20
-    val timerBackgroundColor =
-        if (isSystemInDarkTheme()) PomoroDoTheme.colorScheme.gray70
-        else PomoroDoTheme.colorScheme.onPrimary
+    val maxValue by timerViewModel.timerMaxValue.collectAsState()
     var hour by remember { mutableIntStateOf(concentrationTime.hour) }
     var minute by remember { mutableIntStateOf(concentrationTime.minute) }
     var second by remember { mutableIntStateOf(concentrationTime.second ?: 0) }
     val timeToSecond = hour * 60 * 60 + minute * 60 + second
     var isFinished by remember { mutableStateOf(false) }
     val (isPaused, setPause) = remember { mutableStateOf(false) }
-    val maxValue by remember { mutableIntStateOf(timeToSecond) }
     val (finishTimerDialogVisible, setFinishTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
@@ -89,7 +76,7 @@ fun ConcentrationTimerScreen(
 
     Column(
         modifier = Modifier
-            .background(backgroundColor)
+            .background(PomoroDoTheme.colorScheme.modeBackgroundColor)
             .padding(horizontal = 30.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -100,7 +87,7 @@ fun ConcentrationTimerScreen(
             hour = concentrationTime.hour,
             minute = concentrationTime.minute,
             second = concentrationTime.second ?: 0,
-            textColor = timerTextColor,
+            textColor = Color.White,
             spaceDp = 6.dp,
             titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             contentTextStyle = PomoroDoTheme.typography.laundryGothicRegular26
@@ -111,7 +98,7 @@ fun ConcentrationTimerScreen(
         CustomCircularTimer(
             modifier = Modifier.size(300.dp),
             timerColor = PomoroDoTheme.colorScheme.primaryContainer,
-            backgroundColor = timerBackgroundColor,
+            backgroundColor = PomoroDoTheme.colorScheme.timerBackgroundColor,
             circleRadius = 125,
             maxValue = maxValue,
             initialValue = timeToSecond,
@@ -122,7 +109,7 @@ fun ConcentrationTimerScreen(
         CustomTextButton(
             text = stringResource(R.string.content_button_finish_concentration),
             backgroundColor = PomoroDoTheme.colorScheme.primaryContainer,
-            textColor = buttonTextColor,
+            textColor = Color.White,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             verticalPadding = 12.dp
         ) {
@@ -137,6 +124,7 @@ fun ConcentrationTimerScreen(
             confirmTextId = R.string.content_finish,
             dismissTextId = R.string.content_cancel,
             onConfirmation = {
+                /*TODO*/
                 setFinishTimerDialogVisible(false)
             },
             onDismissRequest = {
