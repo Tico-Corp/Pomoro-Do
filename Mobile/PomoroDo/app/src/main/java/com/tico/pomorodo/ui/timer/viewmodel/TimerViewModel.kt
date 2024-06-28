@@ -18,6 +18,9 @@ class TimerViewModel @Inject constructor() : ViewModel() {
     private val _concentrationGoal: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0, 0))
     val concentrationGoal: StateFlow<Time> = _concentrationGoal
 
+    private val _timerMaxValue: MutableStateFlow<Int> = MutableStateFlow(0)
+    val timerMaxValue: StateFlow<Int> = _timerMaxValue
+
     fun setConcentrationTime(hour: Int, minute: Int, second: Int? = null) {
         _concentrationTime.value = Time(hour, minute, second)
     }
@@ -28,5 +31,9 @@ class TimerViewModel @Inject constructor() : ViewModel() {
 
     fun setConcentrationGoal(hour: Int, minute: Int, second: Int) {
         _concentrationGoal.value = Time(hour, minute, second)
+    }
+
+    fun setTimerMaxValue(hour: Int, minute: Int, second: Int) {
+        _timerMaxValue.value = hour * 60 * 60 + minute * 60 + second
     }
 }
