@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.category.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -92,10 +91,10 @@ fun AddCategoryScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 18.dp)
+            .padding(horizontal = 18.dp),
+        color = PomoroDoTheme.colorScheme.background,
     ) {
         Column(
-            modifier = Modifier.background(PomoroDoTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             CustomTextField(
