@@ -103,10 +103,7 @@ fun EditTimerDialog(
             ) {
                 if (!isTimeValid) {
                     Text(
-                        text = String.format(
-                            stringResource(R.string.content_error_time_limit),
-                            timeLimit
-                        ),
+                        text = stringResource(R.string.content_error_time_limit, timeLimit),
                         modifier = Modifier.fillMaxWidth(),
                         color = PomoroDoTheme.colorScheme.error,
                         textAlign = TextAlign.Center,
