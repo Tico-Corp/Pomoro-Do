@@ -395,6 +395,7 @@ internal val LightColorScheme = PomoroDoColorScheme(
     error50 = palettesError50,
     timerBackgroundColor = onPrimaryLight,
     breakTimeColor = secondaryContainerLight,
+    modeBackgroundColor = palettesNeutral20
 )
 
 internal val DarkColorScheme = PomoroDoColorScheme(
@@ -449,6 +450,7 @@ internal val DarkColorScheme = PomoroDoColorScheme(
     error50 = palettesError50,
     timerBackgroundColor = gray20,
     breakTimeColor = secondaryDark,
+    modeBackgroundColor = backgroundDark
 )
 
 @Immutable
@@ -504,6 +506,7 @@ data class PomoroDoColorScheme(
     val error50: Color,
     val timerBackgroundColor: Color,
     val breakTimeColor: Color,
+    val modeBackgroundColor: Color,
 )
 
 val LocalPomoroDoColorScheme = staticCompositionLocalOf {
@@ -559,5 +562,6 @@ val LocalPomoroDoColorScheme = staticCompositionLocalOf {
         error50 = Color.Unspecified,
         timerBackgroundColor = Color.Unspecified,
         breakTimeColor = Color.Unspecified,
+        modeBackgroundColor = Color.Unspecified
     )
 }
