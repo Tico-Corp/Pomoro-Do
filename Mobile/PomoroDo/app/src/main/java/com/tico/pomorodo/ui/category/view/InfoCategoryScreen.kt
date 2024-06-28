@@ -63,7 +63,8 @@ fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = viewModel()) {
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showCheckGroupMemberBottomSheet by rememberSaveable { mutableStateOf(false) }
     val isGroupReader by rememberSaveable { mutableStateOf(false) }
-    var dialogVisible by rememberSaveable { mutableStateOf(false) }
+    var groupDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     val title by viewModel.title.collectAsState()
     val type by viewModel.type.collectAsState()
@@ -151,13 +152,22 @@ fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = viewModel()) {
                         showCheckGroupMemberBottomSheet = it
                     },
                     isGroupReader = isGroupReader,
-                    onGroupDeleteClicked = { dialogVisible = it },
-                    onGroupOutClicked = {}
+                    onGroupDeleteClicked = { groupDeleteDialogVisible = true },
+                    onGroupOutClicked = { groupOutDialogVisible = true }
                 )
-                if (dialogVisible) {
+                if (groupDeleteDialogVisible) {
                     GroupDeleteFirstDialog(
                         onConfirmation = { },
-                        onDismissRequest = { dialogVisible = it }
+                        onDismissRequest = { groupDeleteDialogVisible = it }
+                    )
+                }
+                if (groupOutDialogVisible) {
+                    GroupOutDialog(
+                        groupName = title,
+                        onAllDeleteClicked = { /*TODO*/ },
+                        onIncompletedTodoDeleteClicked = { /*TODO*/ },
+                        onNoDeleteClicked = { /*TODO*/ },
+                        onDismissRequest = {groupOutDialogVisible = it }
                     )
                 }
             }
@@ -177,8 +187,8 @@ fun InfoCategoryScreen(
     onShowOpenSettingsBottomSheetChange: (Boolean) -> Unit,
     onGroupMemberChooseClicked: () -> Unit,
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
-    onGroupOutClicked: (Boolean) -> Unit,
-    onGroupDeleteClicked: (Boolean) -> Unit,
+    onGroupOutClicked: () -> Unit,
+    onGroupDeleteClicked: () -> Unit,
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
@@ -260,7 +270,7 @@ fun InfoCategoryScreen(
                             textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
                             contentColor = PomoroDoTheme.colorScheme.error50,
                             borderColor = PomoroDoTheme.colorScheme.error50,
-                            onClick = { onGroupOutClicked(true) },
+                            onClick = onGroupOutClicked,
                             verticalPadding = 12.dp,
                         )
                         CustomTextButton(
@@ -269,7 +279,7 @@ fun InfoCategoryScreen(
                             text = stringResource(id = R.string.content_do_delete),
                             textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
                             contentColor = Color.White,
-                            onClick = { onGroupDeleteClicked(true) },
+                            onClick = onGroupDeleteClicked,
                             verticalPadding = 12.dp,
                         )
                     }
@@ -280,7 +290,7 @@ fun InfoCategoryScreen(
                         contentColor = PomoroDoTheme.colorScheme.error50,
                         borderColor = PomoroDoTheme.colorScheme.error50,
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                        onClick = { onGroupOutClicked(true) },
+                        onClick = onGroupOutClicked,
                         verticalPadding = 12.dp,
                     )
                 }
