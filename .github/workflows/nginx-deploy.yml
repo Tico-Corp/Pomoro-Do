@@ -14,7 +14,7 @@ on:
       - 'nginx/**'
       
 env:
-  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/nginx:latest
+  IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}nginx:latest
   CONTAINER_NAME: nginx-server
 
 # 해당 Workflow의 Job 목록
