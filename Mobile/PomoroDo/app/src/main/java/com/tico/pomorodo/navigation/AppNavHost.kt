@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
-import com.tico.pomorodo.ui.AppState
+import com.tico.pomorodo.ui.home.view.AppState
 import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 
 @Composable
