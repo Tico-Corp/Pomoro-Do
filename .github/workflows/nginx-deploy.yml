@@ -14,6 +14,7 @@ on:
       - 'nginx/**'
       
 env:
+  IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/nginx:latest
   CONTAINER_NAME: nginx-server
 
 # 해당 Workflow의 Job 목록
@@ -44,9 +45,9 @@ jobs:
         cd nginx  # nginx 폴더로 이동
         set -e  # 명령 실패 시 스크립트 종료
         # 현재 디렉토리에 있는 Dockerfile을 사용하여 Docker 이미지를 빌드
-        docker build -t ${{ secrets.NGINX_DOCKER_IMAGE_NAME }} .
+        docker build -t ${{ env.IMAGE_NAME }} .
         # Docker Hub에 이미지 푸시
-        docker push ${{ secrets.NGINX_DOCKER_IMAGE_NAME }}
+        docker push ${{ env.IMAGE_NAME }}
 
   deploy:
     # 이 작업은 build 작업이 성공적으로 완료된 후에만 실행된다.
@@ -71,9 +72,9 @@ jobs:
             set -e  # 명령 실패 시 스크립트 종료
             docker stop ${{ env.CONTAINER_NAME }} || true  # 실행 중인 nginx-server 컨테이너 중지
             docker rm ${{ env.CONTAINER_NAME }} || true  # 기존 컨테이너 삭제
-            docker rmi ${{ secrets.NGINX_DOCKER_IMAGE_NAME }} || true  # 기존 이미지 삭제
-            docker pull ${{ secrets.NGINX_DOCKER_IMAGE_NAME }}  # 최신 이미지 다운로드
+            docker rmi ${{ env.IMAGE_NAME }} || true  # 기존 이미지 삭제
+            docker pull ${{ env.IMAGE_NAME }}  # 최신 이미지 다운로드
             docker run -d --name ${{ env.CONTAINER_NAME }} \
               -v /etc/letsencrypt/:/etc/letsencrypt/ \  # 인증서 마운트
               -p 80:80 -p 443:443 \  # 포트 매핑
-              ${{ secrets.NGINX_DOCKER_IMAGE_NAME }}  # 새로운 컨테이너 실행
+              ${{ env.IMAGE_NAME }}  # 새로운 컨테이너 실행
