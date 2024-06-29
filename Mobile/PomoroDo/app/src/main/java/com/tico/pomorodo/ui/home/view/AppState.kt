@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui
+package com.tico.pomorodo.ui.home.view
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavDestination
