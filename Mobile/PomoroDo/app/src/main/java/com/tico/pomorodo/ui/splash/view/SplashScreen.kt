@@ -8,18 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTitle
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-internal fun SplashScreen(
-    modifier: Modifier = Modifier
-) {
+fun SplashScreen(navController: NavController) {
     PomoroDoTheme {
         Surface(color = PomoroDoTheme.colorScheme.surface) {
             Icon(

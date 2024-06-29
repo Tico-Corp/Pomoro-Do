@@ -41,11 +41,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
+import com.tico.pomorodo.navigation.navigateToHome
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcProfileDefault
 import com.tico.pomorodo.ui.theme.IconPack
@@ -53,7 +55,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.theme.laundryGothic
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(navController: NavController) {
     val text = rememberSaveable { mutableStateOf("") }
     val enable = text.value.isNotBlank()
 
@@ -80,8 +82,9 @@ fun SignUpScreen() {
             disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
             disabledContentColor = PomoroDoTheme.colorScheme.background,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
-            verticalPadding = 12.dp
-        ) { /*TODO*/ }
+            verticalPadding = 12.dp,
+            onClick = navController::navigateToHome
+        )
     }
 }
 

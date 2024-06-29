@@ -12,6 +12,9 @@ import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.navigation.concentrationModeScreen
 import com.tico.pomorodo.navigation.homeScreen
+import com.tico.pomorodo.navigation.logInScreen
+import com.tico.pomorodo.navigation.signUpScreen
+import com.tico.pomorodo.navigation.splashScreen
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 
@@ -27,17 +30,20 @@ fun MainScreen() {
         Scaffold { innerPadding ->
             NavHost(
                 navController = mainNavController,
-                startDestination = MainNavigationDestination.Home.name,
+                startDestination = MainNavigationDestination.Splash.name,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
+                splashScreen(navController = mainNavController)
+                logInScreen(navController = mainNavController)
+                signUpScreen(navController = mainNavController)
                 homeScreen(
-                    mainNavController = mainNavController,
+                    navController = mainNavController,
                     timerViewModel = timerViewModel
                 )
                 concentrationModeScreen(
-                    mainNavController = mainNavController,
+                    navController = mainNavController,
                     timerViewModel = timerViewModel
                 )
             }
