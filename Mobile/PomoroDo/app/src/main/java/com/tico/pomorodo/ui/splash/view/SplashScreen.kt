@@ -11,6 +11,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.tico.pomorodo.R
+import com.tico.pomorodo.navigation.navigateToLogIn
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTitle
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -24,7 +26,8 @@ fun SplashScreen(navController: NavController) {
                 contentDescription = stringResource(R.string.content_ic_title),
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clickableWithoutRipple { navController.navigateToLogIn() },
                 tint = Color.Unspecified
             )
         }
