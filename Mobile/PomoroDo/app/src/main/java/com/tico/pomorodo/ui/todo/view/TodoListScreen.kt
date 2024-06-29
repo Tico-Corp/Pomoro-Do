@@ -202,7 +202,7 @@ fun TodoListItem(
             textStyle = PomoroDoTheme.typography.laundryGothicRegular14
         )
         Spacer(modifier = Modifier.weight(1f))
-        if (isGroup) {
+        if (isGroup && !isFriend) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -261,7 +261,7 @@ fun TodoListItem(
                     onShowMoreInfoChange = { showMoreInfo = it },
                     editTextId = R.string.content_todo_more_info_edit,
                     deleteTextId = R.string.content_todo_more_info_delete,
-                    onMoreInfoEditClicked =onMoreInfoEditClicked,
+                    onMoreInfoEditClicked = onMoreInfoEditClicked,
                     onMoreInfoDeleteClicked = onMoreInfoDeleteClicked,
                     paddingValues = PaddingValues(vertical = 10.dp, horizontal = 18.dp)
                 )
