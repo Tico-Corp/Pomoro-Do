@@ -25,11 +25,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.TodoData
+import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.SimpleDropDownMoreInfo
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.clickableWithRipple
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcGroup
 import com.tico.pomorodo.ui.theme.IC_ADD_TODO
@@ -191,14 +194,15 @@ fun TodoListItem(
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TodoCheckBox(state = todoData.state, onStateChanged = onStateChanged)
-        SimpleText(
-            modifier = Modifier.weight(1f),
-            text = todoData.name,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
-            color = PomoroDoTheme.colorScheme.onBackground
+        TodoItem(
+            iconSize = 26,
+            todoData = todoData,
+            enabled = !isFriend,
+            onStateChanged = onStateChanged,
+            textStyle = PomoroDoTheme.typography.laundryGothicRegular14
         )
-        if (isGroup) {
+        Spacer(modifier = Modifier.weight(1f))
+        if (isGroup && !isFriend) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -293,12 +297,17 @@ fun TodoItem(
 }
 
 @Composable
-private fun TodoCheckBox(state: TodoState, onStateChanged: (TodoState) -> Unit) {
+private fun TodoCheckBox(
+    size: Int,
+    state: TodoState,
+    onStateChanged: (TodoState) -> Unit,
+    enabled: Boolean
+) {
     SimpleIcon(
-        modifier = Modifier.clickable {
+        modifier = Modifier.clickableWithoutRipple(enabled) {
             onStateChanged(state)
         },
-        size = 26,
+        size = size,
         imageVector = when (state) {
             TodoState.UNCHECKED -> PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]!!
             TodoState.GOING -> PomoroDoTheme.iconPack[IC_TODO_GOING]!!
@@ -310,8 +319,4 @@ private fun TodoCheckBox(state: TodoState, onStateChanged: (TodoState) -> Unit) 
             TodoState.CHECKED -> R.string.content_todo_checked
         }
     )
-}
-
-enum class TodoState {
-    UNCHECKED, GOING, CHECKED
 }

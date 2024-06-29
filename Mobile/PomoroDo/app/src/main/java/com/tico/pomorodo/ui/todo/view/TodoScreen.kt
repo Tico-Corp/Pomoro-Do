@@ -37,9 +37,9 @@ import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
+import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.home.view.AppState
 import com.tico.pomorodo.ui.home.view.BottomBar
-import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.todo.viewmodel.TodoViewModel
 
