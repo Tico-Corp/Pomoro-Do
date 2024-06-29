@@ -28,7 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
@@ -174,7 +174,7 @@ fun InvitedCategoryItem(
 
 @Preview
 @Composable
-fun CategoryScreenRoute(viewModel: TodoViewModel = viewModel()) {
+fun CategoryScreenRoute(viewModel: TodoViewModel = hiltViewModel()) {
     val categoryList by viewModel.categoryList.collectAsState()
     val inviteGroupCategoryList by viewModel.inviteGroupCategoryList.collectAsState()
     PomoroDoTheme {

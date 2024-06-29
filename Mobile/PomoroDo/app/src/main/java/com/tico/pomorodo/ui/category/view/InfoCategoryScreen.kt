@@ -36,7 +36,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.OpenSettings
@@ -55,7 +55,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = viewModel()) {
+fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     val checkGroupMemberSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -167,7 +167,7 @@ fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = viewModel()) {
                         onAllDeleteClicked = { /*TODO*/ },
                         onIncompletedTodoDeleteClicked = { /*TODO*/ },
                         onNoDeleteClicked = { /*TODO*/ },
-                        onDismissRequest = {groupOutDialogVisible = it }
+                        onDismissRequest = { groupOutDialogVisible = it }
                     )
                 }
             }
