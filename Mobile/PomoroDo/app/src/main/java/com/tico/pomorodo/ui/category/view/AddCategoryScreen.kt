@@ -1,7 +1,5 @@
 package com.tico.pomorodo.ui.category.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -51,6 +49,7 @@ import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.common.view.toSelectedUser
 import com.tico.pomorodo.ui.theme.IC_ARROW_RIGHT
 import com.tico.pomorodo.ui.theme.IC_CATEGORY_FOLLOWER_OPEN
@@ -92,10 +91,10 @@ fun AddCategoryScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 18.dp)
+            .padding(horizontal = 18.dp),
+        color = PomoroDoTheme.colorScheme.background,
     ) {
         Column(
-            modifier = Modifier.background(PomoroDoTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             CustomTextField(
@@ -147,7 +146,7 @@ fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: 
         )
         Spacer(modifier = Modifier.weight(1f))
         Row(
-            modifier = Modifier.clickable { onClicked() },
+            modifier = Modifier.clickableWithoutRipple { onClicked() },
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -195,11 +194,7 @@ fun CategoryOpenSettings(
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
             Row(
-                modifier = Modifier.clickable {
-                    if (enabled) {
-                        onClicked()
-                    }
-                },
+                modifier = Modifier.clickableWithoutRipple(enabled) { onClicked() },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

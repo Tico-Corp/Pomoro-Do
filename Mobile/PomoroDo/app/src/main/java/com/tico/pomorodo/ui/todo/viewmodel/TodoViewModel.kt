@@ -6,7 +6,7 @@ import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.User
-import com.tico.pomorodo.ui.todo.view.TodoState
+import com.tico.pomorodo.data.model.TodoState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +20,7 @@ class TodoViewModel() : ViewModel() {
     val userList: StateFlow<List<User>>
         get() = _userList.asStateFlow()
 
-    private var _categoryList = MutableStateFlow(DataSource.todoList)
+    private var _categoryList = MutableStateFlow(DataSource.categoryList)
     val categoryList: StateFlow<List<Category>>
         get() = _categoryList.asStateFlow()
 

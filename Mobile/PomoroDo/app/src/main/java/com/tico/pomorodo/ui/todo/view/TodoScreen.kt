@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.todo.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +22,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -35,6 +35,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.AppState
 import com.tico.pomorodo.ui.common.view.BottomBar
@@ -61,10 +62,10 @@ fun TodoScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 18.dp)
+            .padding(horizontal = 18.dp),
+        color = PomoroDoTheme.colorScheme.background,
     ) {
         Column(
-            modifier = Modifier.background(PomoroDoTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TodoProfileItems(
@@ -99,7 +100,7 @@ fun TodoScreen(
                     Spacer(modifier = Modifier.height(5.dp))
                     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                         repeat(categoryList[categoryIndex].todoList.size) { itemIndex ->
-                            TodoItem(
+                            TodoListItem(
                                 todoData = categoryList[categoryIndex].todoList[itemIndex],
                                 isGroup = categoryList[categoryIndex].groupNumber > 0,
                                 onStateChanged = {
@@ -128,8 +129,8 @@ fun TodoScreenRoute(
 ) {
     val sheetState = rememberModalBottomSheetState()
     var showGroupBottomSheet by remember { mutableStateOf(false) }
-    var selectedCategoryGroupIndex by rememberSaveable { mutableStateOf(-1) }
-    var selectedGroupItemIndex by remember { mutableStateOf(-1) }
+    var selectedCategoryGroupIndex by rememberSaveable { mutableIntStateOf(-1) }
+    var selectedGroupItemIndex by remember { mutableIntStateOf(-1) }
     val selectedProfileIndex by viewModel.selectedProfileIndex.collectAsState()
     val userList by viewModel.userList.collectAsState()
     val categoryList by viewModel.categoryList.collectAsState()

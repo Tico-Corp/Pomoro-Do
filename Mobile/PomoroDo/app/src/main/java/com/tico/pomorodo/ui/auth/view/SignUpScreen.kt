@@ -74,7 +74,7 @@ fun SignUpScreen() {
         Spacer(modifier = Modifier.height(20.dp))
         CustomTextButton(
             text = stringResource(id = R.string.content_button_sign_up),
-            enable = enable,
+            enabled = enable,
             containerColor = PomoroDoTheme.colorScheme.primaryContainer,
             contentColor = PomoroDoTheme.colorScheme.background,
             disabledContainerColor = PomoroDoTheme.colorScheme.gray70,

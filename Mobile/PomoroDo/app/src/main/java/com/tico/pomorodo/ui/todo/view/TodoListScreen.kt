@@ -2,16 +2,15 @@ package com.tico.pomorodo.ui.todo.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,15 +21,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.TodoData
-import com.tico.pomorodo.ui.common.view.CustomDropdownMenuItem
+import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.ui.common.view.CustomTextField
-import com.tico.pomorodo.ui.common.view.DropdownMenuNoPaddingVertical
+import com.tico.pomorodo.ui.common.view.SimpleDropDownMoreInfo
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.clickableWithRipple
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcGroup
 import com.tico.pomorodo.ui.theme.IC_ADD_TODO
@@ -55,13 +57,18 @@ fun TotalFocusStatus(hour: Int, minute: Int, second: Int) {
         ) {
             SimpleText(
                 modifier = Modifier,
-                textId = R.string.title_total_focus_time_text,
+                textId = R.string.title_total_concentration,
                 style = PomoroDoTheme.typography.laundryGothicBold16,
                 color = PomoroDoTheme.colorScheme.onBackground
             )
             SimpleText(
                 modifier = Modifier,
-                text = stringResource(id = R.string.title_total_focus_time, hour, minute, second),
+                text = stringResource(
+                    id = R.string.format_hour_minute_second,
+                    hour,
+                    minute,
+                    second
+                ),
                 color = PomoroDoTheme.colorScheme.primaryContainer,
                 style = PomoroDoTheme.typography.laundryGothicBold16
             )
@@ -94,10 +101,9 @@ fun CategoryTag(
 ) {
     Row(
         modifier = Modifier
-            .clickable { onAddClicked?.invoke() }
+            .clickableWithRipple(5.dp, isAddButton) { onAddClicked?.invoke() }
             .background(
-                PomoroDoTheme.colorScheme.secondaryContainer,
-                RoundedCornerShape(5.dp)
+                PomoroDoTheme.colorScheme.secondaryContainer
             )
             .padding(horizontal = 10.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -172,7 +178,7 @@ fun TodoMake(
 }
 
 @Composable
-fun TodoItem(
+fun TodoListItem(
     todoData: TodoData,
     isFriend: Boolean,
     isGroup: Boolean,
@@ -188,14 +194,15 @@ fun TodoItem(
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TodoCheckBox(state = todoData.state, onStateChanged = onStateChanged)
-        SimpleText(
-            modifier = Modifier.weight(1f),
-            text = todoData.name,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
-            color = PomoroDoTheme.colorScheme.onBackground
+        TodoItem(
+            iconSize = 26,
+            todoData = todoData,
+            enabled = !isFriend,
+            onStateChanged = onStateChanged,
+            textStyle = PomoroDoTheme.typography.laundryGothicRegular14
         )
-        if (isGroup) {
+        Spacer(modifier = Modifier.weight(1f))
+        if (isGroup && !isFriend) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -217,7 +224,7 @@ fun TodoItem(
         }
         if (todoData.likedNumber > 0) {
             Column(
-                modifier = Modifier.clickable {},
+                modifier = Modifier.clickableWithoutRipple(enabled = isFriend) { onLikedClicked() },
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -237,68 +244,70 @@ fun TodoItem(
                 )
             }
         }
-        Column {
-            SimpleIconButton(
-                modifier = Modifier,
-                size = 15,
-                imageVector = PomoroDoTheme.iconPack[IC_TODO_MORE_INFO]!!,
-                contentDescriptionId = R.string.content_ic_todo_more_info,
-                onClickedListener = {
-                    showMoreInfo = true
-                },
-                enabled = true
-            )
-            TodoDropDownMoreInfo(
-                showMoreInfo = showMoreInfo,
-                onShowMoreInfoChange = { showMoreInfo = it },
-                onMoreInfoEditClicked = onMoreInfoEditClicked,
-                onMoreInfoDeleteClicked = onMoreInfoDeleteClicked
-            )
+        if (!isFriend) {
+            Column {
+                SimpleIconButton(
+                    modifier = Modifier,
+                    size = 15,
+                    imageVector = PomoroDoTheme.iconPack[IC_TODO_MORE_INFO]!!,
+                    contentDescriptionId = R.string.content_ic_todo_more_info,
+                    onClickedListener = {
+                        showMoreInfo = true
+                    },
+                    enabled = true
+                )
+                SimpleDropDownMoreInfo(
+                    showMoreInfo = showMoreInfo,
+                    onShowMoreInfoChange = { showMoreInfo = it },
+                    editTextId = R.string.content_todo_more_info_edit,
+                    deleteTextId = R.string.content_todo_more_info_delete,
+                    onMoreInfoEditClicked = onMoreInfoEditClicked,
+                    onMoreInfoDeleteClicked = onMoreInfoDeleteClicked,
+                    paddingValues = PaddingValues(vertical = 10.dp, horizontal = 18.dp)
+                )
+            }
         }
     }
 }
 
 @Composable
-fun TodoDropDownMoreInfo(
-    showMoreInfo: Boolean,
-    onShowMoreInfoChange: (Boolean) -> Unit,
-    onMoreInfoEditClicked: () -> Unit,
-    onMoreInfoDeleteClicked: () -> Unit
+fun TodoItem(
+    iconSize: Int,
+    todoData: TodoData,
+    enabled: Boolean,
+    textStyle: TextStyle,
+    onStateChanged: ((TodoState) -> Unit)? = null
 ) {
-    DropdownMenuNoPaddingVertical(
-        expanded = showMoreInfo,
-        onDismissRequest = { onShowMoreInfoChange(false) },
-        containerColor = PomoroDoTheme.colorScheme.dialogSurface,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
-        CustomDropdownMenuItem(
-            textId = R.string.content_todo_more_info_edit,
-            textStyle = PomoroDoTheme.typography.laundryGothicRegular10,
-            onClick = {
-                onMoreInfoEditClicked()
-                onShowMoreInfoChange(false)
-            },
-            contentPadding = PaddingValues(vertical = 10.dp, horizontal = 18.dp)
-        )
-        HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
-        CustomDropdownMenuItem(
-            textId = R.string.content_todo_more_info_delete,
-            textStyle = PomoroDoTheme.typography.laundryGothicRegular10,
-            onClick = {
-                onMoreInfoDeleteClicked()
-                onShowMoreInfoChange(false)
-            },
-            contentPadding = PaddingValues(vertical = 10.dp, horizontal = 18.dp)
+        TodoCheckBox(
+            size = iconSize,
+            state = todoData.state,
+            enabled = enabled,
+            onStateChanged = { onStateChanged?.invoke(it) })
+        SimpleText(
+            modifier = Modifier,
+            text = todoData.name,
+            style = textStyle,
+            color = PomoroDoTheme.colorScheme.onBackground
         )
     }
 }
 
 @Composable
-private fun TodoCheckBox(state: TodoState, onStateChanged: (TodoState) -> Unit) {
+private fun TodoCheckBox(
+    size: Int,
+    state: TodoState,
+    onStateChanged: (TodoState) -> Unit,
+    enabled: Boolean
+) {
     SimpleIcon(
-        modifier = Modifier.clickable {
+        modifier = Modifier.clickableWithoutRipple(enabled) {
             onStateChanged(state)
         },
-        size = 26,
+        size = size,
         imageVector = when (state) {
             TodoState.UNCHECKED -> PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]!!
             TodoState.GOING -> PomoroDoTheme.iconPack[IC_TODO_GOING]!!
@@ -310,8 +319,4 @@ private fun TodoCheckBox(state: TodoState, onStateChanged: (TodoState) -> Unit) 
             TodoState.CHECKED -> R.string.content_todo_checked
         }
     )
-}
-
-enum class TodoState {
-    UNCHECKED, GOING, CHECKED
 }

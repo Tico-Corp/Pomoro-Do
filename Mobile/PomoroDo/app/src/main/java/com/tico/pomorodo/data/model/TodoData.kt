@@ -1,7 +1,5 @@
 package com.tico.pomorodo.data.model
 
-import com.tico.pomorodo.ui.todo.view.TodoState
-
 data class TodoData(
     val id: String,
     val name: String,
@@ -9,3 +7,7 @@ data class TodoData(
     val completeGroupNumber: Int? = null,
     val likedNumber: Int = 0,
 )
+
+enum class TodoState {
+    UNCHECKED, GOING, CHECKED
+}

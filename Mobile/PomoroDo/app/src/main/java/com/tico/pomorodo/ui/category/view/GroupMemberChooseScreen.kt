@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.category.view
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +51,7 @@ import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.common.view.toSelectedUser
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcGroupSelectedChecked
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcNoSearch
@@ -150,7 +150,7 @@ fun GroupMemberChooseScreen(
         ) {
             itemsIndexed(selectedList) { index, user ->
                 if (user.selected) {
-                    Box(modifier = Modifier.clickable {
+                    Box(modifier = Modifier.clickableWithoutRipple {
                         selectedList[index] = user.copy(selected = false)
                     }) {
                         ProfileVertical(
@@ -228,7 +228,7 @@ fun GroupMemberChooseScreen(
                 itemsIndexed(filteredList) { index, user ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable {
+                        modifier = Modifier.clickableWithoutRipple {
                             val selectedIndex = selectedList.indexOf(user)
                             if (selectedIndex >= 0) {
                                 selectedList[selectedIndex] =

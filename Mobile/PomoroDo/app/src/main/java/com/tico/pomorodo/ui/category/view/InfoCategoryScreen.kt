@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.category.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,9 +42,9 @@ import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
+import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.common.view.SimpleWideTextButton
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.common.view.toSelectedUser
 import com.tico.pomorodo.ui.theme.IC_OK
@@ -64,7 +63,8 @@ fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = viewModel()) {
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showCheckGroupMemberBottomSheet by rememberSaveable { mutableStateOf(false) }
     val isGroupReader by rememberSaveable { mutableStateOf(false) }
-    var dialogVisible by rememberSaveable { mutableStateOf(false) }
+    var groupDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     val title by viewModel.title.collectAsState()
     val type by viewModel.type.collectAsState()
@@ -152,13 +152,22 @@ fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = viewModel()) {
                         showCheckGroupMemberBottomSheet = it
                     },
                     isGroupReader = isGroupReader,
-                    onGroupDeleteClicked = { dialogVisible = it },
-                    onGroupOutClicked = {}
+                    onGroupDeleteClicked = { groupDeleteDialogVisible = true },
+                    onGroupOutClicked = { groupOutDialogVisible = true }
                 )
-                if (dialogVisible) {
+                if (groupDeleteDialogVisible) {
                     GroupDeleteFirstDialog(
                         onConfirmation = { },
-                        onDismissRequest = { dialogVisible = it }
+                        onDismissRequest = { groupDeleteDialogVisible = it }
+                    )
+                }
+                if (groupOutDialogVisible) {
+                    GroupOutDialog(
+                        groupName = title,
+                        onAllDeleteClicked = { /*TODO*/ },
+                        onIncompletedTodoDeleteClicked = { /*TODO*/ },
+                        onNoDeleteClicked = { /*TODO*/ },
+                        onDismissRequest = {groupOutDialogVisible = it }
                     )
                 }
             }
@@ -178,8 +187,8 @@ fun InfoCategoryScreen(
     onShowOpenSettingsBottomSheetChange: (Boolean) -> Unit,
     onGroupMemberChooseClicked: () -> Unit,
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
-    onGroupOutClicked: (Boolean) -> Unit,
-    onGroupDeleteClicked: (Boolean) -> Unit,
+    onGroupOutClicked: () -> Unit,
+    onGroupDeleteClicked: () -> Unit,
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
@@ -195,10 +204,10 @@ fun InfoCategoryScreen(
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 18.dp)
+            .padding(horizontal = 18.dp),
+        color = PomoroDoTheme.colorScheme.background,
     ) {
         Column(
-            modifier = Modifier.background(PomoroDoTheme.colorScheme.background),
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             CustomTextField(
@@ -231,13 +240,13 @@ fun InfoCategoryScreen(
             )
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             if (type) {
-                SimpleWideTextButton(
-                    containColor = PomoroDoTheme.colorScheme.error50,
-                    textId = R.string.content_do_delete,
+                CustomTextButton(
+                    text = stringResource(id = R.string.content_do_delete),
+                    containerColor = PomoroDoTheme.colorScheme.error50,
+                    contentColor = Color.White,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                    textColor = Color.White,
-                    borderColor = Color.Unspecified,
-                    onClicked = {}
+                    verticalPadding = 12.dp,
+                    onClick = {}
                 )
             } else {
                 CategoryGroupNumber(
@@ -254,31 +263,35 @@ fun InfoCategoryScreen(
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
                 if (isGroupReader) {
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        SimpleWideTextButton(
+                        CustomTextButton(
                             modifier = Modifier.weight(1f),
-                            textId = R.string.content_group_out,
+                            text = stringResource(id = R.string.content_group_out),
+                            containerColor = Color.Unspecified,
                             textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                            textColor = PomoroDoTheme.colorScheme.error50,
+                            contentColor = PomoroDoTheme.colorScheme.error50,
                             borderColor = PomoroDoTheme.colorScheme.error50,
-                            onClicked = { onGroupOutClicked(true) }
+                            onClick = onGroupOutClicked,
+                            verticalPadding = 12.dp,
                         )
-                        SimpleWideTextButton(
+                        CustomTextButton(
                             modifier = Modifier.weight(1f),
-                            containColor = PomoroDoTheme.colorScheme.error50,
-                            textId = R.string.content_do_delete,
+                            containerColor = PomoroDoTheme.colorScheme.error50,
+                            text = stringResource(id = R.string.content_do_delete),
                             textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                            textColor = Color.White,
-                            borderColor = Color.Unspecified,
-                            onClicked = { onGroupDeleteClicked(true) }
+                            contentColor = Color.White,
+                            onClick = onGroupDeleteClicked,
+                            verticalPadding = 12.dp,
                         )
                     }
                 } else {
-                    SimpleWideTextButton(
-                        textId = R.string.content_group_out,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                        textColor = PomoroDoTheme.colorScheme.error50,
+                    CustomTextButton(
+                        text = stringResource(id = R.string.content_group_out),
+                        containerColor = Color.Unspecified,
+                        contentColor = PomoroDoTheme.colorScheme.error50,
                         borderColor = PomoroDoTheme.colorScheme.error50,
-                        onClicked = { onGroupOutClicked(true) }
+                        textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+                        onClick = onGroupOutClicked,
+                        verticalPadding = 12.dp,
                     )
                 }
             }

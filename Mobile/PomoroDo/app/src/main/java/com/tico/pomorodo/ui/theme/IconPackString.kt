@@ -34,3 +34,5 @@ const val IC_SELECTED_GROUP_MEMBER_CANCEL = "ic_selected_group_member_cancel"
 const val IC_GROUP_SELECTED_UNCHECKED = "ic_group_selected_unchecked"
 const val IC_ARROW_RIGHT = "ic_arrow_right"
 const val IC_ALL_CLEAN = "ic_all_clean"
+
+const val IC_TIMELINE_MORE_INFO = "ic_timeline_more_info"
