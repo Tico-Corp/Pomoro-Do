@@ -75,6 +75,6 @@ jobs:
             docker rmi ${{ env.IMAGE_NAME }} || true  # 기존 이미지 삭제
             docker pull ${{ env.IMAGE_NAME }}  # 최신 이미지 다운로드
             docker run -d --name ${{ env.CONTAINER_NAME }} \
-              -v /etc/letsencrypt/:/etc/letsencrypt/ \  # 인증서 마운트
-              -p 80:80 -p 443:443 \  # 포트 매핑
-              ${{ env.IMAGE_NAME }}  # 새로운 컨테이너 실행
+              -v /etc/letsencrypt/:/etc/letsencrypt/ \
+              -p 80:80 -p 443:443 \
+              ${{ env.IMAGE_NAME }}
