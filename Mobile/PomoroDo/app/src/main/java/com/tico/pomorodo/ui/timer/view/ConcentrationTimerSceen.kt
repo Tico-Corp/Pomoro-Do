@@ -34,7 +34,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun ConcentrationTimerScreen(
-    mainNavController: NavController,
+    navController: NavController,
     timerViewModel: TimerViewModel,
 ) {
     val concentrationTime by timerViewModel.concentrationTime.collectAsState()
