@@ -33,7 +33,7 @@ class TimerViewModel @Inject constructor() : ViewModel() {
         _concentrationGoal.value = Time(hour, minute, second)
     }
 
-    fun setTimerMaxValue(hour: Int, minute: Int, second: Int) {
-        _timerMaxValue.value = hour * 60 * 60 + minute * 60 + second
+    fun setTimerMaxValue(hour: Int, minute: Int) {
+        _timerMaxValue.value = hour * 60 * 60 + minute * 60
     }
 }
