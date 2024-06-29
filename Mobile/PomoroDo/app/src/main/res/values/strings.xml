@@ -2,13 +2,11 @@
     <string name="app_name">PomoroDo</string>
     // splash
     <string name="content_ic_title">뽀모로 Do! 타이틀 로고</string>
+
     // log in
     <string name="content_ic_logo_google">logo of google</string>
     <string name="content_log_in_with_google">Log in with Google</string>
-    // bottom navigation bar
-    <string name="title_timer">타이머</string>
-    <string name="title_todo">할 일 목록</string>
-    <string name="title_my_info">내 정보</string>
+
     // sign up
     <string name="title_sign_up">회원 정보 입력</string>
     <string name="content_ic_profile_default">default icon in profile change page</string>
@@ -16,6 +14,7 @@
     <string name="content_user_name_label">닉네임</string>
     <string name="content_user_name_placeholder">닉네임을 입력해주세요.</string>
     <string name="content_button_sign_up">가입</string>
+
     // pomodoro timer
     <string name="content_ic_timer_pin">타이머의 중심 아이콘</string>
     <string name="title_concentration_time">집중 시간</string>
@@ -28,9 +27,7 @@
     <string name="title_dialog_edit_break_time">휴식 시간 설정</string>
     <string name="content_error_time_limit">설정 가능한 최대 시간(%s시간)을 초과했습니다.</string>
     <string name="title_concentration_goal_dialog">목표 집중 시간 설정</string>
-    // time format
-    <string name="format_hour_minute">%02d:%02d</string>
-    <string name="format_hour_minute_second">%02d:%02d:%02d</string>
+
     // todo
     <string name="content_calendar_back">이전달</string>
     <string name="content_calendar_front">다음달</string>
@@ -118,9 +115,25 @@
     <string name="content_group_delete_first_message">그룹을 삭제하시겠습니까?\n모든 그룹원들의 할 일이 모두 삭제됩니다.</string>
     <string name="content_do_delete">삭제하기</string>
 
+    // timer - concentration mode
+    <string name="title_concentration_time_left">집중 시간</string>
+    <string name="content_button_finish_concentration">집중 종료</string>
+    <string name="title_finish_concentration">집중 모드 종료</string>
+    <string name="content_finish_concentration">집중 모드를 종료하시겠습니까?</string>
+
     // common
     <string name="content_next">다음</string>
     <string name="content_cancel">취소</string>
     <string name="content_ok">확인</string>
     <string name="content_delete">삭제</string>
+    <string name="content_finish">종료</string>
+
+    // time format
+    <string name="format_hour_minute">%02d:%02d</string>
+    <string name="format_hour_minute_second">%02d:%02d:%02d</string>
+
+    // bottom navigation bar
+    <string name="title_timer">타이머</string>
+    <string name="title_todo">할 일 목록</string>
+    <string name="title_my_info">내 정보</string>
 </resources>
