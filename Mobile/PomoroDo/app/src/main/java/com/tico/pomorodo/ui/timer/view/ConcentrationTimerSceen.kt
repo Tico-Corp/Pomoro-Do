@@ -108,8 +108,8 @@ fun ConcentrationTimerScreen(
 
         CustomTextButton(
             text = stringResource(R.string.content_button_finish_concentration),
-            backgroundColor = PomoroDoTheme.colorScheme.primaryContainer,
-            textColor = Color.White,
+            containerColor = PomoroDoTheme.colorScheme.primaryContainer,
+            contentColor = Color.White,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             verticalPadding = 12.dp
         ) {
