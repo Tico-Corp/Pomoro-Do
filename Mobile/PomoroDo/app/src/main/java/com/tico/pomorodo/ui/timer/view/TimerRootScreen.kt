@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.navigation.navigateToConcentrationMode
@@ -29,7 +28,7 @@ import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun TimerRootScreen(parentNavController: NavController, timerViewModel: TimerViewModel) {
+fun TimerRootScreen(timerViewModel: TimerViewModel, navigate: () -> Unit) {
     val concentrationTime by timerViewModel.concentrationTime.collectAsState()
     val breakTime by timerViewModel.breakTime.collectAsState()
     val concentrationGoal by timerViewModel.concentrationGoal.collectAsState()
@@ -88,7 +87,7 @@ fun TimerRootScreen(parentNavController: NavController, timerViewModel: TimerVie
                     concentrationTime.minute,
                     0
                 )
-                parentNavController.navigateToConcentrationMode()
+                navigate()
             }
         }
     }

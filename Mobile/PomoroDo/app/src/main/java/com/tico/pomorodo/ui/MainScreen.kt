@@ -13,6 +13,10 @@ import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.navigation.concentrationModeScreen
 import com.tico.pomorodo.navigation.homeScreen
 import com.tico.pomorodo.navigation.logInScreen
+import com.tico.pomorodo.navigation.navigateToConcentrationMode
+import com.tico.pomorodo.navigation.navigateToHome
+import com.tico.pomorodo.navigation.navigateToLogIn
+import com.tico.pomorodo.navigation.navigateToSignUp
 import com.tico.pomorodo.navigation.signUpScreen
 import com.tico.pomorodo.navigation.splashScreen
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -35,17 +39,14 @@ fun MainScreen() {
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                splashScreen(navController = mainNavController)
-                logInScreen(navController = mainNavController)
-                signUpScreen(navController = mainNavController)
+                splashScreen(navigate = mainNavController::navigateToLogIn)
+                logInScreen(navigate = mainNavController::navigateToSignUp)
+                signUpScreen(navigate = mainNavController::navigateToHome)
                 homeScreen(
-                    navController = mainNavController,
-                    timerViewModel = timerViewModel
+                    timerViewModel = timerViewModel,
+                    navigateToConcentrationMode = mainNavController::navigateToConcentrationMode
                 )
-                concentrationModeScreen(
-                    navController = mainNavController,
-                    timerViewModel = timerViewModel
-                )
+                concentrationModeScreen(timerViewModel = timerViewModel)
             }
         }
     }

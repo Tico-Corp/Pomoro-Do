@@ -33,65 +33,68 @@ fun NavController.navigateToConcentrationMode() =
 
 // home navigation - composable route
 fun NavGraphBuilder.timerScreen(
-    parentNavController: NavController,
-    timerViewModel: TimerViewModel
+    timerViewModel: TimerViewModel,
+    navigate: () -> Unit
 ) {
     composable(
         route = TIMER_ROUTE
     ) {
-        TimerRootScreen(parentNavController = parentNavController, timerViewModel = timerViewModel)
+        TimerRootScreen(
+            navigate = navigate,
+            timerViewModel = timerViewModel
+        )
     }
 }
 
-fun NavGraphBuilder.todoScreen(parentNavController: NavController) {
+fun NavGraphBuilder.todoScreen() {
     composable(
         route = TODO_ROUTE
     ) {
-        TodoScreen(parentNavController)
+        TodoScreen()
     }
 }
 
-fun NavGraphBuilder.myInfoScreen(parentNavController: NavController) {
+fun NavGraphBuilder.myInfoScreen() {
     composable(
         route = MY_INFO_ROUTE
     ) {
-        MyInfoScreen(parentNavController)
+        MyInfoScreen()
     }
 }
 
 // home navigation - composable route
-fun NavGraphBuilder.splashScreen(navController: NavController) {
+fun NavGraphBuilder.splashScreen(navigate: () -> Unit) {
     composable(route = MainNavigationDestination.Splash.name) {
-        SplashScreen(navController = navController)
+        SplashScreen(navigate = navigate)
     }
 }
 
-fun NavGraphBuilder.logInScreen(navController: NavController) {
+fun NavGraphBuilder.logInScreen(navigate: () -> Unit) {
     composable(route = MainNavigationDestination.LogIn.name) {
-        LogInScreen(navController = navController)
+        LogInScreen(navigate = navigate)
     }
 }
 
-fun NavGraphBuilder.signUpScreen(navController: NavController) {
+fun NavGraphBuilder.signUpScreen(navigate: () -> Unit) {
     composable(route = MainNavigationDestination.SignUp.name) {
-        SignUpScreen(navController = navController)
+        SignUpScreen(navigate = navigate)
     }
 }
 
-fun NavGraphBuilder.homeScreen(navController: NavController, timerViewModel: TimerViewModel) {
-    composable(route = MainNavigationDestination.Home.name) {
-        HomeScreen(navController = navController, timerViewModel = timerViewModel)
-    }
-}
-
-fun NavGraphBuilder.concentrationModeScreen(
-    navController: NavController,
-    timerViewModel: TimerViewModel
+fun NavGraphBuilder.homeScreen(
+    timerViewModel: TimerViewModel,
+    navigateToConcentrationMode: () -> Unit,
 ) {
-    composable(route = MainNavigationDestination.ConcentrationMode.name) {
-        ConcentrationTimerScreen(
-            navController = navController,
+    composable(route = MainNavigationDestination.Home.name) {
+        HomeScreen(
+            navigateToConcentrationMode = navigateToConcentrationMode,
             timerViewModel = timerViewModel
         )
+    }
+}
+
+fun NavGraphBuilder.concentrationModeScreen(timerViewModel: TimerViewModel) {
+    composable(route = MainNavigationDestination.ConcentrationMode.name) {
+        ConcentrationTimerScreen(timerViewModel = timerViewModel)
     }
 }

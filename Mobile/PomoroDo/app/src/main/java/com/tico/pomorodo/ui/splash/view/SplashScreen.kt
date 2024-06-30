@@ -9,16 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.tico.pomorodo.R
-import com.tico.pomorodo.navigation.navigateToLogIn
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTitle
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navigate: () -> Unit) {
     PomoroDoTheme {
         Surface(color = PomoroDoTheme.colorScheme.surface) {
             Icon(
@@ -27,7 +25,7 @@ fun SplashScreen(navController: NavController) {
                 modifier = Modifier
                     .padding(horizontal = 30.dp)
                     .fillMaxWidth()
-                    .clickableWithoutRipple { navController.navigateToLogIn() },
+                    .clickableWithoutRipple { navigate() },
                 tint = Color.Unspecified
             )
         }

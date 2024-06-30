@@ -25,16 +25,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.tico.pomorodo.R
-import com.tico.pomorodo.navigation.navigateToSignUp
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcLogoGoogle
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTitle
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun LogInScreen(navController: NavController) {
+fun LogInScreen(navigate: () -> Unit) {
     Surface(modifier = Modifier.fillMaxSize(), color = PomoroDoTheme.colorScheme.surface) {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
             Icon(
@@ -52,7 +50,7 @@ fun LogInScreen(navController: NavController) {
                     .padding(horizontal = 57.dp),
                 contentAlignment = Alignment.Center
             ) {
-                LogInButton(onClick = navController::navigateToSignUp)
+                LogInButton(onClick = navigate)
             }
         }
     }

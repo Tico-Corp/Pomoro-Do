@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.AppNavHost
 import com.tico.pomorodo.navigation.TIMER_ROUTE
@@ -12,7 +11,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
+fun HomeScreen(timerViewModel: TimerViewModel, navigateToConcentrationMode: () -> Unit) {
     val homeNavController = rememberNavController()
     val appState = AppState(homeNavController)
 
@@ -22,10 +21,10 @@ fun HomeScreen(navController: NavController, timerViewModel: TimerViewModel) {
     ) { innerPadding ->
         AppNavHost(
             appState = appState,
-            parentNavController = navController,
             Modifier.padding(innerPadding),
             startDestination = TIMER_ROUTE,
-            timerViewModel = timerViewModel
+            timerViewModel = timerViewModel,
+            navigateToConcentrationMode = navigateToConcentrationMode
         )
     }
 }

@@ -23,7 +23,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
@@ -33,10 +32,7 @@ import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun ConcentrationTimerScreen(
-    navController: NavController,
-    timerViewModel: TimerViewModel,
-) {
+fun ConcentrationTimerScreen(timerViewModel: TimerViewModel) {
     val concentrationTime by timerViewModel.concentrationTime.collectAsState()
     val maxValue by timerViewModel.timerMaxValue.collectAsState()
     var hour by remember { mutableIntStateOf(concentrationTime.hour) }

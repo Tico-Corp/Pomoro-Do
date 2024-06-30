@@ -6,12 +6,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavController
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun TodoScreen(parentNavController: NavController) {
+fun TodoScreen() {
     Surface(modifier = Modifier.fillMaxSize()) {
         Text(
             text = stringResource(id = R.string.title_todo),
@@ -21,7 +20,7 @@ fun TodoScreen(parentNavController: NavController) {
 }
 
 @Composable
-fun MyInfoScreen(parentNavController: NavController) {
+fun MyInfoScreen() {
     Surface(modifier = Modifier.fillMaxSize()) {
         Text(
             text = stringResource(id = R.string.title_my_info),
