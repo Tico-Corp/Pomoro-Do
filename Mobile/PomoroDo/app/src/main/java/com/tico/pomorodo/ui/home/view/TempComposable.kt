@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui
+package com.tico.pomorodo.ui.home.view
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface

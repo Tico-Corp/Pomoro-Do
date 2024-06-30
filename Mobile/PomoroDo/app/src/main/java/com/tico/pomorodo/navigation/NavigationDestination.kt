@@ -10,16 +10,26 @@ enum class BottomNavigationDestination(
     val iconString: String,
     @StringRes val iconTextId: Int,
 ) {
-    TIMER(
+    Timer(
         iconString = IC_BOTTOM_TIMER,
         iconTextId = R.string.title_timer,
     ),
-    TODO(
+    Todo(
         iconString = IC_BOTTOM_TODO,
         iconTextId = R.string.title_todo,
     ),
-    MY_INFO(
+    MyInfo(
         iconString = IC_BOTTOM_MY_INFO,
         iconTextId = R.string.title_my_info,
     )
+}
+
+// 이곳에 디바이스 전체 화면을 차지하는 화면들을 넣어주세요.(하단 바 없는 화면들)
+enum class MainNavigationDestination {
+    Splash,
+    LogIn,
+    SignUp,
+    Home,
+    ConcentrationMode,
+    BreakMode,
 }

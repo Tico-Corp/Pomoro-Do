@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.SelectedUser
@@ -65,7 +65,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Preview
 @Composable
-fun GroupMemberChooseScreenRoute(viewModel: CategoryViewModel = viewModel()) {
+fun GroupMemberChooseScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
     val selectedList =
         remember { mutableStateListOf<SelectedUser>().apply { addAll(DataSource.userList.map { it.toSelectedUser() }) } }
     var searchName by rememberSaveable { mutableStateOf("") }

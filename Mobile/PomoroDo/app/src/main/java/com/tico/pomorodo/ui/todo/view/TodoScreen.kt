@@ -31,15 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
-import com.tico.pomorodo.ui.AppState
-import com.tico.pomorodo.ui.common.view.BottomBar
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
+import com.tico.pomorodo.ui.home.view.AppState
+import com.tico.pomorodo.ui.home.view.BottomBar
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.todo.viewmodel.TodoViewModel
 
@@ -125,7 +125,7 @@ fun TodoScreen(
 @Preview
 @Composable
 fun TodoScreenRoute(
-    viewModel: TodoViewModel = viewModel()
+    viewModel: TodoViewModel = hiltViewModel()
 ) {
     val sheetState = rememberModalBottomSheetState()
     var showGroupBottomSheet by remember { mutableStateOf(false) }

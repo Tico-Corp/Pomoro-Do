@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcLogoGoogle
@@ -32,10 +31,8 @@ import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTitle
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
-@Preview(showBackground = true, showSystemUi = true)
-
 @Composable
-fun LogInScreen() {
+fun LogInScreen(navigate: () -> Unit) {
     Surface(modifier = Modifier.fillMaxSize(), color = PomoroDoTheme.colorScheme.surface) {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
             Icon(
@@ -53,16 +50,16 @@ fun LogInScreen() {
                     .padding(horizontal = 57.dp),
                 contentAlignment = Alignment.Center
             ) {
-                LogInButton()
+                LogInButton(onClick = navigate)
             }
         }
     }
 }
 
 @Composable
-fun LogInButton() {
+fun LogInButton(onClick: () -> Unit) {
     Button(
-        onClick = {/*TODO*/ },
+        onClick = { onClick() },
         modifier = Modifier
             .border(
                 width = 1.dp,

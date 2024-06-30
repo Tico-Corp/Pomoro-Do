@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.timer.view
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,20 +17,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
+import kotlinx.coroutines.runBlocking
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun TimerRootScreen() {
-    val timerViewModel: TimerViewModel = viewModel()
+fun TimerRootScreen(navigate: () -> Unit) {
+    val timerViewModel: TimerViewModel = hiltViewModel()
     val concentrationTime by timerViewModel.concentrationTime.collectAsState()
     val breakTime by timerViewModel.breakTime.collectAsState()
     val concentrationGoal by timerViewModel.concentrationGoal.collectAsState()
@@ -82,7 +80,17 @@ fun TimerRootScreen() {
             contentColor = Color.White,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             verticalPadding = 12.dp
-        ) { /*TODO*/ }
+        ) {
+            timerViewModel.setTimerMaxValue(concentrationTime.hour, concentrationTime.minute)
+            runBlocking {
+                timerViewModel.setConcentrationTime(
+                    concentrationTime.hour,
+                    concentrationTime.minute,
+                    0
+                )
+                navigate()
+            }
+        }
     }
 
     if (editConcentrationTimerDialogVisible) {
@@ -180,7 +188,7 @@ fun TodayConcentrationInformation(
             second = concentrationGoal.second!!,
             textColor = PomoroDoTheme.colorScheme.onBackground,
             spaceDp = 4.dp,
-            textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
+            titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             onClick = onConcentrationGoalClick
         )
 
@@ -197,7 +205,7 @@ fun TodayConcentrationInformation(
                 second = 0,
                 textColor = PomoroDoTheme.colorScheme.onBackground,
                 spaceDp = 4.dp,
-                textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
+                titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             )
 
             Spacer(modifier = Modifier.width(50.dp))
@@ -209,7 +217,7 @@ fun TodayConcentrationInformation(
                 second = 0,
                 textColor = PomoroDoTheme.colorScheme.onBackground,
                 spaceDp = 4.dp,
-                textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
+                titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             )
         }
     }

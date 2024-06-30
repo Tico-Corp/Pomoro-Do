@@ -53,7 +53,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.theme.laundryGothic
 
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(navigate: () -> Unit) {
     val text = rememberSaveable { mutableStateOf("") }
     val enable = text.value.isNotBlank()
 
@@ -80,8 +80,9 @@ fun SignUpScreen() {
             disabledContainerColor = PomoroDoTheme.colorScheme.gray70,
             disabledContentColor = PomoroDoTheme.colorScheme.background,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
-            verticalPadding = 12.dp
-        ) { /*TODO*/ }
+            verticalPadding = 12.dp,
+            onClick = navigate
+        )
     }
 }
 

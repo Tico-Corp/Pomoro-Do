@@ -38,7 +38,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.OpenSettings
@@ -274,7 +274,7 @@ private fun CategoryType(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun AddCategoryScreenRoute(viewModel: CategoryViewModel = viewModel()) {
+fun AddCategoryScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()

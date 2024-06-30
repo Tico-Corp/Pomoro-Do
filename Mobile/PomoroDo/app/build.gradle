@@ -74,7 +74,11 @@ dependencies {
     // url 을 사용한 이미지 로딩을 위한 라이브러리
     implementation libs.glide.compose
 
+    // 타이머 시간 변경을 위한 wheel time picker 라이브러리
     implementation libs.compose.wheel.picker
+
+    // 네비게이션 작업을 위한 라이브러리
+    implementation libs.androidx.hilt.navigation.compose
 }
 
 // Allow references to generated code

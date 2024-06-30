@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.common.view
+package com.tico.pomorodo.ui.home.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.rememberNavController
-import com.tico.pomorodo.ui.AppState
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
