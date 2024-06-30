@@ -10,15 +10,15 @@ enum class BottomNavigationDestination(
     val iconString: String,
     @StringRes val iconTextId: Int,
 ) {
-    TIMER(
+    Timer(
         iconString = IC_BOTTOM_TIMER,
         iconTextId = R.string.title_timer,
     ),
-    TODO(
+    Todo(
         iconString = IC_BOTTOM_TODO,
         iconTextId = R.string.title_todo,
     ),
-    MY_INFO(
+    MyInfo(
         iconString = IC_BOTTOM_MY_INFO,
         iconTextId = R.string.title_my_info,
     )
@@ -32,10 +32,4 @@ enum class MainNavigationDestination {
     Home,
     ConcentrationMode,
     BreakMode,
-}
-
-enum class HomeNavigationDestination {
-    Timer,
-    Todo,
-    MyPage,
 }

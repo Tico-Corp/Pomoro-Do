@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.AppNavHost
-import com.tico.pomorodo.navigation.HomeNavigationDestination
+import com.tico.pomorodo.navigation.BottomNavigationDestination
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
@@ -21,7 +21,7 @@ fun HomeScreen(navigateToConcentrationMode: () -> Unit) {
         AppNavHost(
             appState = appState,
             Modifier.padding(innerPadding),
-            startDestination = HomeNavigationDestination.Timer.name,
+            startDestination = BottomNavigationDestination.Timer.name,
             navigateToConcentrationMode = navigateToConcentrationMode
         )
     }

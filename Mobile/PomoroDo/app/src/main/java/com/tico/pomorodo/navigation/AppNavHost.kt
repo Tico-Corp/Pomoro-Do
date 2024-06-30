@@ -9,7 +9,7 @@ import com.tico.pomorodo.ui.home.view.AppState
 fun AppNavHost(
     appState: AppState,
     modifier: Modifier = Modifier,
-    startDestination: String = HomeNavigationDestination.Timer.name,
+    startDestination: String = BottomNavigationDestination.Timer.name,
     navigateToConcentrationMode: () -> Unit
 ) {
     val navController = appState.navController

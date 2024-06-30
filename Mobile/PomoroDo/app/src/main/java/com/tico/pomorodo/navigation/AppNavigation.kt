@@ -15,13 +15,13 @@ import com.tico.pomorodo.ui.timer.view.TimerRootScreen
 
 // home navigation - navigate
 fun NavController.navigateToTimer(navOptions: NavOptions) =
-    navigate(HomeNavigationDestination.Timer.name, navOptions)
+    navigate(BottomNavigationDestination.Timer.name, navOptions)
 
 fun NavController.navigateToTodo(navOptions: NavOptions) =
-    navigate(HomeNavigationDestination.Todo.name, navOptions)
+    navigate(BottomNavigationDestination.Todo.name, navOptions)
 
 fun NavController.navigateToMyInfo(navOptions: NavOptions) =
-    navigate(HomeNavigationDestination.MyPage.name, navOptions)
+    navigate(BottomNavigationDestination.MyInfo.name, navOptions)
 
 // main navigation - navigate
 fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name)
@@ -33,19 +33,19 @@ fun NavController.navigateToConcentrationMode() =
 
 // home navigation - composable route
 fun NavGraphBuilder.timerScreen(navigate: () -> Unit) {
-    composable(route = HomeNavigationDestination.Timer.name) {
+    composable(route = BottomNavigationDestination.Timer.name) {
         TimerRootScreen(navigate = navigate)
     }
 }
 
 fun NavGraphBuilder.todoScreen() {
-    composable(route = HomeNavigationDestination.Todo.name) {
+    composable(route = BottomNavigationDestination.Todo.name) {
         TodoScreen()
     }
 }
 
 fun NavGraphBuilder.myInfoScreen() {
-    composable(route = HomeNavigationDestination.MyPage.name) {
+    composable(route = BottomNavigationDestination.MyInfo.name) {
         MyInfoScreen()
     }
 }
