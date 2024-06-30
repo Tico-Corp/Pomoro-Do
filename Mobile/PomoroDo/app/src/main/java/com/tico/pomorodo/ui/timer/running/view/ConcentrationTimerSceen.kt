@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.timer.view
+package com.tico.pomorodo.ui.timer.running.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,8 @@ import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
+import com.tico.pomorodo.ui.timer.setup.view.CustomCircularTimer
+import com.tico.pomorodo.ui.timer.setup.viewmodel.TimerViewModel
 import kotlinx.coroutines.delay
 
 @Composable

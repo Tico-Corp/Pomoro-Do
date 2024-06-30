@@ -10,8 +10,8 @@ import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.home.view.MyInfoScreen
 import com.tico.pomorodo.ui.home.view.TodoScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
-import com.tico.pomorodo.ui.timer.view.ConcentrationTimerScreen
-import com.tico.pomorodo.ui.timer.view.TimerRootScreen
+import com.tico.pomorodo.ui.timer.running.view.ConcentrationTimerScreen
+import com.tico.pomorodo.ui.timer.setup.view.TimerRootScreen
 
 // home navigation - navigate
 fun NavController.navigateToTimer(navOptions: NavOptions) =

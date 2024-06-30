@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.timer.viewmodel
+package com.tico.pomorodo.ui.timer.setup.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.model.Time
