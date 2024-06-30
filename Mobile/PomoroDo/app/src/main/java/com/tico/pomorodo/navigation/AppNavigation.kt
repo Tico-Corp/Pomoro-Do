@@ -12,16 +12,16 @@ import com.tico.pomorodo.ui.home.view.TodoScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.view.ConcentrationTimerScreen
 import com.tico.pomorodo.ui.timer.view.TimerRootScreen
-import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
-
-const val TIMER_ROUTE = "timer_route"
-const val TODO_ROUTE = "todo_route"
-const val MY_INFO_ROUTE = "my_info_route"
 
 // home navigation - navigate
-fun NavController.navigateToTimer(navOptions: NavOptions) = navigate(TIMER_ROUTE, navOptions)
-fun NavController.navigateToTodo(navOptions: NavOptions) = navigate(TODO_ROUTE, navOptions)
-fun NavController.navigateToMyInfo(navOptions: NavOptions) = navigate(MY_INFO_ROUTE, navOptions)
+fun NavController.navigateToTimer(navOptions: NavOptions) =
+    navigate(HomeNavigationDestination.Timer.name, navOptions)
+
+fun NavController.navigateToTodo(navOptions: NavOptions) =
+    navigate(HomeNavigationDestination.Todo.name, navOptions)
+
+fun NavController.navigateToMyInfo(navOptions: NavOptions) =
+    navigate(HomeNavigationDestination.MyPage.name, navOptions)
 
 // main navigation - navigate
 fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name)
@@ -32,32 +32,20 @@ fun NavController.navigateToConcentrationMode() =
 
 
 // home navigation - composable route
-fun NavGraphBuilder.timerScreen(
-    timerViewModel: TimerViewModel,
-    navigate: () -> Unit
-) {
-    composable(
-        route = TIMER_ROUTE
-    ) {
-        TimerRootScreen(
-            navigate = navigate,
-            timerViewModel = timerViewModel
-        )
+fun NavGraphBuilder.timerScreen(navigate: () -> Unit) {
+    composable(route = HomeNavigationDestination.Timer.name) {
+        TimerRootScreen(navigate = navigate)
     }
 }
 
 fun NavGraphBuilder.todoScreen() {
-    composable(
-        route = TODO_ROUTE
-    ) {
+    composable(route = HomeNavigationDestination.Todo.name) {
         TodoScreen()
     }
 }
 
 fun NavGraphBuilder.myInfoScreen() {
-    composable(
-        route = MY_INFO_ROUTE
-    ) {
+    composable(route = HomeNavigationDestination.MyPage.name) {
         MyInfoScreen()
     }
 }
@@ -81,20 +69,14 @@ fun NavGraphBuilder.signUpScreen(navigate: () -> Unit) {
     }
 }
 
-fun NavGraphBuilder.homeScreen(
-    timerViewModel: TimerViewModel,
-    navigateToConcentrationMode: () -> Unit,
-) {
+fun NavGraphBuilder.homeScreen(navigateToConcentrationMode: () -> Unit) {
     composable(route = MainNavigationDestination.Home.name) {
-        HomeScreen(
-            navigateToConcentrationMode = navigateToConcentrationMode,
-            timerViewModel = timerViewModel
-        )
+        HomeScreen(navigateToConcentrationMode = navigateToConcentrationMode)
     }
 }
 
-fun NavGraphBuilder.concentrationModeScreen(timerViewModel: TimerViewModel) {
+fun NavGraphBuilder.concentrationModeScreen() {
     composable(route = MainNavigationDestination.ConcentrationMode.name) {
-        ConcentrationTimerScreen(timerViewModel = timerViewModel)
+        ConcentrationTimerScreen()
     }
 }

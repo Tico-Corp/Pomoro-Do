@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.ui.common.view.CustomTextButton
@@ -27,7 +28,8 @@ import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun TimerRootScreen(timerViewModel: TimerViewModel, navigate: () -> Unit) {
+fun TimerRootScreen(navigate: () -> Unit) {
+    val timerViewModel: TimerViewModel = hiltViewModel()
     val concentrationTime by timerViewModel.concentrationTime.collectAsState()
     val breakTime by timerViewModel.breakTime.collectAsState()
     val concentrationGoal by timerViewModel.concentrationGoal.collectAsState()

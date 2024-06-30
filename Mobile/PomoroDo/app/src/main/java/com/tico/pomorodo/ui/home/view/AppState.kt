@@ -7,9 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navOptions
 import com.tico.pomorodo.navigation.BottomNavigationDestination
-import com.tico.pomorodo.navigation.MY_INFO_ROUTE
-import com.tico.pomorodo.navigation.TIMER_ROUTE
-import com.tico.pomorodo.navigation.TODO_ROUTE
+import com.tico.pomorodo.navigation.HomeNavigationDestination
 import com.tico.pomorodo.navigation.navigateToMyInfo
 import com.tico.pomorodo.navigation.navigateToTimer
 import com.tico.pomorodo.navigation.navigateToTodo
@@ -23,9 +21,9 @@ class AppState(val navController: NavHostController) {
     val currentTopLevelDestination: BottomNavigationDestination?
         @Composable
         get() = when (currentDestination?.route) {
-            TIMER_ROUTE -> BottomNavigationDestination.TIMER
-            TODO_ROUTE -> BottomNavigationDestination.TODO
-            MY_INFO_ROUTE -> BottomNavigationDestination.MY_INFO
+            HomeNavigationDestination.Timer.name -> BottomNavigationDestination.TIMER
+            HomeNavigationDestination.Todo.name -> BottomNavigationDestination.TODO
+            HomeNavigationDestination.MyPage.name -> BottomNavigationDestination.MY_INFO
             else -> null
         }
 

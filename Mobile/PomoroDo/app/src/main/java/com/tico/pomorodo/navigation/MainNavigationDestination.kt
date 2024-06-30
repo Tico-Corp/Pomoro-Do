@@ -33,3 +33,9 @@ enum class MainNavigationDestination {
     ConcentrationMode,
     BreakMode,
 }
+
+enum class HomeNavigationDestination {
+    Timer,
+    Todo,
+    MyPage,
+}

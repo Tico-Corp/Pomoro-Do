@@ -4,14 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.tico.pomorodo.ui.home.view.AppState
-import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 
 @Composable
 fun AppNavHost(
     appState: AppState,
     modifier: Modifier = Modifier,
-    startDestination: String = TIMER_ROUTE,
-    timerViewModel: TimerViewModel,
+    startDestination: String = HomeNavigationDestination.Timer.name,
     navigateToConcentrationMode: () -> Unit
 ) {
     val navController = appState.navController
@@ -20,7 +18,7 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        timerScreen(timerViewModel = timerViewModel, navigate = navigateToConcentrationMode)
+        timerScreen(navigate = navigateToConcentrationMode)
         todoScreen()
         myInfoScreen()
     }

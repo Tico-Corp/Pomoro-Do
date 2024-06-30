@@ -6,12 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.AppNavHost
-import com.tico.pomorodo.navigation.TIMER_ROUTE
+import com.tico.pomorodo.navigation.HomeNavigationDestination
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
 
 @Composable
-fun HomeScreen(timerViewModel: TimerViewModel, navigateToConcentrationMode: () -> Unit) {
+fun HomeScreen(navigateToConcentrationMode: () -> Unit) {
     val homeNavController = rememberNavController()
     val appState = AppState(homeNavController)
 
@@ -22,8 +21,7 @@ fun HomeScreen(timerViewModel: TimerViewModel, navigateToConcentrationMode: () -
         AppNavHost(
             appState = appState,
             Modifier.padding(innerPadding),
-            startDestination = TIMER_ROUTE,
-            timerViewModel = timerViewModel,
+            startDestination = HomeNavigationDestination.Timer.name,
             navigateToConcentrationMode = navigateToConcentrationMode
         )
     }
