@@ -79,6 +79,9 @@ dependencies {
 
     // 네비게이션 작업을 위한 라이브러리
     implementation libs.androidx.hilt.navigation.compose
+
+    // google login을 위한 credential manager jetpack
+    implementation libs.bundles.credential
 }
 
 // Allow references to generated code
