@@ -20,7 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Time
-import com.tico.pomorodo.navigation.navigateToConcentrationMode
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme

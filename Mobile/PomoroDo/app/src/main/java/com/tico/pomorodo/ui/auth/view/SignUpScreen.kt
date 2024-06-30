@@ -41,13 +41,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
-import com.tico.pomorodo.navigation.navigateToHome
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcProfileDefault
 import com.tico.pomorodo.ui.theme.IconPack
