@@ -29,7 +29,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// 스프링 시큐리티
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// OAuth2
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
 	// 개발 중 애플리케이션의 자동 재시작, 리소스 변경 감지 등 제공
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
