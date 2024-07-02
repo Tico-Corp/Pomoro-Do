@@ -25,52 +25,74 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.Time
+import com.tico.pomorodo.ui.common.view.CONCENTRATION_TIME
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import com.tico.pomorodo.ui.timer.running.viewmodel.TimerRunningViewModel
 import com.tico.pomorodo.ui.timer.setup.view.CustomCircularTimer
-import com.tico.pomorodo.ui.timer.setup.viewmodel.TimerSetupViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun ConcentrationTimerScreen(timerSetupViewModel: TimerSetupViewModel = hiltViewModel()) {
-    val concentrationTime by timerSetupViewModel.concentrationTime.collectAsState()
-    val maxValue by timerSetupViewModel.timerMaxValue.collectAsState()
-    var hour by remember { mutableIntStateOf(concentrationTime.hour) }
-    var minute by remember { mutableIntStateOf(concentrationTime.minute) }
-    var second by remember { mutableIntStateOf(concentrationTime.second ?: 0) }
-    val timeToSecond = hour * 60 * 60 + minute * 60 + second
-    var isFinished by remember { mutableStateOf(false) }
+fun ConcentrationTimerScreen(
+    timerRunningViewModel: TimerRunningViewModel = hiltViewModel(),
+    getState: (String) -> Int?
+) {
+    LaunchedEffect(key1 = Unit) {
+        timerRunningViewModel.initialConcentrationTime(getState(CONCENTRATION_TIME) ?: 0)
+    }
+
+    val concentrationTime by timerRunningViewModel.concentrationTime.collectAsState()
+    val maxValue by timerRunningViewModel.timerMaxValue.collectAsState()
+    val (isFinished, setFinish) = remember { mutableStateOf(false) }
     val (isPaused, setPause) = remember { mutableStateOf(false) }
     val (finishTimerDialogVisible, setFinishTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
+    var second by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(key1 = second, key2 = isPaused) {
         if (!isPaused) {
             delay(1000)
 
-            if (second != 0) {
-                second--
-            } else {
-                if (minute != 0) {
-                    minute--
-                    second = 59
-                } else {
-                    if (hour != 0) {
-                        hour--
-                        minute = 59
-                        second = 59
-                    } else {
-                        isFinished = true
-                    }
-                }
-            }
-
-            timerSetupViewModel.setConcentrationTime(hour, minute, second)
+            second = updateTimer(
+                time = concentrationTime,
+                onFinishedChange = { setFinish(true) },
+                onTimeChanged = timerRunningViewModel::setConcentrationTime
+            )
         }
     }
+
+    TimerScreenLayout(concentrationTime = concentrationTime, maxValue = maxValue) {
+        setPause(true)
+        setFinishTimerDialogVisible(true)
+    }
+
+    if (finishTimerDialogVisible) {
+        FinishTimerDialog(
+            onConfirmation = { setFinishTimerDialogVisible(false) },
+            onDismissRequest = {
+                setPause(false)
+                setFinishTimerDialogVisible(false)
+            }
+        )
+    }
+}
+
+@Composable
+fun TimerScreenLayout(concentrationTime: Time, maxValue: Int, onClick: () -> Unit) {
+    var hour by remember { mutableIntStateOf(concentrationTime.hour) }
+    var minute by remember { mutableIntStateOf(concentrationTime.minute) }
+    var second by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(key1 = Unit) {
+        hour = concentrationTime.hour
+        minute = concentrationTime.minute
+    }
+
+    val timeToSecond = hour * 60 * 60 + minute * 60 + second
 
     Column(
         modifier = Modifier
@@ -109,32 +131,53 @@ fun ConcentrationTimerScreen(timerSetupViewModel: TimerSetupViewModel = hiltView
             containerColor = PomoroDoTheme.colorScheme.primaryContainer,
             contentColor = Color.White,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
-            verticalPadding = 12.dp
-        ) {
-            setPause(true)
-            setFinishTimerDialogVisible(true)
+            verticalPadding = 12.dp,
+            onClick = onClick
+        )
+    }
+}
+
+private fun updateTimer(
+    time: Time,
+    onFinishedChange: () -> Unit,
+    onTimeChanged: (Int, Int, Int) -> Unit,
+): Int {
+    if (time.second != 0) {
+        time.second = time.second!! - 1
+    } else {
+        if (time.minute != 0) {
+            time.minute--
+            time.second = 59
+        } else {
+            if (time.hour != 0) {
+                time.hour--
+                time.minute = 59
+                time.second = 59
+            } else {
+                onFinishedChange()
+            }
         }
     }
 
-    if (finishTimerDialogVisible)
-        SimpleAlertDialog(
-            dialogTitleId = R.string.title_finish_concentration,
-            confirmTextId = R.string.content_finish,
-            dismissTextId = R.string.content_cancel,
-            onConfirmation = {
-                /*TODO*/
-                setFinishTimerDialogVisible(false)
-            },
-            onDismissRequest = {
-                setPause(false)
-                setFinishTimerDialogVisible(false)
-            },
-        ) {
-            Text(
-                text = stringResource(R.string.content_finish_concentration),
-                color = PomoroDoTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                style = PomoroDoTheme.typography.laundryGothicRegular14
-            )
-        }
+    onTimeChanged(time.hour, time.minute, time.second!!)
+
+    return time.second!!
+}
+
+@Composable
+fun FinishTimerDialog(onConfirmation: () -> Unit, onDismissRequest: () -> Unit) {
+    SimpleAlertDialog(
+        dialogTitleId = R.string.title_finish_concentration,
+        confirmTextId = R.string.content_finish,
+        dismissTextId = R.string.content_cancel,
+        onConfirmation = onConfirmation,
+        onDismissRequest = onDismissRequest,
+    ) {
+        Text(
+            text = stringResource(R.string.content_finish_concentration),
+            color = PomoroDoTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            style = PomoroDoTheme.typography.laundryGothicRegular14
+        )
+    }
 }
