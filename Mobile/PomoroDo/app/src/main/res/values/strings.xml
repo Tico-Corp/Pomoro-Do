@@ -143,6 +143,7 @@
     <string name="content_ok">확인</string>
     <string name="content_delete">삭제</string>
     <string name="content_finish">종료</string>
+    <string name="content_reset">초기화</string>
 
     // time format
     <string name="format_hour_minute">%02d:%02d</string>
@@ -152,4 +153,7 @@
     <string name="title_timer">타이머</string>
     <string name="title_todo">할 일 목록</string>
     <string name="title_my_info">내 정보</string>
+
+    // todo list dialog
+    <string name="content_todo_list_dialog">집중 시간동안 수행 한 일을 체크해주세요.</string>
 </resources>
