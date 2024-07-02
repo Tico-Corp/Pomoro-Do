@@ -30,12 +30,12 @@ fun SimpleAlertDialog(
     dismissTextId: Int,
     enabled: Boolean = true,
     onConfirmation: () -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
+    onDismissRequest: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
     Dialog(
-        onDismissRequest = { onDismissRequest(false) },
+        onDismissRequest = onDismissRequest,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
@@ -69,7 +69,7 @@ fun SimpleAlertDialog(
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
                         horizontalPadding = 20.dp,
-                        onClick = { onDismissRequest(false) }
+                        onClick = onDismissRequest
                     )
                     CustomTextButton(
                         text = stringResource(id = confirmTextId),

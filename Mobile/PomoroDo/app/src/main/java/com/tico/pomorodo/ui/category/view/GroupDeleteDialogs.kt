@@ -23,7 +23,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun GroupDeleteFirstDialog(
     onConfirmation: () -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
     SimpleAlertDialog(
         dialogTitleId = R.string.title_group_delete,
@@ -49,7 +49,7 @@ fun GroupDeleteSecondDialog(
     value: String,
     onValueChange: (String) -> Unit,
     onConfirmation: () -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,

@@ -95,7 +95,7 @@ fun HistoryRoute() {
             if (historyDeleteDialogVisible) {
                 HistoryDeleteDialog(
                     onConfirmation = { },
-                    onDismissRequest = { historyDeleteDialogVisible = it }
+                    onDismissRequest = { historyDeleteDialogVisible = false }
                 )
             }
             if (historyEditDialogVisible) {

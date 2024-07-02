@@ -158,7 +158,7 @@ fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
                 if (groupDeleteDialogVisible) {
                     GroupDeleteFirstDialog(
                         onConfirmation = { },
-                        onDismissRequest = { groupDeleteDialogVisible = it }
+                        onDismissRequest = { groupDeleteDialogVisible = false }
                     )
                 }
                 if (groupOutDialogVisible) {
