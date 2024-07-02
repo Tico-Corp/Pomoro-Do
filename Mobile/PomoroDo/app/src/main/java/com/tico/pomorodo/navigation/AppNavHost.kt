@@ -10,7 +10,8 @@ fun AppNavHost(
     appState: AppState,
     modifier: Modifier = Modifier,
     startDestination: String = BottomNavigationDestination.Timer.name,
-    navigateToConcentrationMode: () -> Unit
+    navigateToConcentrationMode: () -> Unit,
+    setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
 ) {
     val navController = appState.navController
     NavHost(
@@ -18,7 +19,7 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        timerScreen(navigate = navigateToConcentrationMode)
+        timerScreen(setState = setTimerState, navigate = navigateToConcentrationMode)
         todoScreen()
         myInfoScreen()
     }

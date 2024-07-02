@@ -28,7 +28,10 @@ import com.tico.pomorodo.ui.timer.setup.viewmodel.TimerSetupViewModel
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun TimerRootScreen(navigate: () -> Unit) {
+fun TimerRootScreen(
+    setState: (concentrationTime: Int, breakTime: Int) -> Unit,
+    navigate: () -> Unit
+) {
     val timerSetupViewModel: TimerSetupViewModel = hiltViewModel()
     val concentrationTime by timerSetupViewModel.concentrationTime.collectAsState()
     val breakTime by timerSetupViewModel.breakTime.collectAsState()
@@ -81,13 +84,12 @@ fun TimerRootScreen(navigate: () -> Unit) {
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             verticalPadding = 12.dp
         ) {
-            timerSetupViewModel.setTimerMaxValue(concentrationTime.hour, concentrationTime.minute)
+            val concentrationTimeInMinute =
+                concentrationTime.hour * 60 + concentrationTime.minute
+            val breakTimeInMinute = breakTime.hour * 60 + breakTime.minute
+
             runBlocking {
-                timerSetupViewModel.setConcentrationTime(
-                    concentrationTime.hour,
-                    concentrationTime.minute,
-                    0
-                )
+                setState(concentrationTimeInMinute, breakTimeInMinute)
                 navigate()
             }
         }
