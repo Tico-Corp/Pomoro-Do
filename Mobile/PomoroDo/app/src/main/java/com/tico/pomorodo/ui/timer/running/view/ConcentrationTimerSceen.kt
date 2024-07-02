@@ -30,6 +30,7 @@ import com.tico.pomorodo.ui.common.view.CONCENTRATION_TIME
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
+import com.tico.pomorodo.ui.common.view.TodoListDialog
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.timer.running.viewmodel.TimerRunningViewModel
 import com.tico.pomorodo.ui.timer.setup.view.CustomCircularTimer
@@ -52,6 +53,7 @@ fun ConcentrationTimerScreen(
         mutableStateOf(false)
     }
     var second by remember { mutableIntStateOf(0) }
+    val todoList by timerRunningViewModel.todoList.collectAsState()
 
     LaunchedEffect(key1 = second, key2 = isPaused) {
         if (!isPaused) {
@@ -72,27 +74,40 @@ fun ConcentrationTimerScreen(
 
     if (finishTimerDialogVisible) {
         FinishTimerDialog(
-            onConfirmation = { setFinishTimerDialogVisible(false) },
+            onConfirmation = {
+                setFinish(true)
+                setFinishTimerDialogVisible(false)
+            },
             onDismissRequest = {
                 setPause(false)
                 setFinishTimerDialogVisible(false)
             }
         )
     }
+
+    if (isFinished) {
+        TodoListDialog(
+            title = stringResource(R.string.title_check_todo_list_dialog),
+            todoList = todoList,
+            confirmTextId = R.string.content_ok,
+            onConfirmation = { /*TODO*/ },
+            onResetRequest = timerRunningViewModel::resetTodoState,
+            onDismissRequest = {
+                setFinish(false)
+                setPause(false)
+                timerRunningViewModel.resetTodoState()
+            },
+            onTodoStateChanged = timerRunningViewModel::changeTodoState
+        )
+    }
 }
 
 @Composable
 fun TimerScreenLayout(concentrationTime: Time, maxValue: Int, onClick: () -> Unit) {
-    var hour by remember { mutableIntStateOf(concentrationTime.hour) }
-    var minute by remember { mutableIntStateOf(concentrationTime.minute) }
-    val second by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(key1 = Unit) {
-        hour = concentrationTime.hour
-        minute = concentrationTime.minute
-    }
-
-    val timeToSecond = hour * 60 * 60 + minute * 60 + second
+    val timeToSecond =
+        concentrationTime.hour * 60 * 60 +
+                concentrationTime.minute * 60 +
+                (concentrationTime.second ?: 0)
 
     Column(
         modifier = Modifier
