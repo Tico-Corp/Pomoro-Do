@@ -58,7 +58,7 @@ fun ConcentrationTimerScreen(
             delay(1000)
 
             second = updateTimer(
-                time = concentrationTime,
+                time = concentrationTime.copy(),
                 onFinishedChange = { setFinish(true) },
                 onTimeChanged = timerRunningViewModel::setConcentrationTime
             )
@@ -85,7 +85,7 @@ fun ConcentrationTimerScreen(
 fun TimerScreenLayout(concentrationTime: Time, maxValue: Int, onClick: () -> Unit) {
     var hour by remember { mutableIntStateOf(concentrationTime.hour) }
     var minute by remember { mutableIntStateOf(concentrationTime.minute) }
-    var second by remember { mutableIntStateOf(0) }
+    val second by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(key1 = Unit) {
         hour = concentrationTime.hour
