@@ -50,9 +50,9 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
  * @param title The title of the dialog.
  * @param todoList The list of to-do items to display in the dialog.
  * @param confirmTextId The resource ID for the text on the confirm button.
- * @param confirmEnable Whether the confirm button is enabled.
  * @param onConfirmation Function to run when the confirm button is clicked.
- * @param onDismissRequest Function to run when the dismiss button is clicked.
+ * @param onResetRequest Function to run when the dismiss button is clicked.
+ * @param onDismissRequest Function to run when the outside of dialog or back button is clicked.
  * @param onTodoStateChanged Function to run when the state of a to-do item is changed.
  */
 @Composable
@@ -60,16 +60,16 @@ fun TodoListDialog(
     title: String,
     todoList: List<TodoData>,
     @StringRes confirmTextId: Int,
-    confirmEnable: Boolean = true,
     onConfirmation: () -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
+    onResetRequest: () -> Unit,
+    onDismissRequest: () -> Unit,
     onTodoStateChanged: (index: Int, todoState: TodoState) -> Unit
 ) {
     val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
     val textColor = PomoroDoTheme.colorScheme.onBackground
 
     Dialog(
-        onDismissRequest = { onDismissRequest(false) },
+        onDismissRequest = onDismissRequest,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
@@ -117,7 +117,7 @@ fun TodoListDialog(
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
                         horizontalPadding = 20.dp,
-                        onClick = { onDismissRequest(false) }
+                        onClick = onResetRequest
                     )
                     CustomTextButton(
                         text = stringResource(id = confirmTextId),
@@ -126,10 +126,7 @@ fun TodoListDialog(
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
                         horizontalPadding = 20.dp,
-                        enabled = confirmEnable,
-                        onClick = onConfirmation,
-                        disabledContentColor = Color.White,
-                        disabledContainerColor = PomoroDoTheme.colorScheme.dialogGray70
+                        onClick = onConfirmation
                     )
                 }
             }
@@ -167,6 +164,7 @@ fun PreviewDialog() {
             todoList = todoList,
             confirmTextId = R.string.content_ok,
             onConfirmation = { /*TODO*/ },
+            onResetRequest = { /*TODO*/ },
             onDismissRequest = { /*TODO*/ },
             onTodoStateChanged = { index, todoState -> /*TODO*/ }
         )
