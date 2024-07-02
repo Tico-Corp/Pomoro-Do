@@ -19,7 +19,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 fun TodoItem(
     iconSize: Int,
     todoData: TodoData,
-    enabled: Boolean,
+    enabled: Boolean = true,
     textStyle: TextStyle,
     onStateChanged: ((TodoState) -> Unit)? = null
 ) {

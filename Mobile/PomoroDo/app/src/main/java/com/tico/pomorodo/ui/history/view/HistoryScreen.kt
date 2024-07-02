@@ -53,13 +53,13 @@ import com.tico.pomorodo.ui.common.view.SimpleDropDownMoreInfo
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.TodoItem
 import com.tico.pomorodo.ui.common.view.getTimeFormat
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTimelineOrangeFilled
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTimelineOrangeOutline
 import com.tico.pomorodo.ui.theme.IC_TIMELINE_MORE_INFO
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.todo.view.TodoItem
 import java.time.Duration
 import java.time.LocalDate
 import java.time.LocalDateTime
