@@ -30,13 +30,13 @@ import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.timer.setup.view.CustomCircularTimer
-import com.tico.pomorodo.ui.timer.setup.viewmodel.TimerViewModel
+import com.tico.pomorodo.ui.timer.setup.viewmodel.TimerSetupViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun ConcentrationTimerScreen(timerViewModel: TimerViewModel = hiltViewModel()) {
-    val concentrationTime by timerViewModel.concentrationTime.collectAsState()
-    val maxValue by timerViewModel.timerMaxValue.collectAsState()
+fun ConcentrationTimerScreen(timerSetupViewModel: TimerSetupViewModel = hiltViewModel()) {
+    val concentrationTime by timerSetupViewModel.concentrationTime.collectAsState()
+    val maxValue by timerSetupViewModel.timerMaxValue.collectAsState()
     var hour by remember { mutableIntStateOf(concentrationTime.hour) }
     var minute by remember { mutableIntStateOf(concentrationTime.minute) }
     var second by remember { mutableIntStateOf(concentrationTime.second ?: 0) }
@@ -68,7 +68,7 @@ fun ConcentrationTimerScreen(timerViewModel: TimerViewModel = hiltViewModel()) {
                 }
             }
 
-            timerViewModel.setConcentrationTime(hour, minute, second)
+            timerSetupViewModel.setConcentrationTime(hour, minute, second)
         }
     }
 

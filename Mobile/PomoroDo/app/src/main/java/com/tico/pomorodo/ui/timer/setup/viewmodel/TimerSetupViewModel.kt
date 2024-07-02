@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class TimerViewModel @Inject constructor() : ViewModel() {
+class TimerSetupViewModel @Inject constructor() : ViewModel() {
     private val _concentrationTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0))
     val concentrationTime: StateFlow<Time> = _concentrationTime
 
