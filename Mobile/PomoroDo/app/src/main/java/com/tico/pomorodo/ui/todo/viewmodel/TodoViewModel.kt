@@ -5,8 +5,8 @@ import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.TodoData
-import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.data.model.TodoState
+import com.tico.pomorodo.data.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,6 +63,7 @@ class TodoViewModel() : ViewModel() {
                 id = "4",
                 name = inputText.value,
                 state = TodoState.UNCHECKED,
+                categoryId = "1",
                 completeGroupNumber = 0
             )
             val newList = categoryList.value.toMutableList()
