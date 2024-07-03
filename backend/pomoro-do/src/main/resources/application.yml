@@ -26,3 +26,11 @@ logging:
     com.tico.pomoro_do: DEBUG # 'com.tico.pomoro_do' 패키지의 로깅 레벨을 DEBUG로 설정하여 상세한 정보 로깅
     org.hibernate.SQL: debug # Hibernate가 생성하는 SQL 쿼리를 디버그 레벨에서 로깅
     org.hibernate.type: trace # SQL 쿼리 실행 시 사용되는 파라미터 값을 트레이스 레벨에서 로깅하여 최대한 상세한 정보 제공
+
+# jwt 토큰 설정
+jwt:
+  secret-key: xlzhdmlvhahfhentjqltmdlqslekckehfdlrnfmadlahzkzjvlWkdWkdrnldudnj
+  access-token:
+    expire-length: 3600000 # 1시간
+  refresh-token:
+    expire-length: 86400000 # 24시간
