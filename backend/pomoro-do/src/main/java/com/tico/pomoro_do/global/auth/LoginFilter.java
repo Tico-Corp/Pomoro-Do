@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.global.auth;
 
-import com.tico.pomoro_do.global.util.JWTUtil;
+import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -65,7 +65,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //role 가져옴
         String role = auth.getAuthority();
         //토큰 생성
-        String token = jwtUtil.createJwt(username, role, accessTokenExpireLength);
+        String token = jwtUtil.createJwt(username, role, 60*60*10L);
         //헤더에 넣어서 응답
         response.addHeader("Authorization", "Bearer " + token); //예시) Authorization: Bearer 인증토큰(string)
 

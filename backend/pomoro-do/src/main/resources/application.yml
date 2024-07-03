@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: pomoro-do! # 애플리케이션의 이름 설정
+  jackson:
+    time-zone: Asia/Seoul # JSON 처리 시 사용할 시간대를 'Asia/Seoul'로 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC 드라이버 클래스명 설정
     url: jdbc:mysql://pomorodo.shop:3306/pomorodo?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul # 데이터베이스 URL을 설정 (호스트, 포트, 데이터베이스 이름, 추가 옵션 포함)
@@ -18,8 +20,6 @@ spring:
       hibernate:
         show-sql: true # SQL 쿼리를 콘솔에 출력
         format_sql: true # SQL 쿼리의 가독성을 높여 출력
-  jackson:
-    time-zone: Asia/Seoul # JSON 처리 시 사용할 시간대를 'Asia/Seoul'로 설정
 
 logging:
   level:

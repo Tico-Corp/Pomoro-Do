@@ -1,7 +1,8 @@
 package com.tico.pomoro_do.global.config;
 
 import com.tico.pomoro_do.global.auth.LoginFilter;
-import com.tico.pomoro_do.global.util.JWTUtil;
+import com.tico.pomoro_do.global.auth.jwt.JWTFilter;
+import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -60,6 +61,11 @@ public class SecurityConfig {
                         .requestMatchers(WHITE_LIST).permitAll() // 해당 경로에 대해 모든 권한 허용
                         .requestMatchers("/admin").hasRole("ADMIN") // 어드민 권한을 가진 사용자만 접근 가능
                         .anyRequest().authenticated()); // 그 외의 요청에 대해 로그인한 사용자만 접근 가능
+
+        //JWTFilter 등록 (JWT 검증)
+        //LoginFilter 앞에 넣어준다.
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         //로그인 검증
         //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요

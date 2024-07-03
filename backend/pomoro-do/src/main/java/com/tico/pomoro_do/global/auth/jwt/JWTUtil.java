@@ -1,6 +1,7 @@
-package com.tico.pomoro_do.global.util;
+package com.tico.pomoro_do.global.auth.jwt;
 
 import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.util.Date;
 
 //JWT 토큰 발급 및 검증 (로그인-인증 과정)
 @Component
+@Slf4j
 public class JWTUtil {
 
     //객체키
