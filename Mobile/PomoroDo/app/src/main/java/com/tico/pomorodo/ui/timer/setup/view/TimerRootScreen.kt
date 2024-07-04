@@ -36,6 +36,8 @@ fun TimerRootScreen(
     val concentrationTime by timerSetupViewModel.concentrationTime.collectAsState()
     val breakTime by timerSetupViewModel.breakTime.collectAsState()
     val concentrationGoal by timerSetupViewModel.concentrationGoal.collectAsState()
+    val totalConcentrationTime by timerSetupViewModel.totalConcentrationTime.collectAsState()
+    val totalBreakTime by timerSetupViewModel.totalBreakTime.collectAsState()
     val (editConcentrationTimerDialogVisible, setEditConcentrationTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
@@ -57,6 +59,8 @@ fun TimerRootScreen(
             concentrationTime = concentrationTime,
             breakTime = breakTime,
             concentrationGoal = concentrationGoal,
+            totalConcentrationTime = totalConcentrationTime,
+            totalBreakTime = totalBreakTime,
             onConcentrationTimeChange = { time ->
                 timerSetupViewModel.setConcentrationTime(
                     hour = time / 60,
@@ -145,6 +149,8 @@ fun PomodoroTimerScreen(
     concentrationTime: Time,
     breakTime: Time,
     concentrationGoal: Time,
+    totalConcentrationTime: Time,
+    totalBreakTime: Time,
     onConcentrationTimeChange: (Int) -> Unit,
     onBreakTimeChange: (Int) -> Unit,
     isEditTimerDialogVisible: Boolean,
@@ -170,6 +176,8 @@ fun PomodoroTimerScreen(
 
         TodayConcentrationInformation(
             concentrationGoal = concentrationGoal,
+            totalConcentrationTime = totalConcentrationTime,
+            totalBreakTime = totalBreakTime,
             onConcentrationGoalClick = onConcentrationGoalClick
         )
     }
@@ -178,6 +186,8 @@ fun PomodoroTimerScreen(
 @Composable
 fun TodayConcentrationInformation(
     concentrationGoal: Time,
+    totalConcentrationTime: Time,
+    totalBreakTime: Time,
     onConcentrationGoalClick: () -> Unit
 ) {
     Column(
@@ -203,9 +213,9 @@ fun TodayConcentrationInformation(
         ) {
             CustomTimeText(
                 title = stringResource(R.string.title_total_concentration),
-                hour = 10,
-                minute = 0,
-                second = 0,
+                hour = totalConcentrationTime.hour,
+                minute = totalConcentrationTime.minute,
+                second = totalConcentrationTime.second,
                 textColor = PomoroDoTheme.colorScheme.onBackground,
                 spaceDp = 4.dp,
                 titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
@@ -215,9 +225,9 @@ fun TodayConcentrationInformation(
 
             CustomTimeText(
                 title = stringResource(R.string.title_total_break),
-                hour = 3,
-                minute = 0,
-                second = 0,
+                hour = totalBreakTime.hour,
+                minute = totalBreakTime.minute,
+                second = totalBreakTime.second,
                 textColor = PomoroDoTheme.colorScheme.onBackground,
                 spaceDp = 4.dp,
                 titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
