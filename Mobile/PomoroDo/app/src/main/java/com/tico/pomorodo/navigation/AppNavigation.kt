@@ -7,8 +7,8 @@ import androidx.navigation.compose.composable
 import com.tico.pomorodo.ui.auth.view.LogInScreen
 import com.tico.pomorodo.ui.auth.view.SignUpScreen
 import com.tico.pomorodo.ui.home.view.HomeScreen
-import com.tico.pomorodo.ui.home.view.MyInfoScreen
 import com.tico.pomorodo.ui.home.view.TodoScreen
+import com.tico.pomorodo.ui.member.view.MyPageScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.view.ConcentrationTimerScreen
 import com.tico.pomorodo.ui.timer.view.TimerRootScreen
@@ -46,7 +46,7 @@ fun NavGraphBuilder.todoScreen() {
 
 fun NavGraphBuilder.myInfoScreen() {
     composable(route = BottomNavigationDestination.MyInfo.name) {
-        MyInfoScreen()
+        MyPageScreen()
     }
 }
 

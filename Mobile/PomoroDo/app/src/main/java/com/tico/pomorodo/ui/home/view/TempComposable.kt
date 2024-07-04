@@ -18,13 +18,3 @@ fun TodoScreen() {
         )
     }
 }
-
-@Composable
-fun MyInfoScreen() {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = stringResource(id = R.string.title_my_info),
-            style = PomoroDoTheme.typography.laundryGothicBold48
-        )
-    }
-}
