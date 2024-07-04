@@ -10,8 +10,8 @@ import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.home.view.MyInfoScreen
 import com.tico.pomorodo.ui.home.view.TodoScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
-import com.tico.pomorodo.ui.timer.view.ConcentrationTimerScreen
-import com.tico.pomorodo.ui.timer.view.TimerRootScreen
+import com.tico.pomorodo.ui.timer.running.view.ConcentrationTimerScreen
+import com.tico.pomorodo.ui.timer.setup.view.TimerRootScreen
 
 // home navigation - navigate
 fun NavController.navigateToTimer(navOptions: NavOptions) =
@@ -32,9 +32,12 @@ fun NavController.navigateToConcentrationMode() =
 
 
 // home navigation - composable route
-fun NavGraphBuilder.timerScreen(navigate: () -> Unit) {
+fun NavGraphBuilder.timerScreen(
+    setState: (concentrationTime: Int, breakTime: Int) -> Unit,
+    navigate: () -> Unit
+) {
     composable(route = BottomNavigationDestination.Timer.name) {
-        TimerRootScreen(navigate = navigate)
+        TimerRootScreen(setState = setState, navigate = navigate)
     }
 }
 
@@ -69,14 +72,20 @@ fun NavGraphBuilder.signUpScreen(navigate: () -> Unit) {
     }
 }
 
-fun NavGraphBuilder.homeScreen(navigateToConcentrationMode: () -> Unit) {
+fun NavGraphBuilder.homeScreen(
+    setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
+    navigateToConcentrationMode: () -> Unit
+) {
     composable(route = MainNavigationDestination.Home.name) {
-        HomeScreen(navigateToConcentrationMode = navigateToConcentrationMode)
+        HomeScreen(
+            setTimerState = setTimerState,
+            navigateToConcentrationMode = navigateToConcentrationMode
+        )
     }
 }
 
-fun NavGraphBuilder.concentrationModeScreen() {
+fun NavGraphBuilder.concentrationModeScreen(getState: (String)-> Int?) {
     composable(route = MainNavigationDestination.ConcentrationMode.name) {
-        ConcentrationTimerScreen()
+        ConcentrationTimerScreen(getState = getState)
     }
 }

@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.timer.view
+package com.tico.pomorodo.ui.timer.setup.view
 
 import android.graphics.Paint
 import android.graphics.Typeface

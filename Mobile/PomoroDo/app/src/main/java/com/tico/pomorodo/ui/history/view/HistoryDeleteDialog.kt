@@ -10,7 +10,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun HistoryDeleteDialog(
     onConfirmation: () -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
     SimpleAlertDialog(
         dialogTitleId = R.string.content_history_delete,

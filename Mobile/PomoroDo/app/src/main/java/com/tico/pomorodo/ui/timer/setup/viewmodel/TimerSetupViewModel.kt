@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.timer.viewmodel
+package com.tico.pomorodo.ui.timer.setup.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.model.Time
@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class TimerViewModel @Inject constructor() : ViewModel() {
+class TimerSetupViewModel @Inject constructor() : ViewModel() {
     private val _concentrationTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0))
     val concentrationTime: StateFlow<Time> = _concentrationTime
 
@@ -17,9 +17,6 @@ class TimerViewModel @Inject constructor() : ViewModel() {
 
     private val _concentrationGoal: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0, 0))
     val concentrationGoal: StateFlow<Time> = _concentrationGoal
-
-    private val _timerMaxValue: MutableStateFlow<Int> = MutableStateFlow(0)
-    val timerMaxValue: StateFlow<Int> = _timerMaxValue
 
     fun setConcentrationTime(hour: Int, minute: Int, second: Int? = null) {
         _concentrationTime.value = Time(hour, minute, second)
@@ -31,9 +28,5 @@ class TimerViewModel @Inject constructor() : ViewModel() {
 
     fun setConcentrationGoal(hour: Int, minute: Int, second: Int) {
         _concentrationGoal.value = Time(hour, minute, second)
-    }
-
-    fun setTimerMaxValue(hour: Int, minute: Int) {
-        _timerMaxValue.value = hour * 60 * 60 + minute * 60
     }
 }

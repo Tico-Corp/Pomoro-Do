@@ -10,14 +10,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.navigation.concentrationModeScreen
+import com.tico.pomorodo.navigation.getState
 import com.tico.pomorodo.navigation.homeScreen
 import com.tico.pomorodo.navigation.logInScreen
 import com.tico.pomorodo.navigation.navigateToConcentrationMode
 import com.tico.pomorodo.navigation.navigateToHome
 import com.tico.pomorodo.navigation.navigateToLogIn
 import com.tico.pomorodo.navigation.navigateToSignUp
+import com.tico.pomorodo.navigation.setState
 import com.tico.pomorodo.navigation.signUpScreen
 import com.tico.pomorodo.navigation.splashScreen
+import com.tico.pomorodo.ui.common.view.BREAK_TIME
+import com.tico.pomorodo.ui.common.view.CONCENTRATION_TIME
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
@@ -39,8 +43,14 @@ fun MainScreen() {
                 splashScreen(navigate = mainNavController::navigateToLogIn)
                 logInScreen(navigate = mainNavController::navigateToSignUp)
                 signUpScreen(navigate = mainNavController::navigateToHome)
-                homeScreen(navigateToConcentrationMode = mainNavController::navigateToConcentrationMode)
-                concentrationModeScreen()
+                homeScreen(
+                    setTimerState = { concentrationTime, breakTime ->
+                        mainNavController.setState(CONCENTRATION_TIME, concentrationTime)
+                        mainNavController.setState(BREAK_TIME, breakTime)
+                    },
+                    navigateToConcentrationMode = mainNavController::navigateToConcentrationMode
+                )
+                concentrationModeScreen(getState = mainNavController::getState)
             }
         }
     }

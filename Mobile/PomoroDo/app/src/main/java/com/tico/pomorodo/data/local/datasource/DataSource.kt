@@ -5,8 +5,8 @@ import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.TimeLineData
 import com.tico.pomorodo.data.model.TimeLineType
 import com.tico.pomorodo.data.model.TodoData
-import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.data.model.TodoState
+import com.tico.pomorodo.data.model.User
 import java.time.LocalDateTime
 
 object DataSource {
@@ -36,6 +36,7 @@ object DataSource {
                     id = "1",
                     name = "Todo 1",
                     state = TodoState.UNCHECKED,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -43,6 +44,7 @@ object DataSource {
                     id = "2",
                     name = "Todo 1",
                     state = TodoState.CHECKED,
+                    categoryId = "1",
                     completeGroupNumber = 1,
                     likedNumber = 22
                 ),
@@ -50,6 +52,7 @@ object DataSource {
                     id = "3",
                     name = "Todo 1",
                     state = TodoState.GOING,
+                    categoryId = "1",
                     completeGroupNumber = 3,
                     likedNumber = 22
                 ),
@@ -57,6 +60,7 @@ object DataSource {
                     id = "4",
                     name = "Todo 1",
                     state = TodoState.UNCHECKED,
+                    categoryId = "1",
                     completeGroupNumber = 0,
                     likedNumber = 0
                 )
@@ -70,6 +74,7 @@ object DataSource {
                     id = "1",
                     name = "Todo 1",
                     state = TodoState.UNCHECKED,
+                    categoryId = "3",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -83,6 +88,7 @@ object DataSource {
                     id = "1",
                     name = "Todo 1",
                     state = TodoState.UNCHECKED,
+                    categoryId = "3",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -90,6 +96,7 @@ object DataSource {
                     id = "2",
                     name = "Todo 1",
                     state = TodoState.CHECKED,
+                    categoryId = "3",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -125,6 +132,7 @@ object DataSource {
                     id = "1",
                     name = "Todo 1",
                     state = TodoState.GOING,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -132,6 +140,7 @@ object DataSource {
                     id = "2",
                     name = "Todo 2",
                     state = TodoState.GOING,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -151,6 +160,7 @@ object DataSource {
                     id = "1",
                     name = "Todo 4",
                     state = TodoState.GOING,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -158,6 +168,7 @@ object DataSource {
                     id = "2",
                     name = "Todo 2",
                     state = TodoState.CHECKED,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -177,6 +188,7 @@ object DataSource {
                     id = "1",
                     name = "Todo 4",
                     state = TodoState.CHECKED,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -184,6 +196,7 @@ object DataSource {
                     id = "2",
                     name = "Todo 5",
                     state = TodoState.CHECKED,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -203,6 +216,7 @@ object DataSource {
                     id = "1",
                     name = "Todo 4",
                     state = TodoState.CHECKED,
+                    categoryId = "1",
                     completeGroupNumber = 4,
                     likedNumber = 22
                 ),
@@ -226,6 +240,7 @@ object DataSource {
             id = "1",
             name = "Todo 1",
             state = TodoState.UNCHECKED,
+            categoryId = "1",
             completeGroupNumber = 4,
             likedNumber = 22
         ),
@@ -233,6 +248,7 @@ object DataSource {
             id = "2",
             name = "Todo 1",
             state = TodoState.CHECKED,
+            categoryId = "1",
             completeGroupNumber = 1,
             likedNumber = 22
         ),
@@ -240,6 +256,7 @@ object DataSource {
             id = "3",
             name = "Todo 1",
             state = TodoState.GOING,
+            categoryId = "1",
             completeGroupNumber = 3,
             likedNumber = 22
         ),
@@ -247,6 +264,7 @@ object DataSource {
             id = "4",
             name = "Todo 1",
             state = TodoState.UNCHECKED,
+            categoryId = "1",
             completeGroupNumber = 0,
             likedNumber = 0
         )

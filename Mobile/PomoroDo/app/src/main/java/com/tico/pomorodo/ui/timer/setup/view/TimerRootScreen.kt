@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.timer.view
+package com.tico.pomorodo.ui.timer.setup.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,15 +24,18 @@ import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.timer.viewmodel.TimerViewModel
+import com.tico.pomorodo.ui.timer.setup.viewmodel.TimerSetupViewModel
 import kotlinx.coroutines.runBlocking
 
 @Composable
-fun TimerRootScreen(navigate: () -> Unit) {
-    val timerViewModel: TimerViewModel = hiltViewModel()
-    val concentrationTime by timerViewModel.concentrationTime.collectAsState()
-    val breakTime by timerViewModel.breakTime.collectAsState()
-    val concentrationGoal by timerViewModel.concentrationGoal.collectAsState()
+fun TimerRootScreen(
+    setState: (concentrationTime: Int, breakTime: Int) -> Unit,
+    navigate: () -> Unit
+) {
+    val timerSetupViewModel: TimerSetupViewModel = hiltViewModel()
+    val concentrationTime by timerSetupViewModel.concentrationTime.collectAsState()
+    val breakTime by timerSetupViewModel.breakTime.collectAsState()
+    val concentrationGoal by timerSetupViewModel.concentrationGoal.collectAsState()
     val (editConcentrationTimerDialogVisible, setEditConcentrationTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
@@ -55,13 +58,13 @@ fun TimerRootScreen(navigate: () -> Unit) {
             breakTime = breakTime,
             concentrationGoal = concentrationGoal,
             onConcentrationTimeChange = { time ->
-                timerViewModel.setConcentrationTime(
+                timerSetupViewModel.setConcentrationTime(
                     hour = time / 60,
                     minute = time % 60
                 )
             },
             onBreakTimeChange = { time ->
-                timerViewModel.setBreakTime(
+                timerSetupViewModel.setBreakTime(
                     hour = time / 60,
                     minute = time % 60
                 )
@@ -81,13 +84,12 @@ fun TimerRootScreen(navigate: () -> Unit) {
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
             verticalPadding = 12.dp
         ) {
-            timerViewModel.setTimerMaxValue(concentrationTime.hour, concentrationTime.minute)
+            val concentrationTimeInMinute =
+                concentrationTime.hour * 60 + concentrationTime.minute
+            val breakTimeInMinute = breakTime.hour * 60 + breakTime.minute
+
             runBlocking {
-                timerViewModel.setConcentrationTime(
-                    concentrationTime.hour,
-                    concentrationTime.minute,
-                    0
-                )
+                setState(concentrationTimeInMinute, breakTimeInMinute)
                 navigate()
             }
         }
@@ -101,7 +103,7 @@ fun TimerRootScreen(navigate: () -> Unit) {
                 setEditConcentrationTimerDialogVisible(false)
             },
             onConfirmation = { hour, minute, _ ->
-                timerViewModel.setConcentrationTime(hour, minute)
+                timerSetupViewModel.setConcentrationTime(hour, minute)
                 setEditConcentrationTimerDialogVisible(false)
             }
         )
@@ -115,7 +117,7 @@ fun TimerRootScreen(navigate: () -> Unit) {
                 setEditBreakTimerDialogVisible(false)
             },
             onConfirmation = { hour, minute, _ ->
-                timerViewModel.setBreakTime(hour, minute)
+                timerSetupViewModel.setBreakTime(hour, minute)
                 setEditBreakTimerDialogVisible(false)
             }
         )
@@ -129,7 +131,7 @@ fun TimerRootScreen(navigate: () -> Unit) {
                 setEditConcentrationGoalDialogVisible(false)
             },
             onConfirmation = { hour, minute, second ->
-                timerViewModel.setConcentrationGoal(hour, minute, second!!)
+                timerSetupViewModel.setConcentrationGoal(hour, minute, second!!)
                 setEditConcentrationGoalDialogVisible(false)
             }
         )
