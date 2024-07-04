@@ -132,7 +132,6 @@
     <string name="content_break">휴식</string>
 
     // timer - concentration mode
-    <string name="title_concentration_time_left">집중 시간</string>
     <string name="content_button_finish_concentration">집중 종료</string>
     <string name="title_finish_concentration">집중 모드 종료</string>
     <string name="content_finish_concentration">집중 모드를 종료하시겠습니까?</string>

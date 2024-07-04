@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Time
+import com.tico.pomorodo.ui.common.view.BREAK_TIME
 import com.tico.pomorodo.ui.common.view.CONCENTRATION_TIME
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTimeText
@@ -39,10 +40,14 @@ import kotlinx.coroutines.delay
 @Composable
 fun ConcentrationTimerScreen(
     timerRunningViewModel: TimerRunningViewModel = hiltViewModel(),
-    getState: (String) -> Int?
+    getState: (String) -> Int?,
+    navigate: () -> Unit
 ) {
     LaunchedEffect(key1 = Unit) {
-        timerRunningViewModel.initialConcentrationTime(getState(CONCENTRATION_TIME) ?: 0)
+        timerRunningViewModel.initialConcentrationTime(
+            concentrationTime = getState(CONCENTRATION_TIME) ?: 0,
+            breakTime = getState(BREAK_TIME) ?: 0
+        )
     }
 
     val concentrationTime by timerRunningViewModel.concentrationTime.collectAsState()
@@ -52,6 +57,8 @@ fun ConcentrationTimerScreen(
     val (finishTimerDialogVisible, setFinishTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
+    var hour by remember { mutableIntStateOf(concentrationTime.hour) }
+    var minute by remember { mutableIntStateOf(concentrationTime.minute) }
     var second by remember { mutableIntStateOf(0) }
     val todoList by timerRunningViewModel.todoList.collectAsState()
 
@@ -67,7 +74,12 @@ fun ConcentrationTimerScreen(
         }
     }
 
-    TimerScreenLayout(concentrationTime = concentrationTime, maxValue = maxValue) {
+    TimerScreenLayout(
+        title = stringResource(R.string.title_concentration_time),
+        time = concentrationTime,
+        timerColor = PomoroDoTheme.colorScheme.primaryContainer,
+        maxValue = maxValue
+    ) {
         setPause(true)
         setFinishTimerDialogVisible(true)
     }
@@ -90,7 +102,10 @@ fun ConcentrationTimerScreen(
             title = stringResource(R.string.title_check_todo_list_dialog),
             todoList = todoList,
             confirmTextId = R.string.content_ok,
-            onConfirmation = { /*TODO*/ },
+            onConfirmation = {
+                timerRunningViewModel.setInitializedFlag()
+                navigate()
+            },
             onResetRequest = timerRunningViewModel::resetTodoState,
             onDismissRequest = {
                 setFinish(false)
@@ -103,11 +118,17 @@ fun ConcentrationTimerScreen(
 }
 
 @Composable
-fun TimerScreenLayout(concentrationTime: Time, maxValue: Int, onClick: () -> Unit) {
+fun TimerScreenLayout(
+    title: String,
+    time: Time,
+    maxValue: Int,
+    timerColor: Color,
+    onClick: () -> Unit
+) {
     val timeToSecond =
-        concentrationTime.hour * 60 * 60 +
-                concentrationTime.minute * 60 +
-                (concentrationTime.second ?: 0)
+        time.hour * 60 * 60 +
+                time.minute * 60 +
+                (time.second ?: 0)
 
     Column(
         modifier = Modifier
@@ -118,10 +139,10 @@ fun TimerScreenLayout(concentrationTime: Time, maxValue: Int, onClick: () -> Uni
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CustomTimeText(
-            title = stringResource(R.string.title_concentration_time_left),
-            hour = concentrationTime.hour,
-            minute = concentrationTime.minute,
-            second = concentrationTime.second ?: 0,
+            title = title,
+            hour = time.hour,
+            minute = time.minute,
+            second = time.second ?: 0,
             textColor = Color.White,
             spaceDp = 6.dp,
             titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,
@@ -132,7 +153,7 @@ fun TimerScreenLayout(concentrationTime: Time, maxValue: Int, onClick: () -> Uni
 
         CustomCircularTimer(
             modifier = Modifier.size(300.dp),
-            timerColor = PomoroDoTheme.colorScheme.primaryContainer,
+            timerColor = timerColor,
             backgroundColor = PomoroDoTheme.colorScheme.timerBackgroundColor,
             circleRadius = 125,
             maxValue = maxValue,
@@ -152,7 +173,7 @@ fun TimerScreenLayout(concentrationTime: Time, maxValue: Int, onClick: () -> Uni
     }
 }
 
-private fun updateTimer(
+fun updateTimer(
     time: Time,
     onFinishedChange: () -> Unit,
     onTimeChanged: (Int, Int, Int) -> Unit,

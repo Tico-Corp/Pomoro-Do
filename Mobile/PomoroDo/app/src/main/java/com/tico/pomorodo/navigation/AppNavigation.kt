@@ -1,5 +1,6 @@
 package com.tico.pomorodo.navigation
 
+import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -10,6 +11,7 @@ import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.home.view.MyInfoScreen
 import com.tico.pomorodo.ui.home.view.TodoScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
+import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
 import com.tico.pomorodo.ui.timer.running.view.ConcentrationTimerScreen
 import com.tico.pomorodo.ui.timer.setup.view.TimerRootScreen
 
@@ -29,6 +31,9 @@ fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SignUp
 fun NavController.navigateToHome() = navigate(MainNavigationDestination.Home.name)
 fun NavController.navigateToConcentrationMode() =
     navigate(MainNavigationDestination.ConcentrationMode.name)
+
+fun NavController.navigateToBreakMode() =
+    navigate(MainNavigationDestination.BreakMode.name)
 
 
 // home navigation - composable route
@@ -84,8 +89,20 @@ fun NavGraphBuilder.homeScreen(
     }
 }
 
-fun NavGraphBuilder.concentrationModeScreen(getState: (String)-> Int?) {
+fun NavGraphBuilder.concentrationModeScreen(
+    getState: (String) -> Int?,
+    navigateToBreakMode: () -> Unit
+) {
     composable(route = MainNavigationDestination.ConcentrationMode.name) {
-        ConcentrationTimerScreen(getState = getState)
+        ConcentrationTimerScreen(getState = getState, navigate = navigateToBreakMode)
+    }
+}
+
+fun NavGraphBuilder.breakModeScreen(navController: NavController) {
+    composable(route = MainNavigationDestination.BreakMode.name) { backStackEntry ->
+        val navBackStackEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(MainNavigationDestination.ConcentrationMode.name)
+        }
+        BreakTimerScreen(navBackStackEntry = navBackStackEntry)
     }
 }

@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.timer.running.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.local.datasource.DataSource
@@ -30,19 +29,18 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
 
     private val _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    fun initialConcentrationTime(time: Int) {
+    fun initialConcentrationTime(concentrationTime: Int, breakTime: Int) {
         if (!_isInitialized.value) {
-            _concentrationTime.value = Time(time / 60, time % 60, 0)
-            _timerMaxValue.value = time * 60
+            _concentrationTime.value = Time(concentrationTime / 60, concentrationTime % 60, 0)
+            _breakTime.value = Time(breakTime / 60, breakTime % 60, 0)
+            _timerMaxValue.value = concentrationTime * 60
             _isInitialized.value = true
-            Log.d("initTimerTest", "concentration time: ${_concentrationTime.value}")
         }
     }
 
-    fun initialBreakTime(time: Int) {
+    fun initialBreakTime() {
         if (!_isInitialized.value) {
-            _concentrationTime.value = Time(time / 60, time % 60, 0)
-            _timerMaxValue.value = time * 60
+            _timerMaxValue.value = breakTime.value.hour * 60 * 60 + breakTime.value.minute * 60
             _isInitialized.value = true
         }
     }
