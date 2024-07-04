@@ -57,8 +57,6 @@ fun ConcentrationTimerScreen(
     val (finishTimerDialogVisible, setFinishTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
-    var hour by remember { mutableIntStateOf(concentrationTime.hour) }
-    var minute by remember { mutableIntStateOf(concentrationTime.minute) }
     var second by remember { mutableIntStateOf(0) }
     val todoList by timerRunningViewModel.todoList.collectAsState()
 
