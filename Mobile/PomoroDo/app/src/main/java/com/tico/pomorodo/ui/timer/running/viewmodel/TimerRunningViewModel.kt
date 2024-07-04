@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.timer.running.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.local.datasource.DataSource
@@ -27,22 +28,31 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
     private val _oldTodoList: MutableStateFlow<List<TodoData>> = MutableStateFlow(_todoList.value)
     val todoList: StateFlow<List<TodoData>> = _todoList
 
+    private val _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
     fun initialConcentrationTime(time: Int) {
-        _concentrationTime.value = Time(time / 60, time % 60, 0)
-        _timerMaxValue.value = time * 60
+        if (!_isInitialized.value) {
+            _concentrationTime.value = Time(time / 60, time % 60, 0)
+            _timerMaxValue.value = time * 60
+            _isInitialized.value = true
+            Log.d("initTimerTest", "concentration time: ${_concentrationTime.value}")
+        }
     }
 
     fun initialBreakTime(time: Int) {
-        _concentrationTime.value = Time(time / 60, time % 60, 0)
-        _timerMaxValue.value = time * 60
+        if (!_isInitialized.value) {
+            _concentrationTime.value = Time(time / 60, time % 60, 0)
+            _timerMaxValue.value = time * 60
+            _isInitialized.value = true
+        }
     }
 
     fun setConcentrationTime(hour: Int, minute: Int, second: Int? = null) {
         _concentrationTime.value = Time(hour, minute, second)
     }
 
-    fun setBreakTime(hour: Int, minute: Int) {
-        _breakTime.value = Time(hour, minute)
+    fun setBreakTime(hour: Int, minute: Int, second: Int? = null) {
+        _breakTime.value = Time(hour, minute, second)
     }
 
     fun changeTodoState(todoIndex: Int, state: TodoState) {
@@ -59,5 +69,9 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
 
     fun resetTodoState() {
         _todoList.value = _oldTodoList.value
+    }
+
+    fun setInitializedFlag() {
+        _isInitialized.value = false
     }
 }
