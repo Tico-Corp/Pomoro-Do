@@ -11,13 +11,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import com.tico.pomorodo.R
+import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.timer.running.viewmodel.TimerRunningViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun BreakTimerScreen(navBackStackEntry: NavBackStackEntry) {
+fun BreakTimerScreen(navController: NavController, navBackStackEntry: NavBackStackEntry) {
     val timerRunningViewModel: TimerRunningViewModel = hiltViewModel(navBackStackEntry)
 
     LaunchedEffect(key1 = Unit) {
@@ -33,7 +35,7 @@ fun BreakTimerScreen(navBackStackEntry: NavBackStackEntry) {
     }
     var second by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(key1 = second, key2 = isPaused) {
+    LaunchedEffect(key1 = second, key2 = isPaused, key3 = isFinished) {
         if (!isPaused) {
             delay(1000)
 
@@ -42,6 +44,10 @@ fun BreakTimerScreen(navBackStackEntry: NavBackStackEntry) {
                 onFinishedChange = { setFinish(true) },
                 onTimeChanged = timerRunningViewModel::setBreakTime
             )
+        }
+
+        if (isFinished) {
+            navController.popBackStack(MainNavigationDestination.Home.name, inclusive = false)
         }
     }
 

@@ -103,6 +103,6 @@ fun NavGraphBuilder.breakModeScreen(navController: NavController) {
         val navBackStackEntry = remember(backStackEntry) {
             navController.getBackStackEntry(MainNavigationDestination.ConcentrationMode.name)
         }
-        BreakTimerScreen(navBackStackEntry = navBackStackEntry)
+        BreakTimerScreen(navController = navController, navBackStackEntry = navBackStackEntry)
     }
 }
