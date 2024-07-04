@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.timer.running.view
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -76,7 +77,8 @@ fun ConcentrationTimerScreen(
         title = stringResource(R.string.title_concentration_time),
         time = concentrationTime,
         timerColor = PomoroDoTheme.colorScheme.primaryContainer,
-        maxValue = maxValue
+        maxValue = maxValue,
+        buttonContent = stringResource(R.string.content_button_finish_concentration)
     ) {
         setPause(true)
         setFinishTimerDialogVisible(true)
@@ -84,6 +86,8 @@ fun ConcentrationTimerScreen(
 
     if (finishTimerDialogVisible) {
         FinishTimerDialog(
+            titleId = R.string.title_finish_concentration,
+            contentId = R.string.content_finish_concentration,
             onConfirmation = {
                 setFinish(true)
                 setFinishTimerDialogVisible(false)
@@ -121,6 +125,7 @@ fun TimerScreenLayout(
     time: Time,
     maxValue: Int,
     timerColor: Color,
+    buttonContent: String,
     onClick: () -> Unit
 ) {
     val timeToSecond =
@@ -161,7 +166,7 @@ fun TimerScreenLayout(
         Spacer(modifier = Modifier.height(100.dp))
 
         CustomTextButton(
-            text = stringResource(R.string.content_button_finish_concentration),
+            text = buttonContent,
             containerColor = PomoroDoTheme.colorScheme.primaryContainer,
             contentColor = Color.White,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular18,
@@ -199,16 +204,21 @@ fun updateTimer(
 }
 
 @Composable
-fun FinishTimerDialog(onConfirmation: () -> Unit, onDismissRequest: () -> Unit) {
+fun FinishTimerDialog(
+    @StringRes titleId: Int,
+    @StringRes contentId: Int,
+    onConfirmation: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
     SimpleAlertDialog(
-        dialogTitleId = R.string.title_finish_concentration,
+        dialogTitleId = titleId,
         confirmTextId = R.string.content_finish,
         dismissTextId = R.string.content_cancel,
         onConfirmation = onConfirmation,
         onDismissRequest = onDismissRequest,
     ) {
         Text(
-            text = stringResource(R.string.content_finish_concentration),
+            text = stringResource(contentId),
             color = PomoroDoTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             style = PomoroDoTheme.typography.laundryGothicRegular14

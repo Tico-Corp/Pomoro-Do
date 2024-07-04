@@ -49,7 +49,8 @@ fun BreakTimerScreen(navBackStackEntry: NavBackStackEntry) {
         title = stringResource(id = R.string.title_break_time),
         time = breakTime,
         maxValue = maxValue,
-        timerColor = PomoroDoTheme.colorScheme.breakTimeColor
+        timerColor = PomoroDoTheme.colorScheme.breakTimeColor,
+        buttonContent = stringResource(id = R.string.content_button_finish_break)
     ) {
         setPause(true)
         setFinishTimerDialogVisible(true)
@@ -57,6 +58,8 @@ fun BreakTimerScreen(navBackStackEntry: NavBackStackEntry) {
 
     if (finishTimerDialogVisible) {
         FinishTimerDialog(
+            titleId = R.string.title_finish_break,
+            contentId = R.string.content_finish_break,
             onConfirmation = {
                 setFinish(true)
                 setFinishTimerDialogVisible(false)

@@ -136,6 +136,9 @@
     <string name="title_finish_concentration">집중 모드 종료</string>
     <string name="content_finish_concentration">집중 모드를 종료하시겠습니까?</string>
     <string name="title_check_todo_list_dialog">할 일 목록</string>
+    <string name="content_button_finish_break">휴식 종료</string>
+    <string name="title_finish_break">휴식 모드 종료</string>
+    <string name="content_finish_break">휴식 모드를 종료하시겠습니까?</string>
 
     // common
     <string name="content_next">다음</string>
