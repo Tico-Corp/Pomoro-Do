@@ -29,4 +29,9 @@ class TimerSetupViewModel @Inject constructor() : ViewModel() {
     fun setConcentrationGoal(hour: Int, minute: Int, second: Int) {
         _concentrationGoal.value = Time(hour, minute, second)
     }
+
+    fun initTimer() {
+        _concentrationTime.value = Time(0, 0)
+        _breakTime.value = Time(0, 0)
+    }
 }

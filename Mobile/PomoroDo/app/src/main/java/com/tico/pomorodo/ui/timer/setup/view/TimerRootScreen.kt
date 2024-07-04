@@ -91,6 +91,7 @@ fun TimerRootScreen(
             runBlocking {
                 setState(concentrationTimeInMinute, breakTimeInMinute)
                 navigate()
+                timerSetupViewModel.initTimer()
             }
         }
     }
