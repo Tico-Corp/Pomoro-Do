@@ -27,22 +27,30 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
     private val _oldTodoList: MutableStateFlow<List<TodoData>> = MutableStateFlow(_todoList.value)
     val todoList: StateFlow<List<TodoData>> = _todoList
 
-    fun initialConcentrationTime(time: Int) {
-        _concentrationTime.value = Time(time / 60, time % 60, 0)
-        _timerMaxValue.value = time * 60
+    private val _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
+
+    fun initialConcentrationTime(concentrationTime: Int, breakTime: Int) {
+        if (!_isInitialized.value) {
+            _concentrationTime.value = Time(concentrationTime / 60, concentrationTime % 60, 0)
+            _breakTime.value = Time(breakTime / 60, breakTime % 60, 0)
+            _timerMaxValue.value = concentrationTime * 60
+            _isInitialized.value = true
+        }
     }
 
-    fun initialBreakTime(time: Int) {
-        _concentrationTime.value = Time(time / 60, time % 60, 0)
-        _timerMaxValue.value = time * 60
+    fun initialBreakTime() {
+        if (!_isInitialized.value) {
+            _timerMaxValue.value = breakTime.value.hour * 60 * 60 + breakTime.value.minute * 60
+            _isInitialized.value = true
+        }
     }
 
     fun setConcentrationTime(hour: Int, minute: Int, second: Int? = null) {
         _concentrationTime.value = Time(hour, minute, second)
     }
 
-    fun setBreakTime(hour: Int, minute: Int) {
-        _breakTime.value = Time(hour, minute)
+    fun setBreakTime(hour: Int, minute: Int, second: Int? = null) {
+        _breakTime.value = Time(hour, minute, second)
     }
 
     fun changeTodoState(todoIndex: Int, state: TodoState) {
@@ -59,5 +67,9 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
 
     fun resetTodoState() {
         _todoList.value = _oldTodoList.value
+    }
+
+    fun setInitializedFlag() {
+        _isInitialized.value = false
     }
 }

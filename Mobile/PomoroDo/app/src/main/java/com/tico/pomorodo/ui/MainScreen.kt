@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.MainNavigationDestination
+import com.tico.pomorodo.navigation.breakModeScreen
 import com.tico.pomorodo.navigation.concentrationModeScreen
 import com.tico.pomorodo.navigation.getState
 import com.tico.pomorodo.navigation.homeScreen
 import com.tico.pomorodo.navigation.logInScreen
+import com.tico.pomorodo.navigation.navigateToBreakMode
 import com.tico.pomorodo.navigation.navigateToConcentrationMode
 import com.tico.pomorodo.navigation.navigateToHome
 import com.tico.pomorodo.navigation.navigateToLogIn
@@ -50,7 +52,11 @@ fun MainScreen() {
                     },
                     navigateToConcentrationMode = mainNavController::navigateToConcentrationMode
                 )
-                concentrationModeScreen(getState = mainNavController::getState)
+                concentrationModeScreen(
+                    getState = mainNavController::getState,
+                    mainNavController::navigateToBreakMode
+                )
+                breakModeScreen(navController = mainNavController)
             }
         }
     }

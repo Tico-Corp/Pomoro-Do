@@ -18,6 +18,12 @@ class TimerSetupViewModel @Inject constructor() : ViewModel() {
     private val _concentrationGoal: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0, 0))
     val concentrationGoal: StateFlow<Time> = _concentrationGoal
 
+    private val _totalConcentrationTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0, 0))
+    val totalConcentrationTime: StateFlow<Time> = _totalConcentrationTime
+
+    private val _totalBreakTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0, 0))
+    val totalBreakTime: StateFlow<Time> = _totalBreakTime
+
     fun setConcentrationTime(hour: Int, minute: Int, second: Int? = null) {
         _concentrationTime.value = Time(hour, minute, second)
     }
@@ -28,5 +34,10 @@ class TimerSetupViewModel @Inject constructor() : ViewModel() {
 
     fun setConcentrationGoal(hour: Int, minute: Int, second: Int) {
         _concentrationGoal.value = Time(hour, minute, second)
+    }
+
+    fun initTimer() {
+        _concentrationTime.value = Time(0, 0)
+        _breakTime.value = Time(0, 0)
     }
 }
