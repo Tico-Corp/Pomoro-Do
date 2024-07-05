@@ -1,12 +1,15 @@
-package com.tico.pomoro_do.global.auth;
+package com.tico.pomoro_do.global.auth.jwt;
 
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
+import com.tico.pomoro_do.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -53,22 +56,27 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
         log.info("Login success");
 
-        //UserDetailsS
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
-        //username 가져옴
-        String username = customUserDetails.getUsername();
-
+        //유저 정보
+        //username 가져오기
+        String username = authentication.getName();
         //role 가져오기 (동작)
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         //role 가져옴
         String role = auth.getAuthority();
-        //토큰 생성
-        String token = jwtUtil.createJwt(username, role, 60*60*10L);
-        //헤더에 넣어서 응답
-        response.addHeader("Authorization", "Bearer " + token); //예시) Authorization: Bearer 인증토큰(string)
 
+        //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
+        String access = jwtUtil.createJwt("access", username, role, 600000L); //10분
+        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); //24시간
+
+        //응답 설정
+        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) Authorization: Bearer 인증토큰(string)
+        response.addHeader("Authorization", "Bearer " + access);
+//        response.setHeader("access", access);
+        //refresh 토큰 쿠키에 넣어서 응답
+        response.addCookie(CookieUtil.createCookie("refresh", refresh));
+        response.setStatus(HttpStatus.OK.value());
     }
 
     //로그인 실패시 실행하는 메소드
@@ -79,4 +87,5 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //로그인 실패시 401 응답 코드 반환
         response.setStatus(401);
     }
+
 }

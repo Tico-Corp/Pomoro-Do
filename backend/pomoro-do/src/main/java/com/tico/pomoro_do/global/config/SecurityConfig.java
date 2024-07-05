@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.global.config;
 
-import com.tico.pomoro_do.global.auth.LoginFilter;
+import com.tico.pomoro_do.global.auth.jwt.LoginFilter;
 import com.tico.pomoro_do.global.auth.jwt.JWTFilter;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import lombok.RequiredArgsConstructor;
