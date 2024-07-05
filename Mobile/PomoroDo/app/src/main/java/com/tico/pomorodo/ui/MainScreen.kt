@@ -44,7 +44,10 @@ fun MainScreen() {
             ) {
                 splashScreen(navigate = mainNavController::navigateToLogIn)
                 logInScreen(navigate = mainNavController::navigateToSignUp)
-                signUpScreen(navigate = mainNavController::navigateToHome)
+                signUpScreen(
+                    navController = mainNavController,
+                    navigate = mainNavController::navigateToHome
+                )
                 homeScreen(
                     setTimerState = { concentrationTime, breakTime ->
                         mainNavController.setState(CONCENTRATION_TIME, concentrationTime)

@@ -3,10 +3,11 @@ package com.tico.pomorodo.navigation
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.tico.pomorodo.ui.auth.view.LogInScreen
-import com.tico.pomorodo.ui.auth.view.SignUpScreen
+import com.tico.pomorodo.ui.auth.view.SignUpRoute
 import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.home.view.TodoScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
@@ -71,9 +72,15 @@ fun NavGraphBuilder.logInScreen(navigate: () -> Unit) {
     }
 }
 
-fun NavGraphBuilder.signUpScreen(navigate: () -> Unit) {
-    composable(route = MainNavigationDestination.SignUp.name) {
-        SignUpScreen(navigate = navigate)
+fun NavGraphBuilder.signUpScreen(navController: NavHostController, navigate: () -> Unit) {
+    composable(route = MainNavigationDestination.SignUp.name) { navBackStackEntry ->
+        val authNavBackStackEntry = remember(navBackStackEntry) {
+            navController.getBackStackEntry(MainNavigationDestination.LogIn.name)
+        }
+        SignUpRoute(
+            navBackStackEntry = authNavBackStackEntry,
+            navigate = navigate
+        )
     }
 }
 
