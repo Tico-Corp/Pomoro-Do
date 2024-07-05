@@ -223,7 +223,7 @@ private suspend fun handleCredentialFailure(
                 GetCredentialRequest.Builder()
                     .addCredentialOption(signInWithGoogleOption)
                     .build()
-            Log.d(TAG, "handleCredentialFailure: NoCredentialException")
+            Log.e(TAG, "handleCredentialFailure: NoCredentialException")
             handleLogin(
                 context = context,
                 request = signInWithGoogleRequest,
@@ -254,22 +254,7 @@ fun handleSignIn(result: GetCredentialResponse): GoogleIdTokenCredential {
     when (val credential = result.credential) {
         is CustomCredential -> {
             if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                val googleIdTokenCredential =
-                    GoogleIdTokenCredential.createFrom(credential.data)
-
-                val googleIdToken = googleIdTokenCredential.idToken
-
-                Log.i(TAG, "googleIdToken: $googleIdToken")
-                Log.i(TAG, "id: ${googleIdTokenCredential.id}")
-                Log.i(TAG, "type: ${googleIdTokenCredential.type}")
-                Log.i(TAG, "data: ${googleIdTokenCredential.data}")
-                Log.i(TAG, "givenName: ${googleIdTokenCredential.givenName}")
-                Log.i(TAG, "displayName: ${googleIdTokenCredential.displayName}")
-                Log.i(TAG, "familyName: ${googleIdTokenCredential.familyName}")
-                Log.i(TAG, "phoneNumber: ${googleIdTokenCredential.phoneNumber}")
-                Log.i(TAG, "profilePictureUri: ${googleIdTokenCredential.profilePictureUri}")
-
-                return googleIdTokenCredential
+                return GoogleIdTokenCredential.createFrom(credential.data)
             } else {
                 throw UnexpectedException("Unexpected type of credential")
             }
