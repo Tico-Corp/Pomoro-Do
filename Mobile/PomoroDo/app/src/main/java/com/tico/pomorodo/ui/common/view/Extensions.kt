@@ -1,5 +1,8 @@
 package com.tico.pomorodo.ui.common.view
 
+import android.content.Context
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,8 +17,11 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.data.model.User
+import java.io.File
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Date
 import java.util.Locale
 
 fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit = {}): Modifier {
@@ -84,3 +90,18 @@ fun Modifier.clickableWithRipple(
 )
 
 fun LocalDateTime.getTimeFormat(): String = format(DateTimeFormatter.ofPattern("a h:mm", Locale.US))
+
+fun Context.createImageFile(): File {
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    val imageFileName = "Profile_Image_$timeStamp"
+    val image = File.createTempFile(
+        imageFileName,
+        ".jpg",
+        externalCacheDir
+    )
+    return image
+}
+
+fun Context.executeToast(@StringRes messageId: Int) {
+    Toast.makeText(this, this.getString(messageId), Toast.LENGTH_SHORT).show()
+}
