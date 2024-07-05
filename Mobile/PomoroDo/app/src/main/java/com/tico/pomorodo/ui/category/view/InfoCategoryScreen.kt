@@ -222,7 +222,8 @@ fun InfoCategoryScreen(
                     )
                 },
                 singleLine = true,
-                colors = textFieldColors
+                colors = textFieldColors,
+                textStyle = PomoroDoTheme.typography.laundryGothicRegular14
             )
             CategoryType(type)
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)

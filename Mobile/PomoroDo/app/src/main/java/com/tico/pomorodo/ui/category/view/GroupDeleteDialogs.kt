@@ -103,7 +103,8 @@ fun GroupDeleteSecondDialog(
                             onClickedListener = { onValueChange("") }
                         )
                     }
-                }
+                },
+                textStyle = PomoroDoTheme.typography.laundryGothicRegular14
             )
         },
         onConfirmation = onConfirmation,

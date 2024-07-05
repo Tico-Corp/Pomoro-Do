@@ -109,7 +109,8 @@ fun AddCategoryScreen(
                     )
                 },
                 singleLine = true,
-                colors = textFieldColors
+                colors = textFieldColors,
+                textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
             )
             CategoryType(type = type, colors = radioButtonColors, onTypeChanged = onTypeChanged)
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)

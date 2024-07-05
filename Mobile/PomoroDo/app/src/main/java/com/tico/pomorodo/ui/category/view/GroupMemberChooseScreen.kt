@@ -198,7 +198,8 @@ fun GroupMemberChooseScreen(
                         onClickedListener = { onSearchNameChanged("") }
                     )
                 }
-            }
+            },
+            textStyle = PomoroDoTheme.typography.laundryGothicRegular14
         )
         Spacer(modifier = Modifier.height(16.dp))
         if (filteredList.isEmpty()) {
