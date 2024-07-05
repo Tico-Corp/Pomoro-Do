@@ -2,6 +2,7 @@ package com.tico.pomoro_do.global.auth.jwt;
 
 import com.tico.pomoro_do.domain.user.entity.Account;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 //OncePerRequestFilter: 요청에 대해 한번만 동작
 @Slf4j
@@ -27,15 +29,18 @@ public class JWTFilter extends OncePerRequestFilter {
     //토큰 검증
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
+        log.info("Access 토큰 검증 시작");
         //request에서 Authorization 헤더를 찾음
+        //헤더에서 Authorization키에 담긴 토큰을 꺼냄
         String authorization= request.getHeader("Authorization");
 
         //null 값 검증 시작
 
         //Authorization 헤더 검증 (토큰이 담겨있는지, Bearer 접두사를 가지는 지 확인)
+        // 토큰이 없다면 다음 필터로 넘김
         if (authorization == null || !authorization.startsWith("Bearer ")) {
             log.info("token null");
+            // 권한이 필요없는 요청도 있기 때문에 doFilter로 넘긴다.
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)
@@ -47,25 +52,57 @@ public class JWTFilter extends OncePerRequestFilter {
         //소멸 시간 검증 시작
 
         //Bearer 부분 제거 후 순수 토큰만 획득
-        String token = authorization.split(" ")[1];
+        String accessToken = authorization.split(" ")[1];
 
-        //토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)) {
+        //토큰이 있다면
+        //토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
+        try {
+            // 토큰이 만료되었는 지 확인
+            jwtUtil.isExpired(accessToken);
+        } catch (ExpiredJwtException e) {
+            //Access 토큰이 만료된 경우
+            log.info("accessToken expired");
 
-            log.info("token expired");
-            filterChain.doFilter(request, response);
+            //만료되었으면 filterChain.doFilter로 넘기지 않는다.
+            //특정한 상태 코드와 토큰이 만료되었다는 메시지를 함께 응답을 보낸다.
 
-            //조건이 해당되면 메소드 종료 (필수)
+            // 프론트 측과 약속된 응답을 보내야한다.
+            // -> 토큰 만료시 refesh토큰으로 access토큰을 재발급해야하기 때문이다.
+
+            //response body
+            PrintWriter writer = response.getWriter();
+            writer.print("access token expired");
+
+            //response status code
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        //카테고리 확인: 토큰이 access인지 확인 (발급시 페이로드에 명시)
+        String category = jwtUtil.getCategory(accessToken);
+
+        if (!category.equals("access")) {
+            //access 토큰이 아니면 응답 메시지와 상태코드 반환
+
+            //response body
+            PrintWriter writer = response.getWriter();
+            writer.print("invalid access token");
+
+            //response status code
+            //401 응답 코드
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
         //토큰 검증 완료
+        log.info("Access 토큰 검증 완료");
 
-        //토큰에서 username과 role 획득
-        String username = jwtUtil.getUsername(token);
-        String role = jwtUtil.getRole(token);
+        // 일시적인 세션 만들기
+        //토큰에서 username, role 값을 획득
+        String username = jwtUtil.getUsername(accessToken);
+        String role = jwtUtil.getRole(accessToken);
 
-        //account를 생성하여 값 저장
+        //account를 생성하여 값 저장 (추후 DTO를 만들어 값 저장)
         Account account = Account.builder()
                 .username(username)
                 .password("temppassword")
@@ -78,7 +115,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //UserDetails에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(account);
 
-        //스프링 시큐리티 인증 토큰 생성
+        //스프링 시큐리티 로그인 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         //세션에 사용자 등록 (일시적으로 저장) -> 특정 경로에 접근 가능
         SecurityContextHolder.getContext().setAuthentication(authToken);
