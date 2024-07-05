@@ -22,6 +22,7 @@ fun CustomTextButton(
     text: String,
     enabled: Boolean = true,
     borderColor: Color = Color.Unspecified,
+    borderWidth: Dp = 1.dp,
     containerColor: Color,
     contentColor: Color,
     disabledContainerColor: Color = PomoroDoTheme.colorScheme.gray70,
@@ -34,7 +35,7 @@ fun CustomTextButton(
         modifier = modifier
             .clickableWithRipple(10.dp, enabled) { onClick() }
             .background(if (enabled) containerColor else disabledContainerColor)
-            .border(1.dp, borderColor, RoundedCornerShape(10.dp))
+            .border(borderWidth, borderColor, RoundedCornerShape(10.dp))
             .fillMaxWidth()
             .padding(vertical = verticalPadding)
     ) {
