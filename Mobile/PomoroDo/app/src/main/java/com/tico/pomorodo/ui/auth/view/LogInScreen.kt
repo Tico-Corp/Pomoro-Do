@@ -105,6 +105,7 @@ fun LogInScreen(
                                     request = request,
                                     nonce = hashedNonce,
                                     onSuccess = { result ->
+                                        viewModel.saveIdToken(result.idToken)
                                         viewModel.requestLogin()
                                         viewModel.setProfile(result.profilePictureUri)
                                         navigate()
