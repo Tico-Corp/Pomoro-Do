@@ -137,7 +137,7 @@ fun TodoMake(
     onValueChange: (String) -> Unit,
 ) {
     val textFieldColors = TextFieldDefaults.colors(
-        focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
+        focusedTextColor = PomoroDoTheme.colorScheme.background,
         unfocusedTextColor = PomoroDoTheme.colorScheme.onBackground,
         disabledTextColor = PomoroDoTheme.colorScheme.gray10,
         errorTextColor = PomoroDoTheme.colorScheme.error50,
@@ -145,7 +145,7 @@ fun TodoMake(
         unfocusedContainerColor = Color.Transparent,
         cursorColor = PomoroDoTheme.colorScheme.primaryContainer,
         unfocusedIndicatorColor = PomoroDoTheme.colorScheme.onBackground,
-        focusedIndicatorColor = PomoroDoTheme.colorScheme.primaryContainer
+        focusedIndicatorColor = PomoroDoTheme.colorScheme.primaryContainer,
     )
     Row(
         horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -161,6 +161,7 @@ fun TodoMake(
             modifier = Modifier.weight(1f),
             value = inputText,
             onValueChange = onValueChange,
+            textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
             placeholder = {
                 SimpleText(
                     text = stringResource(id = R.string.content_todo_placehold),

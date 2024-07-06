@@ -6,6 +6,7 @@
     // log in
     <string name="content_ic_logo_google">logo of google</string>
     <string name="content_log_in_with_google">Log in with Google</string>
+    <string name="content_offline_log_in">오프라인 모드</string>
 
     // sign up
     <string name="title_sign_up">회원 정보 입력</string>
@@ -14,6 +15,13 @@
     <string name="content_user_name_label">닉네임</string>
     <string name="content_user_name_placeholder">닉네임을 입력해주세요.</string>
     <string name="content_button_sign_up">가입</string>
+    <string name="title_profile_photo_setting">프로필 사진 설정</string>
+    <string name="content_pick_photo">앨범에서 사진 선택</string>
+    <string name="content_default_image">기본 이미지 적용</string>
+    <string name="content_take_photo">사진 촬영</string>
+    <string name="content_try_one_more">다시 한 번 시도해 주세요.</string>
+    <string name="content_please_permission">권한을 허용해 주세요.</string>
+    <string name="content_please_update_google_play_service">"google play service를 업데이트 해주세요."</string>
 
     // pomodoro timer
     <string name="content_ic_timer_pin">타이머의 중심 아이콘</string>
