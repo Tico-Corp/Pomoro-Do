@@ -27,6 +27,21 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
+fun Profile(url: String, modifier: Modifier = Modifier, size: Int) {
+    GlideImage(
+        imageModel = { url },
+        modifier = modifier
+            .size(size.dp)
+            .clip(shape = CircleShape),
+        requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+        imageOptions = ImageOptions(
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center
+        )
+    )
+}
+
+@Composable
 fun ProfileVertical(
     modifier: Modifier = Modifier,
     size: Int,
