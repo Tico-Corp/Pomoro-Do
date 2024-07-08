@@ -17,13 +17,15 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
 fun TodoItem(
+    modifier: Modifier = Modifier,
     iconSize: Int,
     todoData: TodoData,
     enabled: Boolean = true,
     textStyle: TextStyle,
-    onStateChanged: ((TodoState) -> Unit)? = null
+    onStateChanged: (() -> Unit)? = null
 ) {
     Row(
+        modifier = modifier.clickableWithoutRipple(enabled) { onStateChanged?.invoke() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
@@ -31,7 +33,7 @@ fun TodoItem(
             size = iconSize,
             state = todoData.state,
             enabled = enabled,
-            onStateChanged = { onStateChanged?.invoke(it) })
+            onStateChanged = { onStateChanged?.invoke() })
         SimpleText(
             modifier = Modifier,
             text = todoData.name,
@@ -45,12 +47,12 @@ fun TodoItem(
 private fun TodoCheckBox(
     size: Int,
     state: TodoState,
-    onStateChanged: (TodoState) -> Unit,
+    onStateChanged: () -> Unit,
     enabled: Boolean
 ) {
     SimpleIcon(
         modifier = Modifier.clickableWithoutRipple(enabled) {
-            onStateChanged(state)
+            onStateChanged()
         },
         size = size,
         imageVector = when (state) {
