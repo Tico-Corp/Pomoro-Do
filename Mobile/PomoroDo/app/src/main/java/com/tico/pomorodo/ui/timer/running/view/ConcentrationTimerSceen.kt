@@ -106,15 +106,13 @@ fun ConcentrationTimerScreen(
             confirmTextId = R.string.content_ok,
             onConfirmation = {
                 timerRunningViewModel.setInitializedFlag()
+                timerRunningViewModel.setTodoList(it)
                 navigate()
             },
-            onResetRequest = timerRunningViewModel::resetTodoState,
             onDismissRequest = {
                 setFinish(false)
                 setPause(false)
-                timerRunningViewModel.resetTodoState()
             },
-            onTodoStateChanged = timerRunningViewModel::changeTodoState
         )
     }
 }

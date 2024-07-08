@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.data.model.TodoData
-import com.tico.pomorodo.data.model.TodoState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +23,6 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
     val timerMaxValue: StateFlow<Int> = _timerMaxValue
 
     private val _todoList: MutableStateFlow<List<TodoData>> = MutableStateFlow(DataSource.todoList)
-    private val _oldTodoList: MutableStateFlow<List<TodoData>> = MutableStateFlow(_todoList.value)
     val todoList: StateFlow<List<TodoData>> = _todoList
 
     private val _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
@@ -53,20 +51,8 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
         _breakTime.value = Time(hour, minute, second)
     }
 
-    fun changeTodoState(todoIndex: Int, state: TodoState) {
-        val newState = when (state) {
-            TodoState.UNCHECKED -> TodoState.CHECKED
-            TodoState.CHECKED -> TodoState.GOING
-            TodoState.GOING -> TodoState.UNCHECKED
-        }
-        val newTodoList = _todoList.value.toMutableList()
-        val newItem = newTodoList[todoIndex].copy(state = newState)
-        newTodoList[todoIndex] = newItem
+    fun setTodoList(newTodoList: List<TodoData>) {
         _todoList.value = newTodoList
-    }
-
-    fun resetTodoState() {
-        _todoList.value = _oldTodoList.value
     }
 
     fun setInitializedFlag() {
