@@ -1,0 +1,15 @@
+package com.tico.pomoro_do.global.exception;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
+public class CustomException extends RuntimeException{
+    //ErrorCode를 담을 class 생성한다.
+    //RuntimeException 상속
+    //Custom Error Code 속성 추가
+
+    CustomErrorCode errorCode;
+}
