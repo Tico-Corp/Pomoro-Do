@@ -3,7 +3,6 @@ package com.tico.pomorodo.ui.todo.viewmodel
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Category
-import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
@@ -23,10 +22,6 @@ class TodoViewModel() : ViewModel() {
     private var _categoryList = MutableStateFlow(DataSource.categoryList)
     val categoryList: StateFlow<List<Category>>
         get() = _categoryList.asStateFlow()
-
-    private var _inviteGroupCategoryList = MutableStateFlow(DataSource.inviteList)
-    val inviteGroupCategoryList: StateFlow<List<InviteCategory>>
-        get() = _inviteGroupCategoryList.asStateFlow()
 
     private var _todoMakeVisible = MutableStateFlow(false)
     val todoMakeVisible: StateFlow<Boolean>
