@@ -159,4 +159,17 @@
 
     // todo list dialog
     <string name="content_todo_list_dialog">집중 시간동안 수행 한 일을 체크해주세요.</string>
+
+    // my page
+    <string name="content_ic_setting">환경설정 아이콘</string>
+    <string name="title_following">팔로잉</string>
+    <string name="title_follower">팔로워</string>
+    <string name="title_invite">친구 초대</string>
+    <string name="title_alarm_concentration">집중 종료 알림</string>
+    <string name="title_alarm_break">휴식 종료 알림</string>
+    <string name="title_stopwatch_concentration">집중 종료 후 스톱워치 전환</string>
+    <string name="title_stopwatch_break">휴식 종료 후 스톱워치 전환</string>
+    <string name="content_stopwatch_option_true">타이머 종료 후 추가로 시간이 측정됩니다.</string>
+    <string name="content_stopwatch_option_false">타이머 종료 후 자동으로 종료됩니다.</string>
+    <string name="content_alarm_option">소리</string>
 </resources>
