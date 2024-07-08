@@ -7,10 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.TodoData
-import com.tico.pomorodo.data.model.TodoState
+import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.SimpleDropDownMoreInfo
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -42,7 +40,7 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun TotalFocusStatus(hour: Int, minute: Int, second: Int) {
+fun TotalFocusStatus(hour: Int, minute: Int, second: Int, onHistoryButtonClicked: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -73,17 +71,16 @@ fun TotalFocusStatus(hour: Int, minute: Int, second: Int) {
         }
 
         Box(modifier = Modifier.align(Alignment.CenterVertically)) {
-            SimpleText(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .background(
-                        PomoroDoTheme.colorScheme.secondaryContainer,
-                        RoundedCornerShape(5.dp)
-                    )
-                    .padding(horizontal = 10.dp, vertical = 5.dp),
-                textId = R.string.content_view_history,
-                style = PomoroDoTheme.typography.laundryGothicRegular12,
-                color = PomoroDoTheme.colorScheme.secondary
+            CustomTextButton(
+                modifier = Modifier,
+                text = stringResource(id = R.string.content_view_history),
+                textStyle = PomoroDoTheme.typography.laundryGothicRegular12,
+                containerColor = PomoroDoTheme.colorScheme.secondaryContainer,
+                verticalPadding = 8.dp,
+                horizontalPadding = 15.dp,
+                contentColor = PomoroDoTheme.colorScheme.secondary,
+                roundedCornerShape = 5.dp,
+                onClick = onHistoryButtonClicked
             )
         }
 
@@ -103,7 +100,7 @@ fun CategoryTag(
             .background(
                 PomoroDoTheme.colorScheme.secondaryContainer
             )
-            .padding(horizontal = 10.dp, vertical = 5.dp),
+            .padding(horizontal = 10.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
@@ -181,7 +178,7 @@ fun TodoListItem(
     todoData: TodoData,
     isFriend: Boolean,
     isGroup: Boolean,
-    onStateChanged: (TodoState) -> Unit,
+    onStateChanged: () -> Unit,
     onMoreInfoEditClicked: () -> Unit,
     onMoreInfoDeleteClicked: () -> Unit,
     onGroupClicked: () -> Unit,
@@ -194,13 +191,13 @@ fun TodoListItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         TodoItem(
+            modifier = Modifier.weight(1f),
             iconSize = 26,
             todoData = todoData,
             enabled = !isFriend,
             onStateChanged = onStateChanged,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular14
         )
-        Spacer(modifier = Modifier.weight(1f))
         if (isGroup && !isFriend) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(5.dp),

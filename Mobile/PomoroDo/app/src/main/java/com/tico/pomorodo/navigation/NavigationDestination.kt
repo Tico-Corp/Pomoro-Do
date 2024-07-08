@@ -32,4 +32,9 @@ enum class MainNavigationDestination {
     Home,
     ConcentrationMode,
     BreakMode,
+    Category,
+    AddCategory,
+    InfoCategory,
+    GroupMemberChoose,
+    History
 }

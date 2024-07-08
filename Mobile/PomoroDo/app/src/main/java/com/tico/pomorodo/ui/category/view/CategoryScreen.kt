@@ -5,19 +5,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,24 +19,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.todo.view.CategoryTag
-import com.tico.pomorodo.ui.todo.viewmodel.TodoViewModel
 
 @Composable
 fun CategoryScreen(
     normalCategoryList: List<Category>,
     groupCategoryList: List<Category>,
-    inviteGroupCategoryList: List<InviteCategory>
+    inviteGroupCategoryList: List<InviteCategory>,
+    onCategoryClicked: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -60,13 +54,25 @@ fun CategoryScreen(
                     style = PomoroDoTheme.typography.laundryGothicBold16,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
-                Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                     normalCategoryList.forEach { category ->
-                        CategoryTag(
-                            title = category.title,
-                            groupNumber = 0,
-                            isAddButton = false,
-                        )
+                        Row(
+                            modifier = Modifier
+                                .clickableWithoutRipple(
+                                    enabled = true,
+                                    onClick = onCategoryClicked
+                                )
+                                .fillMaxWidth()
+                        ) {
+                            CategoryTag(
+                                title = category.title,
+                                groupNumber = 0,
+                                isAddButton = false,
+                            )
+                        }
                     }
                 }
             }
@@ -78,11 +84,20 @@ fun CategoryScreen(
                 )
                 Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     groupCategoryList.forEach { category ->
-                        CategoryTag(
-                            title = category.title,
-                            groupNumber = 6,
-                            isAddButton = false,
-                        )
+                        Row(
+                            modifier = Modifier
+                                .clickableWithoutRipple(
+                                    enabled = true,
+                                    onClick = onCategoryClicked
+                                )
+                                .fillMaxWidth()
+                        ) {
+                            CategoryTag(
+                                title = category.title,
+                                groupNumber = 6,
+                                isAddButton = false,
+                            )
+                        }
                     }
                 }
             }
@@ -125,7 +140,7 @@ fun InvitedCategoryItem(
                     PomoroDoTheme.colorScheme.secondaryContainer,
                     RoundedCornerShape(5.dp)
                 )
-                .padding(horizontal = 12.dp, vertical = 5.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Column(
                 modifier = Modifier,
@@ -157,6 +172,7 @@ fun InvitedCategoryItem(
                 textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                 verticalPadding = 5.dp,
                 horizontalPadding = 12.dp,
+                roundedCornerShape = 5.dp,
                 onClick = onRejectButtonClicked
             )
             CustomTextButton(
@@ -166,49 +182,45 @@ fun InvitedCategoryItem(
                 onClick = onAcceptButtonClicked,
                 containerColor = PomoroDoTheme.colorScheme.primaryContainer,
                 verticalPadding = 5.dp,
+                roundedCornerShape = 5.dp,
                 horizontalPadding = 12.dp
             )
         }
     }
 }
 
-@Preview
 @Composable
-fun CategoryScreenRoute(viewModel: TodoViewModel = hiltViewModel()) {
-    val categoryList by viewModel.categoryList.collectAsState()
-    val inviteGroupCategoryList by viewModel.inviteGroupCategoryList.collectAsState()
-    PomoroDoTheme {
-        Scaffold(
-            modifier = Modifier,
-            containerColor = PomoroDoTheme.colorScheme.background,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        ) { padding ->
-            Column(
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize()
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Horizontal,
-                        ),
-                    ),
-            ) {
-                CategoryTopBar(
-                    modifier = Modifier,
-                    titleTextId = R.string.title_category,
-                    iconString = IC_ADD_CATEGORY,
-                    descriptionId = R.string.content_ic_ok,
-                    onClickedListener = {},
-                    onBackClickedListener = {}
-                )
-                CategoryScreen(
-                    inviteGroupCategoryList = inviteGroupCategoryList,
-                    normalCategoryList = categoryList.filter { it.groupNumber == 0 },
-                    groupCategoryList = categoryList.filter { it.groupNumber > 0 },
-                )
-            }
+fun CategoryScreenRoute(
+    categoryViewModel: CategoryViewModel = hiltViewModel(),
+    navigateToAddCategory: () -> Unit,
+    navigateToBack: () -> Unit,
+    navigateToInfoCategory: () -> Unit
+) {
+    val categoryList by categoryViewModel.categoryList.collectAsState()
+    val inviteGroupCategoryList by categoryViewModel.inviteGroupCategoryList.collectAsState()
+    Surface(
+        modifier = Modifier,
+        color = PomoroDoTheme.colorScheme.background,
+    ) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize(),
+        ) {
+            CategoryTopBar(
+                modifier = Modifier,
+                titleTextId = R.string.title_category,
+                iconString = IC_ADD_CATEGORY,
+                descriptionId = R.string.content_ic_ok,
+                onClickedListener = navigateToAddCategory,
+                onBackClickedListener = navigateToBack
+            )
+            CategoryScreen(
+                inviteGroupCategoryList = inviteGroupCategoryList,
+                normalCategoryList = categoryList.filter { it.groupNumber == 0 },
+                groupCategoryList = categoryList.filter { it.groupNumber > 0 },
+                onCategoryClicked = navigateToInfoCategory
+            )
         }
     }
 }

@@ -28,14 +28,15 @@ fun CustomTextButton(
     disabledContainerColor: Color = PomoroDoTheme.colorScheme.gray70,
     disabledContentColor: Color = PomoroDoTheme.colorScheme.background,
     textStyle: TextStyle,
+    roundedCornerShape: Dp = 10.dp,
     verticalPadding: Dp,
     onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
-            .clickableWithRipple(10.dp, enabled) { onClick() }
+            .clickableWithRipple(roundedCornerShape, enabled) { onClick() }
             .background(if (enabled) containerColor else disabledContainerColor)
-            .border(borderWidth, borderColor, RoundedCornerShape(10.dp))
+            .border(borderWidth, borderColor, RoundedCornerShape(roundedCornerShape))
             .fillMaxWidth()
             .padding(vertical = verticalPadding)
     ) {
@@ -60,15 +61,16 @@ fun CustomTextButton(
     disabledContainerColor: Color = PomoroDoTheme.colorScheme.gray70,
     disabledContentColor: Color = PomoroDoTheme.colorScheme.background,
     textStyle: TextStyle,
+    roundedCornerShape: Dp = 10.dp,
     verticalPadding: Dp,
     horizontalPadding: Dp,
     onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
-            .clickableWithRipple(10.dp, enabled) { onClick() }
+            .clickableWithRipple(roundedCornerShape, enabled) { onClick() }
             .background(if (enabled) containerColor else disabledContainerColor)
-            .border(1.dp, borderColor, RoundedCornerShape(10.dp))
+            .border(1.dp, borderColor, RoundedCornerShape(roundedCornerShape))
             .padding(vertical = verticalPadding, horizontal = horizontalPadding)
     ) {
         SimpleText(

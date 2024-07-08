@@ -11,24 +11,20 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,10 +37,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.DayOfWeeks
 import com.tico.pomorodo.data.model.TimeLineData
 import com.tico.pomorodo.data.model.TimeLineType
@@ -54,7 +49,9 @@ import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.TodoItem
+import com.tico.pomorodo.ui.common.view.TodoListDialog
 import com.tico.pomorodo.ui.common.view.getTimeFormat
+import com.tico.pomorodo.ui.history.viewmodel.HistoryViewModel
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTimelineOrangeFilled
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcTimelineOrangeOutline
 import com.tico.pomorodo.ui.theme.IC_TIMELINE_MORE_INFO
@@ -65,31 +62,31 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.Locale
 
-@Preview
 @Composable
-fun HistoryRoute() {
-    val timeLine = remember { DataSource.timeLine }
+fun HistoryRoute(viewModel: HistoryViewModel = hiltViewModel(), navigateToBack: () -> Unit) {
+    val timeLine by viewModel.timeLine.collectAsState()
+    val todoList by viewModel.todoList.collectAsState()
     val selectedDay by remember { mutableStateOf(LocalDate.now()) }
-    val todoList by remember { mutableStateOf(DataSource.todoList) }
     var historyDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
     var historyEditDialogVisible by rememberSaveable { mutableStateOf(false) }
 
-    PomoroDoTheme {
+    Surface(modifier = Modifier.fillMaxSize(), color = PomoroDoTheme.colorScheme.background) {
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
-                .windowInsetsPadding(
-                    WindowInsets.safeDrawing.only(
-                        WindowInsetsSides.Horizontal,
-                    ),
-                )
         ) {
-            HistoryTopBar(titleTextId = R.string.title_history, onBackClickedListener = {})
+            HistoryTopBar(
+                titleTextId = R.string.title_history,
+                onBackClickedListener = navigateToBack
+            )
             HistoryScreen(
                 selectedDay = selectedDay,
                 timeLine = timeLine,
-                onMoreInfoEditClicked = { historyEditDialogVisible = true },
+                onMoreInfoEditClicked = {
+                    historyEditDialogVisible = true
+                    viewModel.setDialogSelectedIndex(it)
+                },
                 onMoreInfoDeleteClicked = { historyDeleteDialogVisible = true }
             )
             if (historyDeleteDialogVisible) {
@@ -99,7 +96,16 @@ fun HistoryRoute() {
                 )
             }
             if (historyEditDialogVisible) {
-                // history edit dialog
+                TodoListDialog(
+                    title = stringResource(id = R.string.content_todo_edit),
+                    todoList = todoList,
+                    confirmTextId = R.string.content_todo_more_info_edit,
+                    onConfirmation = {
+                        viewModel.setTodoEdit(it)
+                        historyEditDialogVisible = false
+                    },
+                    onDismissRequest = { historyEditDialogVisible = false },
+                )
             }
         }
     }
@@ -108,7 +114,7 @@ fun HistoryRoute() {
 @Composable
 fun HistoryScreen(
     selectedDay: LocalDate, timeLine: List<TimeLineData>,
-    onMoreInfoEditClicked: () -> Unit,
+    onMoreInfoEditClicked: (Int) -> Unit,
     onMoreInfoDeleteClicked: () -> Unit,
 ) {
     Surface(
@@ -124,7 +130,7 @@ fun HistoryScreen(
             TotalHistory(
                 month = selectedDay.monthValue,
                 day = selectedDay.dayOfMonth,
-                dayOfWeek = DayOfWeeks.entries[selectedDay.dayOfWeek.value].dayId,
+                dayOfWeek = DayOfWeeks.entries[selectedDay.dayOfWeek.value % 7].dayId,
                 concentrationHour = 1,
                 concentrationMin = 2,
                 concentrationSec = 12,
@@ -279,7 +285,7 @@ fun HistoryTimeText(
 @Composable
 fun TimeLine(
     timeLine: List<TimeLineData>,
-    onMoreInfoEditClicked: () -> Unit,
+    onMoreInfoEditClicked: (Int) -> Unit,
     onMoreInfoDeleteClicked: () -> Unit,
 ) {
     SimpleText(
@@ -336,7 +342,7 @@ fun TimeLine(
                                 end = item.end,
                                 isBreak = item.type == TimeLineType.BREAK,
                                 todoList = item.list,
-                                onMoreInfoEditClicked = onMoreInfoEditClicked,
+                                onMoreInfoEditClicked = { onMoreInfoEditClicked(index) },
                                 onMoreInfoDeleteClicked = onMoreInfoDeleteClicked
                             )
                         }
@@ -515,11 +521,12 @@ fun TimeLineItem(
             SimpleDropDownMoreInfo(
                 showMoreInfo = showMoreInfo,
                 onShowMoreInfoChange = { showMoreInfo = it },
+                isBreak = isBreak,
                 editTextId = R.string.content_todo_edit,
                 deleteTextId = R.string.content_history_delete,
                 onMoreInfoEditClicked = onMoreInfoEditClicked,
                 onMoreInfoDeleteClicked = onMoreInfoDeleteClicked,
-                PaddingValues(vertical = 5.dp, horizontal = 20.dp)
+                paddingValues = PaddingValues(vertical = 5.dp, horizontal = 20.dp)
             )
         }
     }
