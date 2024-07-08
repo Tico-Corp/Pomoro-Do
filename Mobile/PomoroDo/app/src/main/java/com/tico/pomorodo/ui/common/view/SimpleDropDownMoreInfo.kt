@@ -10,6 +10,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 fun SimpleDropDownMoreInfo(
     showMoreInfo: Boolean,
     onShowMoreInfoChange: (Boolean) -> Unit,
+    isBreak:Boolean = false,
     @StringRes
     editTextId: Int,
     @StringRes
@@ -23,16 +24,18 @@ fun SimpleDropDownMoreInfo(
         onDismissRequest = { onShowMoreInfoChange(false) },
         containerColor = PomoroDoTheme.colorScheme.dialogSurface,
     ) {
-        CustomDropdownMenuItem(
-            textId = editTextId,
-            textStyle = PomoroDoTheme.typography.laundryGothicRegular10,
-            onClick = {
-                onMoreInfoEditClicked()
-                onShowMoreInfoChange(false)
-            },
-            contentPadding = paddingValues
-        )
-        HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
+        if(!isBreak){
+            CustomDropdownMenuItem(
+                textId = editTextId,
+                textStyle = PomoroDoTheme.typography.laundryGothicRegular10,
+                onClick = {
+                    onMoreInfoEditClicked()
+                    onShowMoreInfoChange(false)
+                },
+                contentPadding = paddingValues
+            )
+            HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
+        }
         CustomDropdownMenuItem(
             textId = deleteTextId,
             textStyle = PomoroDoTheme.typography.laundryGothicRegular10,
