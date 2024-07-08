@@ -15,17 +15,18 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.datasource.DataSource.todoList
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -51,22 +52,19 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
  * @param todoList The list of to-do items to display in the dialog.
  * @param confirmTextId The resource ID for the text on the confirm button.
  * @param onConfirmation Function to run when the confirm button is clicked.
- * @param onResetRequest Function to run when the dismiss button is clicked.
  * @param onDismissRequest Function to run when the outside of dialog or back button is clicked.
- * @param onTodoStateChanged Function to run when the state of a to-do item is changed.
  */
 @Composable
 fun TodoListDialog(
     title: String,
     todoList: List<TodoData>,
     @StringRes confirmTextId: Int,
-    onConfirmation: () -> Unit,
-    onResetRequest: () -> Unit,
+    onConfirmation: (List<TodoData>) -> Unit,
     onDismissRequest: () -> Unit,
-    onTodoStateChanged: (index: Int, todoState: TodoState) -> Unit
 ) {
     val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
     val textColor = PomoroDoTheme.colorScheme.onBackground
+    val newTodoList = remember { mutableStateListOf<TodoData>().apply { addAll(todoList) } }
 
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -101,7 +99,12 @@ fun TodoListDialog(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                TodoList(todoList = todoList, onStateChanged = onTodoStateChanged)
+                TodoList(
+                    todoList = newTodoList,
+                    onStateChanged = { index: Int, todoState: TodoState ->
+                        changeTodoState(newTodoList, index, todoState)
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -117,7 +120,10 @@ fun TodoListDialog(
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
                         horizontalPadding = 20.dp,
-                        onClick = onResetRequest
+                        onClick = {
+                            newTodoList.clear()
+                            newTodoList.addAll(todoList)
+                        }
                     )
                     CustomTextButton(
                         text = stringResource(id = confirmTextId),
@@ -126,7 +132,7 @@ fun TodoListDialog(
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
                         horizontalPadding = 20.dp,
-                        onClick = onConfirmation
+                        onClick = { onConfirmation(newTodoList) }
                     )
                 }
             }
@@ -140,33 +146,27 @@ private fun TodoList(
     onStateChanged: (index: Int, todoState: TodoState) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.Start
     ) {
         itemsIndexed(items = todoList, key = { _, todoData -> todoData.id }) { index, todoItem ->
             TodoItem(
+                modifier = Modifier.fillMaxWidth(),
                 iconSize = 24,
                 todoData = todoItem,
-                onStateChanged = { todoState -> onStateChanged(index, todoState) },
+                onStateChanged = { onStateChanged(index, todoItem.state) },
                 textStyle = PomoroDoTheme.typography.laundryGothicRegular16
             )
         }
     }
 }
 
-@Preview
-@Composable
-fun PreviewDialog() {
-    PomoroDoTheme {
-        TodoListDialog(
-            title = "할 일 목록",
-            todoList = todoList,
-            confirmTextId = R.string.content_ok,
-            onConfirmation = { /*TODO*/ },
-            onResetRequest = { /*TODO*/ },
-            onDismissRequest = { /*TODO*/ },
-            onTodoStateChanged = { index, todoState -> /*TODO*/ }
-        )
+fun changeTodoState(newTodoList: SnapshotStateList<TodoData>, todoIndex: Int, state: TodoState) {
+    val newState = when (state) {
+        TodoState.UNCHECKED -> TodoState.CHECKED
+        TodoState.CHECKED -> TodoState.GOING
+        TodoState.GOING -> TodoState.UNCHECKED
     }
+    val newItem = newTodoList[todoIndex].copy(state = newState)
+    newTodoList[todoIndex] = newItem
 }
