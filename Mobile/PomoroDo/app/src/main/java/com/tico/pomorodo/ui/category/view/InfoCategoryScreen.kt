@@ -4,20 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -34,28 +27,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
-import com.tico.pomorodo.ui.common.view.toSelectedUser
 import com.tico.pomorodo.ui.theme.IC_OK
 import com.tico.pomorodo.ui.theme.IC_UNOK
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
+fun InfoCategoryScreenRoute(
+    viewModel: CategoryViewModel = hiltViewModel(),
+    navigateToBack: () -> Unit,
+    navigateToCategory: () -> Unit,
+    navigateToGroupMemberChoose: () -> Unit,
+) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     val checkGroupMemberSheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
@@ -70,106 +63,92 @@ fun InfoCategoryScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
     val type by viewModel.type.collectAsState()
     val openSettingOption by viewModel.openSettingOption.collectAsState()
     val groupMembers by viewModel.groupMembers.collectAsState()
-    val selectedGroupMembers by rememberSaveable {
-        mutableStateOf<List<SelectedUser>>(DataSource.userList.map { it.toSelectedUser() })
-    }
+    val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    PomoroDoTheme {
-        Scaffold(
-            modifier = Modifier
-                .fillMaxSize()
-                .addFocusCleaner(focusManager) {
-                    keyboardController?.hide()
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .addFocusCleaner(focusManager) {
+                keyboardController?.hide()
+            },
+        color = PomoroDoTheme.colorScheme.background,
+    ) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize(),
+        ) {
+            CategoryTopBar(
+                modifier = Modifier,
+                titleTextId = R.string.title_info_category,
+                iconString = IC_OK,
+                disableIconString = IC_UNOK,
+                enabled = selectedGroupMembers.any { it.selected } && viewModel.validateInput(),
+                descriptionId = R.string.content_ic_ok,
+                onClickedListener = {
+                    navigateToCategory()
                 },
-            containerColor = PomoroDoTheme.colorScheme.background,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        ) { padding ->
-            Column(
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize()
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Horizontal,
-                        ),
-                    ),
-            ) {
-                CategoryTopBar(
-                    modifier = Modifier,
-                    titleTextId = R.string.title_info_category,
-                    iconString = IC_OK,
-                    disableIconString = IC_UNOK,
-                    enabled = selectedGroupMembers.any { it.selected } && viewModel.validateInput(),
-                    descriptionId = R.string.content_ic_ok,
-                    onClickedListener = {
-                        viewModel.setGroupMembers(selectedGroupMembers)
-                    },
-                    onBackClickedListener = {}
+                onBackClickedListener = navigateToBack
+            )
+            if (showCheckGroupMemberBottomSheet) {
+                CheckGroupMemberBottomSheet(
+                    sheetState = checkGroupMemberSheetState,
+                    onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
+                    memberList = groupMembers
                 )
-                if (showCheckGroupMemberBottomSheet) {
-                    CheckGroupMemberBottomSheet(
-                        sheetState = checkGroupMemberSheetState,
-                        onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
-                        memberList = groupMembers
-                    )
-                }
-                if (showOpenSettingsBottomSheet) {
-                    OpenSettingsBottomSheet(
-                        title = stringResource(id = R.string.title_open_settings),
-                        sheetState = openSettingsOptionSheetState,
-                        openSettingOption = openSettingOption,
-                        onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
-                        onOkButtonClicked = {
-                            viewModel.setOpenSettingOption(it)
-                            scope.launch { openSettingsOptionSheetState.hide() }
-                                .invokeOnCompletion {
-                                    if (!openSettingsOptionSheetState.isVisible) {
-                                        showOpenSettingsBottomSheet = false
-                                    }
+            }
+            if (showOpenSettingsBottomSheet) {
+                OpenSettingsBottomSheet(
+                    title = stringResource(id = R.string.title_open_settings),
+                    sheetState = openSettingsOptionSheetState,
+                    openSettingOption = openSettingOption,
+                    onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
+                    onOkButtonClicked = {
+                        viewModel.setOpenSettingOption(it)
+                        scope.launch { openSettingsOptionSheetState.hide() }
+                            .invokeOnCompletion {
+                                if (!openSettingsOptionSheetState.isVisible) {
+                                    showOpenSettingsBottomSheet = false
                                 }
-                        }
-                    )
-                }
-                InfoCategoryScreen(
-                    title = title,
-                    type = type,
-                    groupNumber = selectedGroupMembers.filter { it.selected }.size,
-                    openSettingOption = if (!type) OpenSettings.GROUP else openSettingOption,
-                    groupReader = "모카커피짱귀엽",
-                    onTitleChanged = viewModel::setTitle,
-                    onShowOpenSettingsBottomSheetChange = {
-                        showOpenSettingsBottomSheet = it
-                    },
-                    onGroupMemberChooseClicked = {
-                        // navigate to choose group member
-                    },
-                    onShowCheckGroupMemberBottomSheetChange = {
-                        showCheckGroupMemberBottomSheet = it
-                    },
-                    isGroupReader = isGroupReader,
-                    onGroupDeleteClicked = { groupDeleteDialogVisible = true },
-                    onGroupOutClicked = { groupOutDialogVisible = true }
+                            }
+                    }
                 )
-                if (groupDeleteDialogVisible) {
-                    GroupDeleteFirstDialog(
-                        onConfirmation = { },
-                        onDismissRequest = { groupDeleteDialogVisible = false }
-                    )
-                }
-                if (groupOutDialogVisible) {
-                    GroupOutDialog(
-                        groupName = title,
-                        onAllDeleteClicked = { /*TODO*/ },
-                        onIncompletedTodoDeleteClicked = { /*TODO*/ },
-                        onNoDeleteClicked = { /*TODO*/ },
-                        onDismissRequest = { groupOutDialogVisible = it }
-                    )
-                }
+            }
+            InfoCategoryScreen(
+                title = title,
+                type = type,
+                groupNumber = selectedGroupMembers.filter { it.selected }.size,
+                openSettingOption = if (!type) OpenSettings.GROUP else openSettingOption,
+                groupReader = "모카커피짱귀엽",
+                onTitleChanged = viewModel::setTitle,
+                onShowOpenSettingsBottomSheetChange = {
+                    showOpenSettingsBottomSheet = it
+                },
+                onGroupMemberChooseClicked = navigateToGroupMemberChoose,
+                onShowCheckGroupMemberBottomSheetChange = {
+                    showCheckGroupMemberBottomSheet = it
+                },
+                isGroupReader = isGroupReader,
+                onGroupDeleteClicked = { groupDeleteDialogVisible = true },
+                onGroupOutClicked = { groupOutDialogVisible = true }
+            )
+            if (groupDeleteDialogVisible) {
+                GroupDeleteFirstDialog(
+                    onConfirmation = { },
+                    onDismissRequest = { groupDeleteDialogVisible = false }
+                )
+            }
+            if (groupOutDialogVisible) {
+                GroupOutDialog(
+                    groupName = title,
+                    onAllDeleteClicked = { /*TODO*/ },
+                    onIncompletedTodoDeleteClicked = { /*TODO*/ },
+                    onNoDeleteClicked = { /*TODO*/ },
+                    onDismissRequest = { groupOutDialogVisible = it }
+                )
             }
         }
     }

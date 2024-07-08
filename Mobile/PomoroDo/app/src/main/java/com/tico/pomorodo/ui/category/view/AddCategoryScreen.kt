@@ -5,21 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.RadioButtonColors
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -36,13 +29,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton
@@ -50,7 +41,6 @@ import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
-import com.tico.pomorodo.ui.common.view.toSelectedUser
 import com.tico.pomorodo.ui.theme.IC_ARROW_RIGHT
 import com.tico.pomorodo.ui.theme.IC_CATEGORY_FOLLOWER_OPEN
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
@@ -273,9 +263,16 @@ private fun CategoryType(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun AddCategoryScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
+fun AddCategoryScreenRoute(
+    navBackStackEntry: NavBackStackEntry?,
+    viewModel: CategoryViewModel =
+        if (navBackStackEntry == null) hiltViewModel()
+        else hiltViewModel(navBackStackEntry),
+    navigateToBack: () -> Unit,
+    navigateToCategory: () -> Unit,
+    navigateToGroupMemberChoose: () -> Unit,
+) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -283,79 +280,65 @@ fun AddCategoryScreenRoute(viewModel: CategoryViewModel = hiltViewModel()) {
     val title by viewModel.title.collectAsState()
     val type by viewModel.type.collectAsState()
     val openSettingOption by viewModel.openSettingOption.collectAsState()
-    val selectedGroupMembers by rememberSaveable {
-        mutableStateOf<List<SelectedUser>>(DataSource.userList.map { it.toSelectedUser() })
-    }
+    val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    PomoroDoTheme {
-        Scaffold(
-            modifier = Modifier
-                .fillMaxSize()
-                .addFocusCleaner(focusManager) {
-                    keyboardController?.hide()
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .addFocusCleaner(focusManager) {
+                keyboardController?.hide()
+            },
+        color = PomoroDoTheme.colorScheme.background,
+    ) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize(),
+        ) {
+            CategoryTopBar(
+                modifier = Modifier,
+                titleTextId = R.string.title_add_category,
+                iconString = IC_OK,
+                disableIconString = IC_UNOK,
+                descriptionId = R.string.content_ic_add_category,
+                onClickedListener = {
+                    navigateToCategory()
                 },
-            containerColor = PomoroDoTheme.colorScheme.background,
-            contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        ) { padding ->
-            Column(
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize()
-                    .padding(padding)
-                    .consumeWindowInsets(padding)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Horizontal,
-                        ),
-                    ),
-            ) {
-                CategoryTopBar(
-                    modifier = Modifier,
-                    titleTextId = R.string.title_add_category,
-                    iconString = IC_OK,
-                    disableIconString = IC_UNOK,
-                    descriptionId = R.string.content_ic_add_category,
-                    onClickedListener = {
-                        viewModel.setGroupMembers(selectedGroupMembers)
-                    },
-                    onBackClickedListener = {},
-                    enabled = selectedGroupMembers.any { it.selected } && viewModel.validateInput()
-                )
-                if (showOpenSettingsBottomSheet) {
-                    OpenSettingsBottomSheet(
-                        title = stringResource(id = R.string.title_open_settings),
-                        sheetState = openSettingsOptionSheetState,
-                        openSettingOption = openSettingOption,
-                        onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
-                        onOkButtonClicked = {
-                            viewModel.setOpenSettingOption(it)
-                            scope.launch { openSettingsOptionSheetState.hide() }
-                                .invokeOnCompletion {
-                                    if (!openSettingsOptionSheetState.isVisible) {
-                                        showOpenSettingsBottomSheet = false
-                                    }
+                onBackClickedListener = navigateToBack,
+                enabled = selectedGroupMembers.any { it.selected } && viewModel.validateInput()
+            )
+            if (showOpenSettingsBottomSheet) {
+                OpenSettingsBottomSheet(
+                    title = stringResource(id = R.string.title_open_settings),
+                    sheetState = openSettingsOptionSheetState,
+                    openSettingOption = openSettingOption,
+                    onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
+                    onOkButtonClicked = {
+                        viewModel.setOpenSettingOption(it)
+                        scope.launch { openSettingsOptionSheetState.hide() }
+                            .invokeOnCompletion {
+                                if (!openSettingsOptionSheetState.isVisible) {
+                                    showOpenSettingsBottomSheet = false
                                 }
-                        }
-                    )
-                }
-                AddCategoryScreen(
-                    title = title,
-                    type = type,
-                    groupNumber = selectedGroupMembers.filter { it.selected }.size,
-                    openSettingOption = if (!type) OpenSettings.GROUP else openSettingOption,
-                    onTypeChanged = viewModel::setType,
-                    onTitleChanged = viewModel::setTitle,
-                    onShowOpenSettingsBottomSheetChange = {
-                        showOpenSettingsBottomSheet = it
-                    },
-                    onGroupMemberChooseClicked = {
-                        //navigate to choose group member
+                            }
                     }
                 )
             }
+            AddCategoryScreen(
+                title = title,
+                type = type,
+                groupNumber = selectedGroupMembers.filter { it.selected }.size,
+                openSettingOption = if (!type) OpenSettings.GROUP else openSettingOption,
+                onTypeChanged = viewModel::setType,
+                onTitleChanged = viewModel::setTitle,
+                onShowOpenSettingsBottomSheetChange = {
+                    showOpenSettingsBottomSheet = it
+                },
+                onGroupMemberChooseClicked = navigateToGroupMemberChoose
+            )
         }
     }
 }

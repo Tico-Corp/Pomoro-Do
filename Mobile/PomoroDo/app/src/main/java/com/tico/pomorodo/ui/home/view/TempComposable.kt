@@ -10,16 +10,6 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun TodoScreen() {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = stringResource(id = R.string.title_todo),
-            style = PomoroDoTheme.typography.laundryGothicBold48
-        )
-    }
-}
-
-@Composable
 fun MyInfoScreen() {
     Surface(modifier = Modifier.fillMaxSize()) {
         Text(
