@@ -15,9 +15,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,14 +46,13 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
  *
  * Example usage:
  *
- * @sample PreviewDialog
- *
  * @param title The title of the dialog.
  * @param todoList The list of to-do items to display in the dialog.
  * @param confirmTextId The resource ID for the text on the confirm button.
  * @param onConfirmation Function to run when the confirm button is clicked.
  * @param onDismissRequest Function to run when the outside of dialog or back button is clicked.
  */
+
 @Composable
 fun TodoListDialog(
     title: String,
@@ -64,7 +63,7 @@ fun TodoListDialog(
 ) {
     val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
     val textColor = PomoroDoTheme.colorScheme.onBackground
-    val newTodoList = remember { mutableStateListOf<TodoData>().apply { addAll(todoList) } }
+    val newTodoList = remember { todoList.toMutableStateList() }
 
     Dialog(
         onDismissRequest = onDismissRequest,
