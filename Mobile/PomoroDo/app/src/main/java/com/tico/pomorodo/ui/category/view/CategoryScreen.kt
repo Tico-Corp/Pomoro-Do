@@ -54,13 +54,25 @@ fun CategoryScreen(
                     style = PomoroDoTheme.typography.laundryGothicBold16,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
-                Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
                     normalCategoryList.forEach { category ->
-                        CategoryTag(
-                            title = category.title,
-                            groupNumber = 0,
-                            isAddButton = false,
-                        )
+                        Row(
+                            modifier = Modifier
+                                .clickableWithoutRipple(
+                                    enabled = true,
+                                    onClick = onCategoryClicked
+                                )
+                                .fillMaxWidth()
+                        ) {
+                            CategoryTag(
+                                title = category.title,
+                                groupNumber = 0,
+                                isAddButton = false,
+                            )
+                        }
                     }
                 }
             }
@@ -72,11 +84,20 @@ fun CategoryScreen(
                 )
                 Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     groupCategoryList.forEach { category ->
-                        CategoryTag(
-                            title = category.title,
-                            groupNumber = 6,
-                            isAddButton = false,
-                        )
+                        Row(
+                            modifier = Modifier
+                                .clickableWithoutRipple(
+                                    enabled = true,
+                                    onClick = onCategoryClicked
+                                )
+                                .fillMaxWidth()
+                        ) {
+                            CategoryTag(
+                                title = category.title,
+                                groupNumber = 6,
+                                isAddButton = false,
+                            )
+                        }
                     }
                 }
             }
@@ -119,7 +140,7 @@ fun InvitedCategoryItem(
                     PomoroDoTheme.colorScheme.secondaryContainer,
                     RoundedCornerShape(5.dp)
                 )
-                .padding(horizontal = 12.dp, vertical = 5.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Column(
                 modifier = Modifier,
@@ -151,6 +172,7 @@ fun InvitedCategoryItem(
                 textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                 verticalPadding = 5.dp,
                 horizontalPadding = 12.dp,
+                roundedCornerShape = 5.dp,
                 onClick = onRejectButtonClicked
             )
             CustomTextButton(
@@ -160,6 +182,7 @@ fun InvitedCategoryItem(
                 onClick = onAcceptButtonClicked,
                 containerColor = PomoroDoTheme.colorScheme.primaryContainer,
                 verticalPadding = 5.dp,
+                roundedCornerShape = 5.dp,
                 horizontalPadding = 12.dp
             )
         }
