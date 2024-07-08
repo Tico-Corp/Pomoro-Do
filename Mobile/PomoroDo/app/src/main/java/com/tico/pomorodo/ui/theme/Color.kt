@@ -398,7 +398,8 @@ internal val LightColorScheme = PomoroDoColorScheme(
     timerBackgroundColor = onPrimaryLight,
     breakTimeColor = secondaryContainerLight,
     modeBackgroundColor = palettesNeutral20,
-    googleLoginText = googleLoginTextLight
+    googleLoginText = googleLoginTextLight,
+    myPageMenuBackgroundColor = surfaceContainerLowLight,
 )
 
 internal val DarkColorScheme = PomoroDoColorScheme(
@@ -454,7 +455,8 @@ internal val DarkColorScheme = PomoroDoColorScheme(
     timerBackgroundColor = gray20,
     breakTimeColor = secondaryDark,
     modeBackgroundColor = backgroundDark,
-    googleLoginText = googleLoginTextDark
+    googleLoginText = googleLoginTextDark,
+    myPageMenuBackgroundColor = surfaceContainerHighDark,
 )
 
 @Immutable
@@ -512,6 +514,7 @@ data class PomoroDoColorScheme(
     val breakTimeColor: Color,
     val modeBackgroundColor: Color,
     val googleLoginText: Color,
+    val myPageMenuBackgroundColor: Color,
 )
 
 val LocalPomoroDoColorScheme = staticCompositionLocalOf {
@@ -568,6 +571,7 @@ val LocalPomoroDoColorScheme = staticCompositionLocalOf {
         timerBackgroundColor = Color.Unspecified,
         breakTimeColor = Color.Unspecified,
         modeBackgroundColor = Color.Unspecified,
-        googleLoginText = Color.Unspecified
+        googleLoginText = Color.Unspecified,
+        myPageMenuBackgroundColor = Color.Unspecified,
     )
 }

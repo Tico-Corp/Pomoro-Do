@@ -68,7 +68,7 @@ fun Modifier.clickableWithoutRipple(
 
 fun Modifier.clickableWithRipple(
     roundedCornerRadius: Dp,
-    enabled: Boolean,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) = composed(
     factory = {
