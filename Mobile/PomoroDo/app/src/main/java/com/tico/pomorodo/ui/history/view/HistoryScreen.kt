@@ -521,6 +521,7 @@ fun TimeLineItem(
             SimpleDropDownMoreInfo(
                 showMoreInfo = showMoreInfo,
                 onShowMoreInfoChange = { showMoreInfo = it },
+                isBreak = isBreak,
                 editTextId = R.string.content_todo_edit,
                 deleteTextId = R.string.content_history_delete,
                 onMoreInfoEditClicked = onMoreInfoEditClicked,
