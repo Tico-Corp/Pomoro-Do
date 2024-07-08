@@ -12,6 +12,9 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun HomeScreen(
     navigateToConcentrationMode: () -> Unit,
+    navigateToCategory: () -> Unit,
+    navigateToAddCategory: () -> Unit,
+    navigateToHistory: () -> Unit,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit
 ) {
     val homeNavController = rememberNavController()
@@ -26,7 +29,10 @@ fun HomeScreen(
             Modifier.padding(innerPadding),
             startDestination = BottomNavigationDestination.Timer.name,
             navigateToConcentrationMode = navigateToConcentrationMode,
-            setTimerState = setTimerState
+            navigateToCategory = navigateToCategory,
+            navigateToAddCategory = navigateToAddCategory,
+            setTimerState = setTimerState,
+            navigateToHistory=navigateToHistory
         )
     }
 }
