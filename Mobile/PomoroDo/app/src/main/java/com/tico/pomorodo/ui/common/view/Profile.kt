@@ -1,19 +1,27 @@
 package com.tico.pomorodo.ui.common.view
 
+import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -131,5 +139,43 @@ fun ProfileHorizontal(
             style = textStyle,
             color = PomoroDoTheme.colorScheme.onBackground
         )
+    }
+}
+
+@Composable
+fun EditProfileIcon(profileUri: Uri? = null, onProfileClicked: () -> Unit) {
+    Box(modifier = Modifier
+        .size(110.dp)
+        .clip(shape = CircleShape)
+        .clickable { onProfileClicked() }) {
+        if (profileUri == null) {
+            Icon(
+                imageVector = IconPack.IcProfileDefault,
+                contentDescription = stringResource(R.string.content_ic_profile_default),
+                tint = Color.Unspecified
+            )
+        } else {
+            GlideImage(
+                imageModel = { profileUri },
+                requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center
+                )
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = PomoroDoTheme.colorScheme.trim),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(R.string.content_profile_change),
+                color = MaterialTheme.colorScheme.background,
+                style = PomoroDoTheme.typography.laundryGothicRegular26
+            )
+        }
     }
 }

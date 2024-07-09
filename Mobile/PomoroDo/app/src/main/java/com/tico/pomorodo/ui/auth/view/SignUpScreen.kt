@@ -6,28 +6,20 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -40,10 +32,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -55,18 +45,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
+import com.tico.pomorodo.ui.common.view.EditProfileIcon
 import com.tico.pomorodo.ui.common.view.createImageFile
 import com.tico.pomorodo.ui.common.view.executeToast
-import com.tico.pomorodo.ui.iconpack.commonIconPack.IcProfileDefault
-import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.theme.laundryGothic
 import java.util.Objects
@@ -191,7 +176,7 @@ fun SignUpScreen(
             style = PomoroDoTheme.typography.laundryGothicBold20
         )
         Spacer(modifier = Modifier.height(20.dp))
-        IconDefaultProfile(
+        EditProfileIcon(
             profileUri = profileUri,
             onProfileClicked = onProfileClicked
         )
@@ -209,44 +194,6 @@ fun SignUpScreen(
             verticalPadding = 12.dp,
             onClick = onSignUpButtonClicked
         )
-    }
-}
-
-@Composable
-fun IconDefaultProfile(profileUri: Uri? = null, onProfileClicked: () -> Unit) {
-    Box(modifier = Modifier
-        .size(110.dp)
-        .clip(shape = CircleShape)
-        .clickable { onProfileClicked() }) {
-        if (profileUri == null) {
-            Icon(
-                imageVector = IconPack.IcProfileDefault,
-                contentDescription = stringResource(R.string.content_ic_profile_default),
-                tint = Color.Unspecified
-            )
-        } else {
-            GlideImage(
-                imageModel = { profileUri },
-                requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.Center
-                )
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = PomoroDoTheme.colorScheme.trim),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.content_profile_change),
-                color = MaterialTheme.colorScheme.background,
-                style = PomoroDoTheme.typography.laundryGothicRegular26
-            )
-        }
     }
 }
 
