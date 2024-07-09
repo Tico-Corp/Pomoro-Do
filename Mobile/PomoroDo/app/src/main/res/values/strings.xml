@@ -180,4 +180,7 @@
     <string name="content_stopwatch_option_true">타이머 종료 후 추가로 시간이 측정됩니다.</string>
     <string name="content_stopwatch_option_false">타이머 종료 후 자동으로 종료됩니다.</string>
     <string name="content_alarm_option">소리</string>
+
+    // modify profile
+    <string name="title_modify_profile">프로필 수정</string>
 </resources>
