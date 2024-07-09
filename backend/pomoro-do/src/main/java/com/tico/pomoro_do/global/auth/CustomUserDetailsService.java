@@ -1,7 +1,8 @@
 package com.tico.pomoro_do.global.auth;
 
-import com.tico.pomoro_do.domain.user.entity.Account;
-import com.tico.pomoro_do.domain.user.repository.AccountRepository;
+import com.tico.pomoro_do.domain.user.dto.UserDTO;
+import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,25 +13,30 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final AccountRepository accountRepository;
+    private final UserRepository userRepository;
 
     //생성자 주입
-//    public CustomUserDetailsService(AccountRepository accountRepository) {
+//    public CustomUserDetailsService(UserRepository userRepository) {
 //
-//        this.accountRepository = accountRepository;
+//        this.userRepository = userRepository;
 //    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         //DB에서 조회
-        Account accountData = accountRepository.findByUsername(username);
+        User userData = userRepository.findByUsername(username);
 
         //데이터가 있으면 검증 진행
-        if (accountData != null) {
+        if (userData != null) {
+
+            UserDTO userDTO = UserDTO.builder()
+                    .username(userData.getUsername())
+                    .role(String.valueOf(userData.getRole()))
+                    .build();
 
             //UserDetails에 담아서 return하면 AutneticationManager가 검증 함
-            return new CustomUserDetails(accountData);
+            return new CustomUserDetails(userDTO);
         }
 
         return null;

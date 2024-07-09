@@ -39,6 +39,9 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
+	// JSON
+	implementation 'com.google.code.gson:gson'
+
 	// 개발 중 애플리케이션의 자동 재시작, 리소스 변경 감지 등 제공
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.global.auth;
 
+import com.tico.pomoro_do.domain.user.dto.UserDTO;
 import com.tico.pomoro_do.domain.user.entity.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +13,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private final Account account;
+    private final UserDTO userDTO;
 
     //role 가져오기
     @Override
@@ -24,8 +25,9 @@ public class CustomUserDetails implements UserDetails {
 
             @Override
             public String getAuthority() {
-
-                return account.getRole();
+                // Spring Security의 권한 규칙에 맞추기 위해 "ROLE_" 접두사를 추가
+                // return "ROLE_" + user.getRole();
+                return userDTO.getRole();
             }
         });
 
@@ -35,13 +37,14 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getPassword() {
 
-        return account.getPassword();
+//        return account.getPassword();
+        return null;
     }
 
     @Override
     public String getUsername() {
 
-        return account.getUsername();
+        return userDTO.getUsername();
     }
 
     @Override
