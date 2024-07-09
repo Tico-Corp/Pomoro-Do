@@ -14,6 +14,7 @@ import com.tico.pomorodo.ui.category.view.GroupMemberChooseScreenRoute
 import com.tico.pomorodo.ui.category.view.InfoCategoryScreenRoute
 import com.tico.pomorodo.ui.history.view.HistoryRoute
 import com.tico.pomorodo.ui.home.view.HomeScreen
+import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
@@ -34,7 +35,9 @@ fun NavController.navigateToMyInfo(navOptions: NavOptions) =
 // main navigation - navigate
 fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name)
 fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SignUp.name)
+
 fun NavController.navigateToHome() = navigate(MainNavigationDestination.Home.name)
+
 fun NavController.navigateToConcentrationMode() =
     navigate(MainNavigationDestination.ConcentrationMode.name)
 
@@ -48,6 +51,8 @@ fun NavController.navigateToGroupMemberChoose() =
     navigate(MainNavigationDestination.GroupMemberChoose.name)
 
 fun NavController.navigateToHistory() = navigate(MainNavigationDestination.History.name)
+
+fun NavController.navigateToModifyProfile() = navigate(MainNavigationDestination.ModifyProfile.name)
 
 
 // home navigation - composable route
@@ -74,9 +79,9 @@ fun NavGraphBuilder.todoScreen(
     }
 }
 
-fun NavGraphBuilder.myInfoScreen() {
+fun NavGraphBuilder.myInfoScreen(navigateToModifyProfile: () -> Unit) {
     composable(route = BottomNavigationDestination.MyInfo.name) {
-        MyPageScreen()
+        MyPageScreen(navigateToModifyProfile = navigateToModifyProfile)
     }
 }
 
@@ -111,6 +116,7 @@ fun NavGraphBuilder.homeScreen(
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
+    navigateToModifyProfile: () -> Unit
 ) {
     composable(route = MainNavigationDestination.Home.name) {
         HomeScreen(
@@ -118,7 +124,8 @@ fun NavGraphBuilder.homeScreen(
             navigateToConcentrationMode = navigateToConcentrationMode,
             navigateToCategory = navigateToCategory,
             navigateToAddCategory = navigateToAddCategory,
-            navigateToHistory = navigateToHistory
+            navigateToHistory = navigateToHistory,
+            navigateToModifyProfile = navigateToModifyProfile
         )
     }
 }
@@ -224,5 +231,11 @@ fun NavGraphBuilder.groupMemberChooseScreen(
             navBackStackEntry = navBackStackEntry,
             navigateToBack = navigateToBack
         )
+    }
+}
+
+fun NavGraphBuilder.modifyProfileScreen() {
+    composable(route = MainNavigationDestination.ModifyProfile.name) {
+        ModifyProfileScreen()
     }
 }

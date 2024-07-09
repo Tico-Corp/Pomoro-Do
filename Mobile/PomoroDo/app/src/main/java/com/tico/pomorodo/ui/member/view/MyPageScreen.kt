@@ -39,7 +39,7 @@ const val tempUrl = "https://avatars.githubusercontent.com/u/51740252?s=48&v=4"
 const val tempName = "모카커피짱귀엽"
 
 @Composable
-fun MyPageScreen() {
+fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +61,8 @@ fun MyPageScreen() {
             url = tempUrl,
             userName = tempName,
             followingCount = 4,
-            followerCount = 2
+            followerCount = 2,
+            onProfileClick = navigateToModifyProfile
         )
 
         Spacer(modifier = Modifier.height(28.dp))
@@ -71,7 +72,13 @@ fun MyPageScreen() {
 }
 
 @Composable
-fun MyProfile(url: String, userName: String, followingCount: Int, followerCount: Int) {
+fun MyProfile(
+    url: String,
+    userName: String,
+    followingCount: Int,
+    followerCount: Int,
+    onProfileClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -79,14 +86,14 @@ fun MyProfile(url: String, userName: String, followingCount: Int, followerCount:
     ) {
         Profile(
             url = url,
-            modifier = Modifier.clickableWithoutRipple { /*TODO: 프로필 수정 화면이 나타남*/ },
+            modifier = Modifier.clickableWithoutRipple { onProfileClick() },
             size = 60
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
                 text = userName,
-                modifier = Modifier.clickableWithoutRipple { /*TODO: 위와 동일. 프로필 수정 화면이 나타남.*/ },
+                modifier = Modifier.clickableWithoutRipple { onProfileClick() },
                 color = PomoroDoTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
                 style = PomoroDoTheme.typography.laundryGothicRegular20

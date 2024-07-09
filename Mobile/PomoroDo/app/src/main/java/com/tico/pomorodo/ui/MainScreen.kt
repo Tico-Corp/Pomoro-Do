@@ -25,6 +25,7 @@ import com.tico.pomorodo.navigation.historyScreen
 import com.tico.pomorodo.navigation.homeScreen
 import com.tico.pomorodo.navigation.infoCategoryScreen
 import com.tico.pomorodo.navigation.logInScreen
+import com.tico.pomorodo.navigation.modifyProfileScreen
 import com.tico.pomorodo.navigation.navigateToAddCategory
 import com.tico.pomorodo.navigation.navigateToBreakMode
 import com.tico.pomorodo.navigation.navigateToCategory
@@ -34,6 +35,7 @@ import com.tico.pomorodo.navigation.navigateToHistory
 import com.tico.pomorodo.navigation.navigateToHome
 import com.tico.pomorodo.navigation.navigateToInfoCategory
 import com.tico.pomorodo.navigation.navigateToLogIn
+import com.tico.pomorodo.navigation.navigateToModifyProfile
 import com.tico.pomorodo.navigation.navigateToSignUp
 import com.tico.pomorodo.navigation.setState
 import com.tico.pomorodo.navigation.signUpScreen
@@ -68,11 +70,13 @@ fun MainScreen() {
                     )
             ) {
                 splashScreen(navigate = mainNavController::navigateToLogIn)
+
                 logInScreen(navigate = mainNavController::navigateToSignUp)
                 signUpScreen(
                     navController = mainNavController,
                     navigate = mainNavController::navigateToHome
                 )
+
                 homeScreen(
                     setTimerState = { concentrationTime, breakTime ->
                         mainNavController.setState(CONCENTRATION_TIME, concentrationTime)
@@ -81,13 +85,16 @@ fun MainScreen() {
                     navigateToConcentrationMode = mainNavController::navigateToConcentrationMode,
                     navigateToCategory = mainNavController::navigateToCategory,
                     navigateToAddCategory = mainNavController::navigateToAddCategory,
-                    navigateToHistory = mainNavController::navigateToHistory
+                    navigateToHistory = mainNavController::navigateToHistory,
+                    navigateToModifyProfile = mainNavController::navigateToModifyProfile
                 )
+
                 concentrationModeScreen(
                     getState = mainNavController::getState,
                     mainNavController::navigateToBreakMode
                 )
                 breakModeScreen(navController = mainNavController)
+
                 categoryScreen(
                     navigateToAddCategory = mainNavController::navigateToAddCategory,
                     navigateToBack = mainNavController::popBackStack,
@@ -104,11 +111,14 @@ fun MainScreen() {
                     navigateToGroupMemberChoose = mainNavController::navigateToGroupMemberChoose,
                     navigateToBack = mainNavController::popBackStack
                 )
-                historyScreen(navigateToBack = mainNavController::popBackStack)
                 groupMemberChooseScreen(
                     navController = mainNavController,
                     navigateToBack = mainNavController::popBackStack
                 )
+
+                historyScreen(navigateToBack = mainNavController::popBackStack)
+
+                modifyProfileScreen()
             }
         }
     }
