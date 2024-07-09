@@ -37,6 +37,7 @@ import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.ProfileHorizontal
 import com.tico.pomorodo.ui.common.view.ProfileVertical
@@ -85,7 +86,7 @@ fun GroupMemberChooseScreenRoute(
             Modifier
                 .fillMaxSize(),
         ) {
-            CategoryTopBar(
+            CustomTopAppBar(
                 titleTextId = R.string.title_group_member_choose,
                 iconString = IC_OK,
                 disableIconString = IC_UNOK,

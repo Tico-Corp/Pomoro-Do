@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.category.view
+package com.tico.pomorodo.ui.common.view
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,14 +13,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.common.view.SimpleIconButton
-import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.theme.IC_ARROW_BACK
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoryTopBar(
+fun CustomTopAppBar(
     modifier: Modifier = Modifier,
     @StringRes titleTextId: Int,
     iconString: String,

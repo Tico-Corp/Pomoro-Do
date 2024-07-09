@@ -35,6 +35,7 @@ import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -298,7 +299,7 @@ fun AddCategoryScreenRoute(
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
         ) {
-            CategoryTopBar(
+            CustomTopAppBar(
                 modifier = Modifier,
                 titleTextId = R.string.title_add_category,
                 iconString = IC_OK,

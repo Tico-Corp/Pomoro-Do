@@ -32,6 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.SimpleText
@@ -81,7 +82,7 @@ fun InfoCategoryScreenRoute(
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
         ) {
-            CategoryTopBar(
+            CustomTopAppBar(
                 modifier = Modifier,
                 titleTextId = R.string.title_info_category,
                 iconString = IC_OK,
