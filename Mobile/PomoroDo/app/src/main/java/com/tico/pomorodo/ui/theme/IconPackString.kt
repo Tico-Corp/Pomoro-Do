@@ -36,3 +36,7 @@ const val IC_ARROW_RIGHT = "ic_arrow_right"
 const val IC_ALL_CLEAN = "ic_all_clean"
 
 const val IC_TIMELINE_MORE_INFO = "ic_timeline_more_info"
+
+const val IC_ALARM_OPTION_SOUND = "ic_alarm_option_sound"
+const val IC_ALARM_OPTION_VIBRATE = "ic_alarm_option_vibrate"
+const val IC_ALARM_OPTION_MUTE = "ic_alarm_option_mute"
