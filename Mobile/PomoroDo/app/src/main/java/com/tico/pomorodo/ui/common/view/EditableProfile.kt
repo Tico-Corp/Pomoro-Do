@@ -48,13 +48,14 @@ import com.tico.pomorodo.ui.theme.laundryGothic
 
 @Composable
 fun EditableProfile(
+    modifier: Modifier = Modifier,
     profileUri: Uri?,
     onProfileClicked: () -> Unit,
     inputText: String,
     onInputTextChanged: (String) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
