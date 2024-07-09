@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,24 +23,31 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.auth.view.PhotoChooseDialog
+import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.EditableProfile
+import com.tico.pomorodo.ui.common.view.PhotoChooseDialog
 import com.tico.pomorodo.ui.common.view.createImageFile
 import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.theme.IC_OK
 import com.tico.pomorodo.ui.theme.IC_UNOK
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import kotlinx.coroutines.runBlocking
 import java.util.Objects
 
 @Composable
-fun ModifyProfileScreen() {
+fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBackStackEntry) {
+    val authViewModel: AuthViewModel = hiltViewModel(navBackStackEntry)
     val context = LocalContext.current
-//    val inputText by viewModel.name.collectAsState()
-//    val profile by viewModel.profile.collectAsState()
-//    val enable = inputText.isNotBlank()
+    val initialInputText by authViewModel.name.collectAsState()
+    val profile by authViewModel.profile.collectAsState()
+    var inputText by remember { mutableStateOf(initialInputText) }
+    val enable = inputText.isNotBlank() && initialInputText != inputText
     var showPhotoChooseDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -59,13 +67,13 @@ fun ModifyProfileScreen() {
     val pickPhotoLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { pickUri ->
             if (pickUri != null) {
-//                viewModel.setProfile(pickUri)
+                authViewModel.setProfile(pickUri)
             }
         }
     val takePhotoCameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) {
-//                viewModel.setProfile(uri)
+                authViewModel.setProfile(uri)
                 file = context.createImageFile()
                 uri = FileProvider.getUriForFile(
                     Objects.requireNonNull(context),
@@ -96,28 +104,31 @@ fun ModifyProfileScreen() {
     ) {
         CustomTopAppBar(
             titleTextId = R.string.title_modify_profile,
-            enabled = true,
+            enabled = enable,
             iconString = IC_OK,
             disableIconString = IC_UNOK,
             descriptionId = R.string.content_ic_ok,
-            onClickedListener = { /*TODO*/ },
-            onBackClickedListener = { /*TODO*/ }
+            onClickedListener = {
+                runBlocking {
+                    authViewModel.setName(inputText)
+                    navController.popBackStack()
+                }
+            },
+            onBackClickedListener = { navController.popBackStack() }
         )
-
 
         EditableProfile(
             modifier = Modifier.padding(horizontal = 30.dp),
-            profileUri = null,
+            profileUri = profile,
             onProfileClicked = { showPhotoChooseDialog = true },
-            inputText = "",
-            onInputTextChanged = { /*TODO*/ }
+            inputText = inputText,
+            onInputTextChanged = { inputText = it }
         )
     }
 
     if (showPhotoChooseDialog) {
         PhotoChooseDialog(
-//            isDefaultImage = profile == null,
-            isDefaultImage = true,
+            isDefaultImage = profile == null,
             onDismissRequest = { showPhotoChooseDialog = false },
             onTakePhotoClicked = {
                 if (grantCameraState) {
@@ -136,7 +147,7 @@ fun ModifyProfileScreen() {
                 showPhotoChooseDialog = false
             },
             onApplyDefaultImageClicked = {
-//                viewModel.setProfile(null)
+                authViewModel.setProfile(null)
                 showPhotoChooseDialog = false
             }
         )
