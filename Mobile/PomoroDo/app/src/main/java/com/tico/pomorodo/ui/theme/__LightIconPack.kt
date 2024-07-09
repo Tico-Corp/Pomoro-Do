@@ -26,13 +26,16 @@ import com.tico.pomorodo.ui.iconpack.lighticonpack.IcGroupOpenLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcGroupSelectedCancleLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcGroupSelectedUncheckedLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcMoreInfoLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcMuteLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcOkLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcSoundLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTimelineMoreLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoCheckedLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoGoingLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoMoreInfoLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoUncheckedLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcUnokLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcVibrateLight
 
 object LightIconPack {
     private val _AllIcons by lazy {
@@ -68,7 +71,10 @@ object LightIconPack {
             IC_GROUP_SELECTED_UNCHECKED to IcGroupSelectedUncheckedLight,
             IC_ARROW_RIGHT to IcArrowRightLight,
             IC_ALL_CLEAN to IcAllCleanLight,
-            IC_TIMELINE_MORE_INFO to IcTimelineMoreLight
+            IC_TIMELINE_MORE_INFO to IcTimelineMoreLight,
+            IC_ALARM_OPTION_SOUND to IcSoundLight,
+            IC_ALARM_OPTION_VIBRATE to IcVibrateLight,
+            IC_ALARM_OPTION_MUTE to IcMuteLight,
         )
     }
 
