@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.common.view
 
+import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,9 +28,9 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun Profile(url: String, modifier: Modifier = Modifier, size: Int) {
+fun Profile(uri: Uri?, modifier: Modifier = Modifier, size: Int) {
     GlideImage(
-        imageModel = { url },
+        imageModel = { uri },
         modifier = modifier
             .size(size.dp)
             .clip(shape = CircleShape),
