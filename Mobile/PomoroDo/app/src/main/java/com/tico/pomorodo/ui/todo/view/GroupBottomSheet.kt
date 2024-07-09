@@ -1,16 +1,20 @@
 package com.tico.pomorodo.ui.todo.view
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,6 +41,15 @@ fun GroupBottomSheet(
         },
         sheetState = sheetState,
         containerColor = PomoroDoTheme.colorScheme.dialogSurface,
+        dragHandle = {
+            Surface(
+                modifier = Modifier.padding(top = 8.dp, bottom = 18.dp),
+                color = PomoroDoTheme.colorScheme.dialogGray70,
+                shape = MaterialTheme.shapes.extraLarge
+            ) {
+                Box(Modifier.size(width = 63.dp, height = 3.dp))
+            }
+        }
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 30.dp),
