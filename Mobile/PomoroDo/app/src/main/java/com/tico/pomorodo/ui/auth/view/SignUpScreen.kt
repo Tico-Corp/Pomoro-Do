@@ -35,6 +35,7 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.EditableProfile
+import com.tico.pomorodo.ui.common.view.PhotoChooseDialog
 import com.tico.pomorodo.ui.common.view.createImageFile
 import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.theme.PomoroDoTheme

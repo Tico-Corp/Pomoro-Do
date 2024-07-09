@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.auth.view
+package com.tico.pomorodo.ui.common.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,8 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
