@@ -63,22 +63,28 @@ public class SecurityConfig {
                         .anyRequest().authenticated()); // 그 외의 요청에 대해 로그인한 사용자만 접근 가능
 
         //JWTFilter 등록 (JWT 검증)
-        //LoginFilter 앞에 넣어준다.
+        //JWTFilter를 먼저 실행하도록 설정
+        //(UsernamePasswordAuthenticationFilter 앞에 배치하여, 모든 요청에서 JWT 검증이 먼저 이루어지도록 설정)
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-        //로그인 검증
+        /* 서버 자체 로그인 삭제 - START */
+        //LoginFilter 앞에 넣어준다. (서버 자체 로그인 삭제)
+//        http
+//                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+
+        //로그인 검증 (서버 자체 로그인 삭제)
         //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
         //AuthenticationManager()와 JWTUtil 인수 전달
-        http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+//        http
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
         //addFilterAt은 UsernamePasswordAuthenticationFilter 대체
+        /* 서버 자체 로그인 삭제 - END */
 
         //세션 설정 : STATELESS - 사용 안함
         http
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
 
         return http.build();
     }
