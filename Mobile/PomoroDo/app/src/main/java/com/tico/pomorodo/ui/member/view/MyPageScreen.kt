@@ -47,7 +47,6 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
     val name by authViewModel.name.collectAsState()
     val profileUri by authViewModel.profile.collectAsState()
 
-fun MyPageScreen() {
     val (concentrationAlarmBottomSheet, setConcentrationAlarmBottomSheet) = remember {
         mutableStateOf(
             false
