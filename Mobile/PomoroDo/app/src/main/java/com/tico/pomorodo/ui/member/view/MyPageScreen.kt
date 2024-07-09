@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -205,11 +206,9 @@ fun MyPageMenuList(
             color = PomoroDoTheme.colorScheme.myPageMenuBackgroundColor
         ) {
             val lineSpacer: @Composable () -> Unit = {
-                Spacer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(PomoroDoTheme.colorScheme.outlineVariant)
+                HorizontalDivider(
+                    thickness = 1.dp,
+                    color = PomoroDoTheme.colorScheme.outlineVariant
                 )
             }
 

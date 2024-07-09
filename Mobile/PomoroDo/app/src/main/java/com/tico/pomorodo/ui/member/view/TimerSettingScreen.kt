@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.member.view
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -51,11 +51,9 @@ fun SettingAlarmBottomSheet(
     )
     val (selectedOption, setSelectedOption) = rememberSaveable { mutableStateOf(initialSelect) }
     val lineSpacer: @Composable () -> Unit = {
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(PomoroDoTheme.colorScheme.dialogGray90)
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = PomoroDoTheme.colorScheme.dialogGray90
         )
     }
 
