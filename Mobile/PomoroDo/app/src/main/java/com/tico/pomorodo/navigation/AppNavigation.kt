@@ -234,8 +234,8 @@ fun NavGraphBuilder.groupMemberChooseScreen(
     }
 }
 
-fun NavGraphBuilder.modifyProfileScreen() {
-    composable(route = MainNavigationDestination.ModifyProfile.name) {
-        ModifyProfileScreen()
+fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
+    composable(route = MainNavigationDestination.ModifyProfile.name) { navBackStackEntry ->
+        ModifyProfileScreen(navController = navController, navBackStackEntry = navBackStackEntry)
     }
 }

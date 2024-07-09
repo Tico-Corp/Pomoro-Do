@@ -118,7 +118,7 @@ fun MainScreen() {
 
                 historyScreen(navigateToBack = mainNavController::popBackStack)
 
-                modifyProfileScreen()
+                modifyProfileScreen(navController = mainNavController)
             }
         }
     }
