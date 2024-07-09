@@ -40,6 +40,19 @@ const val tempName = "모카커피짱귀엽"
 
 @Composable
 fun MyPageScreen() {
+    val (concentrationAlarmBottomSheet, setConcentrationAlarmBottomSheet) = remember {
+        mutableStateOf(
+            false
+        )
+    }
+    val (breakAlarmBottomSheet, setBreakAlarmBottomSheet) = remember { mutableStateOf(false) }
+    val (concentrationAlarmOption, setConcentrationAlarmOption) = remember {
+        mutableStateOf(
+            AlarmOptions.Sound
+        )
+    }
+    val (breakAlarmOption, setBreakAlarmOption) = remember { mutableStateOf(AlarmOptions.Sound) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +79,36 @@ fun MyPageScreen() {
 
         Spacer(modifier = Modifier.height(28.dp))
 
-        MyPageMenuList()
+        MyPageMenuList(
+            concentrationAlarmOption,
+            breakAlarmOption,
+            onConcentrationAlarmClicked = { setConcentrationAlarmBottomSheet(true) },
+            onBreakAlarmClicked = { setBreakAlarmBottomSheet(true) }
+        )
+
+        if (concentrationAlarmBottomSheet) {
+            SettingAlarmBottomSheet(
+                title = stringResource(id = R.string.title_alarm_concentration),
+                initialSelect = concentrationAlarmOption,
+                onDismissRequest = { setConcentrationAlarmBottomSheet(false) },
+                onConfirmation = { alarmOptions ->
+                    setConcentrationAlarmOption(alarmOptions)
+                    setConcentrationAlarmBottomSheet(false)
+                }
+            )
+        }
+
+        if (breakAlarmBottomSheet) {
+            SettingAlarmBottomSheet(
+                title = stringResource(id = R.string.title_alarm_break),
+                initialSelect = breakAlarmOption,
+                onDismissRequest = { setBreakAlarmBottomSheet(false) },
+                onConfirmation = { alarmOptions ->
+                    setBreakAlarmOption(alarmOptions)
+                    setBreakAlarmBottomSheet(false)
+                }
+            )
+        }
     }
 }
 
@@ -115,7 +157,12 @@ fun FollowText(title: String, count: Int) {
 }
 
 @Composable
-fun MyPageMenuList() {
+fun MyPageMenuList(
+    concentrationAlarmOptions: AlarmOptions,
+    breakAlarmOptions: AlarmOptions,
+    onConcentrationAlarmClicked: () -> Unit,
+    onBreakAlarmClicked: () -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(18.dp)
@@ -153,11 +200,19 @@ fun MyPageMenuList() {
             }
 
             Column(modifier = Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
-                SetAlarm(title = stringResource(R.string.title_alarm_concentration))
+                SetAlarm(
+                    title = stringResource(R.string.title_alarm_concentration),
+                    alarmOptions = concentrationAlarmOptions,
+                    onClick = onConcentrationAlarmClicked
+                )
 
                 lineSpacer()
 
-                SetAlarm(title = stringResource(R.string.title_alarm_break))
+                SetAlarm(
+                    title = stringResource(R.string.title_alarm_break),
+                    alarmOptions = breakAlarmOptions,
+                    onClick = onBreakAlarmClicked
+                )
 
                 lineSpacer()
 
@@ -184,7 +239,7 @@ fun MyPageMenuList() {
 }
 
 @Composable
-fun SetAlarm(title: String) {
+fun SetAlarm(title: String, alarmOptions: AlarmOptions, onClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -199,15 +254,13 @@ fun SetAlarm(title: String) {
 
         Row(
             modifier = Modifier
-                .clickableWithRipple(
-                    roundedCornerRadius = 150.dp,
-                    onClick = {/*TODO: 타이머 종료 알림 설정 화면 구현*/ })
+                .clickableWithRipple(roundedCornerRadius = 150.dp, onClick = onClick)
                 .padding(top = 12.dp, bottom = 12.dp, start = 12.dp),
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(R.string.content_alarm_option),
+                text = stringResource(alarmOptions.title),
                 color = PomoroDoTheme.colorScheme.onBackground,
                 textAlign = TextAlign.End,
                 style = PomoroDoTheme.typography.laundryGothicRegular14
