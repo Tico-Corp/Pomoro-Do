@@ -1,5 +1,7 @@
 package com.tico.pomorodo.ui.member.view
 
+import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,6 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,7 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomSwitch
 import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -35,11 +41,12 @@ import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
-const val tempUrl = "https://avatars.githubusercontent.com/u/51740252?s=48&v=4"
-const val tempName = "모카커피짱귀엽"
-
 @Composable
 fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val name by authViewModel.name.collectAsState()
+    val profileUri by authViewModel.profile.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,8 +65,8 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
         )
 
         MyProfile(
-            url = tempUrl,
-            userName = tempName,
+            uri = profileUri,
+            userName = name,
             followingCount = 4,
             followerCount = 2,
             onProfileClick = navigateToModifyProfile
@@ -73,7 +80,7 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
 
 @Composable
 fun MyProfile(
-    url: String,
+    uri: Uri?,
     userName: String,
     followingCount: Int,
     followerCount: Int,
@@ -85,7 +92,7 @@ fun MyProfile(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Profile(
-            url = url,
+            uri = uri,
             modifier = Modifier.clickableWithoutRipple { onProfileClick() },
             size = 60
         )
