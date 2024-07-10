@@ -208,11 +208,13 @@ fun CategoryOpenSettings(
                     )
                 }
             }
-            SimpleText(
-                textId = R.string.content_only_group_message,
-                style = PomoroDoTheme.typography.laundryGothicRegular10,
-                color = PomoroDoTheme.colorScheme.gray50
-            )
+            if(!enabled){
+                SimpleText(
+                    textId = R.string.content_only_group_message,
+                    style = PomoroDoTheme.typography.laundryGothicRegular10,
+                    color = PomoroDoTheme.colorScheme.gray50
+                )
+            }
         }
     }
 }
@@ -244,6 +246,7 @@ private fun CategoryType(
                 padding = PaddingValues(horizontal = 5.dp)
             )
             SimpleText(
+                modifier = Modifier.clickableWithoutRipple { onTypeChanged(true) },
                 textId = R.string.content_category_normal,
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.onBackground
@@ -255,6 +258,7 @@ private fun CategoryType(
                 padding = PaddingValues(horizontal = 5.dp)
             )
             SimpleText(
+                modifier = Modifier.clickableWithoutRipple { onTypeChanged(false) },
                 textId = R.string.content_category_group,
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.onBackground
