@@ -1,8 +1,10 @@
-package com.tico.pomorodo.ui.auth.view
+package com.tico.pomorodo.ui.common.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -15,8 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
@@ -39,19 +39,20 @@ fun PhotoChooseDialog(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.Center,
+                    .padding(horizontal = 30.dp, vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SimpleText(
-                    modifier = Modifier
-                        .padding(vertical = 9.dp, horizontal = 10.dp)
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     textId = R.string.title_profile_photo_setting,
                     textAlign = TextAlign.Start,
                     style = PomoroDoTheme.typography.laundryGothicBold20,
                     color = PomoroDoTheme.colorScheme.onBackground,
                 )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
                 SimpleText(
                     modifier = Modifier
                         .clickableWithRipple(10.dp, true) { onTakePhotoClicked() }
@@ -59,9 +60,10 @@ fun PhotoChooseDialog(
                         .fillMaxWidth(),
                     textId = R.string.content_take_photo,
                     textAlign = TextAlign.Start,
-                    style = PomoroDoTheme.typography.laundryGothicRegular16,
+                    style = PomoroDoTheme.typography.laundryGothicRegular14,
                     color = PomoroDoTheme.colorScheme.onBackground,
                 )
+
                 SimpleText(
                     modifier = Modifier
                         .clickableWithRipple(10.dp, true) { onPickPhotoClicked() }
@@ -69,9 +71,10 @@ fun PhotoChooseDialog(
                         .fillMaxWidth(),
                     textId = R.string.content_pick_photo,
                     textAlign = TextAlign.Start,
-                    style = PomoroDoTheme.typography.laundryGothicRegular16,
+                    style = PomoroDoTheme.typography.laundryGothicRegular14,
                     color = PomoroDoTheme.colorScheme.onBackground,
                 )
+
                 if (!isDefaultImage) {
                     SimpleText(
                         modifier = Modifier
@@ -80,7 +83,7 @@ fun PhotoChooseDialog(
                             .padding(vertical = 9.dp, horizontal = 10.dp),
                         textId = R.string.content_default_image,
                         textAlign = TextAlign.Start,
-                        style = PomoroDoTheme.typography.laundryGothicRegular16,
+                        style = PomoroDoTheme.typography.laundryGothicRegular14,
                         color = PomoroDoTheme.colorScheme.onBackground,
                     )
                 }

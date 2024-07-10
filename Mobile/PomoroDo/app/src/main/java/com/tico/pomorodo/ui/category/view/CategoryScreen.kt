@@ -25,6 +25,7 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
@@ -207,7 +208,7 @@ fun CategoryScreenRoute(
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
         ) {
-            CategoryTopBar(
+            CustomTopAppBar(
                 modifier = Modifier,
                 titleTextId = R.string.title_category,
                 iconString = IC_ADD_CATEGORY,

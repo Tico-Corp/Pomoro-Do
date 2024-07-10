@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.member.view
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -23,7 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomSwitch
 import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -35,11 +40,12 @@ import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
-const val tempUrl = "https://avatars.githubusercontent.com/u/51740252?s=48&v=4"
-const val tempName = "모카커피짱귀엽"
-
 @Composable
-fun MyPageScreen() {
+fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val name by authViewModel.name.collectAsState()
+    val profileUri by authViewModel.profile.collectAsState()
+
     val (concentrationAlarmBottomSheet, setConcentrationAlarmBottomSheet) = remember {
         mutableStateOf(
             false
@@ -71,10 +77,11 @@ fun MyPageScreen() {
         )
 
         MyProfile(
-            url = tempUrl,
-            userName = tempName,
+            uri = profileUri,
+            userName = name,
             followingCount = 4,
-            followerCount = 2
+            followerCount = 2,
+            onProfileClick = navigateToModifyProfile
         )
 
         Spacer(modifier = Modifier.height(28.dp))
@@ -113,22 +120,28 @@ fun MyPageScreen() {
 }
 
 @Composable
-fun MyProfile(url: String, userName: String, followingCount: Int, followerCount: Int) {
+fun MyProfile(
+    uri: Uri?,
+    userName: String,
+    followingCount: Int,
+    followerCount: Int,
+    onProfileClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Profile(
-            url = url,
-            modifier = Modifier.clickableWithoutRipple { /*TODO: 프로필 수정 화면이 나타남*/ },
+            uri = uri,
+            modifier = Modifier.clickableWithoutRipple { onProfileClick() },
             size = 60
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
                 text = userName,
-                modifier = Modifier.clickableWithoutRipple { /*TODO: 위와 동일. 프로필 수정 화면이 나타남.*/ },
+                modifier = Modifier.clickableWithoutRipple { onProfileClick() },
                 color = PomoroDoTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
                 style = PomoroDoTheme.typography.laundryGothicRegular20

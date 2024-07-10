@@ -184,4 +184,7 @@
     <string name="content_alarm_option_sound">소리</string>
     <string name="content_alarm_option_vibrate">진동</string>
     <string name="content_alarm_option_mute">무음</string>
+
+    // modify profile
+    <string name="title_modify_profile">프로필 수정</string>
 </resources>
