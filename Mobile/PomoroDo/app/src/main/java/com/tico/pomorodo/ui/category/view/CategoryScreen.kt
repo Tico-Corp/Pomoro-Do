@@ -68,11 +68,7 @@ fun CategoryScreen(
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(
-                                title = category.title,
-                                groupNumber = 0,
-                                isAddButton = false,
-                            )
+                            CategoryTag(title = category.title, groupNumber = 0)
                         }
                     }
                 }
@@ -93,11 +89,7 @@ fun CategoryScreen(
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(
-                                title = category.title,
-                                groupNumber = 6,
-                                isAddButton = false,
-                            )
+                            CategoryTag(title = category.title, groupNumber = 6)
                         }
                     }
                 }
@@ -111,8 +103,8 @@ fun CategoryScreen(
                 Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     inviteGroupCategoryList.forEach { category ->
                         InvitedCategoryItem(
-                            category.title,
-                            category.groupReader,
+                            title = category.title,
+                            groupReader = category.groupReader,
                             onAcceptButtonClicked = {},
                             onRejectButtonClicked = {}
                         )
