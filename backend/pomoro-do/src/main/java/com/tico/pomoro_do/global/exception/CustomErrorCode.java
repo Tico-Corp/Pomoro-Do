@@ -32,6 +32,7 @@ public enum CustomErrorCode {
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, -206, "리프레시 토큰이 없습니다."),
     MISSING_REFRESH_TOKEN_IN_DB(HttpStatus.BAD_REQUEST, -207, "DB에 리프레시 토큰이 없습니다."),
     REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, -208, "데이터베이스의 리프레시 토큰과 일치하지 않습니다."),
+    INVALID_AUTHORIZATION_HEADER(HttpStatus.BAD_REQUEST, -209, "AUTHORIZATION 헤더의 토큰이 유효하지 않습니다."),
     UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, -210, "인증되지 않은 접근입니다."),
 
     //구글 토큰 관련 에러: -300번대

@@ -5,7 +5,6 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
-import com.tico.pomoro_do.domain.user.dto.request.GoogleLoginDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
@@ -48,6 +47,15 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
 
+    /**
+     * 구글 ID 토큰으로 무결성 검증
+     *
+     * @param idToken 구글 ID 토큰
+     * @return 검증된 GoogleUserInfoDTO
+     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
+     * @throws IOException IO 예외
+     * @throws CustomException 구글 ID 토큰이 유효하지 않은 경우 예외
+     */
     @Override
     public GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException {
         NetHttpTransport transport = new NetHttpTransport();
@@ -70,6 +78,13 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    /**
+     * Access 토큰, Refresh 토큰 발급
+     *
+     * @param email 사용자 이메일
+     * @param role 사용자 역할
+     * @return JwtDTO 객체
+     */
     @Override
     public JwtDTO createJwtTokens(String email, String role) {
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
@@ -78,30 +93,66 @@ public class AuthServiceImpl implements AuthService {
         return new JwtDTO(accessToken, refreshToken);
     }
 
+    /**
+     * Authorization 헤더에서 토큰 추출
+     *
+     * @param authorizationHeader Authorization 헤더
+     * @return 추출된 토큰
+     * @throws CustomException Authorization 헤더가 유효하지 않은 경우 예외
+     */
+    private String extractToken(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        throw new CustomException(CustomErrorCode.INVALID_AUTHORIZATION_HEADER);
+    }
+
+    /**
+     * 구글 ID 토큰으로 로그인 처리
+     *
+     * @param authorizationHeader Authorization 헤더에 포함된 구글 ID 토큰
+     * @return JwtDTO를 포함하는 ResponseEntity
+     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
+     * @throws IOException IO 예외
+     * @throws CustomException 구글 ID 토큰이 유효하지 않거나 사용자가 등록되어 있지 않은 경우 예외
+     */
     @Override
     @Transactional
-    public JwtDTO googleLogin(GoogleLoginDTO request) throws GeneralSecurityException, IOException {
-        GoogleUserInfoDTO userInfo = verifyGoogleIdToken(request.getIdToken());
+    public JwtDTO googleLogin(String authorizationHeader) throws GeneralSecurityException, IOException {
+        String idToken = extractToken(authorizationHeader);
+        GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
-        User user = userRepository.findByUsername(userInfo.getEmail())
-                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_REGISTERED));
+        if (!userRepository.existsByUsername(userInfo.getEmail())) {
+            throw new CustomException(CustomErrorCode.USER_NOT_REGISTERED);
+        }
 
         return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
     }
 
+    /**
+     * 구글 ID 토큰으로 회원가입 처리
+     *
+     * @param authorizationHeader Authorization 헤더에 포함된 구글 ID 토큰
+     * @param requestUserInfo GoogleJoinDTO 객체
+     * @return JwtDTO를 포함하는 ResponseEntity
+     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
+     * @throws IOException IO 예외
+     * @throws CustomException 구글 ID 토큰이 유효하지 않거나 이미 등록된 사용자인 경우 예외
+     */
     @Override
     @Transactional
-    public JwtDTO googleJoin(GoogleJoinDTO request) throws GeneralSecurityException, IOException {
-        GoogleUserInfoDTO userInfo = verifyGoogleIdToken(request.getIdToken());
+    public JwtDTO googleJoin(String authorizationHeader, GoogleJoinDTO requestUserInfo) throws GeneralSecurityException, IOException {
+        String idToken = extractToken(authorizationHeader);
+        GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
-        if (userRepository.findByUsername(userInfo.getEmail()).isPresent()) {
+        if (userRepository.existsByUsername(userInfo.getEmail())) {
             throw new CustomException(CustomErrorCode.USER_ALREADY_REGISTERED);
         }
 
         // 사용자 정보 저장
         User user = User.builder()
                 .username(userInfo.getEmail())
-                .nickname(request.getNickname())
+                .nickname(requestUserInfo.getNickname())
                 .profileImageUrl(userInfo.getPictureUrl())
                 .role(UserRole.USER)
                 .status(UserStatus.ACTIVE)
@@ -119,4 +170,5 @@ public class AuthServiceImpl implements AuthService {
         return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
     }
 
+    /** Refresh 토큰으로 Access 토큰을 재발급 **/
 }
