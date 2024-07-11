@@ -1,7 +1,6 @@
 package com.tico.pomoro_do.global.auth;
 
 import com.tico.pomoro_do.domain.user.dto.UserDTO;
-import com.tico.pomoro_do.domain.user.entity.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

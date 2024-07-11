@@ -31,7 +31,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final JWTUtil jwtUtil;
 
     // JWT 만료 시간 Long 형
-    @Value("${jwt.access-token.expire-length}")
+    @Value("${jwt.access-expiration}")
     private long accessTokenExpireLength;
 
     @Override

@@ -32,6 +32,27 @@ public class JWTFilter extends OncePerRequestFilter {
     //토큰 검증
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        //필터 위치에 따라 OAuth2 인증을 진행하는 필터보다 JWTFilter가 앞에 존재하는 경우 에러 발생
+        String requestUri = request.getRequestURI();
+        //JWTFilter 내부에 if문을 통해 특정 경로 요청은 넘어가도록 수정
+        if (requestUri.matches("^\\/auth/google/login(?:\\/.*)?$")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (requestUri.matches("^\\/auth/google/join(?:\\/.*)?$")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (requestUri.matches("^\\/token/reissue(?:\\/.*)?$")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        /** Access 토큰 필터 시작 **/
         log.info("Access 토큰 검증 시작");
         //request에서 Authorization 헤더를 찾음
         //헤더에서 Authorization키에 담긴 토큰을 꺼냄

@@ -30,7 +30,10 @@ logging:
 # jwt 토큰 설정
 jwt:
   secret-key: xlzhdmlvhahfhentjqltmdlqslekckehfdlrnfmadlahzkzjvlWkdWkdrnldudnj
-  access-token:
-    expire-length: 3600000 # 1시간
-  refresh-token:
-    expire-length: 86400000 # 24시간
+  access-expiration: 3600000 # 1시간
+  refresh-expiration: 86400000 # 24시간
+
+# 구글 설정
+google:
+  clientId: 271523854709-09eleiq014safhqqv0hasol452bqqqa8.apps.googleusercontent.com
+

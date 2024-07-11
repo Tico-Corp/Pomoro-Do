@@ -28,7 +28,7 @@ public class SecurityConfig {
 
     // 허용 주소
     private static final String[] WHITE_LIST = {
-            "/login", "/", "/join"
+            "auth/google/login", "auth/google/join", "/", "/token/reissue"
     };
 
     //AuthenticationManager Bean 등록

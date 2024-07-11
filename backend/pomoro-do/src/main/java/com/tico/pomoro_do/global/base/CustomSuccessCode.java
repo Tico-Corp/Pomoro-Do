@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum CustomSuccessCode {
 
     SUCCESS(HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
-    LOGIN_SUCCESS(HttpStatus.OK, "로그인에 성공했습니다."),
-    SIGNUP_SUCCESS(HttpStatus.CREATED, "회원가입에 성공했습니다."),
+    GOOGLE_LOGIN_SUCCESS(HttpStatus.OK, "구글 로그인에 성공했습니다."),
+    GOOGLE_SIGNUP_SUCCESS(HttpStatus.CREATED, "구글 회원가입에 성공했습니다."),
     ACCESS_TOKEN_REISSUED(HttpStatus.OK,  "액세스 토큰이 성공적으로 재발급되었습니다.");
 
     private final HttpStatus httpStatus;	// HttpStatus
