@@ -29,7 +29,27 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// 스프링 시큐리티
-	//implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// OAuth2
+//	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	// JWT
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+
+	// Google API 클라이언트 라이브러리
+	implementation 'com.google.api-client:google-api-client:2.4.0'
+	// JacksonFactory가 더 이상 사용되지 않으므로 com.google.api.client.json.GsonFactory로 대체해야한다.
+//	implementation 'com.google.api-client:google-api-client-jackson2:1.28.1'
+	implementation 'com.google.api-client:google-api-client-gson:2.6.0'
+
+	// JSON
+	implementation 'com.google.code.gson:gson'
+
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 
 	// 개발 중 애플리케이션의 자동 재시작, 리소스 변경 감지 등 제공
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'

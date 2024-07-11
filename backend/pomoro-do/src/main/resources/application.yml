@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: pomoro-do! # 애플리케이션의 이름 설정
+  jackson:
+    time-zone: Asia/Seoul # JSON 처리 시 사용할 시간대를 'Asia/Seoul'로 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC 드라이버 클래스명 설정
     url: jdbc:mysql://pomorodo.shop:3306/pomorodo?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul # 데이터베이스 URL을 설정 (호스트, 포트, 데이터베이스 이름, 추가 옵션 포함)
@@ -18,11 +20,39 @@ spring:
       hibernate:
         show-sql: true # SQL 쿼리를 콘솔에 출력
         format_sql: true # SQL 쿼리의 가독성을 높여 출력
-  jackson:
-    time-zone: Asia/Seoul # JSON 처리 시 사용할 시간대를 'Asia/Seoul'로 설정
 
 logging:
   level:
     com.tico.pomoro_do: DEBUG # 'com.tico.pomoro_do' 패키지의 로깅 레벨을 DEBUG로 설정하여 상세한 정보 로깅
     org.hibernate.SQL: debug # Hibernate가 생성하는 SQL 쿼리를 디버그 레벨에서 로깅
     org.hibernate.type: trace # SQL 쿼리 실행 시 사용되는 파라미터 값을 트레이스 레벨에서 로깅하여 최대한 상세한 정보 제공
+
+# jwt 토큰 설정
+jwt:
+  secret-key: xlzhdmlvhahfhentjqltmdlqslekckehfdlrnfmadlahzkzjvlWkdWkdrnldudnj
+  access-expiration: 3600000 # 1시간
+  refresh-expiration: 86400000 # 24시간
+
+# 구글 설정
+google:
+  clientId: 271523854709-09eleiq014safhqqv0hasol452bqqqa8.apps.googleusercontent.com
+
+# Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs #API 문서 확인 경로, localhost:8080/v3/api-docs로 접근
+    enabled: true #API 문서 생성 기능이 활성화
+    version: openapi_3_0 #사용하는 버전을 명시
+
+  default-consumes-media-type: application/json #기본으로 요청되는 미디어타입 지정
+  default-produces-media-type: application/json #기본으로 요청되는 미디어타입 지정
+  auto-tag-classes: true #컨트롤러 클래스를 자동으로 태그화
+  writer-with-default-pretty-printer: true # API 문서를 생성할 때 기본적으로 pretty-print 형식으로 생성
+  model-and-view-allowed: true #ModelAndView 객체를 사용 가능
+  # Swagger UI의 외관 및 동작을 설정
+  swagger-ui:
+    groups-order: DESC #그룹을 내림차순으로 정렬
+    tags-sorter: alpha #태그를 알파벳 순서로 정렬
+    operations-sorter: method #작업을 HTTP 메서드 순서로 정렬, 그외 alpha 로 정렬 가능
+    path: /swagger-ui.html #Swagger UI 문서 확인 경로, localhost:8080/swagger-ui.html로 접근
+#    disable-swagger-default-url: true #기본 Swagger URL을 비활성화하고 명시적인 경로 /swagger-ui.html로만 접근하도록 한다.
