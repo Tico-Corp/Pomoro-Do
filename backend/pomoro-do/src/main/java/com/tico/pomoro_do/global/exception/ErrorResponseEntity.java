@@ -1,16 +1,22 @@
 package com.tico.pomoro_do.global.exception;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.http.ResponseEntity;
 
 @Data
 @Builder
+@Schema(description = "Error Response")
 public class ErrorResponseEntity {
     //Custom Error 내용을 담을 Response Entity를 생성한다.
+    @Schema(description = "HTTP 상태 코드")
     private int status;
+    @Schema(description = "에러 이름")
     private String name;
+    @Schema(description = "커스텀 에러 코드")
     private int code;
+    @Schema(description = "에러 메시지")
     private String message;
 
     public static ResponseEntity<ErrorResponseEntity> toResponseEntity(CustomErrorCode e){
