@@ -20,6 +20,8 @@ public enum CustomErrorCode {
     NICKNAME_NULL(HttpStatus.BAD_REQUEST, -101, "닉네임을 입력해주세요."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, -102, "가입된 사용자가 아닙니다."),
     PROFILE_UPLOAD_FAILED(HttpStatus.FORBIDDEN, -103, "프로필 이미지 변경에 실패했습니다."),
+    USER_NOT_REGISTERED(HttpStatus.NOT_FOUND, -104, "등록되지 않은 사용자입니다."),
+    USER_ALREADY_REGISTERED(HttpStatus.CONFLICT, -105, "이미 등록된 사용자입니다."),
 
     //Token 관련 에러 -200번대
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, -201, "액세스 토큰이 만료되었습니다."),
@@ -28,7 +30,14 @@ public enum CustomErrorCode {
     INVALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, -204, "리프레시 토큰이 유효하지 않습니다."),
     MISSING_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, -205, "액세스 토큰이 없습니다."),
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, -206, "리프레시 토큰이 없습니다."),
-    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, -207, "인증되지 않은 접근입니다.");
+    MISSING_REFRESH_TOKEN_IN_DB(HttpStatus.BAD_REQUEST, -207, "DB에 리프레시 토큰이 없습니다."),
+    REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, -208, "데이터베이스의 리프레시 토큰과 일치하지 않습니다."),
+    UNAUTHORIZED_ACCESS(HttpStatus.UNAUTHORIZED, -210, "인증되지 않은 접근입니다."),
+
+    //구글 토큰 관련 에러: -300번대
+    GOOGLE_TOKEN_VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, -300, "구글 ID 토큰 검증에 실패했습니다."),
+    GOOGLE_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, -301, "구글 ID 토큰이 유효하지 않습니다.");
+
 
     private final HttpStatus httpStatus;	// HttpStatus
     private final int code;				    // -100
