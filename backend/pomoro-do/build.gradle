@@ -48,6 +48,9 @@ dependencies {
 	// JSON
 	implementation 'com.google.code.gson:gson'
 
+	// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
 	// 개발 중 애플리케이션의 자동 재시작, 리소스 변경 감지 등 제공
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 

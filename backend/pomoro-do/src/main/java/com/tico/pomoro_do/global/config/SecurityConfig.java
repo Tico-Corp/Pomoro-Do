@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -30,6 +31,22 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST = {
             "auth/google/login", "auth/google/join", "/", "/token/reissue"
     };
+
+    private static final String[] swaggerURL = {
+            "/api/**", "/graphiql", "/graphql",
+            "/swagger-ui/**", "/swagger-ui.html",
+            "/v3/api-docs/**", "/api-docs/**",
+            "/swagger-ui/index.html/**",
+            "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs", "/api-docs/**"
+    };
+
+    // 스프링 시큐리티 기능 비활성화 ('인증','인가' 서비스 적용x)
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring()
+                .requestMatchers("/error", "/favicon.ico")
+                .requestMatchers(swaggerURL);
+    }
 
     //AuthenticationManager Bean 등록
     @Bean
@@ -59,7 +76,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(WHITE_LIST).permitAll() // 해당 경로에 대해 모든 권한 허용
-                        .requestMatchers("/admin").hasRole("ADMIN") // 어드민 권한을 가진 사용자만 접근 가능
+                        .requestMatchers(swaggerURL).permitAll() // 해당 경로에 대해 모든 권한 허용
+//                        .requestMatchers("/admin").hasRole("ADMIN") // 어드민 권한을 가진 사용자만 접근 가능
                         .anyRequest().authenticated()); // 그 외의 요청에 대해 로그인한 사용자만 접근 가능
 
         //JWTFilter 등록 (JWT 검증)

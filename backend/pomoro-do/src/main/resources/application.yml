@@ -37,3 +37,22 @@ jwt:
 google:
   clientId: 271523854709-09eleiq014safhqqv0hasol452bqqqa8.apps.googleusercontent.com
 
+# Swagger
+springdoc:
+  api-docs:
+    path: /v3/api-docs #API 문서 확인 경로, localhost:8080/v3/api-docs로 접근
+    enabled: true #API 문서 생성 기능이 활성화
+    version: openapi_3_0 #사용하는 버전을 명시
+
+  default-consumes-media-type: application/json #기본으로 요청되는 미디어타입 지정
+  default-produces-media-type: application/json #기본으로 요청되는 미디어타입 지정
+  auto-tag-classes: true #컨트롤러 클래스를 자동으로 태그화
+  writer-with-default-pretty-printer: true # API 문서를 생성할 때 기본적으로 pretty-print 형식으로 생성
+  model-and-view-allowed: true #ModelAndView 객체를 사용 가능
+  # Swagger UI의 외관 및 동작을 설정
+  swagger-ui:
+    groups-order: DESC #그룹을 내림차순으로 정렬
+    tags-sorter: alpha #태그를 알파벳 순서로 정렬
+    operations-sorter: method #작업을 HTTP 메서드 순서로 정렬, 그외 alpha 로 정렬 가능
+    path: /swagger-ui.html #Swagger UI 문서 확인 경로, localhost:8080/swagger-ui.html로 접근
+#    disable-swagger-default-url: true #기본 Swagger URL을 비활성화하고 명시적인 경로 /swagger-ui.html로만 접근하도록 한다.
