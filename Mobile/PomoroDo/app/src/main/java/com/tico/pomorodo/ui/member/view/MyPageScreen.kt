@@ -41,7 +41,7 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
+fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen: () -> Unit) {
     val authViewModel: AuthViewModel = hiltViewModel()
     val name by authViewModel.name.collectAsState()
     val profileUri by authViewModel.profile.collectAsState()
@@ -81,7 +81,8 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit) {
             userName = name,
             followingCount = 4,
             followerCount = 2,
-            onProfileClick = navigateToModifyProfile
+            onProfileClick = navigateToModifyProfile,
+            onFollowListClick = navigateToFollowListScreen
         )
 
         Spacer(modifier = Modifier.height(28.dp))
@@ -125,7 +126,8 @@ fun MyProfile(
     userName: String,
     followingCount: Int,
     followerCount: Int,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    onFollowListClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -148,7 +150,7 @@ fun MyProfile(
             )
 
             Row(
-                modifier = Modifier.clickableWithoutRipple { /*TODO: 팔로우 화면이 나타남.*/ },
+                modifier = Modifier.clickableWithoutRipple { onFollowListClick() },
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 FollowText(title = stringResource(R.string.title_following), count = followingCount)

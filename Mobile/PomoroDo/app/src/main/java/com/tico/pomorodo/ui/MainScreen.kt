@@ -19,6 +19,7 @@ import com.tico.pomorodo.navigation.addCategoryScreen
 import com.tico.pomorodo.navigation.breakModeScreen
 import com.tico.pomorodo.navigation.categoryScreen
 import com.tico.pomorodo.navigation.concentrationModeScreen
+import com.tico.pomorodo.navigation.followListScreen
 import com.tico.pomorodo.navigation.getState
 import com.tico.pomorodo.navigation.groupMemberChooseScreen
 import com.tico.pomorodo.navigation.historyScreen
@@ -30,6 +31,7 @@ import com.tico.pomorodo.navigation.navigateToAddCategory
 import com.tico.pomorodo.navigation.navigateToBreakMode
 import com.tico.pomorodo.navigation.navigateToCategory
 import com.tico.pomorodo.navigation.navigateToConcentrationMode
+import com.tico.pomorodo.navigation.navigateToFollowListScreen
 import com.tico.pomorodo.navigation.navigateToGroupMemberChoose
 import com.tico.pomorodo.navigation.navigateToHistory
 import com.tico.pomorodo.navigation.navigateToHome
@@ -86,7 +88,8 @@ fun MainScreen() {
                     navigateToCategory = mainNavController::navigateToCategory,
                     navigateToAddCategory = mainNavController::navigateToAddCategory,
                     navigateToHistory = mainNavController::navigateToHistory,
-                    navigateToModifyProfile = mainNavController::navigateToModifyProfile
+                    navigateToModifyProfile = mainNavController::navigateToModifyProfile,
+                    navigateToFollowListScreen = mainNavController::navigateToFollowListScreen
                 )
 
                 concentrationModeScreen(
@@ -119,6 +122,7 @@ fun MainScreen() {
                 historyScreen(navigateToBack = mainNavController::popBackStack)
 
                 modifyProfileScreen(navController = mainNavController)
+                followListScreen()
             }
         }
     }
