@@ -35,10 +35,7 @@ public class SecurityConfig {
 
     private static final String[] swaggerURL = {
             "/graphiql", "/graphql",
-            "/swagger-ui/**", "/swagger-ui.html",
-            "/v3/api-docs/**", "/api-docs/**",
-            "/swagger-ui/index.html/**",
-            "/swagger-resources/**", "/swagger-ui/**", "/v3/api-docs", "/api-docs/**"
+            "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**"
     };
 
     // 스프링 시큐리티 기능 비활성화 ('인증','인가' 서비스 적용x)
