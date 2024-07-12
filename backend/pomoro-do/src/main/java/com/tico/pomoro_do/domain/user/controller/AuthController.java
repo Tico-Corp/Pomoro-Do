@@ -27,7 +27,7 @@ import java.security.GeneralSecurityException;
 @Tag(name = "Auth: 인증", description = "인증 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("api/auth")
 public class AuthController {
     //사용자 로그인
     //사용자 로그아웃

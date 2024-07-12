@@ -1,6 +1,5 @@
 server:
   port: 8080 #애플리케이션 서버 포트번호 설정 (8080 포트에서 수신 대기하도록 설정)
-  forward-headers-strategy: FRAMEWORK # Spring-boot 서버에서 이용할 Forward-proxy와 관련된 설정
 
 spring:
   application:
@@ -37,6 +36,7 @@ jwt:
 # 구글 설정
 google:
   clientId: 271523854709-09eleiq014safhqqv0hasol452bqqqa8.apps.googleusercontent.com
+
 
 # Swagger
 springdoc:

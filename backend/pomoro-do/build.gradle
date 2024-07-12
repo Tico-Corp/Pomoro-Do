@@ -45,6 +45,9 @@ dependencies {
 //	implementation 'com.google.api-client:google-api-client-jackson2:1.28.1'
 	implementation 'com.google.api-client:google-api-client-gson:2.6.0'
 
+	// 애플리케이션의 health check
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	// JSON
 	implementation 'com.google.code.gson:gson'
 
