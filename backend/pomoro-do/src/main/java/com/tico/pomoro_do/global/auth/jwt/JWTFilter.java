@@ -36,12 +36,12 @@ public class JWTFilter extends OncePerRequestFilter {
         //필터 위치에 따라 OAuth2 인증을 진행하는 필터보다 JWTFilter가 앞에 존재하는 경우 에러 발생
         String requestUri = request.getRequestURI();
         //JWTFilter 내부에 if문을 통해 특정 경로 요청은 넘어가도록 수정
-        if (requestUri.matches("^\\/auth/google/login(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/auth/google/login(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/auth/google/join(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/auth/google/join(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
