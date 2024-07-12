@@ -185,6 +185,9 @@
     <string name="content_alarm_option_vibrate">진동</string>
     <string name="content_alarm_option_mute">무음</string>
 
-    // modify profile
+    // my page - modify profile
     <string name="title_modify_profile">프로필 수정</string>
+
+    // my page - follow list
+    <string name="title_follow_list">팔로우</string>
 </resources>
