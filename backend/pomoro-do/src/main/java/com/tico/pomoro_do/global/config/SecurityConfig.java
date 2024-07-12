@@ -29,7 +29,8 @@ public class SecurityConfig {
 
     // 허용 주소
     private static final String[] WHITE_LIST = {
-            "auth/google/login", "auth/google/join", "/", "/token/reissue"
+            "/",
+            "/api/auth/google/**", "/api/auth/token/reissue"
     };
 
     private static final String[] swaggerURL = {
@@ -45,6 +46,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
                 .requestMatchers("/error", "/favicon.ico")
+                .requestMatchers("/actuator/**")
                 .requestMatchers(swaggerURL);
     }
 
