@@ -12,9 +12,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
-        info = @Info(title = "Pomoro-Do API 명세서",
-                description = "Pomoro-Do 서비스의 API 명세서입니다.",
-                version = "v1"))
+        info = @Info(
+                title = "Pomoro-Do API 명세서", // 서비스 이름
+                description = "Pomoro-Do 서비스의 API 명세서입니다.", // 서비스 설명
+                version = "v1" // 서비스 버전
+        )
+)
 //@SecurityScheme(
 //        name = "bearerAuth",
 //        type = SecuritySchemeType.HTTP,
@@ -32,6 +35,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
 
+        // 인증 요청 방식에 HEADER 추가
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
@@ -39,11 +43,14 @@ public class SwaggerConfig {
                 .in(SecurityScheme.In.HEADER)
                 .name("Authorization");
 
+        // bearerAuth 이름으로 보안 요구사항 정의
         SecurityRequirement securityRequirement = new SecurityRequirement()
                 .addList("bearerAuth");
 
         return new OpenAPI()
+                // SecurityRequirement에 정의한 bearerAuth, 위에서 정의한 securityScheme 추가
                 .components(new Components().addSecuritySchemes("bearerAuth", securityScheme))
+                // 보안 규칙 추가
                 .addSecurityItem(securityRequirement);
     }
 

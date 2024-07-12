@@ -33,7 +33,7 @@ public class SecurityConfig {
     };
 
     private static final String[] swaggerURL = {
-            "/api/**", "/graphiql", "/graphql",
+            "/graphiql", "/graphql",
             "/swagger-ui/**", "/swagger-ui.html",
             "/v3/api-docs/**", "/api-docs/**",
             "/swagger-ui/index.html/**",
