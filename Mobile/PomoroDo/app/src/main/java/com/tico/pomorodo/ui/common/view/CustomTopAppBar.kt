@@ -75,7 +75,7 @@ fun CustomTopAppBar(
 }
 
 @Composable
-fun CustomTopAppBarWithSingleButton() {
+fun CustomTopAppBarWithSingleButton(title: String, navigationAction: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,11 +87,11 @@ fun CustomTopAppBarWithSingleButton() {
             imageVector = PomoroDoTheme.iconPack[IC_ARROW_BACK]!!,
             contentDescriptionId = R.string.content_ic_arrow_back,
             enabled = true,
-            onClickedListener = { /*TODO: top app bar - pop back stack*/ }
+            onClickedListener = navigationAction
         )
 
         Text(
-            text = stringResource(R.string.title_follow),
+            text = title,
             modifier = Modifier.fillMaxWidth(),
             color = PomoroDoTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,

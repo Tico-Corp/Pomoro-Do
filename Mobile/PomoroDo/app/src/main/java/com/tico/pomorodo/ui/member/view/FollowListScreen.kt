@@ -44,8 +44,8 @@ import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
 import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTextButton
-import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithSingleButton
+import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
@@ -62,7 +62,10 @@ fun FollowListScreen() {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background)) {
-        CustomTopAppBarWithSingleButton()
+        CustomTopAppBarWithSingleButton(
+            title = stringResource(R.string.title_follow),
+            navigationAction = { /*TODO: top app bar - pop back stack*/ }
+        )
 
         FollowTabRow(selectedTabIndex = pagerState.currentPage) { index ->
             coroutineScope.launch { pagerState.animateScrollToPage(index) }
