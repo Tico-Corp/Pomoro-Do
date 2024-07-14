@@ -10,9 +10,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FollowViewModel @Inject constructor() : ViewModel() {
+    private val _followingList: MutableStateFlow<List<Follow>> = MutableStateFlow(followList)
+    val followingList: StateFlow<List<Follow>> = _followingList
+
     private val _followerList: MutableStateFlow<List<Follow>> = MutableStateFlow(followList)
     val followerList: StateFlow<List<Follow>> = _followerList
 
-    private val _followingList: MutableStateFlow<List<Follow>> = MutableStateFlow(followList)
-    val followingList: StateFlow<List<Follow>> = _followingList
+    fun toggleFollowState(index: Int) {
+        val list = _followingList.value.toMutableList()
+        list[index] = list[index].copy(isFollowing = !list[index].isFollowing)
+
+        _followingList.value = list.toList()
+    }
+
+    fun removeFollower(index: Int) {
+        val list = _followerList.value.toMutableList()
+        list.removeAt(index)
+
+        _followerList.value = list.toList()
+    }
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,8 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -66,8 +63,14 @@ fun FollowListScreen() {
         }
 
         HorizontalPager(state = pagerState) { page ->
-            if (page == 0) FollowingList(followList = followerList.toMutableStateList())
-            else FollowerList(followList = followingList.toMutableStateList())
+            if (page == 0) FollowingList(
+                followList = followingList,
+                toggleFollowState = followViewModel::toggleFollowState
+            )
+            else FollowerList(
+                followList = followerList,
+                removeFollower = followViewModel::removeFollower
+            )
         }
     }
 }
@@ -143,7 +146,7 @@ fun FollowTabRow(selectedTabIndex: Int, onSelectedTabIndexChange: (Int) -> Unit)
 }
 
 @Composable
-fun FollowingList(followList: SnapshotStateList<Follow>) {
+fun FollowingList(followList: List<Follow>, toggleFollowState: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 18.dp)
@@ -162,27 +165,27 @@ fun FollowingList(followList: SnapshotStateList<Follow>) {
                 followButtonContentColor = PomoroDoTheme.colorScheme.gray20,
                 unFollowButtonContainerColor = PomoroDoTheme.colorScheme.primaryContainer,
                 unFollowButtonContentColor = Color.White,
-                onClick = { followList[index] = user.copy(isFollowing = !user.isFollowing) }
+                onClick = { toggleFollowState(index) }
             )
         }
     }
 }
 
 @Composable
-fun FollowerList(followList: SnapshotStateList<Follow>) {
+fun FollowerList(followList: List<Follow>, removeFollower: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .padding(top = 18.dp, start = 18.dp, end = 18.dp)
             .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        items(items = followList) { user ->
+        itemsIndexed(items = followList) { index, user ->
             FollowItem(
                 user = user,
                 followButtonText = stringResource(id = R.string.content_delete),
                 followButtonContainerColor = PomoroDoTheme.colorScheme.gray90,
                 followButtonContentColor = PomoroDoTheme.colorScheme.gray20,
-                onClick = { followList.remove(user) }
+                onClick = { removeFollower(index) }
             )
         }
     }
