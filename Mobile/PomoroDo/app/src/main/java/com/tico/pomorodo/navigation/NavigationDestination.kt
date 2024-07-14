@@ -44,4 +44,5 @@ enum class MainNavigationDestination {
     History,
 
     ModifyProfile,
+    FollowListScreen,
 }

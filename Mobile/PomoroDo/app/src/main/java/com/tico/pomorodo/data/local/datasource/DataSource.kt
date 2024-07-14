@@ -7,6 +7,7 @@ import com.tico.pomorodo.data.model.TimeLineType
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
+import com.tico.pomorodo.domain.model.Follow
 import java.time.LocalDateTime
 
 object DataSource {
@@ -268,5 +269,19 @@ object DataSource {
             completeGroupNumber = 0,
             likedNumber = 0
         )
+    )
+
+    val followList = listOf(
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+        Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
     )
 }

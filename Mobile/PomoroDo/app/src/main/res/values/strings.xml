@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">PomoroDo</string>
+
     // splash
     <string name="content_ic_title">뽀모로 Do! 타이틀 로고</string>
 
@@ -148,18 +149,6 @@
     <string name="title_finish_break">휴식 모드 종료</string>
     <string name="content_finish_break">휴식 모드를 종료하시겠습니까?</string>
 
-    // common
-    <string name="content_next">다음</string>
-    <string name="content_cancel">취소</string>
-    <string name="content_ok">확인</string>
-    <string name="content_delete">삭제</string>
-    <string name="content_finish">종료</string>
-    <string name="content_reset">초기화</string>
-
-    // time format
-    <string name="format_hour_minute">%02d:%02d</string>
-    <string name="format_hour_minute_second">%02d:%02d:%02d</string>
-
     // bottom navigation bar
     <string name="title_timer">타이머</string>
     <string name="title_todo">할 일 목록</string>
@@ -170,8 +159,6 @@
 
     // my page
     <string name="content_ic_setting">환경설정 아이콘</string>
-    <string name="title_following">팔로잉</string>
-    <string name="title_follower">팔로워</string>
     <string name="title_invite">친구 초대</string>
     <string name="title_alarm_concentration">집중 종료 알림</string>
     <string name="title_alarm_break">휴식 종료 알림</string>
@@ -185,6 +172,30 @@
     <string name="content_alarm_option_vibrate">진동</string>
     <string name="content_alarm_option_mute">무음</string>
 
-    // modify profile
+    // my page - modify profile
     <string name="title_modify_profile">프로필 수정</string>
+
+    // my page - follow list
+    <string name="title_unfollow_dialog">팔로우 해제</string>
+    <string name="content_unfollow_dialog">팔로우를 해제 하시겠습니까?\n해제 후 목록에서 다시 팔로우 할 수 있습니다.</string>
+    <string name="title_remove_follower_dialog">팔로워 삭제</string>
+    <string name="content_remove_follower_dialog">팔로워를 삭제하시겠습니까?\n팔로워를 삭제하면 목록에서 사라집니다.</string>
+
+    // common
+    <string name="content_next">다음</string>
+    <string name="content_cancel">취소</string>
+    <string name="content_ok">확인</string>
+    <string name="content_delete">삭제</string>
+    <string name="content_finish">종료</string>
+    <string name="content_reset">초기화</string>
+
+    // common - time format
+    <string name="format_hour_minute">%02d:%02d</string>
+    <string name="format_hour_minute_second">%02d:%02d:%02d</string>
+
+    // common - follow
+    <string name="title_follow">팔로우</string>
+    <string name="content_unfollow">언팔로우</string>
+    <string name="title_following">팔로잉</string>
+    <string name="title_follower">팔로워</string>
 </resources>
