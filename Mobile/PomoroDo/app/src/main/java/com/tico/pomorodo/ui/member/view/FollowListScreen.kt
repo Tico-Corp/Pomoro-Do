@@ -24,7 +24,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,6 +45,7 @@ import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
 import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTextButton
+import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
 import com.tico.pomorodo.ui.theme.IC_ARROW_BACK
@@ -54,6 +59,9 @@ fun FollowListScreen() {
     val followingList by followViewModel.followingList.collectAsState()
     val pagerState = rememberPagerState(pageCount = { 2 })
     val coroutineScope = rememberCoroutineScope()
+    var unFollowingDialogVisible by remember { mutableStateOf(false) }
+    var removeFollowerDialogVisible by remember { mutableStateOf(false) }
+    var selectedIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background)) {
         TopAppBarWithSingleButton()
@@ -65,13 +73,63 @@ fun FollowListScreen() {
         HorizontalPager(state = pagerState) { page ->
             if (page == 0) FollowingList(
                 followList = followingList,
-                toggleFollowState = followViewModel::toggleFollowState
+                onClick = { index, isFollowing ->
+                    if (isFollowing) {
+                        selectedIndex = index
+                        unFollowingDialogVisible = true
+                    } else {
+                        followViewModel.toggleFollowState(index)
+                    }
+                }
             )
             else FollowerList(
                 followList = followerList,
-                removeFollower = followViewModel::removeFollower
+                onClick = { index ->
+                    selectedIndex = index
+                    removeFollowerDialogVisible = true
+                }
             )
         }
+    }
+
+    if (unFollowingDialogVisible) {
+        SimpleAlertDialog(
+            dialogTitleId = R.string.title_unfollow_dialog,
+            confirmTextId = R.string.content_unfollow,
+            dismissTextId = R.string.content_cancel,
+            onConfirmation = {
+                followViewModel.toggleFollowState(selectedIndex)
+                unFollowingDialogVisible = false
+            },
+            onDismissRequest = { unFollowingDialogVisible = false },
+            content = {
+                Text(
+                    text = stringResource(R.string.content_unfollow_dialog),
+                    color = PomoroDoTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    style = PomoroDoTheme.typography.laundryGothicRegular14
+                )
+            })
+    }
+
+    if (removeFollowerDialogVisible) {
+        SimpleAlertDialog(
+            dialogTitleId = R.string.title_remove_follower_dialog,
+            confirmTextId = R.string.content_delete,
+            dismissTextId = R.string.content_cancel,
+            onConfirmation = {
+                followViewModel.removeFollower(selectedIndex)
+                removeFollowerDialogVisible = false
+            },
+            onDismissRequest = { removeFollowerDialogVisible = false },
+            content = {
+                Text(
+                    text = stringResource(R.string.content_remove_follower_dialog),
+                    color = PomoroDoTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    style = PomoroDoTheme.typography.laundryGothicRegular14
+                )
+            })
     }
 }
 
@@ -146,7 +204,7 @@ fun FollowTabRow(selectedTabIndex: Int, onSelectedTabIndexChange: (Int) -> Unit)
 }
 
 @Composable
-fun FollowingList(followList: List<Follow>, toggleFollowState: (Int) -> Unit) {
+fun FollowingList(followList: List<Follow>, onClick: (Int, Boolean) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 18.dp)
@@ -165,14 +223,14 @@ fun FollowingList(followList: List<Follow>, toggleFollowState: (Int) -> Unit) {
                 followButtonContentColor = PomoroDoTheme.colorScheme.gray20,
                 unFollowButtonContainerColor = PomoroDoTheme.colorScheme.primaryContainer,
                 unFollowButtonContentColor = Color.White,
-                onClick = { toggleFollowState(index) }
+                onClick = { onClick(index, user.isFollowing) }
             )
         }
     }
 }
 
 @Composable
-fun FollowerList(followList: List<Follow>, removeFollower: (Int) -> Unit) {
+fun FollowerList(followList: List<Follow>, onClick: (Int) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .padding(top = 18.dp, start = 18.dp, end = 18.dp)
@@ -185,7 +243,7 @@ fun FollowerList(followList: List<Follow>, removeFollower: (Int) -> Unit) {
                 followButtonText = stringResource(id = R.string.content_delete),
                 followButtonContainerColor = PomoroDoTheme.colorScheme.gray90,
                 followButtonContentColor = PomoroDoTheme.colorScheme.gray20,
-                onClick = { removeFollower(index) }
+                onClick = { onClick(index) }
             )
         }
     }
