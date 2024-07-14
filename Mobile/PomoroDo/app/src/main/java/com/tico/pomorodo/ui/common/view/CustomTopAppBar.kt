@@ -1,12 +1,15 @@
 package com.tico.pomorodo.ui.common.view
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -69,4 +72,30 @@ fun CustomTopAppBar(
             )
         }
     )
+}
+
+@Composable
+fun CustomTopAppBarWithSingleButton() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 18.dp, end = 18.dp, top = 24.dp, bottom = 14.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        SimpleIconButton(
+            size = 28,
+            imageVector = PomoroDoTheme.iconPack[IC_ARROW_BACK]!!,
+            contentDescriptionId = R.string.content_ic_arrow_back,
+            enabled = true,
+            onClickedListener = { /*TODO: top app bar - pop back stack*/ }
+        )
+
+        Text(
+            text = stringResource(R.string.title_follow),
+            modifier = Modifier.fillMaxWidth(),
+            color = PomoroDoTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            style = PomoroDoTheme.typography.laundryGothicBold20
+        )
+    }
 }

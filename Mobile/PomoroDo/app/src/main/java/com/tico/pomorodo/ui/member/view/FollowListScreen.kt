@@ -2,7 +2,6 @@ package com.tico.pomorodo.ui.member.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,9 +45,8 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
-import com.tico.pomorodo.ui.common.view.SimpleIconButton
+import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithSingleButton
 import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
-import com.tico.pomorodo.ui.theme.IC_ARROW_BACK
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
 
@@ -64,7 +62,7 @@ fun FollowListScreen() {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background)) {
-        TopAppBarWithSingleButton()
+        CustomTopAppBarWithSingleButton()
 
         FollowTabRow(selectedTabIndex = pagerState.currentPage) { index ->
             coroutineScope.launch { pagerState.animateScrollToPage(index) }
@@ -130,32 +128,6 @@ fun FollowListScreen() {
                     style = PomoroDoTheme.typography.laundryGothicRegular14
                 )
             })
-    }
-}
-
-@Composable
-fun TopAppBarWithSingleButton() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 18.dp, end = 18.dp, top = 24.dp, bottom = 14.dp),
-        contentAlignment = Alignment.CenterStart
-    ) {
-        SimpleIconButton(
-            size = 28,
-            imageVector = PomoroDoTheme.iconPack[IC_ARROW_BACK]!!,
-            contentDescriptionId = R.string.content_ic_arrow_back,
-            enabled = true,
-            onClickedListener = { /*TODO: top app bar - pop back stack*/ }
-        )
-
-        Text(
-            text = stringResource(R.string.title_follow),
-            modifier = Modifier.fillMaxWidth(),
-            color = PomoroDoTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-            style = PomoroDoTheme.typography.laundryGothicBold20
-        )
     }
 }
 
