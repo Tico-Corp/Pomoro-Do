@@ -4,6 +4,8 @@ package com.tico.pomoro_do.domain.user.service;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.global.common.enums.UserRole;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -18,6 +20,9 @@ public interface AuthService {
 
     // 구글 회원가입
     JwtDTO googleJoin(String authorizationHeader, GoogleJoinDTO request)  throws GeneralSecurityException, IOException;
+
+    // User 생성
+    User createUser(String username, String nickname, String profileImageUrl, UserRole role);
 
     // 토큰 생성
     JwtDTO createJwtTokens(String email, String role);

@@ -29,7 +29,8 @@ public class SecurityConfig {
 
     // 허용 주소
     private static final String[] WHITE_LIST = {
-            "/",
+            "/api",
+            "/api/admin/**",
             "/api/auth/google/**", "/api/auth/token/reissue"
     };
 

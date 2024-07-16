@@ -39,7 +39,7 @@ public class User {
     // 활성화 상태
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus status;
+    private UserStatus status = UserStatus.ACTIVE;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -53,12 +53,11 @@ public class User {
     }
 
     @Builder
-    public User(String username, String nickname, String profileImageUrl, UserRole role, UserStatus status) {
+    public User(String username, String nickname, String profileImageUrl, UserRole role) {
         this.username = username;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.role = role;
-        this.status = status;
     }
 
     public void updateNickname(String nickname) {

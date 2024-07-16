@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Root", description = "애플리케이션 기본 정보 API")
+@Tag(name = "Root: 테스트", description = "애플리케이션 기본 정보 API (API 테스트)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/")
+@RequestMapping("/api")
 public class RootController {
 
     @Operation(summary = "애플리케이션 기본 정보", description = "애플리케이션의 기본 정보를 제공합니다.")
