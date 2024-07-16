@@ -23,16 +23,17 @@ import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun GroupOutDialog(
-    groupName: String,
+fun CategoryOutDialog(
+    title: String,
+    content: String,
     onAllDeleteClicked: () -> Unit,
     onIncompletedTodoDeleteClicked: () -> Unit,
     onNoDeleteClicked: () -> Unit,
-    onDismissRequest: (Boolean) -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
     val colors = CardDefaults.cardColors(containerColor = PomoroDoTheme.colorScheme.dialogSurface)
     Dialog(
-        onDismissRequest = { onDismissRequest(false) },
+        onDismissRequest = onDismissRequest,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Card(
@@ -47,14 +48,14 @@ fun GroupOutDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 SimpleText(
-                    textId = R.string.title_group_out,
+                    text = title,
                     style = PomoroDoTheme.typography.laundryGothicBold20,
                     color = PomoroDoTheme.colorScheme.onBackground,
                 )
                 Spacer(modifier = Modifier.height(14.dp))
                 SimpleText(
                     modifier = Modifier,
-                    text = stringResource(id = R.string.content_group_out_message, groupName),
+                    text = content,
                     style = PomoroDoTheme.typography.laundryGothicRegular14,
                     color = PomoroDoTheme.colorScheme.onBackground,
                     textAlign = TextAlign.Center
@@ -91,7 +92,7 @@ fun GroupOutDialog(
                         contentColor = Color.White,
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
-                        onClick = { onDismissRequest(false) }
+                        onClick = onDismissRequest
                     )
                 }
             }
