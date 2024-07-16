@@ -123,7 +123,7 @@ public class AuthServiceImpl implements AuthService {
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (!userRepository.existsByUsername(userInfo.getEmail())) {
-            throw new CustomException(CustomErrorCode.USER_NOT_REGISTERED);
+            throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
         }
 
         return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
@@ -150,14 +150,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // 사용자 정보 저장
-        User user = User.builder()
-                .username(userInfo.getEmail())
-                .nickname(requestUserInfo.getNickname())
-                .profileImageUrl(userInfo.getPictureUrl())
-                .role(UserRole.USER)
-                .status(UserStatus.ACTIVE)
-                .build();
-        userRepository.save(user);
+        User user = createUser(
+                userInfo.getEmail(),
+                requestUserInfo.getNickname(),
+                userInfo.getPictureUrl(),
+                UserRole.USER
+        );
 
         // 소셜 로그인 정보 저장
         SocialLogin socialLogin = SocialLogin.builder()
@@ -168,6 +166,31 @@ public class AuthServiceImpl implements AuthService {
         socialLoginRepository.save(socialLogin);
 
         return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
+    }
+
+    /**
+     * USER 생성하기
+     *
+     * @param username 사용자 이메일
+     * @param nickname 사용자 닉네임
+     * @param profileImageUrl 사용자 프로필 이미지 URL
+     * @param role 사용자 역할
+     * @return 생성된 User 객체
+     */
+    @Override
+    @Transactional
+    public User createUser(String username, String nickname, String profileImageUrl, UserRole role){
+
+        // 사용자 정보 저장
+        User user = User.builder()
+                .username(username)
+                .nickname(nickname)
+                .profileImageUrl(profileImageUrl)
+                .role(role)
+                .build();
+        userRepository.save(user);
+
+        return user;
     }
 
     /** Refresh 토큰으로 Access 토큰을 재발급 **/

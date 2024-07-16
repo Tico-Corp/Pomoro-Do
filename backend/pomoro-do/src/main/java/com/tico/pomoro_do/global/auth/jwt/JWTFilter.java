@@ -51,6 +51,17 @@ public class JWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        //관리자
+        if (requestUri.matches("^\\/api/admin/login(?:\\/.*)?$")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+        if (requestUri.matches("^\\/api/admin/join(?:\\/.*)?$")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         /** Access 토큰 필터 시작 **/
         log.info("Access 토큰 검증 시작");

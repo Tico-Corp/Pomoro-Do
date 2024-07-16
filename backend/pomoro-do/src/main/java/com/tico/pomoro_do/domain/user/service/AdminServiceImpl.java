@@ -1,0 +1,135 @@
+package com.tico.pomoro_do.domain.user.service;
+
+import com.tico.pomoro_do.domain.user.dto.request.AdminJoinDTO;
+import com.tico.pomoro_do.domain.user.dto.request.AdminLoginDTO;
+import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.domain.user.repository.UserRepository;
+import com.tico.pomoro_do.global.common.enums.UserRole;
+import com.tico.pomoro_do.global.exception.CustomErrorCode;
+import com.tico.pomoro_do.global.exception.CustomException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+@Service
+@Transactional(readOnly = true) // (성능 최적화 - 읽기 전용에만 사용)
+@RequiredArgsConstructor // 파이널 필드만 가지고 생성사 주입 함수 만듬 (따로 작성할 필요 없다.)
+@Slf4j
+public class AdminServiceImpl implements AdminService {
+
+    private final UserRepository userRepository;
+    private final AuthService authService;
+
+    private static final String ADMIN_EMAIL_DOMAIN = "pomorodo.shop";
+
+    /**
+     * 관리자 회원가입 처리
+     *
+     * @param adminJoinDTO AdminJoinDTO 객체
+     * @return JwtDTO를 포함하는 ResponseEntity
+     * @throws CustomException 이메일 도메인이 유효하지 않거나 이미 등록된 사용자인 경우 예외
+     */
+    @Override
+    @Transactional
+    public JwtDTO adminJoin(AdminJoinDTO adminJoinDTO) {
+        String username = adminJoinDTO.getUsername();
+        String nickname = adminJoinDTO.getNickname();
+
+        //관리자 회원가입 도메인 가져오기
+        String domain = getEmailDomain(username);
+        //관리자 회원가입 이메일 도메인 검증
+        validateAdminEmailDomain(domain);
+        //관리자 이메일 가입 여부 검증
+        checkUserExistence(username);
+
+        // 관리자 생성하기
+        User admin = authService.createUser(username, nickname, "", UserRole.ADMIN);
+
+        return authService.createJwtTokens(username, String.valueOf(UserRole.ADMIN));
+    }
+
+    /**
+     * 관리자 로그인 처리
+     *
+     * @param adminLoginDTO AdminLoginDTO 객체
+     * @return JwtDTO를 포함하는 ResponseEntity
+     * @throws CustomException 이메일 도메인이 유효하지 않거나 관리자가 아닌 경우 예외
+     */
+    @Override
+    public JwtDTO adminLogin(AdminLoginDTO adminLoginDTO){
+        String username = adminLoginDTO.getUsername();
+        String nickname = adminLoginDTO.getNickname();
+
+        //관리자 로그인 도메인 가져오기
+        String domain = getEmailDomain(username);
+        // 관리자 로그인 이메일 도메인 검증
+        validateAdminEmailDomain(domain);
+        // 관리자 로그인 검증
+        validateAdminUser(username, nickname);
+        return authService.createJwtTokens(username, String.valueOf(UserRole.ADMIN));
+    }
+
+    /**
+     * 이메일에서 도메인 부분을 추출
+     *
+     * @param email 이메일 주소
+     * @return 이메일 도메인 부분
+     */
+    private String getEmailDomain(String email) {
+        return email.substring(email.indexOf("@") + 1);
+    }
+
+    /**
+     * 이메일 도메인 검증
+     *
+     * @param domain 이메일 도메인
+     * @throws CustomException 유효하지 않은 이메일 도메인의 경우 예외 발생
+     */
+    private void validateAdminEmailDomain(String domain) {
+        if (!ADMIN_EMAIL_DOMAIN.equals(domain)) {
+            log.error("유효하지 않은 이메일 도메인: {}", domain);
+            throw new CustomException(CustomErrorCode.ADMIN_EMAIL_ONLY);
+        }
+    }
+
+    /**
+     * 사용자가 이미 존재하는지 확인
+     *
+     * @param username 사용자 이름
+     * @throws CustomException 이미 등록된 사용자인 경우 예외 발생
+     */
+    private void checkUserExistence(String username) {
+        if (userRepository.existsByUsername(username)) {
+            log.error("이미 등록된 사용자: {}", username);
+            throw new CustomException(CustomErrorCode.USER_ALREADY_REGISTERED);
+        }
+    }
+
+    /**
+     * 관리자 검증
+     *
+     * @param username 사용자 이름
+     * @param nickname 사용자 닉네임
+     * @throws CustomException 사용자가 존재하지 않거나 관리자가 아닌 경우 예외 발생
+     */
+    private void validateAdminUser(String username, String nickname) {
+        Optional<User> userData = userRepository.findByUsername(username);
+        if (userData.isEmpty()) {
+            log.error("사용자를 찾을 수 없음: {}", username);
+            throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
+        }
+        User admin = userData.get();
+        if (!admin.getRole().equals(UserRole.ADMIN)) {
+            log.error("관리자 권한 없음: {}", username);
+            throw new CustomException(CustomErrorCode.NOT_AN_ADMIN);
+        }
+        if (!admin.getNickname().equals(nickname)) {
+            log.error("닉네임 불일치: {}", username);
+            throw new CustomException(CustomErrorCode.ADMIN_LOGIN_FAILED);
+        }
+    }
+}

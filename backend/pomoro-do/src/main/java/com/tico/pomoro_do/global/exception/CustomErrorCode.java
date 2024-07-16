@@ -20,8 +20,7 @@ public enum CustomErrorCode {
     NICKNAME_NULL(HttpStatus.BAD_REQUEST, -101, "닉네임을 입력해주세요."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, -102, "가입된 사용자가 아닙니다."),
     PROFILE_UPLOAD_FAILED(HttpStatus.FORBIDDEN, -103, "프로필 이미지 변경에 실패했습니다."),
-    USER_NOT_REGISTERED(HttpStatus.NOT_FOUND, -104, "등록되지 않은 사용자입니다."),
-    USER_ALREADY_REGISTERED(HttpStatus.CONFLICT, -105, "이미 등록된 사용자입니다."),
+    USER_ALREADY_REGISTERED(HttpStatus.CONFLICT, -104, "이미 등록된 사용자입니다."),
 
     //Token 관련 에러 -200번대
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, -201, "액세스 토큰이 만료되었습니다."),
@@ -37,8 +36,13 @@ public enum CustomErrorCode {
 
     //구글 토큰 관련 에러: -300번대
     GOOGLE_TOKEN_VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, -300, "구글 ID 토큰 검증에 실패했습니다."),
-    GOOGLE_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, -301, "구글 ID 토큰이 유효하지 않습니다.");
+    GOOGLE_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, -301, "구글 ID 토큰이 유효하지 않습니다."),
 
+    //관리자 관련 에러: -400번대
+    NOT_AN_ADMIN(HttpStatus.FORBIDDEN, -400, "관리자 권한이 없습니다."),
+    INVALID_ADMIN_EMAIL(HttpStatus.BAD_REQUEST, -401, "허용되지 않은 관리자 이메일입니다."),
+    ADMIN_EMAIL_ONLY(HttpStatus.FORBIDDEN, -402, "관리자 이메일만 접근할 수 있습니다."),
+    ADMIN_LOGIN_FAILED(HttpStatus.BAD_REQUEST, -403, "관리자 정보가 일치하지 않습니다. 관리자 로그인에 실패했습니다.");
 
     private final HttpStatus httpStatus;	// HttpStatus
     private final int code;				    // -100
