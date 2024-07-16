@@ -31,12 +31,13 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
-import com.tico.pomorodo.ui.common.view.CustomTopAppBar
+import com.tico.pomorodo.navigation.MainNavigationDestination
+import com.tico.pomorodo.ui.category.viewModel.AddCategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextField
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
@@ -54,10 +55,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddCategoryScreen(
     title: String,
-    type: Boolean,
+    type: CategoryType,
     groupNumber: Int,
     onTitleChanged: (String) -> Unit,
-    onTypeChanged: (Boolean) -> Unit,
+    onTypeChanged: (CategoryType) -> Unit,
     openSettingOption: OpenSettings,
     onShowOpenSettingsBottomSheetChange: (Boolean) -> Unit,
     onGroupMemberChooseClicked: () -> Unit,
@@ -113,7 +114,7 @@ fun AddCategoryScreen(
                 onClicked = { onShowOpenSettingsBottomSheetChange(true) },
             )
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
-            if (!type) {
+            if (type == CategoryType.GROUP) {
                 CategoryGroupNumber(
                     groupNumber = groupNumber,
                     onClicked = onGroupMemberChooseClicked,
@@ -125,7 +126,7 @@ fun AddCategoryScreen(
 }
 
 @Composable
-fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: Boolean = true) {
+fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: Boolean? = true) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -154,7 +155,7 @@ fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: 
             )
             SimpleIcon(
                 size = 15,
-                imageVector = if (isGroupReader) PomoroDoTheme.iconPack[IC_ARROW_RIGHT]!! else PomoroDoTheme.iconPack[IC_DROP_DOWN]!!,
+                imageVector = if (isGroupReader == true) PomoroDoTheme.iconPack[IC_ARROW_RIGHT]!! else PomoroDoTheme.iconPack[IC_DROP_DOWN]!!,
                 contentDescriptionId = R.string.content_full_open
             )
         }
@@ -208,7 +209,7 @@ fun CategoryOpenSettings(
                     )
                 }
             }
-            if(!enabled){
+            if (!enabled) {
                 SimpleText(
                     textId = R.string.content_only_group_message,
                     style = PomoroDoTheme.typography.laundryGothicRegular10,
@@ -221,9 +222,9 @@ fun CategoryOpenSettings(
 
 @Composable
 private fun CategoryType(
-    type: Boolean,
+    type: CategoryType,
     colors: RadioButtonColors,
-    onTypeChanged: (Boolean) -> Unit
+    onTypeChanged: (CategoryType) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -240,25 +241,25 @@ private fun CategoryType(
             verticalAlignment = Alignment.CenterVertically
         ) {
             NoPaddingRadioButton(
-                selected = type,
-                onClick = { onTypeChanged(true) },
+                selected = type == CategoryType.NORMAL,
+                onClick = { onTypeChanged(CategoryType.NORMAL) },
                 colors = colors,
                 padding = PaddingValues(horizontal = 5.dp)
             )
             SimpleText(
-                modifier = Modifier.clickableWithoutRipple { onTypeChanged(true) },
+                modifier = Modifier.clickableWithoutRipple { onTypeChanged(CategoryType.NORMAL) },
                 textId = R.string.content_category_normal,
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.onBackground
             )
             NoPaddingRadioButton(
-                selected = !type,
-                onClick = { onTypeChanged(false) },
+                selected = type == CategoryType.GROUP,
+                onClick = { onTypeChanged(CategoryType.GROUP) },
                 colors = colors,
                 padding = PaddingValues(horizontal = 5.dp)
             )
             SimpleText(
-                modifier = Modifier.clickableWithoutRipple { onTypeChanged(false) },
+                modifier = Modifier.clickableWithoutRipple { onTypeChanged(CategoryType.GROUP) },
                 textId = R.string.content_category_group,
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.onBackground
@@ -270,13 +271,10 @@ private fun CategoryType(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCategoryScreenRoute(
-    navBackStackEntry: NavBackStackEntry?,
-    viewModel: CategoryViewModel =
-        if (navBackStackEntry == null) hiltViewModel()
-        else hiltViewModel(navBackStackEntry),
+    viewModel: AddCategoryViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
     navigateToCategory: () -> Unit,
-    navigateToGroupMemberChoose: () -> Unit,
+    navigateToGroupMemberChoose: (String) -> Unit,
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -313,7 +311,7 @@ fun AddCategoryScreenRoute(
                     navigateToCategory()
                 },
                 onBackClickedListener = navigateToBack,
-                enabled = selectedGroupMembers.any { it.selected } && viewModel.validateInput()
+                enabled = viewModel.validateInput()
             )
             if (showOpenSettingsBottomSheet) {
                 OpenSettingsBottomSheet(
@@ -336,13 +334,13 @@ fun AddCategoryScreenRoute(
                 title = title,
                 type = type,
                 groupNumber = selectedGroupMembers.filter { it.selected }.size,
-                openSettingOption = if (!type) OpenSettings.GROUP else openSettingOption,
+                openSettingOption = if (type == CategoryType.GROUP) OpenSettings.GROUP else openSettingOption,
                 onTypeChanged = viewModel::setType,
                 onTitleChanged = viewModel::setTitle,
                 onShowOpenSettingsBottomSheetChange = {
                     showOpenSettingsBottomSheet = it
                 },
-                onGroupMemberChooseClicked = navigateToGroupMemberChoose
+                onGroupMemberChooseClicked = { navigateToGroupMemberChoose(MainNavigationDestination.AddCategory.name) }
             )
         }
     }
