@@ -1,16 +1,19 @@
 package com.tico.pomorodo.navigation
 
 import androidx.compose.runtime.remember
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.tico.pomorodo.ui.auth.view.LogInScreen
 import com.tico.pomorodo.ui.auth.view.SignUpRoute
 import com.tico.pomorodo.ui.category.view.AddCategoryScreenRoute
 import com.tico.pomorodo.ui.category.view.CategoryScreenRoute
-import com.tico.pomorodo.ui.category.view.GroupMemberChooseScreenRoute
+import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
 import com.tico.pomorodo.ui.category.view.InfoCategoryScreenRoute
 import com.tico.pomorodo.ui.history.view.HistoryRoute
 import com.tico.pomorodo.ui.home.view.HomeScreen
@@ -47,9 +50,11 @@ fun NavController.navigateToBreakMode() =
 
 fun NavController.navigateToCategory() = navigate(MainNavigationDestination.Category.name)
 fun NavController.navigateToAddCategory() = navigate(MainNavigationDestination.AddCategory.name)
-fun NavController.navigateToInfoCategory() = navigate(MainNavigationDestination.InfoCategory.name)
-fun NavController.navigateToGroupMemberChoose() =
-    navigate(MainNavigationDestination.GroupMemberChoose.name)
+fun NavController.navigateToInfoCategory(categoryId: String) =
+    navigate("${MainNavigationDestination.InfoCategory.name}/$categoryId")
+
+fun NavController.navigateToGroupMemberChoose(previousScreenType: String) =
+    navigate("${MainNavigationDestination.GroupMemberChoose.name}/$previousScreenType")
 
 fun NavController.navigateToHistory() = navigate(MainNavigationDestination.History.name)
 
@@ -170,7 +175,7 @@ fun NavGraphBuilder.breakModeScreen(navController: NavController) {
 
 fun NavGraphBuilder.categoryScreen(
     navigateToAddCategory: () -> Unit,
-    navigateToInfoCategory: () -> Unit,
+    navigateToInfoCategory: (String) -> Unit,
     navigateToBack: () -> Unit
 ) {
     composable(route = MainNavigationDestination.Category.name) {
@@ -183,34 +188,36 @@ fun NavGraphBuilder.categoryScreen(
 }
 
 fun NavGraphBuilder.addCategoryScreen(
-    navController: NavController,
     navigateToCategory: () -> Unit,
-    navigateToGroupMemberChoose: () -> Unit,
+    navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit,
 ) {
-    composable(route = MainNavigationDestination.AddCategory.name) { backStackEntry ->
-        val navBackStackEntry = remember(backStackEntry) {
-            try {
-                navController.getBackStackEntry(MainNavigationDestination.Category.name)
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-        }
+    composable(route = MainNavigationDestination.AddCategory.name) {
         AddCategoryScreenRoute(
             navigateToCategory = navigateToCategory,
             navigateToBack = navigateToBack,
             navigateToGroupMemberChoose = navigateToGroupMemberChoose,
-            navBackStackEntry = navBackStackEntry
         )
+    }
+}
+
+private const val CATEGORY_ID = "categoryId"
+
+internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
+    val categoryId: String = checkNotNull(savedStateHandle[CATEGORY_ID]) {
+        "Missing categoryId"
     }
 }
 
 fun NavGraphBuilder.infoCategoryScreen(
     navigateToCategory: () -> Unit,
-    navigateToGroupMemberChoose: () -> Unit,
+    navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.InfoCategory.name) {
+    composable(
+        route = "${MainNavigationDestination.InfoCategory.name}/{$CATEGORY_ID}",
+        arguments = listOf(navArgument(name = CATEGORY_ID) { type = NavType.StringType })
+    ) {
         InfoCategoryScreenRoute(
             navigateToCategory = navigateToCategory,
             navigateToBack = navigateToBack,
@@ -227,22 +234,29 @@ fun NavGraphBuilder.historyScreen(
     }
 }
 
+private const val PREVIOUS_SCREEN_TYPE = "previousScreenType"
+
 fun NavGraphBuilder.groupMemberChooseScreen(
     navController: NavController,
     navigateToBack: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.GroupMemberChoose.name) { backStackEntry ->
-        val navBackStackEntry = remember(backStackEntry) {
-            try {
-                navController.getBackStackEntry(MainNavigationDestination.Category.name)
-            } catch (e: IllegalArgumentException) {
-                navController.getBackStackEntry(MainNavigationDestination.AddCategory.name)
-            }
+    composable(
+        route = "${MainNavigationDestination.GroupMemberChoose.name}/{$PREVIOUS_SCREEN_TYPE}",
+        arguments = listOf(navArgument(name = PREVIOUS_SCREEN_TYPE) { type = NavType.StringType })
+    ) { backStackEntry ->
+        val parentEntry = remember {
+            navController.previousBackStackEntry
         }
-        GroupMemberChooseScreenRoute(
-            navBackStackEntry = navBackStackEntry,
-            navigateToBack = navigateToBack
-        )
+        val previousScreenType =
+            backStackEntry.arguments?.getString(PREVIOUS_SCREEN_TYPE) ?: return@composable
+
+        if (parentEntry != null) {
+            GroupMemberChooseRoute(
+                navBackStackEntry = parentEntry,
+                navigateToBack = navigateToBack,
+                previousScreenType = previousScreenType
+            )
+        }
     }
 }
 

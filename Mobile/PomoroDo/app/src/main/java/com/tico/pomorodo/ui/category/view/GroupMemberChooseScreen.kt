@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,12 +34,15 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.SelectedUser
-import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
-import com.tico.pomorodo.ui.common.view.CustomTopAppBar
+import com.tico.pomorodo.navigation.MainNavigationDestination
+import com.tico.pomorodo.ui.category.viewModel.AddCategoryViewModel
+import com.tico.pomorodo.ui.category.viewModel.InfoCategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextField
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.ProfileHorizontal
 import com.tico.pomorodo.ui.common.view.ProfileVertical
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -57,14 +61,46 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun GroupMemberChooseScreenRoute(
+fun GroupMemberChooseRoute(
     navBackStackEntry: NavBackStackEntry,
     navigateToBack: () -> Unit,
-    viewModel: CategoryViewModel = hiltViewModel(navBackStackEntry)
+    previousScreenType: String
 ) {
-    val selectedList =
-        remember { mutableStateListOf<SelectedUser>().apply { addAll(viewModel.selectedGroupMembers.value) } }
-    var searchName by rememberSaveable { mutableStateOf("") }
+    when (previousScreenType) {
+        MainNavigationDestination.InfoCategory.name -> {
+            val viewModel = hiltViewModel<InfoCategoryViewModel>(navBackStackEntry)
+            GroupMemberChooseScreen(viewModel, navigateToBack)
+
+        }
+
+        MainNavigationDestination.AddCategory.name -> {
+            val viewModel = hiltViewModel<AddCategoryViewModel>(navBackStackEntry)
+            GroupMemberChooseScreen(viewModel, navigateToBack)
+        }
+    }
+}
+
+@Composable
+private fun GroupMemberChooseScreen(viewModel: ViewModel, navigateToBack: () -> Unit) {
+    val selectedList = remember {
+        when (viewModel) {
+            is AddCategoryViewModel -> {
+                viewModel.selectedGroupMembers.value.toMutableStateList()
+            }
+
+            is InfoCategoryViewModel -> {
+                viewModel.selectedGroupMembers.value.toMutableStateList()
+            }
+
+            else -> {
+                mutableStateListOf()
+            }
+        }
+    }
+    var searchName by rememberSaveable {
+        mutableStateOf("")
+    }
+
     val filteredList = if (searchName.isEmpty()) {
         selectedList
     } else {
@@ -93,12 +129,20 @@ fun GroupMemberChooseScreenRoute(
                 enabled = selectedList.any { it.selected },
                 descriptionId = R.string.content_ic_ok,
                 onClickedListener = {
-                    viewModel.setSelectedGroupMembers(selectedList)
+                    when (viewModel) {
+                        is AddCategoryViewModel -> {
+                            viewModel.setSelectedGroupMembers(selectedList)
+                        }
+
+                        is InfoCategoryViewModel -> {
+                            viewModel.setSelectedGroupMembers(selectedList)
+                        }
+                    }
                     navigateToBack()
                 },
                 onBackClickedListener = navigateToBack
             )
-            GroupMemberChooseScreen(
+            GroupMemberChooseContent(
                 selectedList = selectedList,
                 searchName = searchName,
                 onSearchNameChanged = { searchName = it },
@@ -109,7 +153,7 @@ fun GroupMemberChooseScreenRoute(
 }
 
 @Composable
-fun GroupMemberChooseScreen(
+fun GroupMemberChooseContent(
     selectedList: SnapshotStateList<SelectedUser>,
     searchName: String,
     onSearchNameChanged: (String) -> Unit,
