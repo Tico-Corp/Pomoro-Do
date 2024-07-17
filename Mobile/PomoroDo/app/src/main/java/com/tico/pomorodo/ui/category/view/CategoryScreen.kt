@@ -25,8 +25,8 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
-import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.CustomTextButton
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
@@ -38,7 +38,7 @@ fun CategoryScreen(
     normalCategoryList: List<Category>,
     groupCategoryList: List<Category>,
     inviteGroupCategoryList: List<InviteCategory>,
-    onCategoryClicked: () -> Unit
+    onCategoryClicked: (String) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -64,15 +64,11 @@ fun CategoryScreen(
                             modifier = Modifier
                                 .clickableWithoutRipple(
                                     enabled = true,
-                                    onClick = onCategoryClicked
+                                    onClick = { onCategoryClicked(category.id) }
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(
-                                title = category.title,
-                                groupNumber = 0,
-                                isAddButton = false,
-                            )
+                            CategoryTag(title = category.title, groupNumber = 0)
                         }
                     }
                 }
@@ -89,15 +85,11 @@ fun CategoryScreen(
                             modifier = Modifier
                                 .clickableWithoutRipple(
                                     enabled = true,
-                                    onClick = onCategoryClicked
+                                    onClick = { onCategoryClicked(category.id) }
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(
-                                title = category.title,
-                                groupNumber = 6,
-                                isAddButton = false,
-                            )
+                            CategoryTag(title = category.title, groupNumber = 6)
                         }
                     }
                 }
@@ -111,8 +103,8 @@ fun CategoryScreen(
                 Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     inviteGroupCategoryList.forEach { category ->
                         InvitedCategoryItem(
-                            category.title,
-                            category.groupReader,
+                            title = category.title,
+                            groupReader = category.groupReader,
                             onAcceptButtonClicked = {},
                             onRejectButtonClicked = {}
                         )
@@ -195,7 +187,7 @@ fun CategoryScreenRoute(
     categoryViewModel: CategoryViewModel = hiltViewModel(),
     navigateToAddCategory: () -> Unit,
     navigateToBack: () -> Unit,
-    navigateToInfoCategory: () -> Unit
+    navigateToInfoCategory: (String) -> Unit
 ) {
     val categoryList by categoryViewModel.categoryList.collectAsState()
     val inviteGroupCategoryList by categoryViewModel.inviteGroupCategoryList.collectAsState()

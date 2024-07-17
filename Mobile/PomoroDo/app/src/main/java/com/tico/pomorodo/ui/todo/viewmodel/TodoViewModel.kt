@@ -62,11 +62,13 @@ class TodoViewModel() : ViewModel() {
                 completeGroupNumber = 0
             )
             val newList = categoryList.value.toMutableList()
-            val newTodoList = newList[selectedCategoryIndex.value].todoList.toMutableList()
-            newTodoList.add(0, newTodoData)
-            newList[selectedCategoryIndex.value] =
-                newList[selectedCategoryIndex.value].copy(todoList = newTodoList)
-            _categoryList.value = newList
+            if (selectedCategoryIndex.value != -1) {
+                val newTodoList = newList[selectedCategoryIndex.value].todoList?.toMutableList()
+                newTodoList?.add(0, newTodoData)
+                newList[selectedCategoryIndex.value] =
+                    newList[selectedCategoryIndex.value].copy(todoList = newTodoList)
+                _categoryList.value = newList
+            }
         }
         _todoMakeVisible.value = false
         _selectedCategoryIndex.value = -1
@@ -80,11 +82,13 @@ class TodoViewModel() : ViewModel() {
             TodoState.GOING -> TodoState.UNCHECKED
         }
         val newList = categoryList.value.toMutableList()
-        val newTodoList = newList[categoryIndex].todoList.toMutableList()
-        val newItem = newTodoList[todoIndex].copy(state = newState)
-        newTodoList[todoIndex] = newItem
-        newList[categoryIndex] = newList[categoryIndex].copy(todoList = newTodoList)
-        _categoryList.value = newList
+        newList[categoryIndex].todoList?.let { newListTodo ->
+            val newTodoList = newListTodo.toMutableList()
+            val newItem = newTodoList[todoIndex].copy(state = newState)
+            newTodoList[todoIndex] = newItem
+            newList[categoryIndex] = newList[categoryIndex].copy(todoList = newTodoList)
+            _categoryList.value = newList
+        }
     }
 
     private fun validateTodoInput(inputText: String): Boolean {

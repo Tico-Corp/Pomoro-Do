@@ -88,21 +88,28 @@ fun TodoScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(5.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                        repeat(categoryList[categoryIndex].todoList.size) { itemIndex ->
-                            TodoListItem(
-                                todoData = categoryList[categoryIndex].todoList[itemIndex],
-                                isGroup = categoryList[categoryIndex].groupNumber > 0,
-                                onStateChanged = {
-                                    onTodoStateChanged(categoryIndex, itemIndex, categoryList[categoryIndex].todoList[itemIndex].state)
-                                },
-                                onMoreInfoEditClicked = {},
-                                onMoreInfoDeleteClicked = {},
-                                isFriend = selectedProfileIndex != -1,
-                                onGroupClicked = { onGroupClicked(categoryIndex, itemIndex) },
-                                onLikedClicked = {}
-                            )
+                    categoryList[categoryIndex].todoList?.let { todoList ->
+                        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                            repeat(todoList.size) { itemIndex ->
+                                TodoListItem(
+                                    todoData = todoList[itemIndex],
+                                    isGroup = categoryList[categoryIndex].groupNumber > 0,
+                                    onStateChanged = {
+                                        onTodoStateChanged(
+                                            categoryIndex,
+                                            itemIndex,
+                                            todoList[itemIndex].state
+                                        )
+                                    },
+                                    onMoreInfoEditClicked = {},
+                                    onMoreInfoDeleteClicked = {},
+                                    isFriend = selectedProfileIndex != -1,
+                                    onGroupClicked = { onGroupClicked(categoryIndex, itemIndex) },
+                                    onLikedClicked = {}
+                                )
+                            }
                         }
+
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -148,15 +155,18 @@ fun TodoScreenRoute(
                 onManageCategoryClicked = navigateToCategory,
                 onAddCategoryClicked = navigateToAddCategory
             )
-            if (showGroupBottomSheet) {
-                GroupBottomSheet(
-                    title = categoryList[selectedCategoryGroupIndex].todoList[selectedGroupItemIndex].name,
-                    sheetState = sheetState,
-                    onShowBottomSheetChange = { showGroupBottomSheet = it },
-                    completedList = DataSource.userList,
-                    incompletedList = DataSource.userList,
-                    totalNumber = 5,
-                )
+            if (showGroupBottomSheet && selectedCategoryGroupIndex != -1 && selectedGroupItemIndex != -1) {
+                categoryList[selectedCategoryGroupIndex].todoList?.get(selectedGroupItemIndex)
+                    ?.let { todo ->
+                        GroupBottomSheet(
+                            title = todo.name,
+                            sheetState = sheetState,
+                            onShowBottomSheetChange = { showGroupBottomSheet = it },
+                            completedList = DataSource.userList,
+                            incompletedList = DataSource.userList,
+                            totalNumber = categoryList[selectedCategoryGroupIndex].groupNumber,
+                        )
+                    }
             }
             TodoScreen(
                 selectedProfileIndex = selectedProfileIndex,

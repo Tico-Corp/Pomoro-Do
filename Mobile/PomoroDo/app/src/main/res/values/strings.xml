@@ -121,6 +121,8 @@
     <string name="content_group_delete_placehold">그룹 이름을 따라 입력하세요.</string>
     <string name="content_group_delete_first_message">그룹을 삭제하시겠습니까?\n모든 그룹원들의 할 일이 모두 삭제됩니다.</string>
     <string name="content_do_delete">삭제하기</string>
+    <string name="title_category_delete">카테고리 삭제</string>
+    <string name="content_category_delete_message">카테고리를 삭제합니다.\n기존 할 일을 삭제하시겠습니까?</string>
 
     // history
     <string name="title_history">기록</string>

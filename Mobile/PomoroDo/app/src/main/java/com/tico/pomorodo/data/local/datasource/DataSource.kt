@@ -1,7 +1,9 @@
 package com.tico.pomorodo.data.local.datasource
 
 import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.TimeLineData
 import com.tico.pomorodo.data.model.TimeLineType
 import com.tico.pomorodo.data.model.TodoData
@@ -31,7 +33,17 @@ object DataSource {
         Category(
             id = "1",
             title = "카테고리 1",
-            groupNumber = 5,
+            groupNumber = 4,
+            type = CategoryType.GROUP,
+            openSettings = OpenSettings.GROUP,
+            isGroupReader = true,
+            groupReader = "모카커피짱귀엽",
+            groupMember = listOf(
+                User(id = "3", name = "구름이1"),
+                User(id = "4", name = "구름이2"),
+                User(id = "5", name = "구름이3"),
+                User(id = "6", name = "구름이4")
+            ),
             todoList = listOf(
                 TodoData(
                     id = "1",
@@ -70,6 +82,8 @@ object DataSource {
         Category(
             id = "2",
             title = "카테고리 2",
+            type = CategoryType.NORMAL,
+            openSettings = OpenSettings.FULL,
             todoList = listOf(
                 TodoData(
                     id = "1",
@@ -84,6 +98,8 @@ object DataSource {
         Category(
             id = "3",
             title = "카테고리 3",
+            type = CategoryType.NORMAL,
+            openSettings = OpenSettings.ME,
             todoList = listOf(
                 TodoData(
                     id = "1",
@@ -102,7 +118,56 @@ object DataSource {
                     likedNumber = 22
                 ),
             )
-        )
+        ),
+        Category(
+            id = "4",
+            title = "카테고리 4",
+            groupNumber = 4,
+            type = CategoryType.GROUP,
+            openSettings = OpenSettings.GROUP,
+            isGroupReader = false,
+            groupReader = "구름이짠나",
+            groupMember = listOf(
+                User(id = "3", name = "구름이1"),
+                User(id = "4", name = "구름이2"),
+                User(id = "5", name = "구름이3"),
+                User(id = "6", name = "구름이4")
+            ),
+            todoList = listOf(
+                TodoData(
+                    id = "1",
+                    name = "Todo 1",
+                    state = TodoState.UNCHECKED,
+                    categoryId = "1",
+                    completeGroupNumber = 4,
+                    likedNumber = 22
+                ),
+                TodoData(
+                    id = "2",
+                    name = "Todo 1",
+                    state = TodoState.CHECKED,
+                    categoryId = "1",
+                    completeGroupNumber = 1,
+                    likedNumber = 22
+                ),
+                TodoData(
+                    id = "3",
+                    name = "Todo 1",
+                    state = TodoState.GOING,
+                    categoryId = "1",
+                    completeGroupNumber = 3,
+                    likedNumber = 22
+                ),
+                TodoData(
+                    id = "4",
+                    name = "Todo 1",
+                    state = TodoState.UNCHECKED,
+                    categoryId = "1",
+                    completeGroupNumber = 0,
+                    likedNumber = 0
+                )
+            )
+        ),
     )
 
     val inviteList = listOf<InviteCategory>(

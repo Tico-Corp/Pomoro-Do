@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -122,6 +123,37 @@ fun CategoryTag(
             Image(
                 imageVector = PomoroDoTheme.iconPack[IC_ADD_TODO]!!,
                 contentDescription = null
+            )
+        }
+    }
+}
+
+@Composable
+fun CategoryTag(
+    title: String,
+    groupNumber: Int
+) {
+    Row(
+        modifier = Modifier
+            .background(
+                PomoroDoTheme.colorScheme.secondaryContainer, RoundedCornerShape(5.dp)
+            )
+            .padding(horizontal = 10.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        SimpleText(
+            modifier = Modifier,
+            text = title,
+            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            color = PomoroDoTheme.colorScheme.secondary
+        )
+        if (groupNumber > 0) {
+            SimpleText(
+                modifier = Modifier,
+                text = stringResource(id = R.string.content_add_todo_group_number, groupNumber),
+                style = PomoroDoTheme.typography.laundryGothicRegular14,
+                color = PomoroDoTheme.colorScheme.secondary
             )
         }
     }
