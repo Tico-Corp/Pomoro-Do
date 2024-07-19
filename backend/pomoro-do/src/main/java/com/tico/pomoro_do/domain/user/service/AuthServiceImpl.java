@@ -12,8 +12,8 @@ import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.common.enums.SocialProvider;
+import com.tico.pomoro_do.global.common.enums.TokenType;
 import com.tico.pomoro_do.global.common.enums.UserRole;
-import com.tico.pomoro_do.global.common.enums.UserStatus;
 import com.tico.pomoro_do.global.exception.CustomErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -57,14 +57,14 @@ public class AuthServiceImpl implements AuthService {
      * @throws CustomException 구글 ID 토큰이 유효하지 않은 경우 예외
      */
     @Override
-    public GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException {
+    public GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException {
         NetHttpTransport transport = new NetHttpTransport();
         JsonFactory jsonFactory = new GsonFactory();
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
                 .setAudience(Collections.singletonList(clientId))
                 .build();
 
-        GoogleIdToken googleIdToken = verifier.verify(idToken);
+        GoogleIdToken googleIdToken = verifier.verify(idToken); // 검증 실패시 IllegalArgumentException를 던짐
         if (googleIdToken != null) {
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
             return GoogleUserInfoDTO.builder()
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
                     .pictureUrl((String) payload.get("picture"))
                     .build();
         } else {
-            throw new CustomException(CustomErrorCode.GOOGLE_TOKEN_INVALID);
+            throw new CustomException(CustomErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
         }
     }
 
@@ -94,23 +94,33 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Authorization 헤더에서 토큰 추출
+     * 토큰 관련 헤더에서 토큰 값을 추출합니다.
      *
-     * @param authorizationHeader Authorization 헤더
-     * @return 추출된 토큰
-     * @throws CustomException Authorization 헤더가 유효하지 않은 경우 예외
+     * @param header 토큰 헤더 (예: "Bearer <token>")
+     * @param tokenType 토큰의 타입 (Google ID 토큰 또는 JWT)
+     * @return 추출된 토큰 값
+     * @throws CustomException 토큰 헤더가 유효하지 않은 경우 예외 발생
+     *                         - 헤더가 null이거나 비어있는 경우
+     *                         - 헤더 형식이 "Bearer <token>" 형식이 아닌 경우
+     *                         - 토큰 타입이 Google ID 토큰인데 헤더 형식이 맞지 않는 경우
      */
-    private String extractToken(String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            return authorizationHeader.substring(7);
+    @Override
+    public String extractToken(String header, TokenType tokenType) {
+
+        if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
+            CustomErrorCode errorCode = tokenType.equals(TokenType.GOOGLE)
+                    ? CustomErrorCode.INVALID_GOOGLE_TOKEN_HEADER
+                    : CustomErrorCode.INVALID_AUTHORIZATION_HEADER;
+            throw new CustomException(errorCode);
         }
-        throw new CustomException(CustomErrorCode.INVALID_AUTHORIZATION_HEADER);
+
+        return header.substring(7);
     }
 
     /**
      * 구글 ID 토큰으로 로그인 처리
      *
-     * @param authorizationHeader Authorization 헤더에 포함된 구글 ID 토큰
+     * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
      * @return JwtDTO를 포함하는 ResponseEntity
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
@@ -118,8 +128,9 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public JwtDTO googleLogin(String authorizationHeader) throws GeneralSecurityException, IOException {
-        String idToken = extractToken(authorizationHeader);
+    public JwtDTO googleLogin(String idTokenHeader) throws GeneralSecurityException, IOException {
+
+        String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (!userRepository.existsByUsername(userInfo.getEmail())) {
@@ -132,7 +143,7 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 구글 ID 토큰으로 회원가입 처리
      *
-     * @param authorizationHeader Authorization 헤더에 포함된 구글 ID 토큰
+     * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
      * @param requestUserInfo GoogleJoinDTO 객체
      * @return JwtDTO를 포함하는 ResponseEntity
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
@@ -141,8 +152,8 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public JwtDTO googleJoin(String authorizationHeader, GoogleJoinDTO requestUserInfo) throws GeneralSecurityException, IOException {
-        String idToken = extractToken(authorizationHeader);
+    public JwtDTO googleJoin(String idTokenHeader, GoogleJoinDTO requestUserInfo) throws GeneralSecurityException, IOException {
+        String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (userRepository.existsByUsername(userInfo.getEmail())) {

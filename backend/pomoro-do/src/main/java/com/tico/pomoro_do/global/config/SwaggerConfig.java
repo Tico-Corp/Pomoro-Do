@@ -53,7 +53,7 @@ public class SwaggerConfig {
         // 인증 요청 방식에 HEADER 추가
         SecurityScheme securityScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
-                .scheme("bearer")
+                .scheme(BEARER_TOKEN_PREFIX)
                 .bearerFormat("JWT")
                 .in(SecurityScheme.In.HEADER)
                 .name("Authorization");
