@@ -10,6 +10,8 @@ public class SuccessResponseDTO<T> {
 
     @Schema(description = "상태 코드", nullable = false, example = "200")
     private final int status;       // 응답 코드 200번대
+    @Schema(description = "성공 코드", nullable = false, example = "Success")
+    private final String code = "SUCCESS";
     @Schema(description = "상태 메세지", nullable = false, example = "성공하였습니다.")
     private final String message;   // 메시지
     @Schema(description = "해당 API의 응답 데이터", nullable = false)
