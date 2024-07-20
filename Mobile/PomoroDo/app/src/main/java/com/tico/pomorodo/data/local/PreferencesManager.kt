@@ -27,16 +27,28 @@ class PreferencesManager(context: Context) {
 
     var editor: SharedPreferences.Editor = sharedPreferences.edit()
 
-    fun saveToken(token: String) {
-        sharedPreferences.edit().putString("auth_token", token).apply()
+    fun saveIdToken(token: String) {
+        sharedPreferences.edit().putString("id_token", token).apply()
     }
 
-    fun getToken(): String? {
-        return sharedPreferences.getString("auth_token", null)
+    fun getIdToken(): String {
+        return sharedPreferences.getString("id_token", "") ?: ""
     }
 
-    fun clearToken() {
-        sharedPreferences.edit().remove("auth_token").apply()
+    fun clearIdToken() {
+        sharedPreferences.edit().remove("id_token").apply()
+    }
+
+    fun saveAccessToken(token: String) {
+        sharedPreferences.edit().putString("access_token", token).apply()
+    }
+
+    fun getAccessToken(): String {
+        return sharedPreferences.getString("access_token", "") ?: ""
+    }
+
+    fun clearAccessToken() {
+        sharedPreferences.edit().remove("access_token").apply()
     }
 
     companion object {

@@ -5,10 +5,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ClearTokenUseCase @Inject constructor(private val authRepository: AuthRepository) {
+class ClearAccessTokenUseCase @Inject constructor(private val authRepository: AuthRepository) {
 
     suspend operator fun invoke() =
-        withContext(Dispatchers.IO) {
-            authRepository.clearToken()
-        }
+        withContext(Dispatchers.IO) { authRepository.clearAccessToken() }
 }

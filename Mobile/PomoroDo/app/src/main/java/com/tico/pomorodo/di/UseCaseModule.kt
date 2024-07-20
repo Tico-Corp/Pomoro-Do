@@ -13,17 +13,17 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
     @Provides
-    fun provideSaveTokenUseCase(authRepository: AuthRepository): SaveTokenUseCase {
-        return SaveTokenUseCase(authRepository)
+    fun provideSaveAccessTokenUseCase(authRepository: AuthRepository): SaveAccessTokenUseCase {
+        return SaveAccessTokenUseCase(authRepository)
     }
 
     @Provides
-    fun provideGetTokenUseCase(authRepository: AuthRepository): GetTokenUseCase {
-        return GetTokenUseCase(authRepository)
+    fun provideGetAccessTokenUseCase(authRepository: AuthRepository): GetAccessTokenUseCase {
+        return GetAccessTokenUseCase(authRepository)
     }
 
     @Provides
-    fun provideClearTokenUseCase(authRepository: AuthRepository): ClearTokenUseCase {
-        return ClearTokenUseCase(authRepository)
+    fun provideClearAccessTokenUseCase(authRepository: AuthRepository): ClearAccessTokenUseCase {
+        return ClearAccessTokenUseCase(authRepository)
     }
 }
