@@ -25,8 +25,6 @@ class PreferencesManager(context: Context) {
         )
     }
 
-    var editor: SharedPreferences.Editor = sharedPreferences.edit()
-
     fun saveIdToken(token: String) {
         sharedPreferences.edit().putString("id_token", token).apply()
     }
