@@ -1,11 +1,20 @@
 package com.tico.pomorodo.ui.auth.viewModel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tico.pomorodo.domain.usecase.ClearTokenUseCase
-import com.tico.pomorodo.domain.usecase.GetTokenUseCase
-import com.tico.pomorodo.domain.usecase.SaveTokenUseCase
+import com.tico.pomorodo.common.util.NetworkConstants
+import com.tico.pomorodo.data.remote.models.request.UserInfoRequestBody
+import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.ClearAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.ClearIdTokenUseCase
+import com.tico.pomorodo.domain.usecase.GetAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.GetIdTokenUseCase
+import com.tico.pomorodo.domain.usecase.JoinUseCase
+import com.tico.pomorodo.domain.usecase.LoginUseCase
+import com.tico.pomorodo.domain.usecase.SaveAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.SaveIdTokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,9 +24,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val saveTokenUseCase: SaveTokenUseCase,
-    private val getTokenUseCase: GetTokenUseCase,
-    private val clearTokenUseCase: ClearTokenUseCase
+    private val saveAccessTokenUseCase: SaveAccessTokenUseCase,
+    private val getAccessTokenUseCase: GetAccessTokenUseCase,
+    private val clearAccessTokenUseCase: ClearAccessTokenUseCase,
+    private val saveIdTokenUseCase: SaveIdTokenUseCase,
+    private val getIdTokenUseCase: GetIdTokenUseCase,
+    private val clearIdTokenUseCase: ClearIdTokenUseCase,
+    private val loginUseCase: LoginUseCase,
+    private val joinUseCase: JoinUseCase
 ) : ViewModel() {
 
     private var _name = MutableStateFlow<String>("")
@@ -28,9 +42,6 @@ class AuthViewModel @Inject constructor(
     val profile: StateFlow<Uri?>
         get() = _profile.asStateFlow()
 
-    private var authToken = MutableStateFlow<String?>(null)
-
-    private var googleIdToken = MutableStateFlow<String?>(null)
     fun setName(inputText: String) {
         _name.value = inputText
     }
@@ -39,29 +50,63 @@ class AuthViewModel @Inject constructor(
         _profile.value = url
     }
 
-    fun saveIdToken(idToken: String) {
-        googleIdToken.value = idToken
-    }
+    fun requestLogin() = viewModelScope.launch {
+        when (val value = loginUseCase()) {
+            is Resource.Success -> {
+                if (value.data.status == NetworkConstants.SUCCESS_STATUS) {
+                    saveAccessToken(value.data.data.accessToken)
+                    Log.d("TAG", "requestJoin: success")
+                }
+            }
 
-    fun requestLogin() {
-    }
+            is Resource.Failure.Error -> {
+                if (value.code == NetworkConstants.USER_NOT_FOUND) {
+                    Log.e("TAG", "requestLogin: ${value.message}")
+                } else {
+                    Log.e("TAG", "requestLogin: code:${value.code}, message: ${value.message}")
+                }
+            }
 
-    fun saveToken(token: String) {
-        viewModelScope.launch {
-            saveTokenUseCase(token)
+            is Resource.Failure.Exception -> {
+                Log.e("TAG", "requestLogin: message: ${value.message}")
+            }
         }
     }
 
-    fun getToken() {
+    fun requestJoin() = viewModelScope.launch {
+        when (val value = joinUseCase(UserInfoRequestBody(nickname = name.value))) {
+            is Resource.Success -> {
+                if (value.data.status == 201) {
+                    saveAccessToken(value.data.data.accessToken)
+                    Log.d("TAG", "requestJoin: success")
+                }
+            }
+
+            is Resource.Failure.Error -> {
+                Log.e("TAG", "requestLogin: code:${value.code}, message: ${value.message}")
+            }
+
+            is Resource.Failure.Exception -> {
+                Log.e("TAG", "requestLogin: message: ${value.message}")
+            }
+        }
+    }
+
+    private fun saveAccessToken(token: String) {
         viewModelScope.launch {
-            authToken.value = getTokenUseCase()
+            saveAccessTokenUseCase(token)
+        }
+    }
+
+    fun saveIdToken(token: String) {
+        viewModelScope.launch {
+            saveIdTokenUseCase(token)
         }
     }
 
     fun clearToken() {
         viewModelScope.launch {
-            clearTokenUseCase()
-            authToken.value = null
+            clearAccessTokenUseCase()
         }
     }
 }

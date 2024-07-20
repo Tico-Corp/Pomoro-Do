@@ -2,6 +2,7 @@ package com.tico.pomorodo.di
 
 import android.content.Context
 import com.tico.pomorodo.data.local.PreferencesManager
+import com.tico.pomorodo.data.remote.datasource.AuthDataSource
 import com.tico.pomorodo.data.repository.AuthRepositoryImpl
 import com.tico.pomorodo.domain.repository.AuthRepository
 import dagger.Module
@@ -22,7 +23,10 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(preferencesManager: PreferencesManager): AuthRepository {
-        return AuthRepositoryImpl(preferencesManager)
+    fun provideAuthRepository(
+        preferencesManager: PreferencesManager,
+        authDataSource: AuthDataSource
+    ): AuthRepository {
+        return AuthRepositoryImpl(preferencesManager, authDataSource)
     }
 }
