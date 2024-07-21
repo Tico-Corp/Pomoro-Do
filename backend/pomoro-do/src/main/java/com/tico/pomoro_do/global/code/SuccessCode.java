@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.base;
+package com.tico.pomoro_do.global.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum CustomSuccessCode {
+public enum SuccessCode {
 
     SUCCESS(HttpStatus.OK, "요청이 성공적으로 처리되었습니다."),
     //사용자

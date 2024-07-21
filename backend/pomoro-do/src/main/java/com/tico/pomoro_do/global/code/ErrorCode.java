@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.exception;
+package com.tico.pomoro_do.global.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public enum CustomErrorCode {
+public enum ErrorCode {
     //다양한 상황에서 쓰일 Error Code를 만든다.
     //커스텀 코드는 음수를 사용한다.
 

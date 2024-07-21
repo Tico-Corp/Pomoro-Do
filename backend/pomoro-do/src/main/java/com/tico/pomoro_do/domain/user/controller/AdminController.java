@@ -4,8 +4,8 @@ import com.tico.pomoro_do.domain.user.dto.request.AdminJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.request.AdminLoginDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.service.AdminService;
-import com.tico.pomoro_do.global.base.CustomSuccessCode;
-import com.tico.pomoro_do.global.base.SuccessResponseDTO;
+import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 @Tag(name = "admin: 관리자", description = "백엔드를 테스트를 위한 API")
 @RestController
@@ -63,8 +60,8 @@ public class AdminController {
         log.info("관리자 회원가입 요청: {}", request.getUsername());
         JwtDTO jwtResponse = adminService.adminJoin(request);
         SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
-                .status(CustomSuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
-                .message(CustomSuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
+                .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
         log.info("관리자 회원가입 성공: {}", request.getUsername());
@@ -101,8 +98,8 @@ public class AdminController {
         log.info("관리자 로그인 요청: {}", request.getUsername());
         JwtDTO jwtResponse = adminService.adminLogin(request);
         SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
-                .status(CustomSuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
-                .message(CustomSuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())
+                .status(SuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
         log.info("관리자 로그인 성공: {}", request.getUsername());

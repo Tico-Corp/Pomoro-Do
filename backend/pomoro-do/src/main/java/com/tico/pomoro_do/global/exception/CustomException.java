@@ -1,6 +1,7 @@
 package com.tico.pomoro_do.global.exception;
 
 
+import com.tico.pomoro_do.global.code.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,5 +12,5 @@ public class CustomException extends RuntimeException{
     //RuntimeException 상속
     //Custom Error Code 속성 추가
 
-    CustomErrorCode errorCode;
+    ErrorCode errorCode;
 }

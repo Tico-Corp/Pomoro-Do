@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.global.exception;
 
+import com.tico.pomoro_do.global.code.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .name("Validation Error")
-                .code(CustomErrorCode.VALIDATION_FAILED.getCode())
+                .code(ErrorCode.VALIDATION_FAILED.getCode())
                 .message(errors.toString())
                 .build();
 
@@ -51,7 +52,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .name("Bad Request")
-                .code(CustomErrorCode.MISSING_REQUEST_BODY.getCode())
+                .code(ErrorCode.MISSING_REQUEST_BODY.getCode())
                 .message("Required request body is missing.")
                 .build();
 
@@ -66,7 +67,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .name("Bad Request")
-                .code(CustomErrorCode.MISSING_REQUEST_HEADER.getCode())
+                .code(ErrorCode.MISSING_REQUEST_HEADER.getCode())
                 .message("Required request header is missing: " + ex.getHeaderName())
                 .build();
 
@@ -80,7 +81,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .name("Not Found")
-                .code(CustomErrorCode.RESOURCE_NOT_FOUND.getCode())
+                .code(ErrorCode.RESOURCE_NOT_FOUND.getCode())
                 .message("The requested resource was not found.")
                 .build();
 
@@ -94,7 +95,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .name("Bad Request")
-                .code(CustomErrorCode.INVALID_ARGUMENT.getCode())
+                .code(ErrorCode.INVALID_ARGUMENT.getCode())
                 .message(ex.getMessage())
                 .build();
 
@@ -108,7 +109,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.FORBIDDEN.value())
                 .name("Forbidden")
-                .code(CustomErrorCode.ACCESS_DENIED.getCode())
+                .code(ErrorCode.ACCESS_DENIED.getCode())
                 .message("Access to the resource is denied.")
                 .build();
 
@@ -122,7 +123,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .name("Internal Server Error")
-                .code(CustomErrorCode.INTERNAL_SERVER_ERROR.getCode())
+                .code(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                 .message("An unexpected error occurred: " + ex.getMessage())
                 .build();
 

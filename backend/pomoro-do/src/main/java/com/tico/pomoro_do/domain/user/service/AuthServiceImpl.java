@@ -14,7 +14,7 @@ import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.common.enums.SocialProvider;
 import com.tico.pomoro_do.global.common.enums.TokenType;
 import com.tico.pomoro_do.global.common.enums.UserRole;
-import com.tico.pomoro_do.global.exception.CustomErrorCode;
+import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
                     .pictureUrl((String) payload.get("picture"))
                     .build();
         } else {
-            throw new CustomException(CustomErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
+            throw new CustomException(ErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
         }
     }
 
@@ -108,9 +108,9 @@ public class AuthServiceImpl implements AuthService {
     public String extractToken(String header, TokenType tokenType) {
 
         if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
-            CustomErrorCode errorCode = tokenType.equals(TokenType.GOOGLE)
-                    ? CustomErrorCode.INVALID_GOOGLE_TOKEN_HEADER
-                    : CustomErrorCode.INVALID_AUTHORIZATION_HEADER;
+            ErrorCode errorCode = tokenType.equals(TokenType.GOOGLE)
+                    ? ErrorCode.INVALID_GOOGLE_TOKEN_HEADER
+                    : ErrorCode.INVALID_AUTHORIZATION_HEADER;
             throw new CustomException(errorCode);
         }
 
@@ -134,7 +134,7 @@ public class AuthServiceImpl implements AuthService {
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (!userRepository.existsByUsername(userInfo.getEmail())) {
-            throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
         return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
@@ -157,7 +157,7 @@ public class AuthServiceImpl implements AuthService {
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (userRepository.existsByUsername(userInfo.getEmail())) {
-            throw new CustomException(CustomErrorCode.USER_ALREADY_REGISTERED);
+            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
         }
 
         // 사용자 정보 저장

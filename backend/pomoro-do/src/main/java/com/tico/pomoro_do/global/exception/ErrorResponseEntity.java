@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.global.exception;
 
+import com.tico.pomoro_do.global.code.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class ErrorResponseEntity {
 //    @Schema(description = "응답 데이터: 빈값")
 //    private final String data = "";           // 응답 데이터
 
-    public static ResponseEntity<ErrorResponseEntity> toResponseEntity(CustomErrorCode e){
+    public static ResponseEntity<ErrorResponseEntity> toResponseEntity(ErrorCode e){
         return ResponseEntity
                 .status(e.getHttpStatus())
                 .body(ErrorResponseEntity.builder()

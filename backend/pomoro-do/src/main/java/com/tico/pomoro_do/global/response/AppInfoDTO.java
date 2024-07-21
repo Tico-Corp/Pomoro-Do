@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.base;
+package com.tico.pomoro_do.global.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
