@@ -171,7 +171,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //response body
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(errorCode.getHttpStatus().value())
-                .name(errorCode.name())
+//                .name(errorCode.name())
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
