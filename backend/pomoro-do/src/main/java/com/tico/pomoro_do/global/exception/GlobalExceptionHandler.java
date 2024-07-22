@@ -6,12 +6,15 @@ import com.google.gson.JsonParseException;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestCookieException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -49,6 +52,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(CustomException.class) //발생한 CustomException 예외를 잡아서 하나의 메소드에서 공통 처리한다.
     protected ResponseEntity<ErrorResponseEntity> handleCustomException(CustomException e) {
+        log.error("CustomException: ", e);
         return ErrorResponseEntity.toResponseEntity(e.getErrorCode());
     }
 
@@ -71,7 +75,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.VALIDATION_FAILED.getCode())
-                .message(errors.toString())
+                .message("Validation failed for fields: " + errors.toString())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -110,7 +114,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.MISSING_REQUEST_BODY.getCode())
-                .message("Required request body is missing.")
+                .message("Required request body is missing or unreadable.")
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -148,7 +152,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.BAD_REQUEST.getCode())
-                .message("Required request is missing: " + e.getMessage())
+                .message("Required request is missing. Bad request: " + e.getMessage())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -167,7 +171,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.INVALID_TYPE_VALUE.getCode())
-                .message(ex.getMessage())
+                .message("Invalid argument: " + ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -193,7 +197,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * JSON 파싱 실패 처리(JsonParseException).
+     * JSON 파싱 오류(JsonParseException) 처리.
      *
      * @param ex JsonParseException 발생 예외
      * @return ResponseEntity<ErrorResponseEntity> 에러 응답
@@ -201,7 +205,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JsonParseException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<ErrorResponseEntity> handleJsonParseException(JsonParseException ex) {
-        log.error("JsonParseException occurred: {}", ex.getMessage(), ex);
+        log.error("JsonParseException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.JSON_PARSE_ERROR.getCode())
@@ -212,7 +216,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * JSON 처리 중 오류 발생(JsonProcessingException) 처리.
+     * JSON 처리 오류(JsonProcessingException) 처리.
      *
      * @param ex JsonProcessingException 발생 예외
      * @return ResponseEntity<ErrorResponseEntity> 에러 응답
@@ -220,7 +224,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JsonProcessingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<ErrorResponseEntity> handleJsonProcessingException(JsonProcessingException ex) {
-        log.error("JsonProcessingException occurred: {}", ex.getMessage(), ex);
+        log.error("JsonProcessingException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.JSON_PROCESSING_ERROR.getCode())
@@ -231,7 +235,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * JSON 매핑 오류 처리(JsonMappingException).
+     * JSON 매핑 오류(JsonMappingException) 처리.
      *
      * @param ex JsonMappingException 발생 예외
      * @return ResponseEntity<ErrorResponseEntity> 에러 응답
@@ -239,11 +243,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JsonMappingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     protected ResponseEntity<ErrorResponseEntity> handleJsonMappingException(JsonMappingException ex) {
-        log.error("JsonMappingException: ", ex);
+        log.error("JsonMappingException occurred: {}", ex.getMessage(), ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
-                .code(ErrorCode.JSON_PARSE_ERROR.getCode())
-                .message("JSON mapping error: " + ex.getMessage())
+                .code(ErrorCode.JSON_MAPPING_ERROR.getCode())
+                .message("Failed to map JSON: " + ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -262,104 +266,10 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.INVALID_MULTIPART_DATA.getCode())
-                .message("Invalid multipart data.")
+                .message("Failed to process multipart request: " + ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-    }
-
-    /**
-     * 접근 권한 거부 처리(AccessDeniedException).
-     *
-     * @param ex AccessDeniedException 발생 예외
-     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    protected ResponseEntity<ErrorResponseEntity> handleAccessDeniedException(AccessDeniedException ex) {
-        log.error("AccessDeniedException: ", ex);
-        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.FORBIDDEN.value())
-                .code(ErrorCode.FORBIDDEN.getCode())
-                .message("Access to the resource is denied.")
-                .build();
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
-    }
-
-    /**
-     * 핸들러가 없는 요청(NoHandlerFoundException) 처리.
-     * 클라이언트가 존재하지 않는 경로로 요청할 때 발생한다.
-     *
-     * @param e NoHandlerFoundException 발생 예외
-     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
-     */
-    @ExceptionHandler(NoHandlerFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected ResponseEntity<ErrorResponseEntity> handleNoHandlerFoundException(NoHandlerFoundException e) {
-        log.error("NoHandlerFoundException: ", e);
-        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .code(ErrorCode.NOT_FOUND.getCode())
-                .message("Requested resource not found.")
-                .build();
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    /**
-     * 사용자 정의 리소스가 없는 경우(NoResourceFoundException) 처리.
-     *
-     * @param ex NoResourceFoundException 발생 예외
-     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
-     */
-    @ExceptionHandler(NoResourceFoundException.class)
-    protected ResponseEntity<ErrorResponseEntity> handleNoResourceFoundException(NoResourceFoundException ex) {
-        log.error("NoResourceFoundException: ", ex);
-        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .code(ErrorCode.NOT_FOUND.getCode())
-                .message(ex.getMessage())
-                .build();
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    /**
-     * 요청한 리소스를 찾을 수 없는 경우(NoSuchElementException) 처리.
-     *
-     * @param ex NoSuchElementException 발생 예외
-     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
-     */
-    @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected ResponseEntity<ErrorResponseEntity> handleNoSuchElementException(NoSuchElementException ex) {
-        log.error("NoSuchElementException: ", ex);
-        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .code(ErrorCode.NOT_FOUND.getCode())
-                .message("The requested resource was not found.")
-                .build();
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    /**
-     * NULL 값이 발생한 경우(NullPointerException) 처리.
-     *
-     * @param ex NullPointerException 발생 예외
-     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
-     */
-    @ExceptionHandler(NullPointerException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    protected ResponseEntity<ErrorResponseEntity> handleNullPointerException(NullPointerException ex) {
-        log.error("NullPointerException: ", ex);
-        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
-                .code(ErrorCode.NULL_POINTER.getCode())
-                .message("Null pointer exception occurred.")
-                .build();
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -380,6 +290,142 @@ public class GlobalExceptionHandler {
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 권한 없는 요청 처리(HttpClientErrorException.Forbidden).
+     *
+     * @param ex HttpClientErrorException.Forbidden 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(HttpClientErrorException.Forbidden.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ResponseEntity<ErrorResponseEntity> handleForbiddenException(HttpClientErrorException.Forbidden ex) {
+        log.error("HttpClientErrorException.Forbidden: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .code(ErrorCode.FORBIDDEN.getCode())
+                .message("Forbidden: " + ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    /**
+     * 권한 없는 접근 시 발생하는 예외 처리(AccessDeniedException).
+     *
+     * @param ex AccessDeniedException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    protected ResponseEntity<ErrorResponseEntity> handleAccessDeniedException(AccessDeniedException ex) {
+        log.error("AccessDeniedException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .code(ErrorCode.ACCESS_DENIED.getCode())
+                .message("Access Denied: " + ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+    }
+
+    /**
+     * 존재하지 않는 엔티티 접근 시 발생하는 예외 처리(EntityNotFoundException).
+     *
+     * @param ex EntityNotFoundException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<ErrorResponseEntity> handleEntityNotFoundException(EntityNotFoundException ex) {
+        log.error("EntityNotFoundException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .code(ErrorCode.ENTITY_NOT_FOUND.getCode())
+                .message("Entity Not Found: " + ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * 존재하지 않는 핸들러 접근 시 발생하는 예외 처리(NoHandlerFoundException).
+     * 클라이언트가 존재하지 않는 경로로 요청할 때 발생한다.
+     *
+     * @param ex NoHandlerFoundException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<ErrorResponseEntity> handleNoHandlerFoundException(NoHandlerFoundException ex) {
+        log.error("NoHandlerFoundException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .code(ErrorCode.NO_HANDLER_FOUND.getCode())
+                .message("No handler found for the requested URL [" + ex.getRequestURL() + "]. Please ensure the URL is correct.")
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * 사용자 정의 리소스가 없는 경우(NoResourceFoundException) 처리.
+     * 예를들어, 데이터베이스에서 사용자나 기타 리소스를 찾으려 할 때 해당 리소스가 없으면 이 예외가 발생
+     *
+     * @param ex NoResourceFoundException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<ErrorResponseEntity> handleNoResourceFoundException(NoResourceFoundException ex) {
+        log.error("NoResourceFoundException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .code(ErrorCode.NO_RESOURCE_FOUND.getCode())
+                .message(ex.getMessage())
+                .build();
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * 요청한 리소스를 찾을 수 없는 경우(NoSuchElementException) 처리.
+     * 예를 들어, Optional에서 get() 메서드를 호출할 때 값이 없으면 이 예외가 발생
+     *
+     * @param ex NoSuchElementException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    protected ResponseEntity<ErrorResponseEntity> handleNoSuchElementException(NoSuchElementException ex) {
+        log.error("NoSuchElementException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.NOT_FOUND.value())
+                .code(ErrorCode.NOT_FOUND.getCode())
+                .message("The requested resource was not found.")
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * 인증이 필요한 요청에서 발생하는 예외(AuthenticationException) 처리.
+     * 인증이 필요하지만 인증 정보가 제공되지 않았거나 잘못된 경우 발생합니다.
+     *
+     * @param ex AuthenticationException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    protected ResponseEntity<ErrorResponseEntity> handleAuthenticationException(AuthenticationException ex) {
+        log.error("AuthenticationException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .code(ErrorCode.UNAUTHORIZED.getCode())
+                .message(ex.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -421,8 +467,47 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * 지원하지 않는 HTTP 메서드 호출 시 발생하는 예외 처리(HttpRequestMethodNotSupportedException).
+     *
+     * @param ex HttpRequestMethodNotSupportedException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    protected ResponseEntity<ErrorResponseEntity> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        log.error("HttpRequestMethodNotSupportedException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.METHOD_NOT_ALLOWED.value())
+                .code(ErrorCode.METHOD_NOT_ALLOWED.getCode())
+                .message("Method Not Allowed: " + ex.getMethod())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    /**
+     * NULL 값이 발생한 경우(NullPointerException) 처리.
+     * 서버 내부에서 예상치 못한 null 값이 발생했을 때 발생
+     *
+     * @param ex NullPointerException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(NullPointerException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity<ErrorResponseEntity> handleNullPointerException(NullPointerException ex) {
+        log.error("NullPointerException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .code(ErrorCode.NULL_POINTER.getCode())
+                .message("A null pointer exception occurred.")
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 서버 내부 오류 발생(Exception) 처리.
      * 기타 예외 처리.
-     * 정의되지 않은 예외 발생 시 처리할 수 있도록 기본 예외 처리기를 구현한다.
      *
      * @param ex Exception 발생 예외
      * @return ResponseEntity<ErrorResponseEntity> 에러 응답
@@ -434,7 +519,7 @@ public class GlobalExceptionHandler {
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .code(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
-                .message("An unexpected error occurred.")
+                .message("An unexpected error occurred: " + ex.getMessage())
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

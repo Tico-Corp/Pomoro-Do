@@ -31,46 +31,60 @@ public enum ErrorCode {
 
     // 400 : Bad Request
     // 클라이언트의 요청이 잘못된 경우
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, "G-001", "잘못된 요청입니다."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "G-001", "클라이언트의 요청이 잘못되었습니다. 요청을 확인하고 다시 시도해 주세요."),
     // 요청 헤더가 누락된 경우
-    MISSING_REQUEST_HEADER(HttpStatus.BAD_REQUEST, "G-002", "요청 헤더가 누락되었습니다."),
+    MISSING_REQUEST_HEADER(HttpStatus.BAD_REQUEST, "G-002", "필수 요청 헤더가 누락되었습니다. 요청에 필요한 모든 헤더를 포함해 주세요."),
     // 요청 본문이 누락된 경우
-    MISSING_REQUEST_BODY(HttpStatus.BAD_REQUEST, "G-003", "요청 본문이 누락되었습니다."),
+    MISSING_REQUEST_BODY(HttpStatus.BAD_REQUEST, "G-003", "요청 본문이 누락되었습니다. 요청 본문이 포함되어 있는지 확인해 주세요."),
     // 요청 파라미터가 누락된 경우
-    MISSING_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "G-004", "요청 파라미터가 누락되었습니다."),
+    MISSING_REQUEST_PARAMETER(HttpStatus.BAD_REQUEST, "G-004", "필수 요청 파라미터가 누락되었습니다. 요청 파라미터를 확인해 주세요."),
     // 유효성 검증에 실패한 경우
-    VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "G-005", "유효성 검증에 실패했습니다."),
+    VALIDATION_FAILED(HttpStatus.BAD_REQUEST, "G-005", "요청 데이터의 유효성 검증에 실패했습니다. 입력 데이터를 확인해 주세요."),
     // 유효하지 않은 값이나 타입이 포함된 경우
-    INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "G-006", "잘못된 타입 값입니다."),
+    INVALID_TYPE_VALUE(HttpStatus.BAD_REQUEST, "G-006", "요청에 포함된 값이 잘못된 타입입니다. 올바른 타입의 값을 제공해 주세요."),
     // 입출력 값이 유효하지 않은 경우
-    IO_ERROR(HttpStatus.BAD_REQUEST, "G-007", "입출력 값이 유효하지 않습니다."),
+    IO_ERROR(HttpStatus.BAD_REQUEST, "G-007", "입출력 작업 중 오류가 발생했습니다. 서버와의 통신을 확인해 주세요."),
     // JSON 파싱에 실패한 경우
-    JSON_PARSE_ERROR(HttpStatus.BAD_REQUEST, "G-008", "JSON 파싱 오류가 발생했습니다."),
+    JSON_PARSE_ERROR(HttpStatus.BAD_REQUEST, "G-008", "JSON 파싱 중 오류가 발생했습니다. 요청의 JSON 형식이 올바른지 확인해 주세요."),
     // JSON 처리 오류
-    JSON_PROCESSING_ERROR(HttpStatus.BAD_REQUEST, "G-009", "JSON 처리 중 오류가 발생했습니다."),
+    JSON_PROCESSING_ERROR(HttpStatus.BAD_REQUEST, "G-009", "JSON 처리 중 오류가 발생했습니다. JSON 데이터가 유효한지 검토해 주세요."),
+    // JSON 매핑 오류
+    JSON_MAPPING_ERROR(HttpStatus.BAD_REQUEST, "G-010", "JSON 매핑 오류가 발생했습니다. 요청 JSON과 서버 객체 간의 매핑이 실패했습니다."),
     // 멀티파트 데이터가 유효하지 않은 경우
-    INVALID_MULTIPART_DATA(HttpStatus.BAD_REQUEST, "G-010", "잘못된 멀티파트 데이터입니다."),
+    INVALID_MULTIPART_DATA(HttpStatus.BAD_REQUEST, "G-011", "멀티파트 데이터가 유효하지 않습니다. 올바른 형식의 멀티파트 데이터를 제공해 주세요."),
     // 쿠키에 유효하지 않은 값이 있는 경우
-    INVALID_COOKIE(HttpStatus.BAD_REQUEST, "G-011", "쿠키에 유효하지 않은 값이 있습니다."),
+    INVALID_COOKIE(HttpStatus.BAD_REQUEST, "G-012", "쿠키에 유효하지 않은 값이 포함되어 있습니다. 쿠키 설정을 확인해 주세요."),
     // 헤더에 유효하지 않은 값이 있는 경우
-    INVALID_HEADER(HttpStatus.BAD_REQUEST, "G-012", "헤더에 유효하지 않은 값이 있습니다."),
+    INVALID_HEADER(HttpStatus.BAD_REQUEST, "G-013", "요청 헤더에 유효하지 않은 값이 포함되어 있습니다. 올바른 헤더 값을 제공해 주세요."),
 
     // 401 : Unauthorized - 인증이 필요하거나 인증에 실패한 경우
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "G-020", "인증되지 않은 사용자입니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "G-020", "인증되지 않은 사용자입니다. 유효한 인증 정보를 제공해 주세요."),
 
     // 403 : Forbidden - 권한이 없는 경우
-    FORBIDDEN(HttpStatus.FORBIDDEN, "G-030", "접근 권한이 없습니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "G-030", "접근 권한이 없습니다. 필요한 권한을 확인해 주세요."),
+    // 접근이 거부된 경우
+    ACCESS_DENIED(HttpStatus.FORBIDDEN, "G-031", "접근이 거부되었습니다. 권한이 있는 사용자만 접근할 수 있습니다."),
 
     // 404 : Not Found
     // 요청한 리소스를 찾을 수 없는 경우
-    NOT_FOUND(HttpStatus.NOT_FOUND, "G-040", "요청한 리소스를 찾을 수 없습니다."),
-    // NULL 포인터 예외가 발생한 경우
-    NULL_POINTER(HttpStatus.NOT_FOUND, "G-041", "NULL 포인터 예외가 발생했습니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "G-040", "요청한 리소스를 찾을 수 없습니다. URL 또는 리소스가 올바른지 확인해 주세요."),
+    // 존재하지 않는 엔티티인 경우
+    ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, "G-041", "요청한 엔티티를 찾을 수 없습니다. 엔티티 식별자를 확인해 주세요."),
+    // 요청한 핸들러를 찾을 수 없는 경우
+    NO_HANDLER_FOUND(HttpStatus.NOT_FOUND, "G-042", "요청한 핸들러를 찾을 수 없습니다. 요청 경로가 올바른지 확인해 주세요."),
+    // 요청한 리소스를 찾을 수 없는 경우
+    NO_RESOURCE_FOUND(HttpStatus.NOT_FOUND, "G-043", "요청한 리소스를 찾을 수 없습니다. 요청 리소스가 존재하는지 확인해 주세요."),
+    // 요청한 요소를 찾을 수 없는 경우
+    NO_SUCH_ELEMENT(HttpStatus.NOT_FOUND, "G-044", "요청한 요소를 찾을 수 없습니다. 요청한 요소가 존재하는지 확인해 주세요."),
+
+    // 405 : Method Not Allowed
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "G-050", "지원하지 않는 HTTP 메서드입니다. 요청한 메서드가 허용되지 않습니다."),
 
     // 500 : Internal Server Error
+    // NULL 포인터 예외가 발생한 경우
+    NULL_POINTER(HttpStatus.INTERNAL_SERVER_ERROR, "G-090", "NULL 포인터 예외가 발생했습니다. 서버에서 처리 중 문제가 발생했습니다."),
     // 서버 내부 오류가 발생한 경우
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-099", "내부 서버 오류가 발생했습니다."),
-
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "G-099", "내부 서버 오류가 발생했습니다. 서버 관리자에게 문의해 주세요."),
 
     /**
      * ******************************* Custom Error CodeList ***************************************
@@ -100,8 +114,8 @@ public enum ErrorCode {
     INVALID_MALFORMED_JWT(HttpStatus.UNAUTHORIZED, "T-212", "잘못된 JWT 토큰입니다."),
 
     //구글 토큰 관련 에러: -300번대
-    GOOGLE_TOKEN_VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "G-300", "구글 ID 토큰 검증에 실패했습니다."),
-    INVALID_GOOGLE_TOKEN_HEADER(HttpStatus.BAD_REQUEST, "G-301", "GOOGLE_ID_TOKEN 헤더의 토큰이 유효하지 않습니다."),
+    GOOGLE_TOKEN_VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "GT-300", "구글 ID 토큰 검증에 실패했습니다."),
+    INVALID_GOOGLE_TOKEN_HEADER(HttpStatus.BAD_REQUEST, "GT-301", "GOOGLE_ID_TOKEN 헤더의 토큰이 유효하지 않습니다."),
 
     //관리자 관련 에러: -400번대
     NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "A-400", "관리자 권한이 없습니다."),
