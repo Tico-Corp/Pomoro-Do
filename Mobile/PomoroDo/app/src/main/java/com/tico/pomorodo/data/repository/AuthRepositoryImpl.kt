@@ -21,7 +21,11 @@ class AuthRepositoryImpl @Inject constructor(
         preferencesManager.saveAccessToken(token)
     }
 
-    override suspend fun getAccessToken(): String {
+    override suspend fun isAccessToken(): Boolean {
+        return preferencesManager.isAccessToken()
+    }
+
+    override suspend fun getAccessToken(): String? {
         return preferencesManager.getAccessToken()
     }
 
@@ -33,7 +37,7 @@ class AuthRepositoryImpl @Inject constructor(
         preferencesManager.saveIdToken(token)
     }
 
-    override suspend fun getIdToken(): String {
+    override suspend fun getIdToken(): String? {
         return preferencesManager.getIdToken()
     }
 

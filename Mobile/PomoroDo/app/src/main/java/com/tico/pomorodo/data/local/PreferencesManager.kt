@@ -26,30 +26,34 @@ class PreferencesManager(context: Context) {
     }
 
     fun saveIdToken(token: String) {
-        sharedPreferences.edit().putString("id_token", token).apply()
+        sharedPreferences.edit().putString(ID_TOKEN, token).apply()
     }
 
-    fun getIdToken(): String {
-        return sharedPreferences.getString("id_token", "") ?: ""
+    fun getIdToken(): String? {
+        return sharedPreferences.getString(ID_TOKEN, null)
     }
 
     fun clearIdToken() {
-        sharedPreferences.edit().remove("id_token").apply()
+        sharedPreferences.edit().remove(ID_TOKEN).apply()
     }
+
+    fun isAccessToken(): Boolean = getAccessToken() != null
 
     fun saveAccessToken(token: String) {
-        sharedPreferences.edit().putString("access_token", token).apply()
+        sharedPreferences.edit().putString(ACCESS_TOKEN, token).apply()
     }
 
-    fun getAccessToken(): String {
-        return sharedPreferences.getString("access_token", "") ?: ""
+    fun getAccessToken(): String? {
+        return sharedPreferences.getString(ACCESS_TOKEN, null)
     }
 
     fun clearAccessToken() {
-        sharedPreferences.edit().remove("access_token").apply()
+        sharedPreferences.edit().remove(ACCESS_TOKEN).apply()
     }
 
     companion object {
         private const val FILE_NAME = "encrypted_perf_file"
+        private const val ID_TOKEN = "id_token"
+        private const val ACCESS_TOKEN = "access_token"
     }
 }

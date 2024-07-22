@@ -4,6 +4,7 @@ import com.tico.pomorodo.domain.repository.AuthRepository
 import com.tico.pomorodo.domain.usecase.ClearAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.ClearIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.GetAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.IsAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.GetIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.JoinUseCase
 import com.tico.pomorodo.domain.usecase.LoginUseCase
@@ -28,6 +29,12 @@ object UseCaseModule {
     @Provides
     fun provideGetAccessTokenUseCase(authRepository: AuthRepository): GetAccessTokenUseCase {
         return GetAccessTokenUseCase(authRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideIsAccessTokenUseCase(authRepository: AuthRepository): IsAccessTokenUseCase {
+        return IsAccessTokenUseCase(authRepository)
     }
 
     @Singleton
