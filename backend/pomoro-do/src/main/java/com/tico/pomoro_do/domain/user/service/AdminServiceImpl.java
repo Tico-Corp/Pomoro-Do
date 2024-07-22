@@ -5,8 +5,8 @@ import com.tico.pomoro_do.domain.user.dto.request.AdminLoginDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
-import com.tico.pomoro_do.global.common.enums.UserRole;
-import com.tico.pomoro_do.global.exception.CustomErrorCode;
+import com.tico.pomoro_do.global.enums.UserRole;
+import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,7 +92,7 @@ public class AdminServiceImpl implements AdminService {
     private void validateAdminEmailDomain(String domain) {
         if (!ADMIN_EMAIL_DOMAIN.equals(domain)) {
             log.error("유효하지 않은 이메일 도메인: {}", domain);
-            throw new CustomException(CustomErrorCode.ADMIN_EMAIL_ONLY);
+            throw new CustomException(ErrorCode.ADMIN_EMAIL_ONLY);
         }
     }
 
@@ -105,7 +105,7 @@ public class AdminServiceImpl implements AdminService {
     private void checkUserExistence(String username) {
         if (userRepository.existsByUsername(username)) {
             log.error("이미 등록된 사용자: {}", username);
-            throw new CustomException(CustomErrorCode.USER_ALREADY_REGISTERED);
+            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
         }
     }
 
@@ -120,16 +120,16 @@ public class AdminServiceImpl implements AdminService {
         Optional<User> userData = userRepository.findByUsername(username);
         if (userData.isEmpty()) {
             log.error("사용자를 찾을 수 없음: {}", username);
-            throw new CustomException(CustomErrorCode.USER_NOT_FOUND);
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         User admin = userData.get();
         if (!admin.getRole().equals(UserRole.ADMIN)) {
             log.error("관리자 권한 없음: {}", username);
-            throw new CustomException(CustomErrorCode.NOT_AN_ADMIN);
+            throw new CustomException(ErrorCode.NOT_AN_ADMIN);
         }
         if (!admin.getNickname().equals(nickname)) {
             log.error("닉네임 불일치: {}", username);
-            throw new CustomException(CustomErrorCode.ADMIN_LOGIN_FAILED);
+            throw new CustomException(ErrorCode.ADMIN_LOGIN_FAILED);
         }
     }
 }

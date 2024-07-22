@@ -1,11 +1,10 @@
 package com.tico.pomoro_do.domain.todo.entity;
 
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.global.common.enums.TodoStatus;
+import com.tico.pomoro_do.global.enums.TodoStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "todo")

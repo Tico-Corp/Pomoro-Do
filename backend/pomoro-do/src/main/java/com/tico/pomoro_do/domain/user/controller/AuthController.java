@@ -3,9 +3,9 @@ package com.tico.pomoro_do.domain.user.controller;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.service.AuthService;
-import com.tico.pomoro_do.global.base.CustomSuccessCode;
-import com.tico.pomoro_do.global.base.SuccessResponseDTO;
-import com.tico.pomoro_do.global.exception.CustomErrorCode;
+import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,14 +72,14 @@ public class AuthController {
         try {
             JwtDTO jwtResponse = authService.googleLogin(googleIdTokenHeader);
             SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
-                    .status(CustomSuccessCode.GOOGLE_LOGIN_SUCCESS.getHttpStatus().value())
-                    .message(CustomSuccessCode.GOOGLE_LOGIN_SUCCESS.getMessage())
+                    .status(SuccessCode.GOOGLE_LOGIN_SUCCESS.getHttpStatus().value())
+                    .message(SuccessCode.GOOGLE_LOGIN_SUCCESS.getMessage())
                     .data(jwtResponse)
                     .build();
             return ResponseEntity.ok(response);
         } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
             log.error("Google ID Token verification failed: {}", e.getMessage(), e);
-            throw new CustomException(CustomErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
+            throw new CustomException(ErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
         }
     }
 
@@ -118,14 +118,14 @@ public class AuthController {
         try {
             JwtDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, requestUserInfo);
             SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
-                    .status(CustomSuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
-                    .message(CustomSuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())
+                    .status(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
+                    .message(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())
                     .data(jwtResponse)
                     .build();
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
             log.error("Google ID Token verification failed: {}", e.getMessage(), e);
-            throw new CustomException(CustomErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
+            throw new CustomException(ErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
         }
     }
 }

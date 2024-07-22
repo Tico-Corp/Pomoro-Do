@@ -2,7 +2,7 @@ package com.tico.pomoro_do.domain.timer.entity;
 
 
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.common.enums.TimerType;
+import com.tico.pomoro_do.global.enums.TimerType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

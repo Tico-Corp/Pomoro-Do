@@ -1,13 +1,11 @@
 package com.tico.pomoro_do.domain.user.entity;
 
-import com.tico.pomoro_do.global.common.enums.SocialProvider;
+import com.tico.pomoro_do.global.enums.SocialProvider;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "social_login")

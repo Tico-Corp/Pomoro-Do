@@ -2,8 +2,8 @@ package com.tico.pomoro_do.domain.category.entity;
 
 
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.common.enums.CategoryType;
-import com.tico.pomoro_do.global.common.enums.CategoryVisibility;
+import com.tico.pomoro_do.global.enums.CategoryType;
+import com.tico.pomoro_do.global.enums.CategoryVisibility;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

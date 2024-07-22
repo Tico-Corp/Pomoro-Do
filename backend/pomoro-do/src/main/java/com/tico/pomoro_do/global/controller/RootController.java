@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.global.controller;
 
-import com.tico.pomoro_do.global.base.AppInfoDTO;
+import com.tico.pomoro_do.global.response.AppInfoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

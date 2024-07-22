@@ -3,7 +3,7 @@ package com.tico.pomoro_do.global.auth.jwt;
 import com.google.gson.Gson;
 import com.tico.pomoro_do.domain.user.dto.UserDTO;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
-import com.tico.pomoro_do.global.exception.CustomErrorCode;
+import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -106,7 +106,7 @@ public class JWTFilter extends OncePerRequestFilter {
             // -> 토큰 만료시 refesh토큰으로 access토큰을 재발급해야하기 때문이다.
 
             //response Error
-            sendErrorResponse(response, CustomErrorCode.ACCESS_TOKEN_EXPIRED);
+            sendErrorResponse(response, ErrorCode.ACCESS_TOKEN_EXPIRED);
             return;
         }
 
@@ -119,7 +119,7 @@ public class JWTFilter extends OncePerRequestFilter {
             log.info("유효하지 않은 Access 토큰입니다. Access 토큰이 아닙니다.");
 
             //response Error
-            sendErrorResponse(response, CustomErrorCode.INVALID_ACCESS_TOKEN);
+            sendErrorResponse(response, ErrorCode.INVALID_ACCESS_TOKEN);
             return;
         }
 
@@ -163,7 +163,7 @@ public class JWTFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private void sendErrorResponse(HttpServletResponse response, CustomErrorCode errorCode) throws IOException {
+    private void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -171,7 +171,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //response body
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(errorCode.getHttpStatus().value())
-                .name(errorCode.name())
+//                .name(errorCode.name())
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();

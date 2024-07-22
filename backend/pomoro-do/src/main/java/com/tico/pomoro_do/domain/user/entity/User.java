@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.user.entity;
 
-import com.tico.pomoro_do.global.common.enums.UserRole;
-import com.tico.pomoro_do.global.common.enums.UserStatus;
+import com.tico.pomoro_do.global.enums.UserRole;
+import com.tico.pomoro_do.global.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "user")
