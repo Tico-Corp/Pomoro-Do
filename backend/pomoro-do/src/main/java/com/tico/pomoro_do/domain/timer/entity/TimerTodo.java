@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.timer.entity;
 
 import com.tico.pomoro_do.domain.todo.entity.Todo;
-import com.tico.pomoro_do.global.common.enums.TodoStatus;
+import com.tico.pomoro_do.global.enums.TodoStatus;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

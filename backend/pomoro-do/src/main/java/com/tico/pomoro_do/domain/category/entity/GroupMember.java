@@ -1,9 +1,8 @@
 package com.tico.pomoro_do.domain.category.entity;
 
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.common.enums.CategoryVisibility;
-import com.tico.pomoro_do.global.common.enums.GroupInviteStatus;
-import com.tico.pomoro_do.global.common.enums.GroupRole;
+import com.tico.pomoro_do.global.enums.GroupInviteStatus;
+import com.tico.pomoro_do.global.enums.GroupRole;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;

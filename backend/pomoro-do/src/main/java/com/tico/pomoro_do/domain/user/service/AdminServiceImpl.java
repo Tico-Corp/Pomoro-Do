@@ -5,7 +5,7 @@ import com.tico.pomoro_do.domain.user.dto.request.AdminLoginDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
-import com.tico.pomoro_do.global.common.enums.UserRole;
+import com.tico.pomoro_do.global.enums.UserRole;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;

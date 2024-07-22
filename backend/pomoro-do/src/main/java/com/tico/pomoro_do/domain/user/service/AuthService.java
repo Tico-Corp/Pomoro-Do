@@ -5,8 +5,8 @@ import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.common.enums.TokenType;
-import com.tico.pomoro_do.global.common.enums.UserRole;
+import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.global.enums.UserRole;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
