@@ -260,11 +260,14 @@ public class AuthServiceImpl implements AuthService {
         //make new JWT
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
         String newAccess = jwtUtil.createJwt("access", username, role, accessExpiration); //60분
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration);
 
         //response
         //응답 설정: header
         //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
 //        response.setHeader("access", newAccess);
+        //refresh 서버 쿠키로 응답
+        response.addCookie(CookieUtil.createCookie("refresh", newRefresh));
 
         return new TokenDTO(newAccess);
     }
