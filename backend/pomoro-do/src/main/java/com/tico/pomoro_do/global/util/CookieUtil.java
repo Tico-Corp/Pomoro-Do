@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.SerializationUtils;
 
 import java.io.Serializable;
@@ -11,6 +12,9 @@ import java.util.Base64;
 
 @Slf4j
 public class CookieUtil {
+
+    @Value("${jwt.refresh-expiration}")
+    private static int refreshExpiration; // (24*60*60 = 24시간)
 
     // 쿠키에서 가져온다.
     public static String getRefreshToken(HttpServletRequest request) {
@@ -34,16 +38,16 @@ public class CookieUtil {
     //쿠키 만들기
 //    public static Cookie createCookie(String key, String value, int expireLength) {
     public static Cookie createCookie(String key, String value) {
-
         log.info(key + " 쿠키 생성");
+
         //value: jwt
         Cookie cookie = new Cookie(key, value);
         //쿠키의 생명주기 - 살아있을 시간 (24*60*60 = 24시간)
-        cookie.setMaxAge(24*60*60);
+        cookie.setMaxAge(refreshExpiration);
         //https 통신에서만 사용 가능
         cookie.setSecure(true);
         //쿠키 적용 범위 (전역)
-        cookie.setPath("/");
+//        cookie.setPath("/");
         //자바스크립트가 해당 쿠키를 가져가지 못하게 막음
         cookie.setHttpOnly(true);
 

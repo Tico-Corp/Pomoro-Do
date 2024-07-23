@@ -32,7 +32,10 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     // JWT 만료 시간 Long 형
     @Value("${jwt.access-expiration}")
-    private long accessTokenExpireLength;
+    private long accessExpiration; // 1시간
+
+    @Value("${jwt.refresh-expiration}")
+    private long refreshExpiration; // 24시간
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -67,13 +70,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
-        String access = jwtUtil.createJwt("access", username, role, 600000L); //10분
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); //24시간
+        String access = jwtUtil.createJwt("access", username, role, accessExpiration); //60분
+        String refresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration); //24시간
 
         //응답 설정
-        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) Authorization: Bearer 인증토큰(string)
-        response.addHeader("Authorization", "Bearer " + access);
-//        response.setHeader("access", access);
+        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
+        response.setHeader("access", access);
         //refresh 토큰 쿠키에 넣어서 응답
         response.addCookie(CookieUtil.createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());
