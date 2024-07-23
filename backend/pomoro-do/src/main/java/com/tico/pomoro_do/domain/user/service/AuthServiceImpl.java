@@ -6,6 +6,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
@@ -16,6 +17,10 @@ import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.enums.UserRole;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.util.CookieUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +39,7 @@ import java.util.Collections;
 @RequiredArgsConstructor // 파이널 필드만 가지고 생성사 주입 함수 만듬 (따로 작성할 필요 없다.)
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+
     @Value("${google.clientId}")
     private String clientId;
 
@@ -205,4 +211,61 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /** Refresh 토큰으로 Access 토큰을 재발급 **/
+    @Transactional
+    @Override
+    public TokenDTO reissueToken(HttpServletRequest request, HttpServletResponse response) {
+        log.info("Refresh 토큰으로 Access 토큰 재발급");
+
+        String refresh = CookieUtil.getRefreshToken(request);
+
+        log.info("Refresh 토큰 검증 시작");
+        // 토큰 검증 로직
+        if (refresh == null) {
+            log.info("Refresh 토큰이 없습니다.");
+            //response status code
+            throw new CustomException(ErrorCode.MISSING_REFRESH_TOKEN);
+//            return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
+        }
+
+        log.info("토큰이 존재합니다.");
+        //소멸 시간 검증
+        //expired check
+        try {
+            jwtUtil.isExpired(refresh);
+        } catch (ExpiredJwtException e) {
+            log.info("Refresh 토큰이 만료되었습니다.");
+            //response status code
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_EXPIRED);
+//            return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
+        }
+
+        // 리프레쉬 토큰 만료 안됐으면 리프레쉬 토큰이 맞는 지 확인
+        // 토큰이 refresh인지 확인 (발급시 페이로드에 명시)
+        String category = jwtUtil.getCategory(refresh);
+        if (!category.equals("refresh")) {
+            log.info("유효하지 않은 Refresh 토큰입니다. Refresh 토큰이 아닙니다.");
+            //response status code
+            throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
+//            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+        }
+        //토큰 검증 완료
+        log.info("Refresh 토큰 검증 완료");
+
+        // 토큰에서 사용자 정보 획득
+        // Extract username and role from refresh token
+        String username = jwtUtil.getUsername(refresh);
+        String role = jwtUtil.getRole(refresh);
+
+        log.info("새로운 Access, Refresh 토큰 생성");
+        //make new JWT
+        //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
+        String newAccess = jwtUtil.createJwt("access", username, role, accessExpiration); //60분
+
+        //response
+        //응답 설정: header
+        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
+//        response.setHeader("access", newAccess);
+
+        return new TokenDTO(newAccess);
+    }
 }

@@ -20,6 +20,7 @@ public class CookieUtil {
     public static String getRefreshToken(HttpServletRequest request) {
         log.info("쿠키에서 refresh 토큰 찾기");
 
+        //get refresh token
         String refresh = null;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
@@ -30,7 +31,7 @@ public class CookieUtil {
                 }
             }
         }
-        log.info("쿠키의 refresh 토큰: {}", refresh);
+        log.info("쿠키의 refresh 토큰: " + refresh);
         return refresh;
     }
 

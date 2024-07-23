@@ -2,7 +2,9 @@ package com.tico.pomoro_do.domain.user.controller;
 
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.service.AuthService;
+import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import com.tico.pomoro_do.global.code.ErrorCode;
@@ -16,6 +18,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +42,8 @@ public class AuthController {
     // 토큰 갱신
 
     private final AuthService authService;
+    //jwt관리 및 검증 utill
+    private final JWTUtil jwtUtil;
 
     /**
      * 구글 로그인 API
@@ -127,5 +133,21 @@ public class AuthController {
             log.error("Google ID Token verification failed: {}", e.getMessage(), e);
             throw new CustomException(ErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
         }
+    }
+
+    @PostMapping("/token/reissue")
+    public ResponseEntity<SuccessResponseDTO<TokenDTO>> reissueToken(HttpServletRequest request, HttpServletResponse response) {
+        // 엑세스 토큰으로 현재 Redis 정보 삭제
+        // AuthService의 reissueToken 메서드 호출하여 결과 받기
+        TokenDTO tokenDTO = authService.reissueToken(request, response);
+
+        SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
+                .status(SuccessCode.ACCESS_TOKEN_REISSUED.getHttpStatus().value())
+                .message(SuccessCode.ACCESS_TOKEN_REISSUED.getMessage())
+                .data(tokenDTO)
+                .build();
+
+        // 재발행 성공 시, HTTP 상태 코드 200(OK)와 함께 결과 반환
+        return ResponseEntity.ok(successResponse);
     }
 }

@@ -46,7 +46,7 @@ public class JWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/token/reissue(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/auth/token/reissue(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
@@ -88,7 +88,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //Bearer 부분 제거 후 순수 토큰만 획득
         String accessToken = authorization.split(" ")[1];
-//        String accessToken = authorization.substring(7);
 
         //토큰이 있다면
         //토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
@@ -171,7 +170,6 @@ public class JWTFilter extends OncePerRequestFilter {
         //response body
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
                 .status(errorCode.getHttpStatus().value())
-//                .name(errorCode.name())
                 .code(errorCode.getCode())
                 .message(errorCode.getMessage())
                 .build();
