@@ -9,6 +9,7 @@ import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.domain.user.repository.RefreshRepository;
 import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
@@ -52,6 +53,8 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
+    private final RefreshRepository refreshRepository;
+    private final TokenService tokenService;
 
     /**
      * 구글 ID 토큰으로 무결성 검증
@@ -228,7 +231,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         log.info("토큰이 존재합니다.");
-        //소멸 시간 검증
+        //만료 시간 검증
         //expired check
         try {
             jwtUtil.isExpired(refresh);
@@ -248,6 +251,16 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorCode.INVALID_REFRESH_TOKEN);
 //            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
+
+        //DB에 저장되어 있는지 확인
+        Boolean isExist = refreshRepository.existsByRefreshToken(refresh);
+        if (!isExist) {
+
+            //response body
+            throw new CustomException(ErrorCode.MISSING_REFRESH_TOKEN_IN_DB);
+//            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+        }
+
         //토큰 검증 완료
         log.info("Refresh 토큰 검증 완료");
 
@@ -261,6 +274,10 @@ public class AuthServiceImpl implements AuthService {
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
         String newAccess = jwtUtil.createJwt("access", username, role, accessExpiration); //60분
         String newRefresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration);
+
+        //Refresh 토큰 저장 DB에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
+        refreshRepository.deleteByRefreshToken(refresh);
+        tokenService.addRefreshEntity(username, newRefresh, refreshExpiration);
 
         //response
         //응답 설정: header
