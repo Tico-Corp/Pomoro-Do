@@ -14,7 +14,7 @@ public class SuccessResponseDTO<T> {
     private final String code = "SUCCESS";
     @Schema(description = "상태 메세지", nullable = false, example = "요청이 성공적으로 처리되었습니다.")
     private final String message;   // 메시지
-    @Schema(description = "해당 API의 응답 데이터", nullable = false)
+    @Schema(description = "해당 API의 응답 데이터", nullable = true)
     private final T data;           // 응답 데이터
 
     @Builder

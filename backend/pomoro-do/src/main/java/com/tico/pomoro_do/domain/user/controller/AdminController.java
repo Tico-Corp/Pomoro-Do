@@ -19,7 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "admin: 관리자", description = "백엔드를 테스트를 위한 API")
+@Tag(name = "Admin: 관리자", description = "백엔드를 테스트를 위한 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
