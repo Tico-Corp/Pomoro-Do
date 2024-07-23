@@ -82,7 +82,8 @@ fun MainScreen() {
                 )
                 signUpScreen(
                     navController = mainNavController,
-                    navigateToHome = mainNavController::navigateToHome
+                    navigateToHome = mainNavController::navigateToHome,
+                    navigateToBack = mainNavController::popBackStack
                 )
 
                 homeScreen(

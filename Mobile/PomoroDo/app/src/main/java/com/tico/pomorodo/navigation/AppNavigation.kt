@@ -37,10 +37,17 @@ fun NavController.navigateToMyInfo(navOptions: NavOptions) =
     navigate(BottomNavigationDestination.MyInfo.name, navOptions)
 
 // main navigation - navigate
-fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name)
+fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name) {
+    popUpTo(MainNavigationDestination.Splash.name) { inclusive = true }
+}
+
 fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SignUp.name)
 
-fun NavController.navigateToHome() = navigate(MainNavigationDestination.Home.name)
+fun NavController.navigateToHome() {
+    navigate(MainNavigationDestination.Home.name) {
+        popUpTo(graph.id) { inclusive = true }
+    }
+}
 
 fun NavController.navigateToConcentrationMode() =
     navigate(MainNavigationDestination.ConcentrationMode.name)
@@ -119,14 +126,19 @@ fun NavGraphBuilder.logInScreen(
     }
 }
 
-fun NavGraphBuilder.signUpScreen(navController: NavHostController, navigateToHome: () -> Unit) {
+fun NavGraphBuilder.signUpScreen(
+    navController: NavHostController,
+    navigateToHome: () -> Unit,
+    navigateToBack: () -> Unit
+) {
     composable(route = MainNavigationDestination.SignUp.name) { navBackStackEntry ->
         val authNavBackStackEntry = remember(navBackStackEntry) {
             navController.getBackStackEntry(MainNavigationDestination.LogIn.name)
         }
         SignUpRoute(
             navBackStackEntry = authNavBackStackEntry,
-            navigateToHome = navigateToHome
+            navigateToHome = navigateToHome,
+            navigateToBack = navigateToBack
         )
     }
 }

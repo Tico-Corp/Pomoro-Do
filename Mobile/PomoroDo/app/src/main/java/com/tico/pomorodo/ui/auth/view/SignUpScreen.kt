@@ -3,6 +3,7 @@ package com.tico.pomorodo.ui.auth.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,7 +49,8 @@ import java.util.Objects
 fun SignUpRoute(
     navBackStackEntry: NavBackStackEntry,
     viewModel: AuthViewModel = hiltViewModel(navBackStackEntry),
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    navigateToBack: () -> Unit
 ) {
     val context = LocalContext.current
     val inputText by viewModel.name.collectAsState()
@@ -67,7 +69,11 @@ fun SignUpRoute(
             }
         }
     }
-
+    BackHandler(enabled = true) {
+        viewModel.setAuthState(AuthState.NEED_LOGIN)
+        viewModel.setName("")
+        navigateToBack()
+    }
     var showPhotoChooseDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -151,7 +157,7 @@ fun SignUpRoute(
                 inputText = inputText,
                 onInputTextChanged = viewModel::setName,
                 enable = enable,
-                onSignUpButtonClicked = {viewModel.requestJoin()}
+                onSignUpButtonClicked = { viewModel.requestJoin() }
             )
         }
     }

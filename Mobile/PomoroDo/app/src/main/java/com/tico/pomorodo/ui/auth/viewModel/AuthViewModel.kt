@@ -100,4 +100,8 @@ class AuthViewModel @Inject constructor(
             saveIdTokenUseCase(token)
         }
     }
+
+    fun setAuthState(authState: AuthState) {
+        _authState.value = authState
+    }
 }
