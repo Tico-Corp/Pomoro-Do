@@ -95,7 +95,7 @@ public class SecurityConfig {
         //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
         //AuthenticationManager()와 JWTUtil 인수 전달
 //        http
-//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
         //addFilterAt은 UsernamePasswordAuthenticationFilter 대체
         /* 서버 자체 로그인 삭제 - END */
 

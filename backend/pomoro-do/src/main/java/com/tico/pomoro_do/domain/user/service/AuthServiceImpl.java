@@ -6,8 +6,10 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.domain.user.repository.RefreshRepository;
 import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
@@ -16,6 +18,10 @@ import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.enums.UserRole;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.util.CookieUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +40,7 @@ import java.util.Collections;
 @RequiredArgsConstructor // 파이널 필드만 가지고 생성사 주입 함수 만듬 (따로 작성할 필요 없다.)
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+
     @Value("${google.clientId}")
     private String clientId;
 
@@ -46,6 +53,8 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
+    private final RefreshRepository refreshRepository;
+    private final TokenService tokenService;
 
     /**
      * 구글 ID 토큰으로 무결성 검증
@@ -74,6 +83,7 @@ public class AuthServiceImpl implements AuthService {
                     .pictureUrl((String) payload.get("picture"))
                     .build();
         } else {
+            log.error("구글 ID 토큰 검증 실패: 토큰이 유효하지 않음");
             throw new CustomException(ErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
         }
     }
@@ -88,13 +98,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtDTO createJwtTokens(String email, String role) {
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
+        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}", email, role);
         String accessToken = jwtUtil.createJwt("access", email, role, accessExpiration); //10분
         String refreshToken = jwtUtil.createJwt("refresh", email, role, refreshExpiration); //24시간
         return new JwtDTO(accessToken, refreshToken);
     }
 
     /**
-     * 토큰 관련 헤더에서 토큰 값을 추출합니다.
+     * 헤더에서 토큰 값을 추출
      *
      * @param header 토큰 헤더 (예: "Bearer <token>")
      * @param tokenType 토큰의 타입 (Google ID 토큰 또는 JWT)
@@ -129,14 +140,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public JwtDTO googleLogin(String idTokenHeader) throws GeneralSecurityException, IOException {
+        log.info("구글 로그인 처리 시작");
 
         String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (!userRepository.existsByUsername(userInfo.getEmail())) {
+            log.error("사용자 등록되지 않음: 이메일 = {}", userInfo.getEmail());
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
 
+        log.info("구글 로그인 성공: 이메일 = {}", userInfo.getEmail());
         return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
     }
 
@@ -153,10 +167,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public JwtDTO googleJoin(String idTokenHeader, GoogleJoinDTO requestUserInfo) throws GeneralSecurityException, IOException {
+        log.info("구글 회원가입 처리 시작");
+
         String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (userRepository.existsByUsername(userInfo.getEmail())) {
+            log.error("이미 등록된 사용자: 이메일 = {}", userInfo.getEmail());
             throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
         }
 
@@ -176,11 +193,12 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         socialLoginRepository.save(socialLogin);
 
+        log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
         return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
     }
 
     /**
-     * USER 생성하기
+     * 새 사용자 생성
      *
      * @param username 사용자 이메일
      * @param nickname 사용자 닉네임
@@ -190,9 +208,9 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public User createUser(String username, String nickname, String profileImageUrl, UserRole role){
+    public User createUser(String username, String nickname, String profileImageUrl, UserRole role) {
+        log.info("새 사용자 생성: 이메일 = {}, 닉네임 = {}", username, nickname);
 
-        // 사용자 정보 저장
         User user = User.builder()
                 .username(username)
                 .nickname(nickname)
@@ -201,8 +219,54 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         userRepository.save(user);
 
+        log.info("사용자 저장 성공: 이메일 = {}", username);
         return user;
     }
 
-    /** Refresh 토큰으로 Access 토큰을 재발급 **/
+    /**
+     * Refresh 토큰을 사용하여 Access 토큰 재발급
+     *
+     * @param request HTTP 요청 객체
+     * @param response HTTP 응답 객체
+     * @return 새 Access 토큰을 포함하는 TokenDTO
+     */
+    @Transactional
+    @Override
+    public TokenDTO reissueToken(HttpServletRequest request, HttpServletResponse response) {
+        log.info("Refresh 토큰으로 Access 토큰 재발급");
+
+        // 요청 쿠키에서 리프레시 토큰을 가져옵니다.
+        String refresh = CookieUtil.getRefreshToken(request);
+
+        log.info("Refresh 토큰 검증 시작");
+        // 리프레시 토큰을 검증합니다.
+        tokenService.validateToken(refresh, "refresh");
+        log.info("Refresh 토큰 검증 완료");
+
+        // 리프레시 토큰에서 사용자 정보를 추출합니다.
+        String username = jwtUtil.getUsername(refresh);
+        String role = jwtUtil.getRole(refresh);
+
+        log.info("새로운 Access, Refresh 토큰 생성");
+
+        // 새로운 액세스 및 리프레시 토큰을 생성합니다.
+        String newAccess = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
+        String newRefresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration);
+
+        // DB에서 기존 리프레시 토큰을 삭제하고, 새로운 리프레시 토큰을 저장합니다.
+        refreshRepository.deleteByRefreshToken(refresh);
+        tokenService.addRefreshEntity(username, newRefresh, refreshExpiration);
+
+        //response
+        //응답 설정: header
+        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
+//        response.setHeader("access", newAccess);
+
+        // 새로운 리프레시 토큰을 쿠키로 응답에 추가합니다.
+        response.addCookie(CookieUtil.createCookie("refresh", newRefresh));
+
+        // 새로운 액세스 토큰을 DTO로 반환합니다.
+        log.info("Access 토큰 재발급 완료");
+        return new TokenDTO(newAccess);
+    }
 }

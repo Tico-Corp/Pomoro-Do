@@ -1,9 +1,8 @@
 package com.tico.pomoro_do.global.auth.jwt;
 
-import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
+import com.tico.pomoro_do.domain.user.service.TokenService;
 import com.tico.pomoro_do.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +29,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //JWTUtil 주입
     private final JWTUtil jwtUtil;
 
+    private final TokenService tokenService;
+
     // JWT 만료 시간 Long 형
     @Value("${jwt.access-expiration}")
-    private long accessTokenExpireLength;
+    private long accessExpiration; // 1시간
+
+    @Value("${jwt.refresh-expiration}")
+    private long refreshExpiration; // 24시간
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -67,13 +71,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
-        String access = jwtUtil.createJwt("access", username, role, 600000L); //10분
-        String refresh = jwtUtil.createJwt("refresh", username, role, 86400000L); //24시간
+        String access = jwtUtil.createJwt("access", username, role, accessExpiration); //60분
+        String refresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration); //24시간
+
+        //Refresh 토큰 저장
+        tokenService.addRefreshEntity(username, refresh, refreshExpiration);
 
         //응답 설정
-        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) Authorization: Bearer 인증토큰(string)
-        response.addHeader("Authorization", "Bearer " + access);
-//        response.setHeader("access", access);
+        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
+        response.setHeader("access", access);
         //refresh 토큰 쿠키에 넣어서 응답
         response.addCookie(CookieUtil.createCookie("refresh", refresh));
         response.setStatus(HttpStatus.OK.value());

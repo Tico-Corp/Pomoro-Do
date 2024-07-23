@@ -7,24 +7,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "account")
 @Getter
+@Table(name = "refresh")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Account {
+public class Refresh {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "account_id")
+    @Column(name = "refresh_id")
     private Long id;
 
     private String username;
-    private String password;
-    private String role;
+    @Column(name = "refresh_token")
+    private String refreshToken;
+    private String expiration;
 
+    // 생성자
     @Builder
-    public Account(String username, String password, String role) {
+    public Refresh (String username, String refreshToken, String expiration){
         this.username = username;
-        this.password = password;
-        this.role = role;
+        this.refreshToken = refreshToken;
+        this.expiration = expiration;
     }
 }

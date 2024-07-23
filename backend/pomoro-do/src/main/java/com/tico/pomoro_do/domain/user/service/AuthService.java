@@ -4,9 +4,12 @@ package com.tico.pomoro_do.domain.user.service;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.enums.UserRole;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -32,5 +35,6 @@ public interface AuthService {
     JwtDTO createJwtTokens(String email, String role);
 
     // Refresh 토큰으로 Access토큰 발급
+    TokenDTO reissueToken(HttpServletRequest request, HttpServletResponse response);
 
 }
