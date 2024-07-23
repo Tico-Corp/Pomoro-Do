@@ -190,6 +190,7 @@
     <string name="content_delete">삭제</string>
     <string name="content_finish">종료</string>
     <string name="content_reset">초기화</string>
+    <string name="content_back_on_pressed_more_app_excute">앱을 종료하시려면 한 번 더 눌러주세요.</string>
 
     // common - time format
     <string name="format_hour_minute">%02d:%02d</string>

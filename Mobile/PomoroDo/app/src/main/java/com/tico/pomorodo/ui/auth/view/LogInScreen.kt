@@ -48,6 +48,7 @@ import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.auth.viewModel.AuthState
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
+import com.tico.pomorodo.ui.common.view.BackOnPressed
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcLogoGoogle
@@ -68,7 +69,7 @@ fun LogInRoute(
     isOffline: Boolean = false
 ) {
     val authState by viewModel.authState.collectAsState()
-
+    BackOnPressed()
     LaunchedEffect(authState) {
         when (authState) {
             AuthState.SUCCESS_LOGIN -> {
