@@ -23,16 +23,16 @@ public interface AuthService {
     String extractToken(String header, TokenType tokenType);
 
     // 구글 로그인
-    JwtDTO googleLogin(String idTokenHeader) throws GeneralSecurityException, IOException;
+    TokenDTO googleLogin(String idTokenHeader, HttpServletResponse response) throws GeneralSecurityException, IOException;
 
     // 구글 회원가입
-    JwtDTO googleJoin(String idTokenHeader, GoogleJoinDTO request)  throws GeneralSecurityException, IOException;
+    TokenDTO googleJoin(String idTokenHeader, GoogleJoinDTO request, HttpServletResponse response)  throws GeneralSecurityException, IOException;
 
     // User 생성
     User createUser(String username, String nickname, String profileImageUrl, UserRole role);
 
     // 토큰 생성
-    JwtDTO createJwtTokens(String email, String role);
+    TokenDTO generateAndStoreTokens(String username, String role, HttpServletResponse response);
 
     // Refresh 토큰으로 Access토큰 발급
     TokenDTO reissueToken(HttpServletRequest request, HttpServletResponse response);
