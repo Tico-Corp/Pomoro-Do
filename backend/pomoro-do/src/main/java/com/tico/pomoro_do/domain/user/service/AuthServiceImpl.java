@@ -89,22 +89,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * Access 토큰, Refresh 토큰 발급
-     *
-     * @param email 사용자 이메일
-     * @param role 사용자 역할
-     * @return JwtDTO 객체
-     */
-    @Override
-    public JwtDTO createJwtTokens(String email, String role) {
-        //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
-        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}", email, role);
-        String accessToken = jwtUtil.createJwt("access", email, role, accessExpiration); //10분
-        String refreshToken = jwtUtil.createJwt("refresh", email, role, refreshExpiration); //24시간
-        return new JwtDTO(accessToken, refreshToken);
-    }
-
-    /**
      * 헤더에서 토큰 값을 추출
      *
      * @param header 토큰 헤더 (예: "Bearer <token>")
@@ -129,17 +113,43 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 구글 ID 토큰으로 로그인 처리
+     * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
      *
-     * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
-     * @return JwtDTO를 포함하는 ResponseEntity
-     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
-     * @throws IOException IO 예외
-     * @throws CustomException 구글 ID 토큰이 유효하지 않거나 사용자가 등록되어 있지 않은 경우 예외
+     * @param username 사용자 이메일
+     * @param role 사용자 역할
+     * @param response HttpServletResponse 객체, 생성된 리프레시 토큰을 쿠키로 추가하기 위해 사용됨
+     * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
      */
     @Override
     @Transactional
-    public JwtDTO googleLogin(String idTokenHeader) throws GeneralSecurityException, IOException {
+    public TokenDTO generateAndStoreTokens(String username, String role, HttpServletResponse response) {
+        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}", username, role);
+
+        // 액세스 토큰 생성
+        String accessToken = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
+        // 리프레시 토큰 생성
+        String refreshToken = jwtUtil.createJwt("refresh", username, role, refreshExpiration); // 24시간
+        // 리프레시 토큰을 DB에 저장
+        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
+        // 리프레시 토큰을 쿠키로 응답에 추가
+        response.addCookie(CookieUtil.createCookie("refresh", refreshToken));
+
+        return new TokenDTO(accessToken);
+    }
+
+    /**
+     * 구글 ID 토큰으로 로그인 처리
+     *
+     * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
+     * @param response HttpServletResponse 객체
+     * @return TokenDTO를 포함하는 객체
+     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
+     * @throws IOException IO 예외
+     * @throws CustomException 구글 ID 토큰이 유효하지 않거나 등록되지 않은 사용자인 경우 예외
+     */
+    @Override
+    @Transactional
+    public TokenDTO googleLogin(String idTokenHeader, HttpServletResponse response) throws GeneralSecurityException, IOException {
         log.info("구글 로그인 처리 시작");
 
         String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
@@ -151,7 +161,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         log.info("구글 로그인 성공: 이메일 = {}", userInfo.getEmail());
-        return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
+        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
     }
 
     /**
@@ -159,14 +169,15 @@ public class AuthServiceImpl implements AuthService {
      *
      * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
      * @param requestUserInfo GoogleJoinDTO 객체
-     * @return JwtDTO를 포함하는 ResponseEntity
+     * @param response HttpServletResponse 객체
+     * @return TokenDTO를 포함하는 객체
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
      * @throws CustomException 구글 ID 토큰이 유효하지 않거나 이미 등록된 사용자인 경우 예외
      */
     @Override
     @Transactional
-    public JwtDTO googleJoin(String idTokenHeader, GoogleJoinDTO requestUserInfo) throws GeneralSecurityException, IOException {
+    public TokenDTO googleJoin(String idTokenHeader, GoogleJoinDTO requestUserInfo, HttpServletResponse response) throws GeneralSecurityException, IOException {
         log.info("구글 회원가입 처리 시작");
 
         String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
@@ -194,7 +205,7 @@ public class AuthServiceImpl implements AuthService {
         socialLoginRepository.save(socialLogin);
 
         log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
-        return createJwtTokens(userInfo.getEmail(), String.valueOf(UserRole.USER));
+        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
     }
 
     /**

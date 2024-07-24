@@ -3,11 +3,13 @@ package com.tico.pomoro_do.domain.user.service;
 import com.tico.pomoro_do.domain.user.dto.request.AdminJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.request.AdminLoginDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.enums.UserRole;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,12 +32,13 @@ public class AdminServiceImpl implements AdminService {
      * 관리자 회원가입 처리
      *
      * @param adminJoinDTO AdminJoinDTO 객체
-     * @return JwtDTO를 포함하는 ResponseEntity
-     * @throws CustomException 이메일 도메인이 유효하지 않거나 이미 등록된 사용자인 경우 예외
+     * @param response HttpServletResponse 객체
+     * @return 성공 시 JwtDTO를 포함하는 TokenDTO 객체
+     * @throws CustomException 이메일 도메인이 유효하지 않거나 이미 등록된 사용자인 경우 예외를 던집니다.
      */
     @Override
     @Transactional
-    public JwtDTO adminJoin(AdminJoinDTO adminJoinDTO) {
+    public TokenDTO adminJoin(AdminJoinDTO adminJoinDTO, HttpServletResponse response) {
         String username = adminJoinDTO.getUsername();
         String nickname = adminJoinDTO.getNickname();
 
@@ -49,18 +52,20 @@ public class AdminServiceImpl implements AdminService {
         // 관리자 생성하기
         User admin = authService.createUser(username, nickname, "", UserRole.ADMIN);
 
-        return authService.createJwtTokens(username, String.valueOf(UserRole.ADMIN));
+        return authService.generateAndStoreTokens(username, String.valueOf(UserRole.ADMIN), response);
     }
 
     /**
      * 관리자 로그인 처리
      *
      * @param adminLoginDTO AdminLoginDTO 객체
-     * @return JwtDTO를 포함하는 ResponseEntity
-     * @throws CustomException 이메일 도메인이 유효하지 않거나 관리자가 아닌 경우 예외
+     * @param response HttpServletResponse 객체
+     * @return 성공 시 JwtDTO를 포함하는 TokenDTO 객체
+     * @throws CustomException 이메일 도메인이 유효하지 않거나 관리자가 아닌 경우 예외를 던집니다.
      */
     @Override
-    public JwtDTO adminLogin(AdminLoginDTO adminLoginDTO){
+    @Transactional
+    public TokenDTO adminLogin(AdminLoginDTO adminLoginDTO, HttpServletResponse response){
         String username = adminLoginDTO.getUsername();
         String nickname = adminLoginDTO.getNickname();
 
@@ -70,7 +75,7 @@ public class AdminServiceImpl implements AdminService {
         validateAdminEmailDomain(domain);
         // 관리자 로그인 검증
         validateAdminUser(username, nickname);
-        return authService.createJwtTokens(username, String.valueOf(UserRole.ADMIN));
+        return authService.generateAndStoreTokens(username, String.valueOf(UserRole.ADMIN), response);
     }
 
     /**

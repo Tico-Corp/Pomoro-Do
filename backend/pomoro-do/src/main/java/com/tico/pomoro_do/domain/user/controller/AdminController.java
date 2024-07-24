@@ -2,7 +2,7 @@ package com.tico.pomoro_do.domain.user.controller;
 
 import com.tico.pomoro_do.domain.user.dto.request.AdminJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.request.AdminLoginDTO;
-import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
+import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.service.AdminService;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -35,13 +36,14 @@ public class AdminController {
      * 관리자 회원가입 API
      *
      * @param request AdminJoinDTO 객체
-     * @return 성공 시 JwtDTO를 포함하는 SuccessResponseDTO
+     * @param response HttpServletResponse 객체
+     * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
      */
     @Operation(
             summary = "관리자 회원가입",
             description = "관리자 회원가입을 수행합니다. <br>"
                     + "관리자의 이메일은 @pomorodo.shop 도메인으로 제한됩니다. <br>"
-                    + "성공 시에는 JwtDTO를 포함하는 SuccessResponseDTO를 반환합니다.",
+                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "AdminJoinDTO 객체",
                     required = true,
@@ -56,28 +58,32 @@ public class AdminController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
     })
     @PostMapping("/join")
-    public ResponseEntity<SuccessResponseDTO<JwtDTO>> adminJoin(@RequestBody AdminJoinDTO request) {
+    public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminJoin(
+            @RequestBody AdminJoinDTO request,
+            HttpServletResponse response
+    ) {
         log.info("관리자 회원가입 요청: {}", request.getUsername());
-        JwtDTO jwtResponse = adminService.adminJoin(request);
-        SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
+        TokenDTO jwtResponse = adminService.adminJoin(request, response);
+        SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
         log.info("관리자 회원가입 성공: {}", request.getUsername());
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
     }
 
     /**
      * 관리자 로그인 API
      *
      * @param request AdminLoginDTO 객체
-     * @return 성공 시 JwtDTO를 포함하는 SuccessResponseDTO
+     * @param response HttpServletResponse 객체
+     * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
      */
     @Operation(
             summary = "관리자 로그인",
             description = "관리자 로그인을 수행합니다. <br>"
-                    + "성공 시에는 JwtDTO를 포함하는 SuccessResponseDTO를 반환합니다.",
+                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다.",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "AdminLoginDTO 객체",
                     required = true,
@@ -94,15 +100,18 @@ public class AdminController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
     })
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponseDTO<JwtDTO>> adminLogin(@RequestBody AdminLoginDTO request) {
+    public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminLogin(
+            @RequestBody AdminLoginDTO request,
+            HttpServletResponse response
+    ) {
         log.info("관리자 로그인 요청: {}", request.getUsername());
-        JwtDTO jwtResponse = adminService.adminLogin(request);
-        SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
+        TokenDTO jwtResponse = adminService.adminLogin(request, response);
+        SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                 .status(SuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
         log.info("관리자 로그인 성공: {}", request.getUsername());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(successResponse);
     }
 }

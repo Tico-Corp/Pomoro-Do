@@ -52,6 +52,7 @@ public class AuthController {
      * 구글 로그인 API
      *
      * @param googleIdTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
+     * @param response HttpServletResponse 객체
      * @return 성공 시 JwtDTO를 포함하는 SuccessResponseDTO
      * @throws CustomException 구글 ID 토큰 검증에 실패한 경우 예외를 던집니다.
      */
@@ -76,17 +77,18 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
     })
     @PostMapping("/google/login")
-    public ResponseEntity<SuccessResponseDTO<JwtDTO>> googleLogin(
-            @RequestHeader("Google-ID-Token") String googleIdTokenHeader
+    public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleLogin(
+            @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
+            HttpServletResponse response
     ) {
         try {
-            JwtDTO jwtResponse = authService.googleLogin(googleIdTokenHeader);
-            SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
+            TokenDTO jwtResponse = authService.googleLogin(googleIdTokenHeader, response);
+            SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                     .status(SuccessCode.GOOGLE_LOGIN_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_LOGIN_SUCCESS.getMessage())
                     .data(jwtResponse)
                     .build();
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(successResponse);
         } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
             log.error("구글 ID 토큰 검증 실패: {}", e.getMessage(), e);
             throw new CustomException(ErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
@@ -98,6 +100,7 @@ public class AuthController {
      *
      * @param googleIdTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
      * @param requestUserInfo 회원가입 요청 정보가 포함된 DTO
+     * @param response HttpServletResponse 객체
      * @return 성공 시 JwtDTO를 포함하는 SuccessResponseDTO
      * @throws CustomException 구글 ID 토큰 검증에 실패한 경우 예외를 던집니다.
      */
@@ -122,18 +125,19 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
     })
     @PostMapping("/google/join")
-    public ResponseEntity<SuccessResponseDTO<JwtDTO>> googleJoin(
+    public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleJoin(
             @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
-            @Valid @RequestBody GoogleJoinDTO requestUserInfo
+            @Valid @RequestBody GoogleJoinDTO requestUserInfo,
+            HttpServletResponse response
     ) {
         try {
-            JwtDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, requestUserInfo);
-            SuccessResponseDTO<JwtDTO> response = SuccessResponseDTO.<JwtDTO>builder()
+            TokenDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, requestUserInfo, response);
+            SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                     .status(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())
                     .data(jwtResponse)
                     .build();
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
         } catch (GeneralSecurityException | IOException | IllegalArgumentException e) {
             log.error("구글 ID 토큰 검증 실패: {}", e.getMessage(), e);
             throw new CustomException(ErrorCode.GOOGLE_TOKEN_VERIFICATION_FAILED);
