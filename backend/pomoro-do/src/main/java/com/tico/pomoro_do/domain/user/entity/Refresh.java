@@ -18,15 +18,21 @@ public class Refresh {
     private Long id;
 
     private String username;
+
     @Column(name = "refresh_token")
     private String refreshToken;
+
     private String expiration;
+
+    @Column(name = "device_id")
+    private String deviceId;
 
     // 생성자
     @Builder
-    public Refresh (String username, String refreshToken, String expiration){
+    public Refresh(String username, String refreshToken, String expiration, String deviceId) {
         this.username = username;
         this.refreshToken = refreshToken;
         this.expiration = expiration;
+        this.deviceId = deviceId;
     }
 }
