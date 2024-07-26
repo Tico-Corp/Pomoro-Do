@@ -7,7 +7,6 @@ import androidx.security.crypto.MasterKey
 
 
 class PreferencesManager(context: Context) {
-
     private val sharedPreferences: SharedPreferences by lazy {
 
         val masterKey = MasterKey

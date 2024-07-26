@@ -16,7 +16,6 @@ class AuthRepositoryImpl @Inject constructor(
     private val preferencesManager: PreferencesManager,
     private val authDataSource: AuthDataSource
 ) : AuthRepository {
-
     override suspend fun saveAccessToken(token: String) {
         preferencesManager.saveAccessToken(token)
     }

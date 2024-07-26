@@ -12,7 +12,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataSourceModule {
-
     @Singleton
     @Provides
     fun provideAuthDataSource(authApiService: AuthApiService): AuthDataSource =

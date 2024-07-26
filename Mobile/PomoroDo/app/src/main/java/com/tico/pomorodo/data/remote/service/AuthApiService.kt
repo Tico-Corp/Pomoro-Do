@@ -8,7 +8,6 @@ import retrofit2.http.POST
 import retrofit2.http.Part
 
 interface AuthApiService {
-
     @POST("/api/auth/google/login")
     suspend fun requestLogin(): AuthResponse
 

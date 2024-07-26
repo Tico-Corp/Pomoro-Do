@@ -3,7 +3,6 @@ package com.tico.pomorodo.data.model
 import androidx.annotation.StringRes
 import com.tico.pomorodo.R
 
-
 enum class DayOfWeeks(@StringRes val dayId: Int) {
     SUNDAY(R.string.content_calendar_sunday),
     MONDAY(R.string.content_calendar_monday),
