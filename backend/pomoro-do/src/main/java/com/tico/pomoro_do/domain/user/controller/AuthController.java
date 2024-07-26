@@ -147,29 +147,46 @@ public class AuthController {
     /**
      * 토큰 재발급 API
      *
-     * @param request  HTTP 요청 객체
-     * @param response HTTP 응답 객체
+     * @param deviceId 기기 고유 번호
+     * @param refreshToken 리프레시 토큰
      * @return 재발급된 토큰을 포함하는 SuccessResponseDTO
      */
     @Operation(
             summary = "토큰 재발급",
-            description = "리프레시 토큰을 사용하여 새로운 액세스 토큰 및 리프레시 토큰을 재발급합니다."
+            description = "리프레시 토큰을 사용하여 새로운 액세스 토큰 및 리프레시 토큰을 재발급합니다.",
+            parameters = {
+                    @Parameter(
+                            name = "Device-Id",
+                            description = "기기 고유 번호",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    ),
+                    @Parameter(
+                            name = "Refresh-Token",
+                            description = "리프레시 토큰",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    )
+            }
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "토큰 재발급 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
             @ApiResponse(responseCode = "401", description = "리프레시 토큰이 유효하지 않음",
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
-            @ApiResponse(responseCode = "400", description = "리프레시 토큰 헤더가 없음",
+            @ApiResponse(responseCode = "404", description = "기기 ID 또는 리프레시 토큰이 DB에 존재하지 않음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류",
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
     })
     @PostMapping("/token/reissue")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> reissueToken(
-            HttpServletRequest request,
-            HttpServletResponse response
+            @RequestHeader("Device-Id") String deviceId,
+            @RequestHeader("Refresh-Token") String refreshToken
     ) {
-        // 엑세스 토큰으로 현재 Redis 정보 삭제
         // AuthService의 reissueToken 메서드 호출하여 결과 받기
-        TokenDTO tokenDTO = authService.reissueToken(request, response);
+        TokenDTO tokenDTO = authService.reissueToken(deviceId, refreshToken);
 
         SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                 .status(SuccessCode.ACCESS_TOKEN_REISSUED.getHttpStatus().value())

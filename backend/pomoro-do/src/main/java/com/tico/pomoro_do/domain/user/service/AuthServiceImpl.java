@@ -7,6 +7,7 @@ import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
 import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
+import com.tico.pomoro_do.domain.user.entity.Refresh;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.RefreshRepository;
@@ -130,7 +131,7 @@ public class AuthServiceImpl implements AuthService {
         // 리프레시 토큰 생성
         String refreshToken = jwtUtil.createJwt("refresh", username, role, refreshExpiration); // 24시간
         // 리프레시 토큰을 DB에 저장
-        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
+//        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
         // 리프레시 토큰을 쿠키로 응답에 추가
         response.addCookie(CookieUtil.createCookie("refresh", refreshToken));
 
@@ -237,22 +238,28 @@ public class AuthServiceImpl implements AuthService {
     /**
      * Refresh 토큰을 사용하여 Access 토큰 재발급
      *
-     * @param request HTTP 요청 객체
-     * @param response HTTP 응답 객체
+     * @param deviceId 기기 고유 번호
+     * @param refresh 리프레시 토큰
      * @return 새 Access 토큰을 포함하는 TokenDTO
      */
     @Transactional
     @Override
-    public TokenDTO reissueToken(HttpServletRequest request, HttpServletResponse response) {
+    public TokenDTO reissueToken(String deviceId, String refresh) {
         log.info("Refresh 토큰으로 Access 토큰 재발급");
 
-        // 요청 쿠키에서 리프레시 토큰을 가져옵니다.
-        String refresh = CookieUtil.getRefreshToken(request);
-
-        log.info("Refresh 토큰 검증 시작");
         // 리프레시 토큰을 검증합니다.
+        log.info("Refresh 토큰 검증 시작");
         tokenService.validateToken(refresh, "refresh");
         log.info("Refresh 토큰 검증 완료");
+
+        // DB에서 deviceId에 해당하는 리프레시 토큰 정보를 가져옵니다.
+        Refresh refreshEntity = tokenService.getRefreshEntityByDeviceId(deviceId);
+
+        // DB에 저장된 리프레시 토큰과 요청된 리프레시 토큰이 일치하는지 확인합니다.
+        if (!refreshEntity.getRefreshToken().equals(refresh)) {
+            log.error("리프레시 토큰이 DB에 존재하지 않음: refreshToken = {}", refresh);
+            throw new CustomException(ErrorCode.REFRESH_TOKEN_MISMATCH);
+        }
 
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
         String username = jwtUtil.getUsername(refresh);
@@ -264,17 +271,10 @@ public class AuthServiceImpl implements AuthService {
         String newAccess = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
         String newRefresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration);
 
-        // DB에서 기존 리프레시 토큰을 삭제하고, 새로운 리프레시 토큰을 저장합니다.
-        refreshRepository.deleteByRefreshToken(refresh);
-        tokenService.addRefreshEntity(username, newRefresh, refreshExpiration);
-
-        //response
-        //응답 설정: header
-        //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
-//        response.setHeader("access", newAccess);
-
-        // 새로운 리프레시 토큰을 쿠키로 응답에 추가합니다.
-        response.addCookie(CookieUtil.createCookie("refresh", newRefresh));
+        // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제하고,
+        // 새로운 리프레시 토큰을 저장합니다.
+        refreshRepository.deleteByDeviceId(deviceId);
+        tokenService.addRefreshEntity(username, newRefresh, refreshExpiration, deviceId);
 
         // 새로운 액세스 토큰을 DTO로 반환합니다.
         log.info("Access 토큰 재발급 완료");

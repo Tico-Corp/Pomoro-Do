@@ -37,7 +37,7 @@ public class TokenServiceImpl implements TokenService{
      */
     @Transactional
     @Override
-    public void addRefreshEntity(String username, String refresh, Long expiredMs) {
+    public void addRefreshEntity(String username, String refresh, Long expiredMs, String deviceId) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
@@ -45,11 +45,28 @@ public class TokenServiceImpl implements TokenService{
                 .username(username)
                 .refreshToken(refresh)
                 .expiration(date.toString())
+                .deviceId(deviceId)
                 .build();
 
         refreshRepository.save(refreshEntity);
         log.info("리프레시 토큰 저장 성공: 사용자 = {}, 토큰 = {}", username, refresh);
 
+    }
+
+    /**
+     * 주어진 deviceId로 리프레시 토큰 엔티티를 가져옵니다.
+     *
+     * @param deviceId 기기 고유 번호
+     * @return Refresh 엔티티
+     * @throws CustomException 기기 ID가 DB에 존재하지 않을 때 발생하는 예외
+     */
+    @Override
+    public Refresh getRefreshEntityByDeviceId(String deviceId) {
+        return refreshRepository.findByDeviceId(deviceId)
+                .orElseThrow(() -> {
+                    log.error("Device ID가 DB에 존재하지 않음: deviceId = {}", deviceId);
+                    return new CustomException(ErrorCode.DEVICE_ID_NOT_FOUND);
+                });
     }
 
 
