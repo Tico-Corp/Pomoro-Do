@@ -5,10 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetTokenUseCase @Inject constructor(private val authRepository: AuthRepository) {
-
+class GetAccessTokenUseCase @Inject constructor(private val authRepository: AuthRepository) {
     suspend operator fun invoke(): String? =
-        withContext(Dispatchers.IO) {
-        authRepository.getToken()
-    }
+        withContext(Dispatchers.IO) { authRepository.getAccessToken() }
 }

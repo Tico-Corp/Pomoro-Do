@@ -71,12 +71,19 @@ fun MainScreen() {
                         ),
                     )
             ) {
-                splashScreen(navigate = mainNavController::navigateToLogIn)
+                splashScreen(
+                    navigateToLogin = mainNavController::navigateToLogIn,
+                    navigateToHome = mainNavController::navigateToHome
+                )
 
-                logInScreen(navigate = mainNavController::navigateToSignUp)
+                logInScreen(
+                    navigateToSignUp = mainNavController::navigateToSignUp,
+                    navigateToHome = mainNavController::navigateToHome,
+                )
                 signUpScreen(
                     navController = mainNavController,
-                    navigate = mainNavController::navigateToHome
+                    navigateToHome = mainNavController::navigateToHome,
+                    navigateToBack = mainNavController::popBackStack
                 )
 
                 homeScreen(

@@ -21,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +46,9 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.auth.viewModel.AuthState
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
+import com.tico.pomorodo.ui.common.view.BackOnPressed
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcLogoGoogle
@@ -57,10 +62,46 @@ import java.util.UUID
 private const val TAG = "LoginScreen: "
 
 @Composable
-fun LogInScreen(
+fun LogInRoute(
     viewModel: AuthViewModel = hiltViewModel(),
-    navigate: () -> Unit,
+    navigateToSignUp: () -> Unit,
+    navigateToHome: () -> Unit,
     isOffline: Boolean = false
+) {
+    val authState by viewModel.authState.collectAsState()
+    BackOnPressed()
+    LaunchedEffect(authState) {
+        when (authState) {
+            AuthState.SUCCESS_LOGIN -> {
+                navigateToHome()
+            }
+
+            AuthState.NEED_JOIN -> {
+                navigateToSignUp()
+            }
+
+            else -> {
+                Unit
+            }
+        }
+    }
+
+    LogInScreen(
+        isOffline = isOffline,
+        navigateToHome = navigateToHome,
+        onLoginSuccess = { result ->
+            viewModel.saveIdToken(result.idToken)
+            viewModel.setProfile(result.profilePictureUri)
+            viewModel.requestLogin()
+        }
+    )
+}
+
+@Composable
+private fun LogInScreen(
+    isOffline: Boolean,
+    navigateToHome: () -> Unit,
+    onLoginSuccess: (GoogleIdTokenCredential) -> Unit,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -95,7 +136,7 @@ fun LogInScreen(
                 contentAlignment = Alignment.Center
             ) {
                 if (isOffline) {
-                    OfflineLogInButton(onClick = { navigate() })
+                    OfflineLogInButton(onClick = { navigateToHome() })
                 } else {
                     LogInButton(
                         onClick = {
@@ -104,12 +145,7 @@ fun LogInScreen(
                                     context = context,
                                     request = request,
                                     nonce = hashedNonce,
-                                    onSuccess = { result ->
-                                        viewModel.saveIdToken(result.idToken)
-                                        viewModel.requestLogin()
-                                        viewModel.setProfile(result.profilePictureUri)
-                                        navigate()
-                                    }
+                                    onSuccess = onLoginSuccess
                                 )
                             }
                         }

@@ -7,7 +7,6 @@ import com.tico.pomorodo.ui.theme.IC_CATEGORY_FULL_OPEN
 import com.tico.pomorodo.ui.theme.IC_CATEGORY_GROUP_OPEN
 import com.tico.pomorodo.ui.theme.IC_CATEGORY_ONLY_ME_OPEN
 
-
 enum class OpenSettings(
     val iconString: String,
     @StringRes val descriptionId: Int,

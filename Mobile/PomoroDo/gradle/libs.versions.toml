@@ -11,8 +11,8 @@ android = "8.4.0"
 kotlin = "1.9.22"
 # api 통신을 위한 라이브러리
 retrofit = "2.9.0"
-kotlin-serialization = "1.8.10"
-kotlin-serialization-json = "1.5.1"
+kotlin-serialization = "1.9.22"
+kotlin-serialization-json = "1.6.3"
 kotlin-serealization-converter = "1.0.0"
 okhttp3 = "4.11.0"
 # 종속성주입을 위한 라이브러리

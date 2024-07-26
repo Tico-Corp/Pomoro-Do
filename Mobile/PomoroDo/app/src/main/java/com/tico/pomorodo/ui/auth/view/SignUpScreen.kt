@@ -3,6 +3,7 @@ package com.tico.pomorodo.ui.auth.view
 import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.auth.viewModel.AuthState
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.EditableProfile
@@ -46,12 +49,31 @@ import java.util.Objects
 fun SignUpRoute(
     navBackStackEntry: NavBackStackEntry,
     viewModel: AuthViewModel = hiltViewModel(navBackStackEntry),
-    navigate: () -> Unit
+    navigateToHome: () -> Unit,
+    navigateToBack: () -> Unit
 ) {
     val context = LocalContext.current
     val inputText by viewModel.name.collectAsState()
     val profile by viewModel.profile.collectAsState()
     val enable = inputText.isNotBlank()
+    val authState by viewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        when (authState) {
+            AuthState.SUCCESS_JOIN -> {
+                navigateToHome()
+            }
+
+            else -> {
+                Unit
+            }
+        }
+    }
+    BackHandler(enabled = true) {
+        viewModel.setAuthState(AuthState.NEED_LOGIN)
+        viewModel.setName("")
+        navigateToBack()
+    }
     var showPhotoChooseDialog by rememberSaveable {
         mutableStateOf(false)
     }
@@ -135,7 +157,7 @@ fun SignUpRoute(
                 inputText = inputText,
                 onInputTextChanged = viewModel::setName,
                 enable = enable,
-                onSignUpButtonClicked = navigate
+                onSignUpButtonClicked = { viewModel.requestJoin() }
             )
         }
     }

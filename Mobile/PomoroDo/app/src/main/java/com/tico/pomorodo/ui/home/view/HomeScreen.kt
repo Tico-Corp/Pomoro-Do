@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.AppNavHost
 import com.tico.pomorodo.navigation.BottomNavigationDestination
+import com.tico.pomorodo.ui.common.view.BackOnPressed
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
@@ -21,7 +22,7 @@ fun HomeScreen(
 ) {
     val homeNavController = rememberNavController()
     val appState = AppState(homeNavController)
-
+    BackOnPressed()
     Scaffold(
         bottomBar = { BottomBar(appState) },
         containerColor = PomoroDoTheme.colorScheme.background

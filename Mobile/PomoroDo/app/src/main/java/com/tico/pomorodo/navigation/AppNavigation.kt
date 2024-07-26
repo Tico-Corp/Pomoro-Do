@@ -9,7 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.tico.pomorodo.ui.auth.view.LogInScreen
+import com.tico.pomorodo.ui.auth.view.LogInRoute
 import com.tico.pomorodo.ui.auth.view.SignUpRoute
 import com.tico.pomorodo.ui.category.view.AddCategoryScreenRoute
 import com.tico.pomorodo.ui.category.view.CategoryScreenRoute
@@ -37,10 +37,17 @@ fun NavController.navigateToMyInfo(navOptions: NavOptions) =
     navigate(BottomNavigationDestination.MyInfo.name, navOptions)
 
 // main navigation - navigate
-fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name)
+fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name) {
+    popUpTo(MainNavigationDestination.Splash.name) { inclusive = true }
+}
+
 fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SignUp.name)
 
-fun NavController.navigateToHome() = navigate(MainNavigationDestination.Home.name)
+fun NavController.navigateToHome() {
+    navigate(MainNavigationDestination.Home.name) {
+        popUpTo(graph.id) { inclusive = true }
+    }
+}
 
 fun NavController.navigateToConcentrationMode() =
     navigate(MainNavigationDestination.ConcentrationMode.name)
@@ -101,26 +108,37 @@ fun NavGraphBuilder.myInfoScreen(
 }
 
 // main navigation - composable route
-fun NavGraphBuilder.splashScreen(navigate: () -> Unit) {
+fun NavGraphBuilder.splashScreen(navigateToLogin: () -> Unit, navigateToHome: () -> Unit) {
     composable(route = MainNavigationDestination.Splash.name) {
-        SplashScreen(navigate = navigate)
+        SplashScreen(navigateToLogin = navigateToLogin, navigateToHome = navigateToHome)
     }
 }
 
-fun NavGraphBuilder.logInScreen(navigate: () -> Unit) {
+fun NavGraphBuilder.logInScreen(
+    navigateToSignUp: () -> Unit,
+    navigateToHome: () -> Unit
+) {
     composable(route = MainNavigationDestination.LogIn.name) {
-        LogInScreen(navigate = navigate)
+        LogInRoute(
+            navigateToSignUp = navigateToSignUp,
+            navigateToHome = navigateToHome
+        )
     }
 }
 
-fun NavGraphBuilder.signUpScreen(navController: NavHostController, navigate: () -> Unit) {
+fun NavGraphBuilder.signUpScreen(
+    navController: NavHostController,
+    navigateToHome: () -> Unit,
+    navigateToBack: () -> Unit
+) {
     composable(route = MainNavigationDestination.SignUp.name) { navBackStackEntry ->
         val authNavBackStackEntry = remember(navBackStackEntry) {
             navController.getBackStackEntry(MainNavigationDestination.LogIn.name)
         }
         SignUpRoute(
             navBackStackEntry = authNavBackStackEntry,
-            navigate = navigate
+            navigateToHome = navigateToHome,
+            navigateToBack = navigateToBack
         )
     }
 }
