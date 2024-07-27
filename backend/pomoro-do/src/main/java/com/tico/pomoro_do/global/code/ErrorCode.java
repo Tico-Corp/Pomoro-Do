@@ -102,21 +102,28 @@ public enum ErrorCode {
     REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "T-202", "리프레시 토큰이 만료되었습니다."),
     INVALID_ACCESS_TOKEN(HttpStatus.FORBIDDEN, "T-203", "액세스 토큰이 유효하지 않습니다."),
     INVALID_REFRESH_TOKEN(HttpStatus.FORBIDDEN, "T-204", "리프레시 토큰이 유효하지 않습니다."),
-    MISSING_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "T-205", "액세스 토큰이 없습니다."),
-    MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "T-206", "리프레시 토큰이 없습니다."),
-    MISSING_REFRESH_TOKEN_IN_DB(HttpStatus.BAD_REQUEST, "T-207", "DB에 해당 리프레시 토큰이 없습니다."),
-    REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "T-208", "서버의 리프레시 토큰과 일치하지 않습니다."),
-    INVALID_AUTHORIZATION_HEADER(HttpStatus.BAD_REQUEST, "T-209", "AUTHORIZATION 헤더의 토큰이 유효하지 않습니다."),
-    // JWT 서명 오류
-    INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED, "T-211", "JWT 서명 검증에 실패했습니다."),
-    // 잘못된 JWT 형식
-    INVALID_MALFORMED_JWT(HttpStatus.UNAUTHORIZED, "T-212", "잘못된 JWT 토큰입니다."),
+    MISSING_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "T-205", "액세스 토큰이 제공되지 않았습니다."),
+    MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "T-206", "리프레시 토큰이 제공되지 않았습니다."),
+    INVALID_AUTHORIZATION_HEADER(HttpStatus.BAD_REQUEST, "T-207", "Authorization 헤더의 토큰이 유효하지 않습니다."),
+    REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "T-208", "제공된 리프레시 토큰과 서버의 토큰이 일치하지 않습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "T-209", "제공된 리프레시 토큰이 서버에 존재하지 않습니다."),
 
-    //구글 토큰 관련 에러: -300번대
-    GOOGLE_TOKEN_VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "GT-300", "구글 ID 토큰 검증에 실패했습니다."),
-    INVALID_GOOGLE_TOKEN_HEADER(HttpStatus.BAD_REQUEST, "GT-301", "GOOGLE_ID_TOKEN 헤더의 토큰이 유효하지 않습니다."),
+    // JWT 검증 관련 에러 - 230번대
+    INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED, "T-231", "JWT 서명 검증에 실패했습니다."),
+    INVALID_MALFORMED_JWT(HttpStatus.UNAUTHORIZED, "T-232", "잘못된 형식의 JWT입니다."),
+    UNSUPPORTED_JWT(HttpStatus.UNAUTHORIZED, "T-233", "지원하지 않는 JWT입니다."),
+    ILLEGAL_ARGUMENT(HttpStatus.UNAUTHORIZED, "T-234", "잘못된 JWT 토큰입니다."),
 
-    //관리자 관련 에러: -400번대
+    // 구글 토큰 관련 에러 - 290번대
+    GOOGLE_TOKEN_VERIFICATION_FAILED(HttpStatus.UNAUTHORIZED, "T-290", "구글 ID 토큰 검증에 실패했습니다."),
+    INVALID_GOOGLE_TOKEN_HEADER(HttpStatus.BAD_REQUEST, "T-291", "Google ID Token 헤더가 유효하지 않습니다."),
+
+    // 기기 관련 에러 - 300번대
+    DEVICE_ID_NOT_FOUND(HttpStatus.BAD_REQUEST, "D-300", "제공된 Device ID가 서버에 존재하지 않습니다."),
+    INVALID_DEVICE_ID_HEADER(HttpStatus.BAD_REQUEST, "D-301", "Device ID 헤더의 값이 유효하지 않습니다."),
+    DEVICE_ID_MISMATCH(HttpStatus.BAD_REQUEST, "D-302", "제공된 Device ID와 서버의 Device ID가 일치하지 않습니다."),
+
+    // 관리자 관련 에러: -400번대
     NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "A-400", "관리자 권한이 없습니다."),
     INVALID_ADMIN_EMAIL(HttpStatus.BAD_REQUEST, "A-401", "허용되지 않은 관리자 이메일입니다."),
     ADMIN_EMAIL_ONLY(HttpStatus.FORBIDDEN, "A-402", "관리자 이메일만 접근할 수 있습니다."),

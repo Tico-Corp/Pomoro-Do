@@ -35,6 +35,6 @@ public interface AuthService {
     TokenDTO generateAndStoreTokens(String username, String role, HttpServletResponse response);
 
     // Refresh 토큰으로 Access토큰 발급
-    TokenDTO reissueToken(HttpServletRequest request, HttpServletResponse response);
+    TokenDTO reissueToken(String deviceId, String refresh);
 
 }

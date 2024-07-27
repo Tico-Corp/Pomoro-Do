@@ -75,7 +75,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String refresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration); //24시간
 
         //Refresh 토큰 저장
-        tokenService.addRefreshEntity(username, refresh, refreshExpiration);
+        String deviceId = request.getHeader("Device-Id");
+        tokenService.addRefreshEntity(username, refresh, refreshExpiration, deviceId);
 
         //응답 설정
         //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)

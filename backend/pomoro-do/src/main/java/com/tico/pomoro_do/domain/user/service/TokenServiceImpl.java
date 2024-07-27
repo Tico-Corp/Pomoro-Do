@@ -7,6 +7,9 @@ import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.util.CookieUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +37,7 @@ public class TokenServiceImpl implements TokenService{
      */
     @Transactional
     @Override
-    public void addRefreshEntity(String username, String refresh, Long expiredMs) {
+    public void addRefreshEntity(String username, String refresh, Long expiredMs, String deviceId) {
 
         Date date = new Date(System.currentTimeMillis() + expiredMs);
 
@@ -42,6 +45,7 @@ public class TokenServiceImpl implements TokenService{
                 .username(username)
                 .refreshToken(refresh)
                 .expiration(date.toString())
+                .deviceId(deviceId)
                 .build();
 
         refreshRepository.save(refreshEntity);
@@ -49,6 +53,37 @@ public class TokenServiceImpl implements TokenService{
 
     }
 
+    /**
+     * 주어진 deviceId로 리프레시 토큰 엔티티를 가져옵니다.
+     *
+     * @param deviceId 기기 고유 번호
+     * @return Refresh 엔티티
+     * @throws CustomException 기기 ID가 DB에 존재하지 않을 때 발생하는 예외
+     */
+    @Override
+    public Refresh getRefreshByDeviceId(String deviceId) {
+        return refreshRepository.findByDeviceId(deviceId)
+                .orElseThrow(() -> {
+                    log.error("Device ID가 DB에 존재하지 않음: deviceId = {}", deviceId);
+                    return new CustomException(ErrorCode.DEVICE_ID_NOT_FOUND);
+                });
+    }
+
+    /**
+     * 주어진 리프레시 토큰으로 리프레시 토큰 엔티티를 가져옵니다.
+     *
+     * @param refreshToken 리프레시 토큰
+     * @return Refresh 엔티티
+     * @throws CustomException 리프레시 토큰이 DB에 존재하지 않을 때 발생하는 예외
+     */
+    @Override
+    public Refresh getRefreshByRefreshToken(String refreshToken) {
+        return refreshRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> {
+                    log.error("리프레시 토큰이 DB에 존재하지 않음: refreshToken = {}", refreshToken);
+                    return new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+                });
+    }
 
     /**
      * 주어진 토큰을 검증
@@ -69,7 +104,7 @@ public class TokenServiceImpl implements TokenService{
             );
         }
 
-        // 토큰 만료 확인
+        // 토큰 만료 및 서명 오류 확인
         try {
             jwtUtil.isExpired(token);
         } catch (ExpiredJwtException e) {
@@ -79,6 +114,18 @@ public class TokenServiceImpl implements TokenService{
                             ? ErrorCode.ACCESS_TOKEN_EXPIRED
                             : ErrorCode.REFRESH_TOKEN_EXPIRED
             );
+        } catch (SignatureException e) {
+            log.error("유효하지 않은 JWT 서명: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.INVALID_JWT_SIGNATURE);
+        } catch (MalformedJwtException e) {
+            log.error("유효하지 않은 JWT 형식: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.INVALID_MALFORMED_JWT);
+        } catch (UnsupportedJwtException e) {
+            log.error("지원하지 않는 JWT: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.UNSUPPORTED_JWT);
+        } catch (IllegalArgumentException e) {
+            log.error("잘못된 JWT 토큰: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.ILLEGAL_ARGUMENT);
         }
 
         // 토큰 카테고리 확인
@@ -90,15 +137,6 @@ public class TokenServiceImpl implements TokenService{
                             ? ErrorCode.INVALID_ACCESS_TOKEN
                             : ErrorCode.INVALID_REFRESH_TOKEN
             );
-        }
-
-        // 리프레시 토큰 검증
-        if ("refresh".equals(expectedCategory)) {
-            boolean exists = refreshRepository.existsByRefreshToken(token);
-            if (!exists) {
-                log.error("리프레시 토큰이 DB에 존재하지 않음: 토큰 = {}", token);
-                throw new CustomException(ErrorCode.MISSING_REFRESH_TOKEN_IN_DB);
-            }
         }
     }
 
