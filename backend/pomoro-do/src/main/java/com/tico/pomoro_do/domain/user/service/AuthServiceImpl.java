@@ -245,20 +245,20 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     @Override
     public TokenDTO reissueToken(String deviceId, String refresh) {
-        log.info("Refresh 토큰으로 Access 토큰 재발급");
+        log.info("Refresh 토큰으로 Access 토큰 재발급 시도: deviceId = {}", deviceId);
 
         // 리프레시 토큰을 검증합니다.
-        log.info("Refresh 토큰 검증 시작");
+        log.info("Refresh 토큰 검증 시작: refreshToken = {}", refresh);
         tokenService.validateToken(refresh, "refresh");
         log.info("Refresh 토큰 검증 완료");
 
-        // DB에서 deviceId에 해당하는 리프레시 토큰 정보를 가져옵니다.
-        Refresh refreshEntity = tokenService.getRefreshEntityByDeviceId(deviceId);
+        // DB에서 리프레시 토큰에 해당하는 리프레시 토큰 정보를 가져옵니다.
+        Refresh refreshEntity = tokenService.getRefreshByRefreshToken(refresh);
 
-        // DB에 저장된 리프레시 토큰과 요청된 리프레시 토큰이 일치하는지 확인합니다.
-        if (!refreshEntity.getRefreshToken().equals(refresh)) {
-            log.error("리프레시 토큰이 DB에 존재하지 않음: refreshToken = {}", refresh);
-            throw new CustomException(ErrorCode.REFRESH_TOKEN_MISMATCH);
+        // DB에 저장된 deviceId와 요청된 deviceId이 일치하는지 확인합니다.
+        if (!refreshEntity.getDeviceId().equals(deviceId)) {
+            log.error("Device ID가 DB에 존재하지 않음: deviceId = {}", deviceId);
+            throw new CustomException(ErrorCode.DEVICE_ID_MISMATCH);
         }
 
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
@@ -277,7 +277,7 @@ public class AuthServiceImpl implements AuthService {
         tokenService.addRefreshEntity(username, newRefresh, refreshExpiration, deviceId);
 
         // 새로운 액세스 토큰을 DTO로 반환합니다.
-        log.info("Access 토큰 재발급 완료");
+        log.info("Access 토큰 및 Refresh 토큰 재발급 완료: newAccessToken = {}, newRefreshToken = {}", newAccess, newRefresh);
         return new TokenDTO(newAccess);
     }
 }

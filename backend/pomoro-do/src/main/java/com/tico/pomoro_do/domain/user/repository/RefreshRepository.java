@@ -12,6 +12,8 @@ public interface RefreshRepository extends JpaRepository<Refresh, Long> {
     boolean existsByRefreshToken(String refreshToken);
     Optional<Refresh> findByDeviceId(String deviceId);
 
+    Optional<Refresh> findByRefreshToken(String refreshToken);
+
 
     // 해당 리프레쉬 토큰을 삭제하는 메소드
     @Transactional

@@ -10,7 +10,8 @@ public interface TokenService {
     void addRefreshEntity(String username, String refresh, Long expiredMs, String deviceId);
 
     // 토큰 가져오기
-    Refresh getRefreshEntityByDeviceId(String deviceId);
+    Refresh getRefreshByDeviceId(String deviceId);
+    Refresh getRefreshByRefreshToken(String refreshToken);
 
     // 토큰 검증
     void validateToken(String token, String expectedCategory);

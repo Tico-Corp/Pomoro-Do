@@ -106,6 +106,7 @@ public enum ErrorCode {
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "T-206", "리프레시 토큰이 제공되지 않았습니다."),
     INVALID_AUTHORIZATION_HEADER(HttpStatus.BAD_REQUEST, "T-207", "Authorization 헤더의 토큰이 유효하지 않습니다."),
     REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "T-208", "제공된 리프레시 토큰과 서버의 토큰이 일치하지 않습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "T-209", "제공된 리프레시 토큰이 서버에 존재하지 않습니다."),
 
     // JWT 검증 관련 에러 - 230번대
     INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED, "T-231", "JWT 서명 검증에 실패했습니다."),
@@ -120,6 +121,7 @@ public enum ErrorCode {
     // 기기 관련 에러 - 300번대
     DEVICE_ID_NOT_FOUND(HttpStatus.BAD_REQUEST, "D-300", "제공된 Device ID가 서버에 존재하지 않습니다."),
     INVALID_DEVICE_ID_HEADER(HttpStatus.BAD_REQUEST, "D-301", "Device ID 헤더의 값이 유효하지 않습니다."),
+    DEVICE_ID_MISMATCH(HttpStatus.BAD_REQUEST, "D-302", "제공된 Device ID와 서버의 Device ID가 일치하지 않습니다."),
 
     // 관리자 관련 에러: -400번대
     NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "A-400", "관리자 권한이 없습니다."),

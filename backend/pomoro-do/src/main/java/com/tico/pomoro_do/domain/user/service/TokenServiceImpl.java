@@ -61,7 +61,7 @@ public class TokenServiceImpl implements TokenService{
      * @throws CustomException 기기 ID가 DB에 존재하지 않을 때 발생하는 예외
      */
     @Override
-    public Refresh getRefreshEntityByDeviceId(String deviceId) {
+    public Refresh getRefreshByDeviceId(String deviceId) {
         return refreshRepository.findByDeviceId(deviceId)
                 .orElseThrow(() -> {
                     log.error("Device ID가 DB에 존재하지 않음: deviceId = {}", deviceId);
@@ -69,6 +69,21 @@ public class TokenServiceImpl implements TokenService{
                 });
     }
 
+    /**
+     * 주어진 리프레시 토큰으로 리프레시 토큰 엔티티를 가져옵니다.
+     *
+     * @param refreshToken 리프레시 토큰
+     * @return Refresh 엔티티
+     * @throws CustomException 리프레시 토큰이 DB에 존재하지 않을 때 발생하는 예외
+     */
+    @Override
+    public Refresh getRefreshByRefreshToken(String refreshToken) {
+        return refreshRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> {
+                    log.error("리프레시 토큰이 DB에 존재하지 않음: refreshToken = {}", refreshToken);
+                    return new CustomException(ErrorCode.REFRESH_TOKEN_NOT_FOUND);
+                });
+    }
 
     /**
      * 주어진 토큰을 검증
