@@ -10,9 +10,12 @@ public class TokenDTO {
 
     @Schema(description = "Access Token", nullable = false)
     private String accessToken;
+    @Schema(description = "Refresh Token", nullable = false)
+    private String refreshToken;
 
     @Builder
-    public TokenDTO(String accessToken){
+    public TokenDTO(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

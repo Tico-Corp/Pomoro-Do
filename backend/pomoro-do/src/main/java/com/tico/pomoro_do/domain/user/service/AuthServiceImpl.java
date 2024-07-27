@@ -132,10 +132,8 @@ public class AuthServiceImpl implements AuthService {
         String refreshToken = jwtUtil.createJwt("refresh", username, role, refreshExpiration); // 24시간
         // 리프레시 토큰을 DB에 저장
 //        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
-        // 리프레시 토큰을 쿠키로 응답에 추가
-        response.addCookie(CookieUtil.createCookie("refresh", refreshToken));
 
-        return new TokenDTO(accessToken);
+        return new TokenDTO(accessToken, refreshToken);
     }
 
     /**
@@ -278,6 +276,6 @@ public class AuthServiceImpl implements AuthService {
 
         // 새로운 액세스 토큰을 DTO로 반환합니다.
         log.info("Access 토큰 및 Refresh 토큰 재발급 완료: newAccessToken = {}, newRefreshToken = {}", newAccess, newRefresh);
-        return new TokenDTO(newAccess);
+        return new TokenDTO(newAccess, newRefresh);
     }
 }
