@@ -49,7 +49,7 @@ public class TokenServiceImpl implements TokenService{
                 .build();
 
         refreshRepository.save(refreshEntity);
-        log.info("리프레시 토큰 저장 성공: 사용자 = {}, 토큰 = {}", username, refresh);
+        log.info("리프레시 토큰 저장 성공: 사용자 = {}, 토큰 = {}, 기기 고유번호 = {}", username, refresh, deviceId);
 
     }
 

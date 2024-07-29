@@ -32,8 +32,8 @@ public interface AuthService {
     User createUser(String username, String nickname, String profileImageUrl, UserRole role);
 
     // 토큰 생성 및 저장
-    TokenDTO generateAndStoreTokens(String username, String role, HttpServletResponse response);
-    TokenDTO createAndPersistTokens(String username, String role, String deviceId);
+    TokenDTO generateAndStoreTokensForUser(String username, String role, HttpServletResponse response);
+    TokenDTO generateAndStoreTokensForAdmin(String username, String role, String deviceId);
 
     // Refresh 토큰으로 Access토큰 발급
     TokenDTO reissueToken(String deviceId, String refresh);

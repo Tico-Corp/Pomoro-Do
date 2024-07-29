@@ -99,8 +99,11 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public TokenDTO createAndPersistTokens(String username, String role, String deviceId) {
+    public TokenDTO generateAndStoreTokensForAdmin(String username, String role, String deviceId) {
         log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}, 기기 고유번호 = {}", username, role, deviceId);
+
+        // DB에서 username에 해당하는 기존 리프레시 토큰 삭제
+        refreshRepository.deleteByUsername(username);
 
         // 액세스 토큰 생성
         String accessToken = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
@@ -122,7 +125,7 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public TokenDTO generateAndStoreTokens(String username, String role, HttpServletResponse response) {
+    public TokenDTO generateAndStoreTokensForUser(String username, String role, HttpServletResponse response) {
         log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}", username, role);
 
         // 액세스 토큰 생성
@@ -183,7 +186,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         log.info("구글 로그인 성공: 이메일 = {}", userInfo.getEmail());
-        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
+        return generateAndStoreTokensForUser(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
     }
 
     /**
@@ -227,7 +230,7 @@ public class AuthServiceImpl implements AuthService {
         socialLoginRepository.save(socialLogin);
 
         log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
-        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
+        return generateAndStoreTokensForUser(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
     }
 
     /**
