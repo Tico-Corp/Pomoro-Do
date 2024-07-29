@@ -70,6 +70,20 @@ public class TokenServiceImpl implements TokenService{
     }
 
     /**
+     * 주어진 리프레시 엔티티와 deviceId를 검증합니다.
+     *
+     * @param refreshEntity 리프레시 엔티티
+     * @param deviceId 기기 고유 번호
+     * @throws CustomException deviceId 불일치 시 발생하는 예외
+     */
+    private void validateDeviceId(Refresh refreshEntity, String deviceId) {
+        if (!refreshEntity.getDeviceId().equals(deviceId)) {
+            log.error("Device ID가 DB에 존재하지 않음: deviceId = {}", deviceId);
+            throw new CustomException(ErrorCode.DEVICE_ID_MISMATCH);
+        }
+    }
+
+    /**
      * 주어진 리프레시 토큰으로 리프레시 토큰 엔티티를 가져옵니다.
      *
      * @param refreshToken 리프레시 토큰
@@ -94,6 +108,7 @@ public class TokenServiceImpl implements TokenService{
      */
     @Override
     public void validateToken(String token, String expectedCategory) {
+        log.info(expectedCategory + " 토큰 검증 시작: token = {}", token);
 
         if (token == null) {
             log.error("토큰이 null입니다. 카테고리 = {}", expectedCategory);
@@ -138,39 +153,38 @@ public class TokenServiceImpl implements TokenService{
                             : ErrorCode.INVALID_REFRESH_TOKEN
             );
         }
-    }
 
+        log.info(expectedCategory + " 토큰 검증 완료");
+    }
 
     //만료기간이 지난 토큰은 스케줄러를 돌려서 삭제하라.
     /**
      * 로그아웃 시 리프레시 토큰 삭제
      *
-     * @param request HTTP 요청 객체
-     * @param response HTTP 응답 객체
+     * @param deviceId 기기 고유 번호
+     * @param refreshToken 리프레시 토큰
      */
     @Transactional
     @Override
-    public void removeRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-        // 쿠키에서 리프레시 토큰을 가져옵니다.
-        String refreshToken = CookieUtil.getRefreshToken(request);
-
+    public void removeRefreshToken(String deviceId, String refreshToken) {
         // 리프레시 토큰이 없는 경우, 로그를 기록하고 예외를 발생시킵니다.
         if (refreshToken == null || refreshToken.isEmpty()) {
-            log.warn("리프레시 토큰이 쿠키에서 발견되지 않음");
+            log.warn("리프레시 토큰을 입력해주세요.");
             throw new CustomException(ErrorCode.MISSING_REFRESH_TOKEN);
         }
 
         // 리프레시 토큰을 검증합니다.
         validateToken(refreshToken, "refresh");
 
+        // DB에서 리프레시 토큰에 해당하는 리프레시 토큰 정보를 가져옵니다.
+        Refresh refreshEntity = getRefreshByRefreshToken(refreshToken);
+
+        // DB에 저장된 deviceId와 요청된 deviceId이 일치하는지 확인합니다.
+        validateDeviceId(refreshEntity, deviceId);
+
         log.info("로그아웃: 리프레시 토큰 삭제 시작");
-
-        // 리프레시 토큰 쿠키를 만료시킵니다.
-        CookieUtil.expireCookie(response, "refresh");
-
         // DB에서 리프레시 토큰을 제거합니다.
         refreshRepository.deleteByRefreshToken(refreshToken);
-
         log.info("로그아웃: 리프레시 토큰 삭제 완료");
     }
 

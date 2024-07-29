@@ -236,13 +236,27 @@ public class AuthController {
      * 로그아웃 API
      * 로그아웃하여 Refresh 토큰을 삭제합니다.
      *
-     * @param request  HTTP 요청 객체
-     * @param response HTTP 응답 객체
+     * @param deviceId 기기 고유 번호
+     * @param refreshToken 리프레시 토큰
      * @return 로그아웃 및 토큰 삭제 결과를 반환합니다.
      */
     @Operation(
-            summary = "로그아웃 및 토큰 만료",
-            description = "사용자가 로그아웃할 때, 쿠키의 Refresh 토큰을 만료시켜 삭제합니다."
+            summary = "로그아웃 및 토큰 삭제",
+            description = "사용자가 로그아웃할 때, 서버의 Refresh 토큰을 삭제합니다.",
+            parameters = {
+                    @Parameter(
+                            name = "Device-Id",
+                            description = "기기 고유 번호",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    ),
+                    @Parameter(
+                            name = "Refresh-Token",
+                            description = "리프레시 토큰",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    )
+            }
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
@@ -252,11 +266,11 @@ public class AuthController {
     })
     @DeleteMapping("/logout")
     public ResponseEntity<SuccessResponseDTO<String>> removeToken(
-            HttpServletRequest request,
-            HttpServletResponse response
+            @RequestHeader("Device-Id") String deviceId,
+            @RequestHeader("Refresh-Token") String refreshToken
     ) {
         // 액세스 토큰으로 현재 Redis 정보 삭제
-        tokenService.removeRefreshToken(request, response);
+        tokenService.removeRefreshToken(deviceId, refreshToken);
 
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus().value())

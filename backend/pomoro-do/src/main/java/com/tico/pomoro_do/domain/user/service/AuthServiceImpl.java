@@ -272,9 +272,7 @@ public class AuthServiceImpl implements AuthService {
         log.info("Refresh 토큰으로 Access 토큰 재발급 시도: deviceId = {}", deviceId);
 
         // 리프레시 토큰을 검증합니다.
-        log.info("Refresh 토큰 검증 시작: refreshToken = {}", refresh);
         tokenService.validateToken(refresh, "refresh");
-        log.info("Refresh 토큰 검증 완료");
 
         // DB에서 리프레시 토큰에 해당하는 리프레시 토큰 정보를 가져옵니다.
         Refresh refreshEntity = tokenService.getRefreshByRefreshToken(refresh);
