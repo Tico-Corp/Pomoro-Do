@@ -16,9 +16,6 @@ public interface TokenService {
     // 기기 고유번호 검증
 //    void validateDeviceId(Refresh refreshEntity, String deviceId);
 
-    // 토큰 검증
-    void validateToken(String token, String expectedCategory);
-
     // 토큰 삭제
     void removeRefreshToken(String deviceId, String refreshToken);
 }
