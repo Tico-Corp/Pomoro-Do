@@ -90,27 +90,26 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 헤더에서 토큰 값을 추출
+     * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
      *
-     * @param header 토큰 헤더 (예: "Bearer <token>")
-     * @param tokenType 토큰의 타입 (Google ID 토큰 또는 JWT)
-     * @return 추출된 토큰 값
-     * @throws CustomException 토큰 헤더가 유효하지 않은 경우 예외 발생
-     *                         - 헤더가 null이거나 비어있는 경우
-     *                         - 헤더 형식이 "Bearer <token>" 형식이 아닌 경우
-     *                         - 토큰 타입이 Google ID 토큰인데 헤더 형식이 맞지 않는 경우
+     * @param username 사용자 이메일
+     * @param role 사용자 역할
+     * @param deviceId 기기 고유 번호
+     * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
      */
     @Override
-    public String extractToken(String header, TokenType tokenType) {
+    @Transactional
+    public TokenDTO createAndPersistTokens(String username, String role, String deviceId) {
+        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}, 기기 고유번호 = {}", username, role, deviceId);
 
-        if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
-            ErrorCode errorCode = tokenType.equals(TokenType.GOOGLE)
-                    ? ErrorCode.INVALID_GOOGLE_TOKEN_HEADER
-                    : ErrorCode.INVALID_AUTHORIZATION_HEADER;
-            throw new CustomException(errorCode);
-        }
+        // 액세스 토큰 생성
+        String accessToken = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
+        // 리프레시 토큰 생성
+        String refreshToken = jwtUtil.createJwt("refresh", username, role, refreshExpiration); // 24시간
+        // 리프레시 토큰을 DB에 저장
+        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration, deviceId);
 
-        return header.substring(7);
+        return new TokenDTO(accessToken, refreshToken);
     }
 
     /**
@@ -134,6 +133,30 @@ public class AuthServiceImpl implements AuthService {
 //        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
 
         return new TokenDTO(accessToken, refreshToken);
+    }
+
+    /**
+     * 헤더에서 토큰 값을 추출
+     *
+     * @param header 토큰 헤더 (예: "Bearer <token>")
+     * @param tokenType 토큰의 타입 (Google ID 토큰 또는 JWT)
+     * @return 추출된 토큰 값
+     * @throws CustomException 토큰 헤더가 유효하지 않은 경우 예외 발생
+     *                         - 헤더가 null이거나 비어있는 경우
+     *                         - 헤더 형식이 "Bearer <token>" 형식이 아닌 경우
+     *                         - 토큰 타입이 Google ID 토큰인데 헤더 형식이 맞지 않는 경우
+     */
+    @Override
+    public String extractToken(String header, TokenType tokenType) {
+
+        if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
+            ErrorCode errorCode = tokenType.equals(TokenType.GOOGLE)
+                    ? ErrorCode.INVALID_GOOGLE_TOKEN_HEADER
+                    : ErrorCode.INVALID_AUTHORIZATION_HEADER;
+            throw new CustomException(errorCode);
+        }
+
+        return header.substring(7);
     }
 
     /**

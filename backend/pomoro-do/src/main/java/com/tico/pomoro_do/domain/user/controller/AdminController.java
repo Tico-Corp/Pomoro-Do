@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,7 +35,6 @@ public class AdminController {
      * 관리자 회원가입 API
      *
      * @param request AdminJoinDTO 객체
-     * @param response HttpServletResponse 객체
      * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
      */
     @Operation(
@@ -59,11 +57,10 @@ public class AdminController {
     })
     @PostMapping("/join")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminJoin(
-            @RequestBody AdminJoinDTO request,
-            HttpServletResponse response
+            @RequestBody AdminJoinDTO request
     ) {
         log.info("관리자 회원가입 요청: {}", request.getUsername());
-        TokenDTO jwtResponse = adminService.adminJoin(request, response);
+        TokenDTO jwtResponse = adminService.adminJoin(request);
         SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
@@ -77,7 +74,6 @@ public class AdminController {
      * 관리자 로그인 API
      *
      * @param request AdminLoginDTO 객체
-     * @param response HttpServletResponse 객체
      * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
      */
     @Operation(
@@ -101,11 +97,10 @@ public class AdminController {
     })
     @PostMapping("/login")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminLogin(
-            @RequestBody AdminLoginDTO request,
-            HttpServletResponse response
+            @RequestBody AdminLoginDTO request
     ) {
         log.info("관리자 로그인 요청: {}", request.getUsername());
-        TokenDTO jwtResponse = adminService.adminLogin(request, response);
+        TokenDTO jwtResponse = adminService.adminLogin(request);
         SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                 .status(SuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())

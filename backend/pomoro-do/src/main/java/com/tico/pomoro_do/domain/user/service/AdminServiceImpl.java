@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true) // (성능 최적화 - 읽기 전용에만 사용)
@@ -32,13 +33,12 @@ public class AdminServiceImpl implements AdminService {
      * 관리자 회원가입 처리
      *
      * @param adminJoinDTO AdminJoinDTO 객체
-     * @param response HttpServletResponse 객체
-     * @return 성공 시 JwtDTO를 포함하는 TokenDTO 객체
+     * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
      * @throws CustomException 이메일 도메인이 유효하지 않거나 이미 등록된 사용자인 경우 예외를 던집니다.
      */
     @Override
     @Transactional
-    public TokenDTO adminJoin(AdminJoinDTO adminJoinDTO, HttpServletResponse response) {
+    public TokenDTO adminJoin(AdminJoinDTO adminJoinDTO) {
         String username = adminJoinDTO.getUsername();
         String nickname = adminJoinDTO.getNickname();
 
@@ -52,30 +52,38 @@ public class AdminServiceImpl implements AdminService {
         // 관리자 생성하기
         User admin = authService.createUser(username, nickname, "", UserRole.ADMIN);
 
-        return authService.generateAndStoreTokens(username, String.valueOf(UserRole.ADMIN), response);
+        // 역할
+        String role = String.valueOf(UserRole.ADMIN);
+        // 관리자 고유 번호: UUID 기반 + 역할명
+        String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
+
+        return authService.createAndPersistTokens(username, String.valueOf(UserRole.ADMIN), deviceId);
     }
 
     /**
      * 관리자 로그인 처리
      *
      * @param adminLoginDTO AdminLoginDTO 객체
-     * @param response HttpServletResponse 객체
-     * @return 성공 시 JwtDTO를 포함하는 TokenDTO 객체
+     * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
      * @throws CustomException 이메일 도메인이 유효하지 않거나 관리자가 아닌 경우 예외를 던집니다.
      */
     @Override
     @Transactional
-    public TokenDTO adminLogin(AdminLoginDTO adminLoginDTO, HttpServletResponse response){
+    public TokenDTO adminLogin(AdminLoginDTO adminLoginDTO){
         String username = adminLoginDTO.getUsername();
         String nickname = adminLoginDTO.getNickname();
 
-        //관리자 로그인 도메인 가져오기
+        // 로그인 도메인 가져오기
         String domain = getEmailDomain(username);
-        // 관리자 로그인 이메일 도메인 검증
+        // 로그인 이메일 검증 (관리자 도메인)
         validateAdminEmailDomain(domain);
         // 관리자 로그인 검증
         validateAdminUser(username, nickname);
-        return authService.generateAndStoreTokens(username, String.valueOf(UserRole.ADMIN), response);
+        // 역할
+        String role = String.valueOf(UserRole.ADMIN);
+        // 관리자 고유 번호: UUID 기반 + 역할명
+        String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
+        return authService.createAndPersistTokens(username, role, deviceId);
     }
 
     /**
