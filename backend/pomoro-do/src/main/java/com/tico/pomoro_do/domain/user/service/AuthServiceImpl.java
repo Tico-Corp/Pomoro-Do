@@ -142,20 +142,35 @@ public class AuthServiceImpl implements AuthService {
      * 헤더에서 토큰 값을 추출
      *
      * @param header 토큰 헤더 (예: "Bearer <token>")
-     * @param tokenType 토큰의 타입 (Google ID 토큰 또는 JWT)
+     * @param tokenType 토큰의 타입 (Google ID 토큰, JWT ACCESS 토큰 또는 JWT REFRESH 토큰)
      * @return 추출된 토큰 값
      * @throws CustomException 토큰 헤더가 유효하지 않은 경우 예외 발생
      *                         - 헤더가 null이거나 비어있는 경우
      *                         - 헤더 형식이 "Bearer <token>" 형식이 아닌 경우
      *                         - 토큰 타입이 Google ID 토큰인데 헤더 형식이 맞지 않는 경우
+     *                         - JWT ACCESS 또는 REFRESH 토큰의 경우 헤더 형식이 맞지 않는 경우
      */
     @Override
     public String extractToken(String header, TokenType tokenType) {
 
         if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
-            ErrorCode errorCode = tokenType.equals(TokenType.GOOGLE)
-                    ? ErrorCode.INVALID_GOOGLE_TOKEN_HEADER
-                    : ErrorCode.INVALID_AUTHORIZATION_HEADER;
+            ErrorCode errorCode;
+
+            switch (tokenType) {
+                case GOOGLE:
+                    errorCode = ErrorCode.INVALID_GOOGLE_TOKEN_HEADER;
+                    break;
+                case ACCESS:
+                    errorCode = ErrorCode.INVALID_AUTHORIZATION_HEADER;
+                    break;
+                case REFRESH:
+                    errorCode = ErrorCode.INVALID_REFRESH_TOKEN_HEADER;
+                    break;
+                default:
+                    errorCode = ErrorCode.INVALID_AUTHORIZATION_HEADER; // 기본값 설정
+                    break;
+            }
+
             throw new CustomException(errorCode);
         }
 

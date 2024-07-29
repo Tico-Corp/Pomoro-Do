@@ -105,8 +105,9 @@ public enum ErrorCode {
     MISSING_ACCESS_TOKEN(HttpStatus.BAD_REQUEST, "T-205", "액세스 토큰이 제공되지 않았습니다."),
     MISSING_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "T-206", "리프레시 토큰이 제공되지 않았습니다."),
     INVALID_AUTHORIZATION_HEADER(HttpStatus.BAD_REQUEST, "T-207", "Authorization 헤더의 토큰이 유효하지 않습니다."),
-    REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "T-208", "제공된 리프레시 토큰과 서버의 토큰이 일치하지 않습니다."),
-    REFRESH_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "T-209", "제공된 리프레시 토큰이 서버에 존재하지 않습니다."),
+    INVALID_REFRESH_TOKEN_HEADER(HttpStatus.BAD_REQUEST, "T-208", "Refresh-Token 헤더의 토큰이 유효하지 않습니다."),
+    REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "T-209", "제공된 리프레시 토큰과 서버의 토큰이 일치하지 않습니다."),
+    REFRESH_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "T-210", "제공된 리프레시 토큰이 서버에 존재하지 않습니다."),
 
     // JWT 검증 관련 에러 - 230번대
     INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED, "T-231", "JWT 서명 검증에 실패했습니다."),
