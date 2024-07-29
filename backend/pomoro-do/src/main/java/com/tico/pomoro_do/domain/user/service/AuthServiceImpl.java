@@ -90,6 +90,55 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
+     * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
+     *
+     * @param username 사용자 이메일
+     * @param role 사용자 역할
+     * @param deviceId 기기 고유 번호
+     * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
+     */
+    @Override
+    @Transactional
+    public TokenDTO generateAndStoreTokensForAdmin(String username, String role, String deviceId) {
+        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}, 기기 고유번호 = {}", username, role, deviceId);
+
+        // DB에서 username에 해당하는 기존 리프레시 토큰 삭제
+        refreshRepository.deleteByUsername(username);
+
+        // 액세스 토큰 생성
+        String accessToken = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
+        // 리프레시 토큰 생성
+        String refreshToken = jwtUtil.createJwt("refresh", username, role, refreshExpiration); // 24시간
+        // 리프레시 토큰을 DB에 저장
+        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration, deviceId);
+
+        return new TokenDTO(accessToken, refreshToken);
+    }
+
+    /**
+     * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
+     *
+     * @param username 사용자 이메일
+     * @param role 사용자 역할
+     * @param response HttpServletResponse 객체, 생성된 리프레시 토큰을 쿠키로 추가하기 위해 사용됨
+     * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
+     */
+    @Override
+    @Transactional
+    public TokenDTO generateAndStoreTokensForUser(String username, String role, HttpServletResponse response) {
+        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}", username, role);
+
+        // 액세스 토큰 생성
+        String accessToken = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
+        // 리프레시 토큰 생성
+        String refreshToken = jwtUtil.createJwt("refresh", username, role, refreshExpiration); // 24시간
+        // 리프레시 토큰을 DB에 저장
+//        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
+
+        return new TokenDTO(accessToken, refreshToken);
+    }
+
+    /**
      * 헤더에서 토큰 값을 추출
      *
      * @param header 토큰 헤더 (예: "Bearer <token>")
@@ -111,29 +160,6 @@ public class AuthServiceImpl implements AuthService {
         }
 
         return header.substring(7);
-    }
-
-    /**
-     * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
-     *
-     * @param username 사용자 이메일
-     * @param role 사용자 역할
-     * @param response HttpServletResponse 객체, 생성된 리프레시 토큰을 쿠키로 추가하기 위해 사용됨
-     * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
-     */
-    @Override
-    @Transactional
-    public TokenDTO generateAndStoreTokens(String username, String role, HttpServletResponse response) {
-        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}", username, role);
-
-        // 액세스 토큰 생성
-        String accessToken = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
-        // 리프레시 토큰 생성
-        String refreshToken = jwtUtil.createJwt("refresh", username, role, refreshExpiration); // 24시간
-        // 리프레시 토큰을 DB에 저장
-//        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
-
-        return new TokenDTO(accessToken, refreshToken);
     }
 
     /**
@@ -160,7 +186,7 @@ public class AuthServiceImpl implements AuthService {
         }
 
         log.info("구글 로그인 성공: 이메일 = {}", userInfo.getEmail());
-        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
+        return generateAndStoreTokensForUser(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
     }
 
     /**
@@ -204,7 +230,7 @@ public class AuthServiceImpl implements AuthService {
         socialLoginRepository.save(socialLogin);
 
         log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
-        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
+        return generateAndStoreTokensForUser(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
     }
 
     /**

@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public interface AdminService {
 
     //관리자 회원가입
-    TokenDTO adminJoin(AdminJoinDTO adminJoinDTO, HttpServletResponse response);
+    TokenDTO adminJoin(AdminJoinDTO adminJoinDTO);
 
     //관리자 로그인
-    TokenDTO adminLogin(AdminLoginDTO adminLoginDTO, HttpServletResponse response);
+    TokenDTO adminLogin(AdminLoginDTO adminLoginDTO);
 }
