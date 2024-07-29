@@ -139,30 +139,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 헤더에서 토큰 값을 추출
-     *
-     * @param header 토큰 헤더 (예: "Bearer <token>")
-     * @param tokenType 토큰의 타입 (Google ID 토큰 또는 JWT)
-     * @return 추출된 토큰 값
-     * @throws CustomException 토큰 헤더가 유효하지 않은 경우 예외 발생
-     *                         - 헤더가 null이거나 비어있는 경우
-     *                         - 헤더 형식이 "Bearer <token>" 형식이 아닌 경우
-     *                         - 토큰 타입이 Google ID 토큰인데 헤더 형식이 맞지 않는 경우
-     */
-    @Override
-    public String extractToken(String header, TokenType tokenType) {
-
-        if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
-            ErrorCode errorCode = tokenType.equals(TokenType.GOOGLE)
-                    ? ErrorCode.INVALID_GOOGLE_TOKEN_HEADER
-                    : ErrorCode.INVALID_AUTHORIZATION_HEADER;
-            throw new CustomException(errorCode);
-        }
-
-        return header.substring(7);
-    }
-
-    /**
      * 구글 ID 토큰으로 로그인 처리
      *
      * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
@@ -177,7 +153,7 @@ public class AuthServiceImpl implements AuthService {
     public TokenDTO googleLogin(String idTokenHeader, HttpServletResponse response) throws GeneralSecurityException, IOException {
         log.info("구글 로그인 처리 시작");
 
-        String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
+        String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (!userRepository.existsByUsername(userInfo.getEmail())) {
@@ -205,7 +181,7 @@ public class AuthServiceImpl implements AuthService {
     public TokenDTO googleJoin(String idTokenHeader, GoogleJoinDTO requestUserInfo, HttpServletResponse response) throws GeneralSecurityException, IOException {
         log.info("구글 회원가입 처리 시작");
 
-        String idToken = extractToken(idTokenHeader, TokenType.GOOGLE);
+        String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (userRepository.existsByUsername(userInfo.getEmail())) {
@@ -263,18 +239,18 @@ public class AuthServiceImpl implements AuthService {
      * Refresh 토큰을 사용하여 Access 토큰 재발급
      *
      * @param deviceId 기기 고유 번호
-     * @param refresh 리프레시 토큰
+     * @param refreshHeader 리프레시 토큰
      * @return 새 Access 토큰을 포함하는 TokenDTO
      */
     @Transactional
     @Override
-    public TokenDTO reissueToken(String deviceId, String refresh) {
+    public TokenDTO reissueToken(String deviceId, String refreshHeader) {
         log.info("Refresh 토큰으로 Access 토큰 재발급 시도: deviceId = {}", deviceId);
+        // 헤더를 검증합니다.
+        String refresh = jwtUtil.extractToken(refreshHeader, TokenType.REFRESH);
 
         // 리프레시 토큰을 검증합니다.
-        log.info("Refresh 토큰 검증 시작: refreshToken = {}", refresh);
-        tokenService.validateToken(refresh, "refresh");
-        log.info("Refresh 토큰 검증 완료");
+        jwtUtil.validateToken(refresh, "refresh");
 
         // DB에서 리프레시 토큰에 해당하는 리프레시 토큰 정보를 가져옵니다.
         Refresh refreshEntity = tokenService.getRefreshByRefreshToken(refresh);

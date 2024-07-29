@@ -1,6 +1,13 @@
 package com.tico.pomoro_do.global.auth.jwt;
 
+import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.global.exception.CustomException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -63,4 +70,102 @@ public class JWTUtil {
                 .signWith(secretKey)
                 .compact();
     }
+
+    // 토큰 추출 로직
+    /**
+     * 헤더에서 토큰 값을 추출
+     *
+     * @param header 토큰 헤더 (예: "Bearer <token>")
+     * @param tokenType 토큰의 타입 (Google ID 토큰, JWT ACCESS 토큰 또는 JWT REFRESH 토큰)
+     * @return 추출된 토큰 값
+     * @throws CustomException 토큰 헤더가 유효하지 않은 경우 예외 발생
+     *                         - 헤더가 null이거나 비어있는 경우
+     *                         - 헤더 형식이 "Bearer <token>" 형식이 아닌 경우
+     *                         - 토큰 타입이 Google ID 토큰인데 헤더 형식이 맞지 않는 경우
+     *                         - JWT ACCESS 또는 REFRESH 토큰의 경우 헤더 형식이 맞지 않는 경우
+     */
+    public String extractToken(String header, TokenType tokenType) {
+
+        if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
+            ErrorCode errorCode;
+
+            switch (tokenType) {
+                case GOOGLE:
+                    errorCode = ErrorCode.INVALID_GOOGLE_TOKEN_HEADER;
+                    break;
+                case ACCESS:
+                    errorCode = ErrorCode.INVALID_AUTHORIZATION_HEADER;
+                    break;
+                case REFRESH:
+                    errorCode = ErrorCode.INVALID_REFRESH_TOKEN_HEADER;
+                    break;
+                default:
+                    errorCode = ErrorCode.INVALID_AUTHORIZATION_HEADER; // 기본값 설정
+                    break;
+            }
+
+            throw new CustomException(errorCode);
+        }
+
+        return header.substring(7);
+    }
+
+    // 토큰 검증 로직
+    /**
+     * 주어진 토큰을 검증
+     *
+     * @param token 검증할 토큰
+     * @param expectedCategory 예상되는 토큰 카테고리 (예: "access" 또는 "refresh")
+     * @throws CustomException 검증 실패 시 발생하는 예외
+     */
+    public void validateToken(String token, String expectedCategory) {
+        log.info(expectedCategory + " 토큰 검증 시작: token = {}", token);
+
+        if (token == null) {
+            log.error("토큰이 null입니다. 카테고리 = {}", expectedCategory);
+            throw new CustomException(
+                    expectedCategory.equals("access")
+                            ? ErrorCode.MISSING_ACCESS_TOKEN
+                            : ErrorCode.MISSING_REFRESH_TOKEN
+            );
+        }
+
+        // 토큰 만료 및 서명 오류 확인
+        try {
+            isExpired(token);
+        } catch (ExpiredJwtException e) {
+            log.error("토큰 만료됨: 카테고리 = {}", expectedCategory);
+            throw new CustomException(
+                    expectedCategory.equals("access")
+                            ? ErrorCode.ACCESS_TOKEN_EXPIRED
+                            : ErrorCode.REFRESH_TOKEN_EXPIRED
+            );
+        } catch (SignatureException e) {
+            log.error("유효하지 않은 JWT 서명: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.INVALID_JWT_SIGNATURE);
+        } catch (MalformedJwtException e) {
+            log.error("유효하지 않은 JWT 형식: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.INVALID_MALFORMED_JWT);
+        } catch (UnsupportedJwtException e) {
+            log.error("지원하지 않는 JWT: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.UNSUPPORTED_JWT);
+        } catch (IllegalArgumentException e) {
+            log.error("잘못된 JWT 토큰: 카테고리 = {}", expectedCategory);
+            throw new CustomException(ErrorCode.ILLEGAL_ARGUMENT);
+        }
+
+        // 토큰 카테고리 확인
+        String category = getCategory(token);
+        if (!category.equals(expectedCategory)) {
+            log.error("토큰 카테고리 불일치: 예상 = {}, 실제 = {}", expectedCategory, category);
+            throw new CustomException(
+                    expectedCategory.equals("access")
+                            ? ErrorCode.INVALID_ACCESS_TOKEN
+                            : ErrorCode.INVALID_REFRESH_TOKEN
+            );
+        }
+
+        log.info(expectedCategory + " 토큰 검증 완료");
+    }
+
 }

@@ -19,9 +19,6 @@ public interface AuthService {
     // 구글 ID 토큰 무결성 검사
     GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException;
 
-    // 토큰 형태 검사
-    String extractToken(String header, TokenType tokenType);
-
     // 구글 로그인
     TokenDTO googleLogin(String idTokenHeader, HttpServletResponse response) throws GeneralSecurityException, IOException;
 

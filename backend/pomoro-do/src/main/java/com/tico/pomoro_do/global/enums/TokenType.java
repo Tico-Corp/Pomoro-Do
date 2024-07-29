@@ -4,5 +4,7 @@ public enum TokenType {
 
     GOOGLE,
 
-    JWT
+    ACCESS,
+
+    REFRESH
 }
