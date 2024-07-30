@@ -56,6 +56,8 @@ public enum ErrorCode {
     INVALID_COOKIE(HttpStatus.BAD_REQUEST, "G-012", "쿠키에 유효하지 않은 값이 포함되어 있습니다. 쿠키 설정을 확인해 주세요."),
     // 헤더에 유효하지 않은 값이 있는 경우
     INVALID_HEADER(HttpStatus.BAD_REQUEST, "G-013", "요청 헤더에 유효하지 않은 값이 포함되어 있습니다. 올바른 헤더 값을 제공해 주세요."),
+    // 요청 파라미터의 타입이 예상과 다른 경우
+    INVALID_PARAMETER_TYPE(HttpStatus.BAD_REQUEST, "G-014", "요청 파라미터의 타입이 잘못되었습니다."),
 
     // 401 : Unauthorized - 인증이 필요하거나 인증에 실패한 경우
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "G-020", "인증되지 않은 사용자입니다. 유효한 인증 정보를 제공해 주세요."),
@@ -108,6 +110,7 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN_HEADER(HttpStatus.BAD_REQUEST, "T-208", "Refresh-Token 헤더의 토큰이 유효하지 않습니다."),
     REFRESH_TOKEN_MISMATCH(HttpStatus.BAD_REQUEST, "T-209", "제공된 리프레시 토큰과 서버의 토큰이 일치하지 않습니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "T-210", "제공된 리프레시 토큰이 서버에 존재하지 않습니다."),
+    INVALID_TOKEN_TYPE(HttpStatus.BAD_REQUEST, "T-211", "제공된 토큰의 유형이 올바르지 않습니다. 올바른 토큰을 사용해 주세요."),
 
     // JWT 검증 관련 에러 - 230번대
     INVALID_JWT_SIGNATURE(HttpStatus.UNAUTHORIZED, "T-231", "JWT 서명 검증에 실패했습니다."),

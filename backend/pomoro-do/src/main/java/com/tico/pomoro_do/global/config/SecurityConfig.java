@@ -31,7 +31,7 @@ public class SecurityConfig {
     private static final String[] WHITE_LIST = {
             "/api",
             "/api/admin/**",
-            "/api/auth/google/**", "/api/auth/token/reissue"
+            "/api/auth/google/**", "/api/auth/token/**"
     };
 
     private static final String[] swaggerURL = {

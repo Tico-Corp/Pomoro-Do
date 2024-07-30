@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * 전역 예외 처리 핸들러 클래스.
@@ -153,6 +155,31 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.BAD_REQUEST.getCode())
                 .message("Required request is missing. Bad request: " + e.getMessage())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 요청 파라미터의 타입 불일치(MethodArgumentTypeMismatchException) 처리.
+     * API 호출 시 파라미터의 타입이 예상과 다른 경우 발생한다.
+     *
+     * @param ex MethodArgumentTypeMismatchException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<ErrorResponseEntity> handleTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+        log.error("MethodArgumentTypeMismatchException: ", ex);
+
+        String parameterName = ex.getName();
+        String parameterType = Objects.requireNonNull(ex.getRequiredType()).getSimpleName();
+        String message = String.format("Parameter '%s' should be of type '%s'.", parameterName, parameterType);
+
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .code(ErrorCode.INVALID_PARAMETER_TYPE.getCode())
+                .message(message)
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

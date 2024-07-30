@@ -1,8 +1,8 @@
 package com.tico.pomoro_do.domain.user.service;
 
 import com.tico.pomoro_do.domain.user.entity.Refresh;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.enums.TokenType;
 
 public interface TokenService {
 
@@ -18,4 +18,7 @@ public interface TokenService {
 
     // 토큰 삭제
     void removeRefreshToken(String deviceId, String refreshToken);
+
+    // 주어진 토큰 타입에 대한 토큰 검증 SuccessCode를 반환
+    SuccessCode getSuccessCodeForTokenType(TokenType tokenType);
 }

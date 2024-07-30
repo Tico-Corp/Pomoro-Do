@@ -18,6 +18,7 @@ public enum SuccessCode {
     //토큰
     ACCESS_TOKEN_REISSUED(HttpStatus.OK,  "액세스 토큰이 성공적으로 재발급되었습니다."),
     ACCESS_TOKEN_VALIDATED(HttpStatus.OK, "액세스 토큰이 유효합니다."),
+    REFRESH_TOKEN_VALIDATED(HttpStatus.OK, "리프레시 토큰이 유효합니다."),
 
     //관리자
     ADMIN_LOGIN_SUCCESS(HttpStatus.OK, "관리자 로그인에 성공했습니다."),

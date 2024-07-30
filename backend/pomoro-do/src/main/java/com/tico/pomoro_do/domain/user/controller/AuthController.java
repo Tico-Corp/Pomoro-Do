@@ -198,40 +198,6 @@ public class AuthController {
         return ResponseEntity.ok(successResponse);
     }
 
-//    /**
-//     * 액세스 토큰 검증 API
-//     * 이 엔드포인트는 JWT 인증이 필요하지 않습니다.
-//     *
-//     * @param tokenHeader X-Auth-Token 헤더로 전달된 액세스 토큰
-//     * @return 토큰 검증 결과를 반환합니다.
-//     */
-//    @Operation(
-//            summary = "액세스 토큰 검증",
-//            description = "전달된 액세스 토큰이 유효한지 검증합니다."
-//    )
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "토큰 검증 성공"),
-//            @ApiResponse(responseCode = "401", description = "토큰이 유효하지 않음",
-//                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
-//            @ApiResponse(responseCode = "400", description = "토큰 헤더가 없음",
-//                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
-//    })
-//    @GetMapping("/token/validate")
-//    public ResponseEntity<SuccessResponseDTO<String>> validateAccessToken(
-//            @RequestHeader("X-Auth-Token") String tokenHeader
-//    ) {
-//        String token = authService.extractToken(tokenHeader, TokenType.JWT);
-//        tokenService.validateToken(token, "access");
-//        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
-//                .status(SuccessCode.ACCESS_TOKEN_VALIDATED.getHttpStatus().value())
-//                .message(SuccessCode.ACCESS_TOKEN_VALIDATED.getMessage())
-//                .data(SuccessCode.ACCESS_TOKEN_VALIDATED.name()) // data가 없을 때는 null로 설정
-//                .build();
-//
-//        // 검증 성공 시, HTTP 상태 코드 200(OK)와 함께 결과 반환
-//        return ResponseEntity.ok(successResponse);
-//    }
-
     /**
      * 로그아웃 API
      * 로그아웃하여 Refresh 토큰을 삭제합니다.
@@ -259,8 +225,7 @@ public class AuthController {
             }
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그아웃 성공",
-                    content = @Content(schema = @Schema(implementation = SuccessResponseDTO.class))),
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
             @ApiResponse(responseCode = "400", description = "로그아웃 요청이 잘못됨",
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
     })
@@ -279,6 +244,42 @@ public class AuthController {
                 .build();
 
         // 토큰 삭제 성공 응답 처리
+        return ResponseEntity.ok(successResponse);
+    }
+
+    /**
+     * JWT 토큰 검증 API
+     * 이 엔드포인트는 JWT 인증이 필요하지 않습니다.
+     */
+    @Operation(
+            summary = "JWT 토큰 검증",
+            description = "전달된 JWT 토큰이 유효한지 검증합니다. Authorization 헤더에 JWT 토큰을 입력합니다. " +
+                    "토큰 타입은 'tokenType' 파라미터로 지정할 수 있습니다. ('ACCESS' 또는 'REFRESH')"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "토큰 검증 성공"),
+            @ApiResponse(responseCode = "401", description = "토큰이 유효하지 않음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
+            @ApiResponse(responseCode = "400", description = "토큰 헤더가 없음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
+    })
+    @GetMapping("/token/validate")
+    public ResponseEntity<SuccessResponseDTO<String>> validateToken(HttpServletRequest request, @RequestParam("tokenType") TokenType tokenType) {
+
+        String tokenHeader = request.getHeader("Authorization");
+        // 헤더에서 토큰 추출
+        String token = jwtUtil.extractToken(tokenHeader, TokenType.ACCESS);
+        // 토큰 검증
+        jwtUtil.validateToken(token, tokenType.name().toLowerCase());
+        // SuccessCode 반환
+        SuccessCode successCode = tokenService.getSuccessCodeForTokenType(tokenType);;
+        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+                .status(successCode.getHttpStatus().value())
+                .message(successCode.getMessage())
+                .data(successCode.name()) // data가 없을 때는 null로 설정
+                .build();
+
+        // 검증 성공 시, HTTP 상태 코드 200(OK)와 함께 결과 반환
         return ResponseEntity.ok(successResponse);
     }
 
