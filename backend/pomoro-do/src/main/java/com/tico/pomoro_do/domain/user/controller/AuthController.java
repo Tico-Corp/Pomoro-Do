@@ -268,9 +268,10 @@ public class AuthController {
 
         String tokenHeader = request.getHeader("Authorization");
         // 헤더에서 토큰 추출
+        // Authorization 헤더가 없거나 형식이 올바르지 않은 경우: Authorization 헤더 오류 반환
         String token = jwtUtil.extractToken(tokenHeader, TokenType.ACCESS);
         // 토큰 검증
-        jwtUtil.validateToken(token, tokenType.name().toLowerCase());
+        jwtUtil.validateToken(token, tokenType);
         // SuccessCode 반환
         SuccessCode successCode = tokenService.getSuccessCodeForTokenType(tokenType);;
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
