@@ -35,30 +35,30 @@ public class JWTUtil {
 
     //토큰 검증 -> 클램 확인 후 -> 특정데이터 가져오기
 
-    //유저 이름
+    // 유저 이름 확인 메서드
     public String getUsername(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
     }
 
-    //유저 역할
+    // 유저 역할 확인 메서드
     public String getRole(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
     }
 
-    //토큰 카테고리
+    // 토큰의 카테고리 확인 메서드
     public String getCategory(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
-    //토큰 만료 확인
+    // 토큰 만료 확인 메서드
     public Boolean isExpired(String token) {
 
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    //토큰 생성 함수 (카테고리, 유저이름, 역할, 만료시간)
+    // 토큰 생성 메서드 (카테고리, 유저이름, 역할, 만료시간)
     public String createJwt(String category, String username, String role, Long expiredMs) {
 
         return Jwts.builder()
@@ -71,14 +71,14 @@ public class JWTUtil {
                 .compact();
     }
 
-    // 토큰 추출 로직
+    // 토큰 추출 메서드
     /**
-     * 헤더에서 토큰 값을 추출
+     * 주어진 헤더에서 토큰을 추출
      *
-     * @param header 토큰 헤더 (예: "Bearer <token>")
-     * @param tokenType 토큰의 타입 (Google ID 토큰, JWT ACCESS 토큰 또는 JWT REFRESH 토큰)
-     * @return 추출된 토큰 값
-     * @throws CustomException 토큰 헤더가 유효하지 않은 경우 예외 발생
+     * @param header HTTP 헤더 문자열 (예: "Bearer <token>")
+     * @param tokenType 토큰 타입 (예: ACCESS, REFRESH, GOOGLE)
+     * @return 추출된 토큰 문자열
+     * @throws CustomException 잘못된 헤더 형식 시 발생하는 예외
      *                         - 헤더가 null이거나 비어있는 경우
      *                         - 헤더 형식이 "Bearer <token>" 형식이 아닌 경우
      *                         - 토큰 타입이 Google ID 토큰인데 헤더 형식이 맞지 않는 경우
@@ -110,62 +110,69 @@ public class JWTUtil {
         return header.substring(7);
     }
 
-    // 토큰 검증 로직
+    // 토큰 검증 메서드
     /**
      * 주어진 토큰을 검증
      *
      * @param token 검증할 토큰
-     * @param expectedCategory 예상되는 토큰 카테고리 (예: "access" 또는 "refresh")
+     * @param expectedCategory 예상되는 토큰 카테고리 (예: ACCESS, REFRESH)
      * @throws CustomException 검증 실패 시 발생하는 예외
      */
-    public void validateToken(String token, String expectedCategory) {
-        log.info(expectedCategory + " 토큰 검증 시작: token = {}", token);
+    public void validateToken(String token, TokenType expectedCategory) {
+        log.info("토큰 검증 시작: 카테고리 = {}", expectedCategory);
 
         if (token == null) {
-            log.error("토큰이 null입니다. 카테고리 = {}", expectedCategory);
+            log.error("토큰이 없습니다. 카테고리 = {}", expectedCategory);
             throw new CustomException(
-                    expectedCategory.equals("access")
+                    expectedCategory == TokenType.ACCESS
                             ? ErrorCode.MISSING_ACCESS_TOKEN
                             : ErrorCode.MISSING_REFRESH_TOKEN
             );
         }
 
         // 토큰 만료 및 서명 오류 확인
+        validateTokenSignature(token, expectedCategory);
+
+        // 토큰 카테고리 확인
+        String category = getCategory(token);
+        if (!category.equals(expectedCategory.name().toLowerCase())) {
+            log.error("토큰 카테고리 불일치: 예상 = {}, 실제 = {}", expectedCategory, category);
+            throw new CustomException(ErrorCode.INVALID_TOKEN_TYPE);
+        }
+
+        log.info("{} 토큰 검증 완료: token = {}", expectedCategory, token);
+    }
+
+    /**
+     * 토큰의 서명 및 유효성 검증
+     *
+     * @param token 검증할 토큰
+     * @param expectedCategory 예상되는 토큰 카테고리 (예: ACCESS, REFRESH)
+     * @throws CustomException 서명 및 유효성 검증 실패 시 발생하는 예외
+     */
+    private void validateTokenSignature(String token, TokenType expectedCategory) {
         try {
             isExpired(token);
         } catch (ExpiredJwtException e) {
-            log.error("토큰 만료됨: 카테고리 = {}", expectedCategory);
+            log.error("{} 토큰 만료됨: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
             throw new CustomException(
-                    expectedCategory.equals("access")
+                    expectedCategory == TokenType.ACCESS
                             ? ErrorCode.ACCESS_TOKEN_EXPIRED
                             : ErrorCode.REFRESH_TOKEN_EXPIRED
             );
         } catch (SignatureException e) {
-            log.error("유효하지 않은 JWT 서명: 카테고리 = {}", expectedCategory);
+            log.error("{} 유효하지 않은 JWT 서명: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.INVALID_JWT_SIGNATURE);
         } catch (MalformedJwtException e) {
-            log.error("유효하지 않은 JWT 형식: 카테고리 = {}", expectedCategory);
+            log.error("{} 유효하지 않은 JWT 형식: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.INVALID_MALFORMED_JWT);
         } catch (UnsupportedJwtException e) {
-            log.error("지원하지 않는 JWT: 카테고리 = {}", expectedCategory);
+            log.error("{} 지원하지 않는 JWT: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
-            log.error("잘못된 JWT 토큰: 카테고리 = {}", expectedCategory);
+            log.error("{} 잘못된 JWT 토큰: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.ILLEGAL_ARGUMENT);
         }
-
-        // 토큰 카테고리 확인
-        String category = getCategory(token);
-        if (!category.equals(expectedCategory)) {
-            log.error("토큰 카테고리 불일치: 예상 = {}, 실제 = {}", expectedCategory, category);
-            throw new CustomException(
-                    expectedCategory.equals("access")
-                            ? ErrorCode.INVALID_ACCESS_TOKEN
-                            : ErrorCode.INVALID_REFRESH_TOKEN
-            );
-        }
-
-        log.info(expectedCategory + " 토큰 검증 완료");
     }
 
 }

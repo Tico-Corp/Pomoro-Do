@@ -4,6 +4,7 @@ import com.tico.pomoro_do.domain.user.entity.Refresh;
 import com.tico.pomoro_do.domain.user.repository.RefreshRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -106,7 +107,7 @@ public class TokenServiceImpl implements TokenService{
         // 헤더를 검증합니다.
         String refresh = jwtUtil.extractToken(refreshHeader, TokenType.REFRESH);
         // 리프레시 토큰을 검증합니다.
-        jwtUtil.validateToken(refresh, "refresh");
+        jwtUtil.validateToken(refresh, TokenType.REFRESH);
 
         // DB에서 리프레시 토큰에 해당하는 리프레시 토큰 정보를 가져옵니다.
         Refresh refreshEntity = getRefreshByRefreshToken(refresh);
@@ -118,6 +119,24 @@ public class TokenServiceImpl implements TokenService{
         // DB에서 리프레시 토큰을 제거합니다.
         refreshRepository.deleteByRefreshToken(refresh);
         log.info("로그아웃: 리프레시 토큰 삭제 완료");
+    }
+
+    /**
+     * 주어진 토큰 타입에 대한 SuccessCode를 반환
+     *
+     * @param tokenType 검증할 토큰 타입
+     * @return SuccessCode
+     */
+    @Override
+    public SuccessCode getSuccessCodeForTokenType(TokenType tokenType) {
+        switch (tokenType) {
+            case ACCESS:
+                return SuccessCode.ACCESS_TOKEN_VALIDATED;
+            case REFRESH:
+                return SuccessCode.REFRESH_TOKEN_VALIDATED;
+            default:
+                throw new IllegalArgumentException("지원하지 않는 토큰 타입: " + tokenType);
+        }
     }
 
 }

@@ -46,12 +46,18 @@ public class JWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        // 토큰 관련
         if (requestUri.matches("^\\/api/auth/token/reissue(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
-        //관리자
+        if (requestUri.matches("^\\/api/auth/token/validate(?:\\/.*)?$")) {
+
+            filterChain.doFilter(request, response);
+            return;
+        }
+        // 관리자
         if (requestUri.matches("^\\/api/admin/login(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);

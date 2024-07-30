@@ -250,7 +250,7 @@ public class AuthServiceImpl implements AuthService {
         String refresh = jwtUtil.extractToken(refreshHeader, TokenType.REFRESH);
 
         // 리프레시 토큰을 검증합니다.
-        jwtUtil.validateToken(refresh, "refresh");
+        jwtUtil.validateToken(refresh, TokenType.REFRESH);
 
         // DB에서 리프레시 토큰에 해당하는 리프레시 토큰 정보를 가져옵니다.
         Refresh refreshEntity = tokenService.getRefreshByRefreshToken(refresh);
