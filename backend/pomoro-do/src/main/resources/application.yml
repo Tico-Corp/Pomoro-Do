@@ -8,7 +8,7 @@ spring:
     time-zone: Asia/Seoul # JSON 처리 시 사용할 시간대를 'Asia/Seoul'로 설정
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver # MySQL JDBC 드라이버 클래스명 설정
-    url: jdbc:mysql://${DB_URL}/pomorodo?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=Asia/Seoul # 데이터베이스 URL을 설정 (호스트, 포트, 데이터베이스 이름, 추가 옵션 포함)
+    url: ${DB_URL} # 데이터베이스 URL을 설정 (호스트, 포트, 데이터베이스 이름, 추가 옵션 포함)
     username: ${DB_USERNAME} # 데이터베이스 접속을 위한 사용자 이름 설정
     password: ${DB_PASSWORD} # 데이터베이스 접속을 위한 비밀번호 설정
   jpa:
