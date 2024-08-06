@@ -4,9 +4,9 @@ name: CI/CD with Gradle, Docker, AWS
 # backend 폴더 내의 변경 사항이 있을 때만 워크플로우가 실행
 on:
   push:
-    branches: [ "develop-be" ]
-    paths:
-      - 'backend/**'
+    branches: [ "develop-be", "feature-be/TICO-247-set-github-action-env-vars" ]
+    # paths:
+    #   - 'backend/**'
   pull_request:
     branches: [ "develop-be" ]
     paths:
