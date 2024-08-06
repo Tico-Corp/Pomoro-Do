@@ -95,14 +95,14 @@ jobs:
         command_timeout: 10m
         debug: true  # 디버그 모드 활성화
         script: |
-          set -e  # 명령 실패 시 스크립트 종료
+          set -ex  # 명령 실패 시 스크립트 종료 및 각 명령어 실행 전 출력
           docker stop ${{ env.CONTAINER_NAME }} || true  # 실행 중인 pomorodo-server 컨테이너 중지
           docker rm ${{ env.CONTAINER_NAME }} || true  # 기존 컨테이너 삭제
           docker rmi ${{ env.IMAGE_NAME }} || true  # 기존 이미지 삭제
           docker pull ${{ env.IMAGE_NAME }}  # 최신 이미지 다운로드
           # 새로운 컨테이너 시작
           docker run -d -p 8080:8080 --name ${{ env.CONTAINER_NAME }} \
-            -e DB_URL=${{ secrets.DB_URL }} \
+            -e DB_URL="${{ secrets.DB_URL }}" \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
