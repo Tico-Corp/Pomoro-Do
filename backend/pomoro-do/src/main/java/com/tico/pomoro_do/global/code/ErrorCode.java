@@ -132,6 +132,21 @@ public enum ErrorCode {
     INVALID_ADMIN_EMAIL(HttpStatus.BAD_REQUEST, "A-401", "허용되지 않은 관리자 이메일입니다."),
     ADMIN_EMAIL_ONLY(HttpStatus.FORBIDDEN, "A-402", "관리자 이메일만 접근할 수 있습니다."),
     ADMIN_LOGIN_FAILED(HttpStatus.BAD_REQUEST, "A-403", "관리자 정보가 일치하지 않습니다. 관리자 로그인에 실패했습니다."),
+
+    // 파일 업로드 관련 에러: -500번대
+    FILE_MISSING(HttpStatus.BAD_REQUEST, "F-500", "파일이 요청에 포함되어 있지 않습니다."),
+    FILE_NAME_NULL(HttpStatus.BAD_REQUEST, "F-501", "파일의 원래 이름을 가져올 수 없습니다."),
+    FILE_CONVERSION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "F-502", "MultipartFile을 File로 변환하는 중 오류가 발생했습니다."),
+    S3_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "F-503", "S3에 파일 업로드 중 오류가 발생했습니다."),
+    LOCAL_FILE_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "F-504", "로컬 파일 삭제에 실패했습니다."),
+
+    // AWS 관련 에러: -510번대
+    AWS_ACCESS_DENIED(HttpStatus.FORBIDDEN, "F-510", "AWS 접근이 거부되었습니다."),
+    AWS_INVALID_BUCKET(HttpStatus.NOT_FOUND, "F-511", "AWS 버킷이 유효하지 않습니다."),
+    AWS_FILE_TOO_LARGE(HttpStatus.BAD_REQUEST, "F-512", "파일이 너무 큽니다."),
+    AWS_ACL_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "F-513", "AWS ACL이 지원되지 않습니다.");
+
+
     ;
 
 

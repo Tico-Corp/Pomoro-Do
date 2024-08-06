@@ -23,6 +23,9 @@ public enum SuccessCode {
     //관리자
     ADMIN_LOGIN_SUCCESS(HttpStatus.OK, "관리자 로그인에 성공했습니다."),
     ADMIN_SIGNUP_SUCCESS(HttpStatus.CREATED, "관리자 회원가입에 성공했습니다."),
+
+    // 이미지
+    IMAGE_UPLOAD_SUCCESS(HttpStatus.OK, "이미지가 성공적으로 업로드되었습니다."),
     ;
 
     private final HttpStatus httpStatus;	// HttpStatus
