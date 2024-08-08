@@ -51,7 +51,8 @@ public class AuthController {
     /**
      * 구글 로그인 API
      *
-     * @param googleIdTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
+     * @param googleIdToken Google-ID-Token 헤더에 포함된 구글 ID 토큰
+     * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
      * @param response HttpServletResponse 객체
      * @return 성공 시 JwtDTO를 포함하는 SuccessResponseDTO
      * @throws CustomException 구글 ID 토큰 검증에 실패한 경우 예외를 던집니다.
@@ -60,29 +61,41 @@ public class AuthController {
             summary = "구글 로그인",
             description = "구글 소셜 로그인을 통해 사용자를 인증하고 JWT 토큰을 발급합니다. <br>"
                     + "Google-ID-Token 헤더에 구글 ID 토큰을 입력해야 합니다. 예시: Bearer <id_token>",
-            parameters = @Parameter(
-                    name = "Google-ID-Token",
-                    description = "Google ID Token",
-                    in = ParameterIn.HEADER,
-                    required = true
-            )
+            parameters = {
+                    @Parameter(
+                            name = "Google-ID-Token",
+                            description = "Google ID Token",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    ),
+                    @Parameter(
+                            name = "Device-ID",
+                            description = "기기 고유 번호",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    )
+            }
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "401", description = "구글 ID 토큰이 유효하지 않음",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
             @ApiResponse(responseCode = "400", description = "Google-ID-Token 헤더의 토큰이 유효하지 않음",
+                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
+            @ApiResponse(responseCode = "401", description = "구글 ID 토큰이 유효하지 않음",
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
             @ApiResponse(responseCode = "404", description = "등록되지 않은 사용자 (code: U-104)",
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
     })
     @PostMapping("/google/login")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleLogin(
-            @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
+            @RequestHeader("Google-ID-Token") String googleIdToken,
+            @RequestHeader("Device-ID") String deviceId,
             HttpServletResponse response
     ) {
         try {
-            TokenDTO jwtResponse = authService.googleLogin(googleIdTokenHeader, response);
+            // AuthService를 통해 구글 로그인을 처리하고 JWT 토큰을 발급받습니다.
+            TokenDTO jwtResponse = authService.googleLogin(googleIdToken, response);
+
+            // 성공 응답 생성
             SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                     .status(SuccessCode.GOOGLE_LOGIN_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_LOGIN_SUCCESS.getMessage())
@@ -156,7 +169,7 @@ public class AuthController {
             description = "리프레시 토큰을 사용하여 새로운 액세스 토큰 및 리프레시 토큰을 재발급합니다.",
             parameters = {
                     @Parameter(
-                            name = "Device-Id",
+                            name = "Device-ID",
                             description = "기기 고유 번호",
                             in = ParameterIn.HEADER,
                             required = true
@@ -182,7 +195,7 @@ public class AuthController {
     })
     @PostMapping("/token/reissue")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> reissueToken(
-            @RequestHeader("Device-Id") String deviceId,
+            @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshToken
     ) {
         // AuthService의 reissueToken 메서드 호출하여 결과 받기
@@ -211,7 +224,7 @@ public class AuthController {
             description = "사용자가 로그아웃할 때, 서버의 Refresh 토큰을 삭제합니다.",
             parameters = {
                     @Parameter(
-                            name = "Device-Id",
+                            name = "Device-ID",
                             description = "기기 고유 번호",
                             in = ParameterIn.HEADER,
                             required = true
@@ -231,7 +244,7 @@ public class AuthController {
     })
     @DeleteMapping("/logout")
     public ResponseEntity<SuccessResponseDTO<String>> removeToken(
-            @RequestHeader("Device-Id") String deviceId,
+            @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshToken
     ) {
         // 액세스 토큰으로 현재 Redis 정보 삭제
