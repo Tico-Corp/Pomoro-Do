@@ -57,7 +57,7 @@ public class AdminServiceImpl implements AdminService {
         // 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
 
-        return authService.generateAndStoreTokensForAdmin(username, String.valueOf(UserRole.ADMIN), deviceId);
+        return authService.generateAndStoreTokens(username, String.valueOf(UserRole.ADMIN), deviceId);
     }
 
     /**
@@ -83,7 +83,7 @@ public class AdminServiceImpl implements AdminService {
         String role = String.valueOf(UserRole.ADMIN);
         // 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
-        return authService.generateAndStoreTokensForAdmin(username, role, deviceId);
+        return authService.generateAndStoreTokens(username, role, deviceId);
     }
 
     /**

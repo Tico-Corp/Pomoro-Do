@@ -99,11 +99,9 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public TokenDTO generateAndStoreTokensForAdmin(String username, String role, String deviceId) {
-        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}, 기기 고유번호 = {}", username, role, deviceId);
-
-        // DB에서 username에 해당하는 기존 리프레시 토큰 삭제
-        refreshRepository.deleteByUsername(username);
+    public TokenDTO generateAndStoreTokens(String username, String role, String deviceId) {
+        // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제
+        refreshRepository.deleteByDeviceId(deviceId);
 
         // 액세스 토큰 생성
         String accessToken = jwtUtil.createJwt("access", username, role, accessExpiration); // 60분
@@ -142,7 +140,7 @@ public class AuthServiceImpl implements AuthService {
      * 구글 ID 토큰으로 로그인 처리
      *
      * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
-     * @param response HttpServletResponse 객체
+     * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
      * @return TokenDTO를 포함하는 객체
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
@@ -150,19 +148,17 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public TokenDTO googleLogin(String idTokenHeader, HttpServletResponse response) throws GeneralSecurityException, IOException {
-        log.info("구글 로그인 처리 시작");
-
+    public TokenDTO googleLogin(String idTokenHeader, String deviceId) throws GeneralSecurityException, IOException {
+        // 토큰 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
+        // 구글 토큰 유효성 검증
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
-
+        // 회원 가입 여부 판단
         if (!userRepository.existsByUsername(userInfo.getEmail())) {
             log.error("사용자 등록되지 않음: 이메일 = {}", userInfo.getEmail());
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-
-        log.info("구글 로그인 성공: 이메일 = {}", userInfo.getEmail());
-        return generateAndStoreTokensForUser(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
+        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
 
     /**

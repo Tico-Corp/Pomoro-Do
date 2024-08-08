@@ -53,7 +53,6 @@ public class AuthController {
      *
      * @param googleIdToken Google-ID-Token 헤더에 포함된 구글 ID 토큰
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
-     * @param response HttpServletResponse 객체
      * @return 성공 시 JwtDTO를 포함하는 SuccessResponseDTO
      * @throws CustomException 구글 ID 토큰 검증에 실패한 경우 예외를 던집니다.
      */
@@ -78,7 +77,7 @@ public class AuthController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "400", description = "Google-ID-Token 헤더의 토큰이 유효하지 않음",
+            @ApiResponse(responseCode = "400", description = "Google-ID-Token 또는 Device-ID 헤더의 토큰이 유효하지 않음",
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
             @ApiResponse(responseCode = "401", description = "구글 ID 토큰이 유효하지 않음",
                     content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
@@ -88,12 +87,11 @@ public class AuthController {
     @PostMapping("/google/login")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleLogin(
             @RequestHeader("Google-ID-Token") String googleIdToken,
-            @RequestHeader("Device-ID") String deviceId,
-            HttpServletResponse response
+            @RequestHeader("Device-ID") String deviceId
     ) {
         try {
             // AuthService를 통해 구글 로그인을 처리하고 JWT 토큰을 발급받습니다.
-            TokenDTO jwtResponse = authService.googleLogin(googleIdToken, response);
+            TokenDTO jwtResponse = authService.googleLogin(googleIdToken, deviceId);
 
             // 성공 응답 생성
             SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
