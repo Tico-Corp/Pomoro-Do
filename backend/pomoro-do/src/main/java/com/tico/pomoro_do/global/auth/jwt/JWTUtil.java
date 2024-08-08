@@ -86,7 +86,8 @@ public class JWTUtil {
      */
     public String extractToken(String header, TokenType tokenType) {
 
-        if (header == null || header.isEmpty() || !header.startsWith("Bearer ")) {
+        //  header가 "Bearer "로 시작하지 않는 경우 빈 문자열 ("")도 이 조건에 의해 걸러지므로 header.isEmpty() 불필요하다.
+        if (header == null || !header.startsWith("Bearer ")) {
             ErrorCode errorCode;
 
             switch (tokenType) {
@@ -135,7 +136,7 @@ public class JWTUtil {
 
         // 토큰 카테고리 확인
         String category = getCategory(token);
-        if (!category.equals(expectedCategory.name().toLowerCase())) {
+        if (!category.equals(expectedCategory.name())) {
             log.error("토큰 카테고리 불일치: 예상 = {}, 실제 = {}", expectedCategory, category);
             throw new CustomException(ErrorCode.INVALID_TOKEN_TYPE);
         }

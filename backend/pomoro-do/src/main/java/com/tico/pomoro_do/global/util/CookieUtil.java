@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.global.util;
 
+import com.tico.pomoro_do.global.enums.TokenType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,7 +26,7 @@ public class CookieUtil {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refresh")) {
+                if (cookie.getName().equals(TokenType.REFRESH.name())) {
                     refresh = cookie.getValue();
                     break;
                 }
