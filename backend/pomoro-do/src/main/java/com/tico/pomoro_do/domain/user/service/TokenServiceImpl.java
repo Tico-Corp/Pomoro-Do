@@ -115,10 +115,8 @@ public class TokenServiceImpl implements TokenService{
         // DB에 저장된 deviceId와 요청된 deviceId이 일치하는지 확인합니다.
         validateDeviceId(refreshEntity, deviceId);
 
-        log.info("로그아웃: 리프레시 토큰 삭제 시작");
         // DB에서 리프레시 토큰을 제거합니다.
         refreshRepository.deleteByRefreshToken(refresh);
-        log.info("로그아웃: 리프레시 토큰 삭제 완료");
     }
 
     /**

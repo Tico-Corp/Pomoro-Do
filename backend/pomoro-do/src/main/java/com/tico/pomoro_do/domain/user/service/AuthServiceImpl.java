@@ -124,7 +124,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public TokenDTO generateAndStoreTokensForUser(String username, String role, HttpServletResponse response) {
-        log.info("Access 토큰 및 Refresh 토큰 생성: 이메일 = {}, 역할 = {}", username, role);
 
         // 액세스 토큰 생성
         String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); // 60분
@@ -175,7 +174,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public TokenDTO googleJoin(String idTokenHeader, GoogleJoinDTO requestUserInfo, HttpServletResponse response) throws GeneralSecurityException, IOException {
-        log.info("구글 회원가입 처리 시작");
 
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
@@ -217,7 +215,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public User createUser(String username, String nickname, String profileImageUrl, UserRole role) {
-        log.info("새 사용자 생성: 이메일 = {}, 닉네임 = {}", username, nickname);
 
         User user = User.builder()
                 .username(username)
@@ -241,7 +238,6 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     @Override
     public TokenDTO reissueToken(String deviceId, String refreshHeader) {
-        log.info("Refresh 토큰으로 Access 토큰 재발급 시도: deviceId = {}", deviceId);
         // 헤더를 검증합니다.
         String refresh = jwtUtil.extractToken(refreshHeader, TokenType.REFRESH);
 
@@ -260,8 +256,6 @@ public class AuthServiceImpl implements AuthService {
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
         String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
-
-        log.info("새로운 Access, Refresh 토큰 생성");
 
         // 새로운 액세스 및 리프레시 토큰을 생성합니다.
         String newAccess = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); // 60분

@@ -120,7 +120,6 @@ public class JWTUtil {
      * @throws CustomException 검증 실패 시 발생하는 예외
      */
     public void validateToken(String token, TokenType expectedCategory) {
-        log.info("토큰 검증 시작: 카테고리 = {}", expectedCategory);
 
         if (token == null) {
             log.error("토큰이 없습니다. 카테고리 = {}", expectedCategory);
@@ -155,23 +154,23 @@ public class JWTUtil {
         try {
             isExpired(token);
         } catch (ExpiredJwtException e) {
-            log.error("{} 토큰 만료됨: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
+            log.error("토큰 만료됨: 카테고리 = {}, 이유 = {}", expectedCategory, e.getMessage());
             throw new CustomException(
                     expectedCategory == TokenType.ACCESS
                             ? ErrorCode.ACCESS_TOKEN_EXPIRED
                             : ErrorCode.REFRESH_TOKEN_EXPIRED
             );
         } catch (SignatureException e) {
-            log.error("{} 유효하지 않은 JWT 서명: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
+            log.error("유효하지 않은 JWT 서명: 카테고리 = {}, 이유 = {}", expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.INVALID_JWT_SIGNATURE);
         } catch (MalformedJwtException e) {
-            log.error("{} 유효하지 않은 JWT 형식: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
+            log.error("유효하지 않은 JWT 형식: 카테고리 = {}, 이유 = {}", expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.INVALID_MALFORMED_JWT);
         } catch (UnsupportedJwtException e) {
-            log.error("{} 지원하지 않는 JWT: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
+            log.error("지원하지 않는 JWT: 카테고리 = {}, 이유 = {}", expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
-            log.error("{} 잘못된 JWT 토큰: 카테고리 = {}, 이유 = {}", expectedCategory, expectedCategory, e.getMessage());
+            log.error("잘못된 JWT 토큰: 카테고리 = {}, 이유 = {}", expectedCategory, e.getMessage());
             throw new CustomException(ErrorCode.ILLEGAL_ARGUMENT);
         }
     }
