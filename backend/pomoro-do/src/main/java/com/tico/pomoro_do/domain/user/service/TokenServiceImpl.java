@@ -24,11 +24,12 @@ public class TokenServiceImpl implements TokenService{
     private final RefreshRepository refreshRepository;
 
     /**
-     * 새로운 리프레시 토큰 저장
+     * 새로운 리프레시 토큰을 저장합니다.
      *
      * @param username 사용자 이메일
      * @param refresh 새로운 리프레시 토큰
      * @param expiredMs 토큰 만료 시간 (밀리초 단위)
+     * @param deviceId 기기 고유 번호
      */
     @Transactional
     @Override
@@ -52,7 +53,6 @@ public class TokenServiceImpl implements TokenService{
      * 주어진 deviceId로 리프레시 토큰 엔티티를 가져옵니다.
      *
      * @param deviceId 기기 고유 번호
-     * @return Refresh 엔티티
      * @throws CustomException 기기 ID가 DB에 존재하지 않을 때 발생하는 예외
      */
     @Override
@@ -82,7 +82,6 @@ public class TokenServiceImpl implements TokenService{
      * 주어진 리프레시 토큰으로 리프레시 토큰 엔티티를 가져옵니다.
      *
      * @param refreshToken 리프레시 토큰
-     * @return Refresh 엔티티
      * @throws CustomException 리프레시 토큰이 DB에 존재하지 않을 때 발생하는 예외
      */
     @Override
@@ -123,7 +122,6 @@ public class TokenServiceImpl implements TokenService{
      * 주어진 토큰 타입에 대한 SuccessCode를 반환
      *
      * @param tokenType 검증할 토큰 타입
-     * @return SuccessCode
      */
     @Override
     public SuccessCode getSuccessCodeForTokenType(TokenType tokenType) {

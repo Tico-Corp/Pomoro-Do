@@ -50,10 +50,8 @@ public class AdminController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
-            @ApiResponse(responseCode = "409", description = "이미 등록된 사용자",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "409", description = "이미 등록된 사용자")
     })
     @PostMapping("/join")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminJoin(
@@ -88,12 +86,9 @@ public class AdminController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
-            @ApiResponse(responseCode = "404", description = "등록되지 않은 사용자",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class))),
-            @ApiResponse(responseCode = "403", description = "관리자 권한이 없음",
-                    content = @Content(schema = @Schema(implementation = ErrorResponseEntity.class)))
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "404", description = "등록되지 않은 사용자"),
+            @ApiResponse(responseCode = "403", description = "관리자 권한이 없음")
     })
     @PostMapping("/login")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminLogin(

@@ -129,7 +129,6 @@ public class ImageServiceImpl implements ImageService{
                     throw new CustomException(ErrorCode.S3_UPLOAD_FAILED);
             }
 
-
         } catch (SdkClientException e) {
             // AWS SDK 클라이언트 예외 처리
             log.error("S3 클라이언트에서 오류 발생: {}", e.getMessage());
