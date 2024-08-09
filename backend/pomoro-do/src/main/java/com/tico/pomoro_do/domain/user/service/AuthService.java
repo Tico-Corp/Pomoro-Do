@@ -20,7 +20,7 @@ public interface AuthService {
     GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException;
 
     // 구글 로그인
-    TokenDTO googleLogin(String idTokenHeader, HttpServletResponse response) throws GeneralSecurityException, IOException;
+    TokenDTO googleLogin(String idTokenHeader, String deviceId) throws GeneralSecurityException, IOException;
 
     // 구글 회원가입
     TokenDTO googleJoin(String idTokenHeader, GoogleJoinDTO request, HttpServletResponse response)  throws GeneralSecurityException, IOException;
@@ -30,7 +30,7 @@ public interface AuthService {
 
     // 토큰 생성 및 저장
     TokenDTO generateAndStoreTokensForUser(String username, String role, HttpServletResponse response);
-    TokenDTO generateAndStoreTokensForAdmin(String username, String role, String deviceId);
+    TokenDTO generateAndStoreTokens(String username, String role, String deviceId);
 
     // Refresh 토큰으로 Access토큰 발급
     TokenDTO reissueToken(String deviceId, String refresh);

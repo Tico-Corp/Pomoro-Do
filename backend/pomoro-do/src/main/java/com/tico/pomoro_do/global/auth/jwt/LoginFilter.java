@@ -1,6 +1,7 @@
 package com.tico.pomoro_do.global.auth.jwt;
 
 import com.tico.pomoro_do.domain.user.service.TokenService;
+import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,8 +46,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
-        log.info("LoginFilter에서 username 획득 여부 확인 - username: " + username);
-
         //인증 진행
         //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token(바구니)에 담아야 함
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(username, password, null);
@@ -71,18 +70,18 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
-        String access = jwtUtil.createJwt("access", username, role, accessExpiration); //60분
-        String refresh = jwtUtil.createJwt("refresh", username, role, refreshExpiration); //24시간
+        String access = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); //60분
+        String refresh = jwtUtil.createJwt(TokenType.REFRESH.name(), username, role, refreshExpiration); //24시간
 
         //Refresh 토큰 저장
-        String deviceId = request.getHeader("Device-Id");
+        String deviceId = request.getHeader("Device-ID");
         tokenService.addRefreshEntity(username, refresh, refreshExpiration, deviceId);
 
         //응답 설정
         //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
-        response.setHeader("access", access);
+        response.setHeader(TokenType.ACCESS.name(), access);
         //refresh 토큰 쿠키에 넣어서 응답
-        response.addCookie(CookieUtil.createCookie("refresh", refresh));
+        response.addCookie(CookieUtil.createCookie(TokenType.REFRESH.name(), refresh));
         response.setStatus(HttpStatus.OK.value());
     }
 
