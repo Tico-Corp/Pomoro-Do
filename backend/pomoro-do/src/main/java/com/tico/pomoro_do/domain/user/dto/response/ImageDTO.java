@@ -9,7 +9,7 @@ import lombok.Getter;
 @Schema(description = "Image Response")
 public class ImageDTO {
 
-    @Schema(description = "이미지 URL", example = "https://s3.amazonaws.com/bucketname/uuid.jpg")
+    @Schema(description = "이미지 URL", example = "https://s3.amazonaws.com/foldername/bucketname/uuid.jpg")
     private final String url;
 
     @Builder
