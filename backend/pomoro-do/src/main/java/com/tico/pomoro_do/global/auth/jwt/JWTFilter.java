@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tico.pomoro_do.domain.user.dto.UserDTO;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -119,7 +120,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //토큰이 access인지 확인 (발급시 페이로드에 명시)
         String category = jwtUtil.getCategory(accessToken);
 
-        if (!category.equals("access")) {
+        if (!category.equals(TokenType.ACCESS.name())) {
             //access 토큰이 아니면 응답 메시지와 상태코드 반환
             log.info("유효하지 않은 Access 토큰입니다. Access 토큰이 아닙니다.");
 
