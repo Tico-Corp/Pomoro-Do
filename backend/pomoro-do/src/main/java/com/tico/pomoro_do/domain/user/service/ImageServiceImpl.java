@@ -26,12 +26,9 @@ public class ImageServiceImpl implements ImageService{
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-//    private String localLocation = "로컬환경경로";
-
     // 임시 파일을 저장할 디렉토리
+//    private String localLocation = "로컬환경경로";
     private final String localLocation = System.getProperty("java.io.tmpdir") + "/";
-
-
 
     /**
      * 이미지 업로드 메서드
@@ -41,23 +38,13 @@ public class ImageServiceImpl implements ImageService{
      * @return String 업로드된 이미지의 URL
      */
     @Override
-    public String imageUpload(MultipartFile file) {
+    public String imageUpload(MultipartFile file, String dirName) {
         if (file == null) {
             throw new CustomException(ErrorCode.FILE_MISSING);
         }
 
-        // 파일에서 파일 이름, 확장자 추출
-        // 파일 이름 추출
-        String fileName = file.getOriginalFilename();
-        if (fileName == null) {
-            throw new CustomException(ErrorCode.FILE_NAME_NULL);
-        }
-        // 파일 확장자 추출
-        String ext = fileName.substring(fileName.indexOf("."));
-
-        // 고유 파일 이름 생성 (이미지 파일 이름 유일성을 위해 uuid 사용)
-        // 파일 이름을 고유 식별 번호로 변경(이름이 중복되어 덮어쓰는 것을 방지) + 확장자 명
-        String uuidFileName = UUID.randomUUID() + ext;
+        // 고유 파일 이름 생성
+        String uuidFileName = generateUniqueFileName(file);
 
         // 서버 환경에 저장할 경로 생성
         String localPath = localLocation + uuidFileName;
@@ -65,8 +52,9 @@ public class ImageServiceImpl implements ImageService{
         // 서버 환경에 이미지 파일 저장
         // MultipartFile을 File로 변환 및 저장
         File localFile = convertToFile(file, localPath);
+
         // S3에 파일을 업로드 및 URL 가져오기
-        String s3Url = uploadToS3(localFile, uuidFileName);
+        String s3Url = uploadToS3(localFile, uuidFileName, dirName);
 
         // 로컬 파일 삭제
         if (!localFile.delete()) {
@@ -76,6 +64,24 @@ public class ImageServiceImpl implements ImageService{
         return s3Url;
     }
 
+    /**
+     * 파일 이름을 생성하는 메서드
+     *
+     * @param file MultipartFile 객체
+     * @return 고유한 파일 이름
+     */
+    private String generateUniqueFileName(MultipartFile file) {
+        // 파일에서 파일 이름, 확장자 추출
+        String fileName = file.getOriginalFilename();
+        if (fileName == null) {
+            throw new CustomException(ErrorCode.FILE_NAME_NULL);
+        }
+        // 파일 확장자 추출
+        String ext = fileName.substring(fileName.lastIndexOf("."));
+        // 고유 파일 이름 생성 (이미지 파일 이름 유일성을 위해 uuid 사용)
+        // 파일 이름을 고유 식별 번호로 변경(이름이 중복되어 덮어쓰는 것을 방지) + 확장자 명
+        return UUID.randomUUID() + ext;
+    }
 
     /**
      * MultipartFile을 File로 변환하는 메서드
@@ -90,6 +96,7 @@ public class ImageServiceImpl implements ImageService{
         try {
             file.transferTo(localFile);
         } catch (IOException e) {
+            log.error("Error occurred while converting MultipartFile to File: " + e.getMessage());
             throw new CustomException(ErrorCode.FILE_CONVERSION_FAILED);
         }
         return localFile;
@@ -100,13 +107,22 @@ public class ImageServiceImpl implements ImageService{
      *
      * @param localFile 업로드할 로컬 파일
      * @param fileName S3에 저장할 파일 이름
+     * @param dirName S3에 저장할 폴더 이름
      * @return String 업로드된 파일의 S3 URL
      */
-    private String uploadToS3(File localFile, String fileName) {
+    private String uploadToS3(File localFile, String fileName, String dirName) {
+        // S3에 저장할 파일 경로 설정
+        String s3Key = fileName; // 기본적으로는 파일 이름만 사용
+
+        // dirName이 비어 있지 않다면 폴더 경로를 포함시킴
+        if (dirName != null && !dirName.isEmpty()) {
+            s3Key = dirName + "/" + fileName;
+        }
+
         try {
-            s3Config.amazonS3Client().putObject(new PutObjectRequest(bucket, fileName, localFile));
+            s3Config.amazonS3Client().putObject(new PutObjectRequest(bucket, s3Key, localFile));
             // S3에서 업로드된 파일의 URL 가져오기
-            String s3Url = s3Config.amazonS3Client().getUrl(bucket, fileName).toString();
+            String s3Url = s3Config.amazonS3Client().getUrl(bucket, s3Key).toString();
             log.info("파일을 S3에 업로드했습니다: {}", s3Url);
             return s3Url;
 

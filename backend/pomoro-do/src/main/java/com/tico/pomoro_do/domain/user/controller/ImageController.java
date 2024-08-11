@@ -33,7 +33,7 @@ public class ImageController {
     @PostMapping("/upload")
     public ResponseEntity<SuccessResponseDTO<ImageDTO>> imageUpload(@RequestParam("file") MultipartFile file) {
 
-        String imageUrl = imageService.imageUpload(file);
+        String imageUrl = imageService.imageUpload(file, "images");
 
         ImageDTO imageDTO = ImageDTO.builder()
                 .url(imageUrl)
