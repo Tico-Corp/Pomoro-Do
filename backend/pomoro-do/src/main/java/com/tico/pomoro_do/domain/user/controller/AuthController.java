@@ -1,33 +1,27 @@
 package com.tico.pomoro_do.domain.user.controller;
 
-import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
-import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.service.AuthService;
 import com.tico.pomoro_do.domain.user.service.TokenService;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
+import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.enums.TokenType;
-import com.tico.pomoro_do.global.response.SuccessResponseDTO;
-import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
-import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
+import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -108,36 +102,52 @@ public class AuthController {
      * 구글 회원가입 API
      *
      * @param googleIdTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
-     * @param requestUserInfo 회원가입 요청 정보가 포함된 DTO
-     * @param response HttpServletResponse 객체
+     * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
+     * @param nickname 닉네임
+     * @param profileImage 프로필 이미지
      * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
      * @throws CustomException 구글 ID 토큰 검증에 실패한 경우 예외를 던집니다.
      */
     @Operation(
             summary = "구글 회원가입",
             description = "구글 소셜 로그인을 통해 사용자를 회원가입하고 JWT 토큰을 발급합니다. <br>"
-                    + "Google-ID-Token 헤더에 구글 ID 토큰을 입력하고, 요청 본문에는 추가 정보를 포함해야 합니다.",
-            parameters = @Parameter(
-                    name = "Google-ID-Token",
-                    description = "Google ID Token",
-                    in = ParameterIn.HEADER,
-                    required = true
-            )
+                    + "Google-ID-Token 헤더에 구글 ID 토큰을 입력하고, 요청 본문에는 추가 정보를 포함해야 합니다. <br>"
+                    + "Device-ID 헤더에 기기의 고유 번호를 입력해야 합니다.",
+            parameters = {
+                    @Parameter(
+                            name = "Google-ID-Token",
+                            description = "Google ID Token",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    ),
+                    @Parameter(
+                            name = "Device-ID",
+                            description = "기기 고유 번호",
+                            in = ParameterIn.HEADER,
+                            required = true
+                    ),
+                    @Parameter(
+                            name = "nickname",
+                            description = "사용자 닉네임",
+                            required = true
+                    )
+            }
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
             @ApiResponse(responseCode = "401", description = "구글 ID 토큰이 유효하지 않음"),
-            @ApiResponse(responseCode = "400", description = "Google-ID-Token 헤더의 토큰이 유효하지 않음 또는 요청 본문이 잘못됨"),
+            @ApiResponse(responseCode = "400", description = "헤더의 토큰이 유효하지 않음 또는 요청 본문이 잘못됨"),
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자 (code: U-105)")
     })
     @PostMapping("/google/join")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleJoin(
             @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
-            @Valid @RequestBody GoogleJoinDTO requestUserInfo,
-            HttpServletResponse response
+            @RequestHeader("Device-ID") String deviceId,
+            @RequestParam("nickname") String nickname,
+            @RequestParam("profileImage") MultipartFile profileImage
     ) {
         try {
-            TokenDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, requestUserInfo, response);
+            TokenDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, deviceId, nickname, profileImage);
             SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                     .status(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())

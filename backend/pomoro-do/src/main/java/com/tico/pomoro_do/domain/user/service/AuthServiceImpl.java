@@ -1,11 +1,11 @@
 package com.tico.pomoro_do.domain.user.service;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
-import com.tico.pomoro_do.domain.user.dto.request.GoogleJoinDTO;
-import com.tico.pomoro_do.domain.user.dto.response.JwtDTO;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.Refresh;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
@@ -14,22 +14,18 @@ import com.tico.pomoro_do.domain.user.repository.RefreshRepository;
 import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
+import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.global.enums.SocialProvider;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.enums.UserRole;
-import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
-import com.tico.pomoro_do.global.util.CookieUtil;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -56,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final SocialLoginRepository socialLoginRepository;
     private final RefreshRepository refreshRepository;
     private final TokenService tokenService;
+    private final ImageService imageService;
 
     /**
      * 구글 ID 토큰으로 무결성 검증
@@ -114,28 +111,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
-     *
-     * @param username 사용자 이메일
-     * @param role 사용자 역할
-     * @param response HttpServletResponse 객체, 생성된 리프레시 토큰을 쿠키로 추가하기 위해 사용됨
-     * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
-     */
-    @Override
-    @Transactional
-    public TokenDTO generateAndStoreTokensForUser(String username, String role, HttpServletResponse response) {
-
-        // 액세스 토큰 생성
-        String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); // 60분
-        // 리프레시 토큰 생성
-        String refreshToken = jwtUtil.createJwt(TokenType.REFRESH.name(), username, role, refreshExpiration); // 24시간
-        // 리프레시 토큰을 DB에 저장
-//        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration);
-
-        return new TokenDTO(accessToken, refreshToken);
-    }
-
-    /**
      * 구글 ID 토큰으로 로그인 처리
      *
      * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
@@ -164,8 +139,9 @@ public class AuthServiceImpl implements AuthService {
      * 구글 ID 토큰으로 회원가입 처리
      *
      * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
-     * @param requestUserInfo GoogleJoinDTO 객체
-     * @param response HttpServletResponse 객체
+     * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
+     * @param nickname 닉네임
+     * @param profileImage 프로필 이미지
      * @return TokenDTO를 포함하는 객체
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
@@ -173,9 +149,10 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public TokenDTO googleJoin(String idTokenHeader, GoogleJoinDTO requestUserInfo, HttpServletResponse response) throws GeneralSecurityException, IOException {
+    public TokenDTO googleJoin(String idTokenHeader,  String deviceId, String nickname, MultipartFile profileImage) throws GeneralSecurityException, IOException {
 
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
+        // 구글 id 토큰 검증
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
 
         if (userRepository.existsByUsername(userInfo.getEmail())) {
@@ -183,11 +160,14 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
         }
 
+        // profileImage url 가져오기
+        String profileImageUrl = imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
+
         // 사용자 정보 저장
         User user = createUser(
                 userInfo.getEmail(),
-                requestUserInfo.getNickname(),
-                userInfo.getPictureUrl(),
+                nickname,
+                profileImageUrl,
                 UserRole.USER
         );
 
@@ -200,7 +180,8 @@ public class AuthServiceImpl implements AuthService {
         socialLoginRepository.save(socialLogin);
 
         log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
-        return generateAndStoreTokensForUser(userInfo.getEmail(), String.valueOf(UserRole.USER), response);
+        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
+
     }
 
     /**
