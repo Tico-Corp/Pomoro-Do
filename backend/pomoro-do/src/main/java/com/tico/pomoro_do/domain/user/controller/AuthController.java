@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -139,7 +140,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "헤더의 토큰이 유효하지 않음 또는 요청 본문이 잘못됨"),
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자 (code: U-105)")
     })
-    @PostMapping("/google/join")
+    @PostMapping(value = "/google/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleJoin(
             @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
             @RequestHeader("Device-ID") String deviceId,

@@ -3,10 +3,12 @@ package com.tico.pomoro_do.domain.user.controller;
 import com.tico.pomoro_do.domain.user.dto.response.ImageDTO;
 import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,13 +29,15 @@ public class ImageController {
     /**
      * 이미지 업로드 엔드포인트
      *
-     * @param file MultipartRequest로 받은 파일 업로드 요청
+     * @param image MultipartRequest로 받은 파일 업로드 요청
      * @return ResponseEntity 성공 응답 DTO를 포함한 ResponseEntity 객체
      */
-    @PostMapping("/upload")
-    public ResponseEntity<SuccessResponseDTO<ImageDTO>> imageUpload(@RequestParam("file") MultipartFile file) {
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SuccessResponseDTO<ImageDTO>> imageUpload(
+            @RequestParam("image") MultipartFile image
+    ) {
 
-        String imageUrl = imageService.imageUpload(file, "images");
+        String imageUrl = imageService.imageUpload(image, S3Folder.IMAGES.getFolderName());
 
         ImageDTO imageDTO = ImageDTO.builder()
                 .url(imageUrl)
