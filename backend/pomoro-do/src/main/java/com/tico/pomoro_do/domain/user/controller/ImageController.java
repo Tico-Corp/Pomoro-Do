@@ -40,7 +40,7 @@ public class ImageController {
         String imageUrl = imageService.imageUpload(image, S3Folder.IMAGES.getFolderName());
 
         ImageDTO imageDTO = ImageDTO.builder()
-                .url(imageUrl)
+                .imageUrl(imageUrl)
                 .build();
 
         SuccessResponseDTO<ImageDTO> response = SuccessResponseDTO.<ImageDTO>builder()
