@@ -7,19 +7,16 @@ import com.tico.pomoro_do.domain.user.service.AdminService;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Admin: 관리자", description = "백엔드를 테스트를 위한 API")
 @RestController
@@ -36,37 +33,33 @@ public class AdminController {
     /**
      * 관리자 회원가입 API
      *
-     * @param request AdminJoinDTO 객체
+     * @param adminJoinDTO AdminJoinDTO 객체
+     * @param profileImage 관리자 프로필 이미지 파일
      * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
      */
     @Operation(
             summary = "관리자 회원가입",
             description = "관리자 회원가입을 수행합니다. <br>"
                     + "관리자의 이메일은 @pomorodo.shop 도메인으로 제한됩니다. <br>"
-                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다.",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "AdminJoinDTO 객체",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = AdminJoinDTO.class))
-            )
+                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자")
     })
-    @PostMapping("/join")
+    @PostMapping(value = "/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminJoin(
-            @RequestBody AdminJoinDTO request
+            @RequestPart AdminJoinDTO adminJoinDTO,
+            @RequestPart("profileImage") MultipartFile profileImage
     ) {
-        log.info("관리자 회원가입 요청: {}", request.getUsername());
-        TokenDTO jwtResponse = adminService.adminJoin(request);
+        TokenDTO jwtResponse = adminService.adminJoin(adminJoinDTO, profileImage);
         SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
-        log.info("관리자 회원가입 성공: {}", request.getUsername());
+        log.info("관리자 회원가입 성공: {}", adminJoinDTO.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
     }
 
@@ -79,12 +72,7 @@ public class AdminController {
     @Operation(
             summary = "관리자 로그인",
             description = "관리자 로그인을 수행합니다. <br>"
-                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다.",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "AdminLoginDTO 객체",
-                    required = true,
-                    content = @Content(schema = @Schema(implementation = AdminLoginDTO.class))
-            )
+                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
