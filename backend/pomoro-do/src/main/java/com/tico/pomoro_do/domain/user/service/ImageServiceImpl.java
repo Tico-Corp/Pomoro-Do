@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -38,6 +39,7 @@ public class ImageServiceImpl implements ImageService{
      * @return String 업로드된 이미지의 URL
      */
     @Override
+    @Transactional
     public String imageUpload(MultipartFile file, String dirName) {
         if (file == null) {
             throw new CustomException(ErrorCode.FILE_MISSING);

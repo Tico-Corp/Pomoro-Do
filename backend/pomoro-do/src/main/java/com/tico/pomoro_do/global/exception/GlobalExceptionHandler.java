@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -295,6 +296,24 @@ public class GlobalExceptionHandler {
                 .code(ErrorCode.INVALID_MULTIPART_DATA.getCode())
                 .message("Failed to process multipart request: " + ex.getMessage())
                 .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 업로드 최대 용량을 초과했을 경우(MaxUploadSizeExceededException) 처리.
+     *
+     * @param ex MaxUploadSizeExceededException 발생 예외
+     * @return ResponseEntity<ErrorResponseEntity> 에러 응답
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    protected ResponseEntity<ErrorResponseEntity> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        log.error("MaxUploadSizeExceededException: ", ex);
+        ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .code(ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getCode())
+                .message("The uploaded file exceeds the allowed maximum size. Please upload a file within the allowed size.")                .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

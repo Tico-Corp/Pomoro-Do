@@ -58,6 +58,8 @@ public enum ErrorCode {
     INVALID_HEADER(HttpStatus.BAD_REQUEST, "G-013", "요청 헤더에 유효하지 않은 값이 포함되어 있습니다. 올바른 헤더 값을 제공해 주세요."),
     // 요청 파라미터의 타입이 예상과 다른 경우
     INVALID_PARAMETER_TYPE(HttpStatus.BAD_REQUEST, "G-014", "요청 파라미터의 타입이 잘못되었습니다."),
+    // 업로드 파일의 크기가 허용된 최대 크기를 초과한 경우
+    MAX_UPLOAD_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "G-015", "업로드 파일의 크기가 허용된 최대 크기를 초과했습니다. 파일 크기를 줄이거나 다른 파일을 업로드해 주세요."),
 
     // 401 : Unauthorized - 인증이 필요하거나 인증에 실패한 경우
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "G-020", "인증되지 않은 사용자입니다. 유효한 인증 정보를 제공해 주세요."),

@@ -10,10 +10,10 @@ import lombok.Getter;
 public class ImageDTO {
 
     @Schema(description = "이미지 URL", example = "https://s3.amazonaws.com/foldername/bucketname/uuid.jpg")
-    private final String url;
+    private final String imageUrl;
 
     @Builder
-    public ImageDTO(String url){
-        this.url = url;
+    public ImageDTO(String imageUrl){
+        this.imageUrl = imageUrl;
     }
 }
