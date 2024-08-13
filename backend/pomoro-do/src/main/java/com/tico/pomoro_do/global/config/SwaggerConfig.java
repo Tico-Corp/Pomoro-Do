@@ -1,8 +1,6 @@
 package com.tico.pomoro_do.global.config;
 
-import io.jsonwebtoken.lang.Arrays;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
@@ -12,8 +10,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import static com.google.gson.internal.$Gson$Types.arrayOf;
 
 @OpenAPIDefinition(
         info = @Info(
@@ -33,12 +29,6 @@ import static com.google.gson.internal.$Gson$Types.arrayOf;
                 @Server(url = "http://pomorodo.shop:8080", description = "<HTTP 서버> HTTP 서버에서 접속 시 Swagger에서 테스트 가능") // HTTP 서버
         }
 )
-//@SecurityScheme(
-//        name = "bearerAuth",
-//        type = SecuritySchemeType.HTTP,
-//        scheme = "Bearer",
-//        bearerFormat = "JWT"
-//)
 @Configuration
 public class SwaggerConfig {
 

@@ -51,8 +51,9 @@ public class AdminController {
     @PostMapping(value = "/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminJoin(
             @RequestPart AdminJoinDTO adminJoinDTO,
-            @RequestPart("profileImage") MultipartFile profileImage
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
+        System.out.println(profileImage+"-------------------------------------------------------------");
         TokenDTO jwtResponse = adminService.adminJoin(adminJoinDTO, profileImage);
         SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
