@@ -6,6 +6,7 @@ import com.tico.pomoro_do.domain.user.service.TokenService;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.enums.ProfileImageType;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
@@ -113,7 +114,11 @@ public class AuthController {
             summary = "구글 회원가입",
             description = "구글 소셜 로그인을 통해 사용자를 회원가입하고 JWT 토큰을 발급합니다. <br>"
                     + "Google-ID-Token 헤더에 구글 ID 토큰을 입력하고, 요청 본문에는 추가 정보를 포함해야 합니다. <br>"
-                    + "Device-ID 헤더에 기기의 고유 번호를 입력해야 합니다.",
+                    + "Device-ID 헤더에 기기의 고유 번호를 입력해야 합니다. <br>"
+                    + "프로필 이미지의 유형에 따라 프로필 이미지 처리 방법이 달라집니다. <br>"
+                    + "- `FILE`: 사용자가 업로드한 프로필 이미지 <br>"
+                    + "- `GOOGLE`: 구글 프로필 이미지 <br>"
+                    + "- `DEFAULT`: 서비스 기본 프로필 이미지",
             parameters = {
                     @Parameter(
                             name = "Google-ID-Token",
@@ -131,6 +136,11 @@ public class AuthController {
                             name = "nickname",
                             description = "사용자 닉네임",
                             required = true
+                    ),
+                    @Parameter(
+                            name = "profileImageType",
+                            description = "프로필 이미지 유형 (FILE, GOOGLE, DEFAULT)",
+                            required = true
                     )
             }
     )
@@ -145,10 +155,11 @@ public class AuthController {
             @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
             @RequestHeader("Device-ID") String deviceId,
             @RequestParam("nickname") String nickname,
-            @RequestParam("profileImage") MultipartFile profileImage
+            @RequestParam("profileImageType") ProfileImageType imageType,
+            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage
     ) {
         try {
-            TokenDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, deviceId, nickname, profileImage);
+            TokenDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, deviceId, nickname, profileImage, imageType);
             SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
                     .status(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())
