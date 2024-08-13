@@ -15,10 +15,7 @@ import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
-import com.tico.pomoro_do.global.enums.S3Folder;
-import com.tico.pomoro_do.global.enums.SocialProvider;
-import com.tico.pomoro_do.global.enums.TokenType;
-import com.tico.pomoro_do.global.enums.UserRole;
+import com.tico.pomoro_do.global.enums.*;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,7 +92,6 @@ public class AuthServiceImpl implements AuthService {
      * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
      */
     @Override
-    @Transactional
     public TokenDTO generateAndStoreTokens(String username, String role, String deviceId) {
         // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제
         refreshRepository.deleteByDeviceId(deviceId);
@@ -123,15 +119,15 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public TokenDTO googleLogin(String idTokenHeader, String deviceId) throws GeneralSecurityException, IOException {
+        // deviceId 유효성 검사
+        validateDeviceId(deviceId);
         // 토큰 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 토큰 유효성 검증
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
         // 회원 가입 여부 판단
-        if (!userRepository.existsByUsername(userInfo.getEmail())) {
-            log.error("사용자 등록되지 않음: 이메일 = {}", userInfo.getEmail());
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
+        validateUserExists(userInfo.getEmail());
+
         return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
 
@@ -142,6 +138,7 @@ public class AuthServiceImpl implements AuthService {
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
      * @param nickname 닉네임
      * @param profileImage 프로필 이미지
+     * @param imageType 프로필 이미지 타입
      * @return TokenDTO를 포함하는 객체
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
@@ -149,39 +146,113 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     @Transactional
-    public TokenDTO googleJoin(String idTokenHeader,  String deviceId, String nickname, MultipartFile profileImage) throws GeneralSecurityException, IOException {
+    public TokenDTO googleJoin(String idTokenHeader, String deviceId, String nickname, MultipartFile profileImage, ProfileImageType imageType) throws GeneralSecurityException, IOException {
 
+        // 입력값 유효성 검사
+        joinValidateInputs(deviceId, nickname);
+
+        // 구글 idToken 유효성 검사 및 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 id 토큰 검증
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
+        // 사용자의 이메일 중복 체크
+        checkIfUserAlreadyRegistered(userInfo.getEmail());
 
-        if (userRepository.existsByUsername(userInfo.getEmail())) {
-            log.error("이미 등록된 사용자: 이메일 = {}", userInfo.getEmail());
-            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
-        }
-
-        // profileImage url 가져오기
-        String profileImageUrl = imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
-
+        // 알맞는 profileImage url 가져오기 (null 가능)
+        String profileImageUrl = determineProfileImageUrl(imageType, profileImage, userInfo);
         // 사용자 정보 저장
-        User user = createUser(
-                userInfo.getEmail(),
-                nickname,
-                profileImageUrl,
-                UserRole.USER
-        );
-
+        User user = createUser(userInfo.getEmail(), nickname, profileImageUrl, UserRole.USER);
         // 소셜 로그인 정보 저장
-        SocialLogin socialLogin = SocialLogin.builder()
-                .user(user)
-                .provider(SocialProvider.GOOGLE)
-                .socialId(userInfo.getUserId())
-                .build();
-        socialLoginRepository.save(socialLogin);
+        saveSocialLogin(user, userInfo.getUserId());
 
         log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
         return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
+    }
 
+    /**
+     * 디바이스 ID 검증 메서드
+     *
+     * @param deviceId 기기 고유 번호
+     */
+    private void validateDeviceId(String deviceId) {
+        if (deviceId == null || deviceId.isEmpty()) {
+            log.error("유효하지 않은 입력: deviceId={}", deviceId);
+            throw new CustomException(ErrorCode.DEVICE_ID_EMPTY);
+        }
+    }
+
+    /**
+     * 닉네임 검증 메서드
+     *
+     * @param nickname 닉네임
+     */
+    private void validateNickname(String nickname) {
+        if (nickname == null || nickname.isEmpty()) {
+            log.error("유효하지 않은 입력: nickname={}", nickname);
+            throw new CustomException(ErrorCode.NICKNAME_EMPTY);
+        }
+
+        if (nickname.length() > 10) {
+            log.error("닉네임이 너무 깁니다: nickname={}", nickname);
+            throw new CustomException(ErrorCode.NICKNAME_TOO_LONG);
+        }
+    }
+
+    /**
+     * 회원가입 입력값 검증 메서드
+     *
+     * @param deviceId 기기 고유 번호
+     * @param nickname 닉네임
+     */
+    private void joinValidateInputs(String deviceId, String nickname) {
+        validateDeviceId(deviceId);
+        validateNickname(nickname);
+    }
+
+    /**
+     * 사용자 등록 여부 확인 메서드
+     *
+     * @param email 사용자 이메일
+     */
+    private void validateUserExists(String email) {
+        if (!userRepository.existsByUsername(email)) {
+            log.error("사용자 등록되지 않음: 이메일 = {}", email);
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
+    /**
+     * 사용자가 이미 등록되어 있는지 확인합니다.
+     *
+     * @param email 사용자의 이메일
+     */
+    private void checkIfUserAlreadyRegistered(String email) {
+        if (userRepository.existsByUsername(email)) {
+            log.error("이미 등록된 사용자: 이메일 = {}", email);
+            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
+        }
+    }
+
+    /**
+     * 프로필 이미지 URL을 결정합니다.
+     *
+     * @param imageType 프로필 이미지의 유형 (FILE, GOOGLE, 또는 DEFAULT)
+     * @param profileImage 사용자가 업로드한 프로필 이미지 파일 (FILE 유형일 때 사용)
+     * @param userInfo 구글 사용자 정보 DTO (GOOGLE 유형일 때 사용)
+     * @return 프로필 이미지의 URL. FILE 유형인 경우 업로드된 이미지의 URL을,
+     *         GOOGLE 유형인 경우 구글 프로필 이미지 URL을 반환하며,
+     *         DEFAULT 유형인 경우 null을 반환합니다.
+     */
+    private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfoDTO userInfo) {
+        switch (imageType) {
+            case FILE:
+                return imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
+            case GOOGLE:
+                return userInfo.getPictureUrl();
+            // DEFAULT와 default를 통합하여 간결하게 처리
+            default:
+                return null;
+        }
     }
 
     /**
@@ -194,7 +265,6 @@ public class AuthServiceImpl implements AuthService {
      * @return 생성된 User 객체
      */
     @Override
-    @Transactional
     public User createUser(String username, String nickname, String profileImageUrl, UserRole role) {
 
         User user = User.builder()
@@ -207,6 +277,25 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("사용자 저장 성공: 이메일 = {}", username);
         return user;
+    }
+
+    /**
+     * 소셜 로그인 정보를 저장합니다.
+     *
+     * @param user     사용자 객체
+     * @param socialId 소셜 로그인 ID
+     */
+    private void saveSocialLogin(User user, String socialId) {
+
+        SocialLogin socialLogin = SocialLogin.builder()
+                .user(user)
+                .provider(SocialProvider.GOOGLE)
+                .socialId(socialId)
+                .build();
+
+        socialLoginRepository.save(socialLogin);
+
+        log.info("소셜 로그인 정보 저장 성공: 소셜 ID = {}", socialId);
     }
 
     /**

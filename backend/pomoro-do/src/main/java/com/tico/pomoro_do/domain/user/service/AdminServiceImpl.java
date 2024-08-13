@@ -49,8 +49,14 @@ public class AdminServiceImpl implements AdminService {
         validateAdminEmailDomain(domain);
         // 관리자 이메일 가입 여부 검증
         checkUserExistence(username);
-        // profileImage url 가져오기
-        String profileImageUrl = imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
+
+        // profileImage URL 가져오기
+        String profileImageUrl;
+        if (profileImage != null) {
+            profileImageUrl = imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
+        } else {
+            profileImageUrl = null;
+        }
 
         // 관리자 생성하기
         User admin = authService.createUser(username, nickname, profileImageUrl, UserRole.ADMIN);
