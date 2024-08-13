@@ -1,7 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
-import com.tico.pomoro_do.domain.user.dto.request.AdminJoinDTO;
-import com.tico.pomoro_do.domain.user.dto.request.AdminLoginDTO;
+import com.tico.pomoro_do.domain.user.dto.request.AdminDTO;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
@@ -33,16 +32,16 @@ public class AdminServiceImpl implements AdminService {
     /**
      * 관리자 회원가입 처리
      *
-     * @param adminJoinDTO AdminJoinDTO 객체
+     * @param adminDTO AdminDTO 객체
      * @param profileImage 프로필 이미지
      * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
      * @throws CustomException 이메일 도메인이 유효하지 않거나 이미 등록된 사용자인 경우 예외를 던집니다.
      */
     @Override
     @Transactional
-    public TokenDTO adminJoin(AdminJoinDTO adminJoinDTO, MultipartFile profileImage) {
-        String username = adminJoinDTO.getUsername();
-        String nickname = adminJoinDTO.getNickname();
+    public TokenDTO adminJoin(AdminDTO adminDTO, MultipartFile profileImage) {
+        String username = adminDTO.getUsername();
+        String nickname = adminDTO.getNickname();
 
         // 관리자 회원가입 도메인 가져오기
         String domain = getEmailDomain(username);
@@ -67,15 +66,15 @@ public class AdminServiceImpl implements AdminService {
     /**
      * 관리자 로그인 처리
      *
-     * @param adminLoginDTO AdminLoginDTO 객체
+     * @param adminDTO AdminDTO 객체
      * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
      * @throws CustomException 이메일 도메인이 유효하지 않거나 관리자가 아닌 경우 예외를 던집니다.
      */
     @Override
     @Transactional
-    public TokenDTO adminLogin(AdminLoginDTO adminLoginDTO){
-        String username = adminLoginDTO.getUsername();
-        String nickname = adminLoginDTO.getNickname();
+    public TokenDTO adminLogin(AdminDTO adminDTO){
+        String username = adminDTO.getUsername();
+        String nickname = adminDTO.getNickname();
 
         // 로그인 도메인 가져오기
         String domain = getEmailDomain(username);
