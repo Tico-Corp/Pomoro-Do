@@ -8,7 +8,6 @@ import com.tico.pomorodo.common.util.RefreshTokenInterceptorClient
 import com.tico.pomorodo.data.local.PreferencesManager
 import com.tico.pomorodo.data.remote.interceptor.AccessTokenInterceptor
 import com.tico.pomorodo.data.remote.interceptor.IdTokenInterceptor
-import com.tico.pomorodo.data.remote.interceptor.RefreshTokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,24 +61,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @RefreshTokenInterceptorClient
-    fun provideRefreshTokenHttpClient(
-        preferencesManager: PreferencesManager
-    ): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor()
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        val refreshTokenInterceptor = RefreshTokenInterceptor(preferencesManager)
-        return OkHttpClient.Builder()
-            .readTimeout(TIME, TimeUnit.SECONDS)
-            .connectTimeout(TIME, TimeUnit.SECONDS)
-            .writeTimeout(TIME, TimeUnit.SECONDS)
-            .addInterceptor(loggingInterceptor)
-            .addInterceptor(refreshTokenInterceptor)
-            .build()
-    }
-
-    @Provides
-    @Singleton
     @IdTokenInterceptorClient
     fun provideIdTokenRetrofit(
         @IdTokenInterceptorClient
@@ -93,6 +74,7 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
     }
+
     @Provides
     @Singleton
     @RefreshTokenInterceptorClient

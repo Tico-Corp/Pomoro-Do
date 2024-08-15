@@ -3,6 +3,7 @@ package com.tico.pomorodo.di
 import com.tico.pomorodo.common.util.AccessTokenInterceptorClient
 import com.tico.pomorodo.common.util.IdTokenInterceptorClient
 import com.tico.pomorodo.data.remote.service.AuthApiService
+import com.tico.pomorodo.data.remote.service.TodoApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -28,7 +28,7 @@ suspend fun <T> wrapToResource(
                 Resource.Failure.Error(errorResponse?.message ?: "HTTP Error", errorResponse?.code)
             }
 
-            is SQLiteException->{
+            is SQLiteException -> {
                 Resource.Failure.Exception(throwable.message ?: "SQLiteException")
             }
 
