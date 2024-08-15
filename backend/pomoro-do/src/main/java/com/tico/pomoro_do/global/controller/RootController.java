@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Root: 테스트", description = "애플리케이션 기본 정보 API (API 테스트)")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/info")
 public class RootController {
 
     @Operation(summary = "애플리케이션 기본 정보", description = "애플리케이션의 기본 정보를 제공합니다.")

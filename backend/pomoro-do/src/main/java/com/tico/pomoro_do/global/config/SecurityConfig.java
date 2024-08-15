@@ -29,7 +29,7 @@ public class SecurityConfig {
 
     // 허용 주소
     private static final String[] WHITE_LIST = {
-            "/api",
+            "/api/info",
             "/api/admins/**",
             "/api/auth/google/**", "/api/auth/tokens/**"
     };
