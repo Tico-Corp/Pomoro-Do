@@ -14,6 +14,7 @@ public enum SuccessCode {
     GOOGLE_LOGIN_SUCCESS(HttpStatus.OK, "구글 로그인에 성공했습니다."),
     GOOGLE_SIGNUP_SUCCESS(HttpStatus.CREATED, "구글 회원가입에 성공했습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "로그아웃 및 토큰 삭제에 성공했습니다."),
+    USER_FETCH_SUCCESS(HttpStatus.OK, "회원 조회에 성공했습니다."),
 
     //토큰
     ACCESS_TOKEN_REISSUED(HttpStatus.OK,  "액세스 토큰이 성공적으로 재발급되었습니다."),
