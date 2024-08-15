@@ -150,7 +150,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "헤더의 토큰이 유효하지 않음 또는 요청 본문이 잘못됨"),
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자 (code: U-105)")
     })
-    @PostMapping(value = "/google/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/google/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleJoin(
             @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
             @RequestHeader("Device-ID") String deviceId,
@@ -204,7 +204,7 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "리프레시 토큰이 유효하지 않음"),
             @ApiResponse(responseCode = "404", description = "기기 ID 또는 리프레시 토큰이 DB에 존재하지 않음"),
     })
-    @PostMapping("/token/reissue")
+    @PostMapping("/tokens/reissue")
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> reissueToken(
             @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshToken
@@ -293,7 +293,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 또는 토큰 헤더 없음"),
             @ApiResponse(responseCode = "401", description = "토큰이 유효하지 않음")
     })
-    @GetMapping("/token/validate")
+    @PostMapping("/tokens/validation")
     public ResponseEntity<SuccessResponseDTO<String>> validateToken(HttpServletRequest request, @RequestParam("tokenType") TokenType tokenType) {
 
         String tokenHeader = request.getHeader("Authorization");

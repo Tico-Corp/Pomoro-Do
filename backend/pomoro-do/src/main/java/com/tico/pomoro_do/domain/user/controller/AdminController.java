@@ -18,10 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name = "Admin: 관리자", description = "백엔드를 테스트를 위한 API")
+@Tag(name = "Admin: 관리자", description = "백엔드 로그인을 위한 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admins")
 @Slf4j
 public class AdminController {
     //백엔드에서는 구글 로그인이 불가하므로 생성함.
@@ -48,7 +48,7 @@ public class AdminController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자")
     })
-    @PostMapping(value = "/join", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminJoin(
             @Valid @RequestPart AdminDTO adminDTO,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
