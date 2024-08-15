@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class CategoryViewModel : ViewModel() {
 
-    private var _categoryList = MutableStateFlow(DataSource.categoryList)
+    private var _categoryList = MutableStateFlow<List<Category>>(emptyList())
     val categoryList: StateFlow<List<Category>>
         get() = _categoryList.asStateFlow()
 
