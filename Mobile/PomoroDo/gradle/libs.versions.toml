@@ -16,7 +16,7 @@ kotlin-serialization-json = "1.6.3"
 kotlin-serealization-converter = "1.0.0"
 okhttp3 = "4.11.0"
 # 종속성주입을 위한 라이브러리
-hilt = "2.46"
+hilt = "2.48"
 # material3 최신 버전 적용을 위한 라이브러리
 material3 = "1.3.0-beta04"
 material3-navigation = "1.3.0-beta02"
@@ -32,6 +32,9 @@ androidx-credential = "1.3.0-beta02"
 identity-googleid = "1.1.1"
 # 암호화된 sharedpreference를 사용하기 위한 라이브러리
 androidx-security = "1.1.0-alpha06"
+# room을 사용하기 위한 라이브러리
+androidx-room = "2.7.0-alpha05"
+ksp = "1.9.22-1.0.16"
 
 
 [libraries]
@@ -78,6 +81,14 @@ identity-googleid = { group = "com.google.android.libraries.identity.googleid", 
 # 암호화된 sharedpreference를 사용하기 위한 라이브러리
 androidx-security = { group = "androidx.security", name = "security-crypto-ktx", version.ref = "androidx-security" }
 
+# Room을 사용하기 위한 라이브러리
+androidx-room = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidx-room" }
+androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "androidx-room" }
+androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "androidx-room" }
+
+
 [bundles]
 # jetpack compose로 생성했을 때 기본 제공되는 라이브러리들
 androidx = ["androidx-ktx", "androidx-lifecycle", "androidx-activity-compose",
@@ -88,6 +99,8 @@ api = ["retrofit2", "kotlin-serialization", "retrofit2-converter", "okhttp3", "o
 material3 = ["material3", "material3-window", "material3-navigation"]
 # google login을 위한 credential manager jetpack
 credential = ["androidx-credential", "androidx-credential-play-services-auth", "identity-googleid"]
+# room을 위한 라이브러리
+room = ["androidx-room", "androidx-room-ktx", "androidx-room-paging"]
 
 
 [plugins]
@@ -99,3 +112,7 @@ kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-serialization" }
 # 종속성주입을 위한 라이브러리
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+# ksp 적용을 위한 라이브러리
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+# room
+room = { id = "androidx.room", version.ref = "androidx-room" }
