@@ -5,6 +5,9 @@ import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,15 @@ public class ImageController {
      * @param image MultipartRequest로 받은 파일 업로드 요청
      * @return ResponseEntity 성공 응답 DTO를 포함한 ResponseEntity 객체
      */
+    @Operation(
+            summary = "이미지 업로드",
+            description = "사용자가 이미지를 업로드할 수 있는 엔드포인트입니다. <br>"
+                    + "업로드된 이미지는 S3에 저장되며, 성공 시 이미지 URL을 반환합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이미지 업로드 성공"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 이미지 파일"),
+    })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<ImageDTO>> imageUpload(
             @RequestParam("image") MultipartFile image
