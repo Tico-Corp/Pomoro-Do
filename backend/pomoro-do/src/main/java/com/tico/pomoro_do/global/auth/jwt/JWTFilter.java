@@ -42,29 +42,29 @@ public class JWTFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/api/auth/google/join(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/auth/google/signup(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
         // 토큰 관련
-        if (requestUri.matches("^\\/api/auth/token/reissue(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/auth/tokens/reissue(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/api/auth/token/validate(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/auth/tokens/validation(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
         // 관리자
-        if (requestUri.matches("^\\/api/admin/login(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/admins/login(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/api/admin/join(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/admins(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;

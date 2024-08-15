@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "Image: 이미지", description = "이미지 업로드 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/image")
+@RequestMapping("/api/images")
 @Slf4j
 public class ImageController {
 
@@ -32,7 +32,7 @@ public class ImageController {
      * @param image MultipartRequest로 받은 파일 업로드 요청
      * @return ResponseEntity 성공 응답 DTO를 포함한 ResponseEntity 객체
      */
-    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<ImageDTO>> imageUpload(
             @RequestParam("image") MultipartFile image
     ) {
