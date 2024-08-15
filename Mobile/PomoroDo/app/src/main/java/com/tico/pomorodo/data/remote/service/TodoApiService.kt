@@ -16,7 +16,7 @@ interface TodoApiService {
     suspend fun getTodo(id: Int): TodoResponse
 
     @POST
-    suspend fun insertTodo(@Body todoRequest: RequestBody): TodoResponse
+    suspend fun insertTodo(@Body todoRequest: TodoRequest): TodoResponse
 
     @POST
     suspend fun insertAll(todoRequests: List<TodoRequest>): TodoResponse
