@@ -31,10 +31,29 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    @Override
+    public UserDetailDTO getUserDetail(Long userId) {
+        User user = findByUserId(userId);
+        return UserDetailDTO.builder()
+                .userId(user.getId())
+                .username(user.getUsername())
+                .nickname(user.getNickname())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
+    }
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> {
                     log.error("사용자를 찾을 수 없음: {}", username);
+                    return new CustomException(ErrorCode.USER_NOT_FOUND);
+                });
+    }
+
+    public User findByUserId(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("사용자를 찾을 수 없음: {}", userId);
                     return new CustomException(ErrorCode.USER_NOT_FOUND);
                 });
     }
