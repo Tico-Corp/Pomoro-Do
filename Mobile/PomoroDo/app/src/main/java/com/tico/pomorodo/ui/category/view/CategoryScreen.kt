@@ -38,7 +38,7 @@ fun CategoryScreen(
     normalCategoryList: List<Category>,
     groupCategoryList: List<Category>,
     inviteGroupCategoryList: List<InviteCategory>,
-    onCategoryClicked: (String) -> Unit
+    onCategoryClicked: (Int) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -187,7 +187,7 @@ fun CategoryScreenRoute(
     categoryViewModel: CategoryViewModel = hiltViewModel(),
     navigateToAddCategory: () -> Unit,
     navigateToBack: () -> Unit,
-    navigateToInfoCategory: (String) -> Unit
+    navigateToInfoCategory: (Int) -> Unit
 ) {
     val categoryList by categoryViewModel.categoryList.collectAsState()
     val inviteGroupCategoryList by categoryViewModel.inviteGroupCategoryList.collectAsState()

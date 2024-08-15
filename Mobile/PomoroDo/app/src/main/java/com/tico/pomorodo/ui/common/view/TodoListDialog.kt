@@ -153,7 +153,7 @@ private fun TodoList(
                 modifier = Modifier.fillMaxWidth(),
                 iconSize = 24,
                 todoData = todoItem,
-                onStateChanged = { onStateChanged(index, todoItem.state) },
+                onStateChanged = { onStateChanged(index, todoItem.status) },
                 textStyle = PomoroDoTheme.typography.laundryGothicRegular16
             )
         }
@@ -166,6 +166,6 @@ fun changeTodoState(newTodoList: SnapshotStateList<TodoData>, todoIndex: Int, st
         TodoState.CHECKED -> TodoState.GOING
         TodoState.GOING -> TodoState.UNCHECKED
     }
-    val newItem = newTodoList[todoIndex].copy(state = newState)
+    val newItem = newTodoList[todoIndex].copy(status = newState)
     newTodoList[todoIndex] = newItem
 }

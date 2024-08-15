@@ -55,11 +55,13 @@ class TodoViewModel() : ViewModel() {
         _inputText.value = _inputText.value.trim()
         if (validateTodoInput(inputText.value)) {
             val newTodoData = TodoData(
-                id = "4",
-                name = inputText.value,
-                state = TodoState.UNCHECKED,
-                categoryId = "1",
-                completeGroupNumber = 0
+                id = 3,
+                title = inputText.value,
+                status = TodoState.UNCHECKED,
+                categoryId = 2,
+                completeGroupNumber = 0,
+                createdAt = 2000,
+                updatedAt = 30000
             )
             val newList = categoryList.value.toMutableList()
             if (selectedCategoryIndex.value != -1) {
@@ -84,7 +86,7 @@ class TodoViewModel() : ViewModel() {
         val newList = categoryList.value.toMutableList()
         newList[categoryIndex].todoList?.let { newListTodo ->
             val newTodoList = newListTodo.toMutableList()
-            val newItem = newTodoList[todoIndex].copy(state = newState)
+            val newItem = newTodoList[todoIndex].copy(status = newState)
             newTodoList[todoIndex] = newItem
             newList[categoryIndex] = newList[categoryIndex].copy(todoList = newTodoList)
             _categoryList.value = newList

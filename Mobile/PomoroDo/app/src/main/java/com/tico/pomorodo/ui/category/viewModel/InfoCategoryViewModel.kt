@@ -63,8 +63,8 @@ class InfoCategoryViewModel @Inject constructor(
         return false
     }
 
-    private fun fetchCategoryInfo(categoryId: String) {
-        _category.value = DataSource.categoryList[categoryId.toInt() - 1]
+    private fun fetchCategoryInfo(categoryId: Int) {
+        // category 목록에서 categoryId로 조회
     }
 
     private fun fetchFollower() {
