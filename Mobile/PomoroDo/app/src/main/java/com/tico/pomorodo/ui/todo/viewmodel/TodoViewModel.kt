@@ -6,11 +6,19 @@ import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
+import com.tico.pomorodo.domain.usecase.GetAllTodoUseCase
+import com.tico.pomorodo.domain.usecase.InsertTodoUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
-class TodoViewModel() : ViewModel() {
+@HiltViewModel
+class TodoViewModel @Inject constructor(
+    getAllTodoUseCase: GetAllTodoUseCase,
+    insertTodoUseCase: InsertTodoUseCase
+) : ViewModel() {
     private var _selectedProfileIndex = MutableStateFlow(-1)
     val selectedProfileIndex: StateFlow<Int>
         get() = _selectedProfileIndex.asStateFlow()
