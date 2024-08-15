@@ -22,7 +22,7 @@ class TimerRunningViewModel @Inject constructor(private val savedStateHandle: Sa
     private val _timerMaxValue: MutableStateFlow<Int> = MutableStateFlow(0)
     val timerMaxValue: StateFlow<Int> = _timerMaxValue
 
-    private val _todoList: MutableStateFlow<List<TodoData>> = MutableStateFlow(DataSource.todoList)
+    private val _todoList: MutableStateFlow<List<TodoData>> = MutableStateFlow(emptyList())
     val todoList: StateFlow<List<TodoData>> = _todoList
 
     private val _isInitialized: MutableStateFlow<Boolean> = MutableStateFlow(false)
