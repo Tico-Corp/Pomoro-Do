@@ -4,7 +4,11 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class AuthInterceptorClient
+annotation class AccessTokenInterceptorClient
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RefreshTokenInterceptorClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

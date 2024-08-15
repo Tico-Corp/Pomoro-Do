@@ -1,10 +1,18 @@
 package com.tico.pomorodo.di
 
 import android.content.Context
+import com.tico.pomorodo.common.util.NetworkHelper
 import com.tico.pomorodo.data.local.PreferencesManager
+import com.tico.pomorodo.data.local.datasource.CategoryLocalDataSource
+import com.tico.pomorodo.data.local.datasource.TodoLocalDataSource
 import com.tico.pomorodo.data.remote.datasource.AuthDataSource
+import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource
 import com.tico.pomorodo.data.repository.AuthRepositoryImpl
+import com.tico.pomorodo.data.repository.CategoryRepositoryImpl
+import com.tico.pomorodo.data.repository.TodoRepositoryImpl
 import com.tico.pomorodo.domain.repository.AuthRepository
+import com.tico.pomorodo.domain.repository.CategoryRepository
+import com.tico.pomorodo.domain.repository.TodoRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,5 +36,24 @@ object RepositoryModule {
         authDataSource: AuthDataSource
     ): AuthRepository {
         return AuthRepositoryImpl(preferencesManager, authDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTodoRepository(
+        todoLocalDataSource: TodoLocalDataSource,
+        todoRemoteDataSource: TodoRemoteDataSource,
+        networkHelper: NetworkHelper
+    ): TodoRepository {
+        return TodoRepositoryImpl(todoLocalDataSource, todoRemoteDataSource, networkHelper)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCategoryRepository(
+        categoryLocalDataSource: CategoryLocalDataSource,
+        networkHelper: NetworkHelper
+    ): CategoryRepository {
+        return CategoryRepositoryImpl(categoryLocalDataSource, networkHelper)
     }
 }

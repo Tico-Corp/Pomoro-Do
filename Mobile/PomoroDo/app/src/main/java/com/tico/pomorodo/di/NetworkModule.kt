@@ -2,11 +2,13 @@ package com.tico.pomorodo.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.tico.pomorodo.BuildConfig
-import com.tico.pomorodo.common.util.AuthInterceptorClient
+import com.tico.pomorodo.common.util.AccessTokenInterceptorClient
 import com.tico.pomorodo.common.util.IdTokenInterceptorClient
+import com.tico.pomorodo.common.util.RefreshTokenInterceptorClient
 import com.tico.pomorodo.data.local.PreferencesManager
-import com.tico.pomorodo.data.remote.interceptor.AuthInterceptor
+import com.tico.pomorodo.data.remote.interceptor.AccessTokenInterceptor
 import com.tico.pomorodo.data.remote.interceptor.IdTokenInterceptor
+import com.tico.pomorodo.data.remote.interceptor.RefreshTokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +29,7 @@ object NetworkModule {
     @Provides
     @Singleton
     @IdTokenInterceptorClient
-    fun provideHttpClient(preferencesManager: PreferencesManager): OkHttpClient {
+    fun provideIdTokenHttpClient(preferencesManager: PreferencesManager): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val idTokenInterceptor = IdTokenInterceptor(preferencesManager)
@@ -42,27 +44,60 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @AuthInterceptorClient
-    fun provideAuthHttpClient(
+    @AccessTokenInterceptorClient
+    fun provideAccessTokenHttpClient(
         preferencesManager: PreferencesManager
     ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        val authInterceptor = AuthInterceptor(preferencesManager)
+        val accessTokenInterceptor = AccessTokenInterceptor(preferencesManager)
         return OkHttpClient.Builder()
             .readTimeout(TIME, TimeUnit.SECONDS)
             .connectTimeout(TIME, TimeUnit.SECONDS)
             .writeTimeout(TIME, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(authInterceptor)
+            .addInterceptor(accessTokenInterceptor)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @RefreshTokenInterceptorClient
+    fun provideRefreshTokenHttpClient(
+        preferencesManager: PreferencesManager
+    ): OkHttpClient {
+        val loggingInterceptor = HttpLoggingInterceptor()
+        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        val refreshTokenInterceptor = RefreshTokenInterceptor(preferencesManager)
+        return OkHttpClient.Builder()
+            .readTimeout(TIME, TimeUnit.SECONDS)
+            .connectTimeout(TIME, TimeUnit.SECONDS)
+            .writeTimeout(TIME, TimeUnit.SECONDS)
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(refreshTokenInterceptor)
             .build()
     }
 
     @Provides
     @Singleton
     @IdTokenInterceptorClient
-    fun provideRetrofit(
+    fun provideIdTokenRetrofit(
         @IdTokenInterceptorClient
+        okHttpClient: OkHttpClient,
+    ): Retrofit {
+        val json = Json { ignoreUnknownKeys = true }
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .build()
+    }
+    @Provides
+    @Singleton
+    @RefreshTokenInterceptorClient
+    fun provideRefreshTokenRetrofit(
+        @RefreshTokenInterceptorClient
         okHttpClient: OkHttpClient,
     ): Retrofit {
         val json = Json { ignoreUnknownKeys = true }
@@ -76,9 +111,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @AuthInterceptorClient
+    @AccessTokenInterceptorClient
     fun provideAuthRetrofit(
-        @AuthInterceptorClient
+        @AccessTokenInterceptorClient
         okHttpClient: OkHttpClient,
     ): Retrofit {
         val json = Json { ignoreUnknownKeys = true }
