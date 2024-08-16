@@ -96,11 +96,13 @@ public enum ErrorCode {
 
     //유저 관련 에러: -100번대
     EMAIL_EXIST(HttpStatus.BAD_REQUEST, "U-100", "이미 사용 중인 이메일입니다."),
-    NICKNAME_EMPTY(HttpStatus.BAD_REQUEST, "U-101", "닉네임이 비어있거나 유효하지 않습니다."),
+    NICKNAME_INVALID(HttpStatus.BAD_REQUEST, "U-101", "닉네임이 비어있거나 유효하지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U-102", "가입된 사용자가 아닙니다."),
     PROFILE_UPLOAD_FAILED(HttpStatus.FORBIDDEN, "U-103", "프로필 이미지 변경에 실패했습니다."),
     USER_ALREADY_REGISTERED(HttpStatus.CONFLICT, "U-104", "이미 등록된 사용자입니다."),
     NICKNAME_TOO_LONG(HttpStatus.BAD_REQUEST, "U-105", "닉네임이 너무 깁니다. 최대 길이는 10자입니다."),
+    USERNAME_MISMATCH(HttpStatus.BAD_REQUEST, "U-106", "현재 유저의 정보와 일치하지 않습니다."),
+
 
     //Token 관련 에러 -200번대
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "T-201", "액세스 토큰이 만료되었습니다."),
@@ -129,7 +131,7 @@ public enum ErrorCode {
     DEVICE_ID_NOT_FOUND(HttpStatus.BAD_REQUEST, "D-300", "제공된 Device ID가 서버에 존재하지 않습니다."),
     INVALID_DEVICE_ID_HEADER(HttpStatus.BAD_REQUEST, "D-301", "Device ID 헤더의 값이 유효하지 않습니다."),
     DEVICE_ID_MISMATCH(HttpStatus.BAD_REQUEST, "D-302", "제공된 Device ID와 서버의 Device ID가 일치하지 않습니다."),
-    DEVICE_ID_EMPTY(HttpStatus.BAD_REQUEST, "D-303", "DEVICE ID가 비어있거나 유효하지 않습니다"),
+    DEVICE_ID_INVALID(HttpStatus.BAD_REQUEST, "D-303", "DEVICE ID가 비어있거나 유효하지 않습니다"),
 
     // 관리자 관련 에러: -400번대
     NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "A-400", "관리자 권한이 없습니다."),

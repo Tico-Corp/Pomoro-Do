@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -19,6 +17,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     final private UserRepository userRepository;
+    final private TokenService tokenService;
 
     @Override
     public UserDetailDTO getMyDetail(String username) {
@@ -41,6 +40,16 @@ public class UserServiceImpl implements UserService{
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
     }
+
+    @Override
+    @Transactional
+    public void deleteUser(String username, String deviceId, String refreshHeader) {
+        // 해당 회원의 모든 리프레시 토큰 삭제
+        tokenService.deleteAllRefreshTokensByUsername(username,deviceId,refreshHeader);
+        // 해당 유저 삭제
+        userRepository.deleteByUsername(username);
+    }
+
 
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)

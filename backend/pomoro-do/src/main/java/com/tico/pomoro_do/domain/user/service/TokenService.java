@@ -13,11 +13,9 @@ public interface TokenService {
     Refresh getRefreshByDeviceId(String deviceId);
     Refresh getRefreshByRefreshToken(String refreshToken);
 
-    // 기기 고유번호 검증
-//    void validateDeviceId(Refresh refreshEntity, String deviceId);
-
     // 토큰 삭제
-    void removeRefreshToken(String deviceId, String refreshToken);
+    void deleteRefreshTokenByDeviceId(String username, String deviceId, String refreshHeader);
+    void deleteAllRefreshTokensByUsername(String username, String deviceId, String refreshHeader);
 
     // 주어진 토큰 타입에 대한 토큰 검증 SuccessCode를 반환
     SuccessCode getSuccessCodeForTokenType(TokenType tokenType);

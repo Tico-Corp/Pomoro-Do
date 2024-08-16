@@ -7,6 +7,7 @@ import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -71,10 +72,24 @@ public class TokenServiceImpl implements TokenService{
      * @param deviceId 기기 고유 번호
      * @throws CustomException deviceId 불일치 시 발생하는 예외
      */
-    private void validateDeviceId(Refresh refreshEntity, String deviceId) {
+    private void checkDeviceIdMatch(Refresh refreshEntity, String deviceId) {
         if (!refreshEntity.getDeviceId().equals(deviceId)) {
-            log.error("Device ID가 DB에 존재하지 않음: deviceId = {}", deviceId);
+            log.error("Device ID가 일치하지 않음: deviceId = {}", deviceId);
             throw new CustomException(ErrorCode.DEVICE_ID_MISMATCH);
+        }
+    }
+
+    /**
+     * 주어진 리프레시 엔티티와 username을 검증합니다.
+     *
+     * @param refreshEntity 리프레시 엔티티
+     * @param username 유저 이메일
+     * @throws CustomException username 불일치 시 발생하는 예외
+     */
+    private void checkUsernameMatch(Refresh refreshEntity, String username) {
+        if (!refreshEntity.getUsername().equals(username)) {
+            log.error("Username이 일치하지 않음: username = {}", username);
+            throw new CustomException(ErrorCode.USERNAME_MISMATCH);
         }
     }
 
@@ -95,16 +110,47 @@ public class TokenServiceImpl implements TokenService{
 
     // 만료기간이 지난 토큰은 스케줄러를 돌려서 삭제하라.
     /**
-     * 로그아웃 시 리프레시 토큰 삭제
+     * 로그아웃 시 특정 기기에서의 리프레시 토큰 삭제
      *
+     * @param username 사용자 이름
      * @param deviceId 기기 고유 번호
      * @param refreshHeader 리프레시 토큰
      */
     @Override
     @Transactional
-    public void removeRefreshToken(String deviceId, String refreshHeader) {
+    public void deleteRefreshTokenByDeviceId(String username, String deviceId, String refreshHeader) {
+        validateRefreshTokenDetails(username, deviceId, refreshHeader);
+        // DB에서 deviceId에 해당하는 엔티티를 제거합니다.
+        refreshRepository.deleteByDeviceId(deviceId);
+    }
+
+    /**
+     * 회원탈퇴 시 회원의 모든 리프레시 토큰 삭제
+     *
+     * @param username 사용자 이름
+     * @param deviceId 기기 고유 번호
+     * @param refreshHeader 리프레시 토큰
+     */
+    @Override
+    public void deleteAllRefreshTokensByUsername(String username, String deviceId, String refreshHeader) {
+        validateRefreshTokenDetails(username, deviceId, refreshHeader);
+        // DB에서 username에 해당하는 모든 엔티티를 제거합니다.
+        refreshRepository.deleteByUsername(username);
+    }
+
+    /**
+     * 리프레시 토큰을 검증하고, 유효성을 확인합니다.
+     *
+     * @param refreshHeader 리프레시 토큰 헤더
+     * @param deviceId 기기 고유 번호
+     * @param username 사용자 이름
+     */
+    private void validateRefreshTokenDetails(String username, String deviceId, String refreshHeader) {
+        // deviceId 유효성 검증
+        ValidationUtils.validateDeviceId(deviceId);
         // 헤더를 검증합니다.
         String refresh = jwtUtil.extractToken(refreshHeader, TokenType.REFRESH);
+
         // 리프레시 토큰을 검증합니다.
         jwtUtil.validateToken(refresh, TokenType.REFRESH);
 
@@ -112,10 +158,9 @@ public class TokenServiceImpl implements TokenService{
         Refresh refreshEntity = getRefreshByRefreshToken(refresh);
 
         // DB에 저장된 deviceId와 요청된 deviceId이 일치하는지 확인합니다.
-        validateDeviceId(refreshEntity, deviceId);
-
-        // DB에서 리프레시 토큰을 제거합니다.
-        refreshRepository.deleteByRefreshToken(refresh);
+        checkDeviceIdMatch(refreshEntity, deviceId);
+        // DB에 저장된 username과 요청된 username이 일치하는지 확인합니다.
+        checkUsernameMatch(refreshEntity, username);
     }
 
     /**

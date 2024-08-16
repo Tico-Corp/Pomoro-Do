@@ -3,6 +3,7 @@ package com.tico.pomoro_do.domain.user.controller;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.service.AuthService;
 import com.tico.pomoro_do.domain.user.service.TokenService;
+import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.code.SuccessCode;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -228,7 +230,7 @@ public class AuthController {
      * 사용자가 로그아웃 시, 서버의 리프레시 토큰을 삭제합니다.
      *
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
-     * @param refreshToken Refresh-Token 헤더에 포함된 리프레시 토큰
+     * @param refreshHeader Refresh-Token 헤더에 포함된 리프레시 토큰
      * @return 로그아웃 성공 메시지를 담은 SuccessResponseDTO 반환
      * @throws CustomException 리프레시 토큰 삭제 실패 시 CustomException 발생
      */
@@ -256,11 +258,12 @@ public class AuthController {
     })
     @DeleteMapping("/logout")
     public ResponseEntity<SuccessResponseDTO<String>> removeToken(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Device-ID") String deviceId,
-            @RequestHeader("Refresh-Token") String refreshToken
+            @RequestHeader("Refresh-Token") String refreshHeader
     ) {
         // 액세스 토큰으로 현재 Redis 정보 삭제
-        tokenService.removeRefreshToken(deviceId, refreshToken);
+        tokenService.deleteRefreshTokenByDeviceId(customUserDetails.getUsername(), deviceId, refreshHeader);
 
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus().value())
