@@ -17,6 +17,7 @@ import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.enums.*;
 import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public TokenDTO googleLogin(String idTokenHeader, String deviceId) throws GeneralSecurityException, IOException {
         // deviceId 유효성 검사
-        validateDeviceId(deviceId);
+        ValidationUtils.validateDeviceId(deviceId);
         // 토큰 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 토큰 유효성 검증
@@ -170,43 +171,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     /**
-     * 디바이스 ID 검증 메서드
-     *
-     * @param deviceId 기기 고유 번호
-     */
-    private void validateDeviceId(String deviceId) {
-        if (deviceId == null || deviceId.isEmpty()) {
-            log.error("유효하지 않은 입력: deviceId={}", deviceId);
-            throw new CustomException(ErrorCode.DEVICE_ID_EMPTY);
-        }
-    }
-
-    /**
-     * 닉네임 검증 메서드
-     *
-     * @param nickname 닉네임
-     */
-    private void validateNickname(String nickname) {
-        if (nickname == null || nickname.isEmpty()) {
-            log.error("유효하지 않은 입력: nickname={}", nickname);
-            throw new CustomException(ErrorCode.NICKNAME_EMPTY);
-        }
-
-        if (nickname.length() > 10) {
-            log.error("닉네임이 너무 깁니다: nickname={}", nickname);
-            throw new CustomException(ErrorCode.NICKNAME_TOO_LONG);
-        }
-    }
-
-    /**
      * 회원가입 입력값 검증 메서드
      *
      * @param deviceId 기기 고유 번호
      * @param nickname 닉네임
      */
     private void joinValidateInputs(String deviceId, String nickname) {
-        validateDeviceId(deviceId);
-        validateNickname(nickname);
+        ValidationUtils.validateDeviceId(deviceId);
+        ValidationUtils.validateNickname(nickname);
     }
 
     /**
