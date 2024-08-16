@@ -3,6 +3,7 @@ package com.tico.pomoro_do.domain.user.controller;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.service.AuthService;
 import com.tico.pomoro_do.domain.user.service.TokenService;
+import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.code.SuccessCode;
@@ -22,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -256,11 +258,12 @@ public class AuthController {
     })
     @DeleteMapping("/logout")
     public ResponseEntity<SuccessResponseDTO<String>> removeToken(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Device-ID") String deviceId,
-            @RequestHeader("Refresh-Token") String refreshToken
+            @RequestHeader("Refresh-Token") String refreshHeader
     ) {
         // 액세스 토큰으로 현재 Redis 정보 삭제
-        tokenService.removeRefreshToken(deviceId, refreshToken);
+        tokenService.removeRefreshToken(customUserDetails.getUsername(), deviceId, refreshHeader);
 
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus().value())

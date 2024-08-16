@@ -140,7 +140,7 @@ public class JWTUtil {
             throw new CustomException(ErrorCode.INVALID_TOKEN_TYPE);
         }
 
-        log.info("{} 토큰 검증 완료: token = {}", expectedCategory, token);
+        log.info("{} 토큰 검증 완료", expectedCategory);
     }
 
     /**
