@@ -110,7 +110,7 @@ public class TokenServiceImpl implements TokenService{
 
     // 만료기간이 지난 토큰은 스케줄러를 돌려서 삭제하라.
     /**
-     * 로그아웃 시 리프레시 토큰 삭제
+     * 로그아웃 시 특정 기기에서의 리프레시 토큰 삭제
      *
      * @param username 사용자 이름
      * @param deviceId 기기 고유 번호
@@ -118,10 +118,24 @@ public class TokenServiceImpl implements TokenService{
      */
     @Override
     @Transactional
-    public void removeRefreshToken(String username, String deviceId, String refreshHeader) {
+    public void deleteRefreshTokenByDeviceId(String username, String deviceId, String refreshHeader) {
         validateRefreshTokenDetails(username, deviceId, refreshHeader);
         // DB에서 deviceId에 해당하는 엔티티를 제거합니다.
         refreshRepository.deleteByDeviceId(deviceId);
+    }
+
+    /**
+     * 회원탈퇴 시 회원의 모든 리프레시 토큰 삭제
+     *
+     * @param username 사용자 이름
+     * @param deviceId 기기 고유 번호
+     * @param refreshHeader 리프레시 토큰
+     */
+    @Override
+    public void deleteAllRefreshTokensByUsername(String username, String deviceId, String refreshHeader) {
+        validateRefreshTokenDetails(username, deviceId, refreshHeader);
+        // DB에서 username에 해당하는 모든 엔티티를 제거합니다.
+        refreshRepository.deleteByUsername(username);
     }
 
     /**

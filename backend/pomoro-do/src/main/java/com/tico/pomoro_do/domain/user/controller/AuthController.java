@@ -230,7 +230,7 @@ public class AuthController {
      * 사용자가 로그아웃 시, 서버의 리프레시 토큰을 삭제합니다.
      *
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
-     * @param refreshToken Refresh-Token 헤더에 포함된 리프레시 토큰
+     * @param refreshHeader Refresh-Token 헤더에 포함된 리프레시 토큰
      * @return 로그아웃 성공 메시지를 담은 SuccessResponseDTO 반환
      * @throws CustomException 리프레시 토큰 삭제 실패 시 CustomException 발생
      */
@@ -263,7 +263,7 @@ public class AuthController {
             @RequestHeader("Refresh-Token") String refreshHeader
     ) {
         // 액세스 토큰으로 현재 Redis 정보 삭제
-        tokenService.removeRefreshToken(customUserDetails.getUsername(), deviceId, refreshHeader);
+        tokenService.deleteRefreshTokenByDeviceId(customUserDetails.getUsername(), deviceId, refreshHeader);
 
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus().value())

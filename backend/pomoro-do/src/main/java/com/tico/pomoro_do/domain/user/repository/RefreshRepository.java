@@ -13,14 +13,11 @@ public interface RefreshRepository extends JpaRepository<Refresh, Long> {
     Optional<Refresh> findByRefreshToken(String refreshToken);
 
     // 해당 리프레쉬 토큰을 삭제하는 메소드
-    @Transactional
     void deleteByRefreshToken(String refreshToken);
 
     // 사용자 이름을 기준으로 모든 리프레쉬 토큰을 삭제하는 메소드
-    @Transactional
     void deleteByUsername(String username);
 
     // 디바이스 id를 기준으로 모든 리프레쉬 토큰을 삭제하는 메소드
-    @Transactional
     void deleteByDeviceId(String deviceId);
 }
