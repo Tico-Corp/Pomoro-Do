@@ -102,7 +102,11 @@ public enum ErrorCode {
     USER_ALREADY_REGISTERED(HttpStatus.CONFLICT, "U-104", "이미 등록된 사용자입니다."),
     NICKNAME_TOO_LONG(HttpStatus.BAD_REQUEST, "U-105", "닉네임이 너무 깁니다. 최대 길이는 10자입니다."),
     USERNAME_MISMATCH(HttpStatus.BAD_REQUEST, "U-106", "현재 유저의 정보와 일치하지 않습니다."),
+    USER_ID_INVALID(HttpStatus.BAD_REQUEST, "U-107", "USER ID가 비어있거나 유효하지 않습니다."),
 
+    //follow 관련 에러: -130번대
+    SELF_FOLLOW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "U-130", "본인은 팔로우할 수 없습니다."),
+    ALREADY_FOLLOWED(HttpStatus.CONFLICT, "U-131", "이미 팔로우 중입니다."), // 중복 팔로우 에러 코드
 
     //Token 관련 에러 -200번대
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "T-201", "액세스 토큰이 만료되었습니다."),
