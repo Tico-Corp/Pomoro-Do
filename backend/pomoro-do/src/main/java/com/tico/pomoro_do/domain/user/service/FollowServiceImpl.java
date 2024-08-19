@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
+import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
 import com.tico.pomoro_do.domain.user.entity.Follow;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.FollowRepository;
@@ -10,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -53,5 +58,23 @@ public class FollowServiceImpl implements FollowService {
                 .build();
 
         followRepository.save(follow);
+    }
+
+    @Override
+    public List<FollowUserDTO> getFollowingList(String username) {
+
+        User user = userService.findByUsername(username);
+        List<Follow> followList = followRepository.findBySender(user);
+
+        return followList.isEmpty() ? Collections.emptyList() :
+                followList.stream()
+                .map(follow -> FollowUserDTO.builder()
+                        .userId(follow.getReceiver().getId())
+                        .nickname(follow.getReceiver().getNickname())
+                        .profileImageUrl(follow.getReceiver().getProfileImageUrl())
+                        .following(true)
+                        .build())
+                .collect(Collectors.toList());
+
     }
 }
