@@ -34,9 +34,9 @@ public class FollowController {
      * @return 성공 시 성공 메시지를 포함한 SuccessResponseDTO 반환
      */
     @Operation(
-            summary = "팔로우",
+            summary = "특정 사용자 팔로우",
             description = "현재 인증된 사용자가 특정 사용자를 팔로우합니다. <br>" +
-                    "성공적으로 팔로우하면 성공 메시지를 반환합니다. " +
+                    "팔로우가 성공하면 성공 메시지를 반환합니다. " +
                     "팔로우할 사용자가 존재하지 않거나 이미 팔로우 중인 경우 예외가 발생할 수 있습니다."
     )
     @ApiResponses(value = {
@@ -67,15 +67,15 @@ public class FollowController {
      * @return 사용자가 팔로우 중인 사용자 목록을 포함한 List<FollowUserDTO> 반환
      */
     @Operation(
-            summary = "팔로우 목록 조회",
+            summary = "현재 사용자 팔로우 목록 조회",
             description = "현재 인증된 사용자가 팔로우 중인 사용자 목록을 조회합니다. <br>" +
-                    "성공적으로 팔로우 목록을 반환합니다."
+                    "성공적으로 조회되면 사용자가 팔로우 중인 모든 사용자 정보를 포함한 리스트를 반환합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "팔로우 목록 조회 성공"),
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
-    @GetMapping("/following")
+    @GetMapping("/me/following")
     public ResponseEntity<SuccessResponseDTO<List<FollowUserDTO>>> getFollowingList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
