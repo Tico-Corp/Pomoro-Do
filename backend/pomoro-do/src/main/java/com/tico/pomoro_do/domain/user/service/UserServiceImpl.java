@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteByUsername(username);
     }
 
-
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> {
@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService{
                 });
     }
 
+    @Override
     public User findByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {

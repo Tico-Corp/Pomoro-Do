@@ -8,6 +8,20 @@ import lombok.extern.slf4j.Slf4j;
 public class ValidationUtils {
 
     /**
+     * User Id 검증 메서드
+     *
+     * @param userId 사용자 고유 번호
+     * @throws CustomException 유효하지 않은 userId일 경우
+     */
+    public static void validateUserId(Long userId) {
+
+        if (userId == null || userId <= 0) {
+            log.error("유효하지 않은 userId: {}", userId);
+            throw new CustomException(ErrorCode.USER_ID_INVALID);
+        }
+    }
+
+    /**
      * 디바이스 ID 검증 메서드
      *
      * @param deviceId 기기 고유 번호

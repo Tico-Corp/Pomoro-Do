@@ -1,0 +1,62 @@
+package com.tico.pomoro_do.domain.user.controller;
+
+import com.tico.pomoro_do.domain.user.service.FollowService;
+import com.tico.pomoro_do.global.auth.CustomUserDetails;
+import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@Tag(name = "User: 사용자", description = "사용자 관련 API")
+@RestController
+@RequestMapping("api/users")
+@RequiredArgsConstructor
+@Slf4j
+public class FollowController {
+
+    private final FollowService followService;
+
+    /**
+     * 사용자가 다른 사용자를 팔로우하는 API
+     *
+     * @param customUserDetails 현재 인증된 사용자의 정보
+     * @param userId 팔로우할 사용자의 ID
+     * @return 성공 시 성공 메시지를 포함한 SuccessResponseDTO 반환
+     */
+    @Operation(
+            summary = "팔로우",
+            description = "현재 인증된 사용자가 특정 사용자를 팔로우합니다. <br>" +
+                    "성공적으로 팔로우하면 성공 메시지를 반환합니다. " +
+                    "팔로우할 사용자가 존재하지 않거나 이미 팔로우 중인 경우 예외가 발생할 수 있습니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "성공적으로 팔로우됨"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음"),
+            @ApiResponse(responseCode = "409", description = "이미 팔로우 중인 사용자")
+    })
+    @PostMapping("/{userId}/follow")
+    public ResponseEntity<SuccessResponseDTO<String>> follow(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long userId
+    ) {
+        String username = customUserDetails.getUsername();
+        followService.follow(username, userId);
+        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+                .status(SuccessCode.FOLLOW_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.FOLLOW_SUCCESS.getMessage())
+                .data(SuccessCode.FOLLOW_SUCCESS.name())
+                .build();
+        return ResponseEntity.ok(successResponse);
+    }
+}
