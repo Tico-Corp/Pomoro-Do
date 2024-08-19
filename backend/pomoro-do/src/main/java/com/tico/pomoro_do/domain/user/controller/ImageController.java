@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
-@Tag(name = "Image: 이미지", description = "이미지 업로드 관련 API")
+@Tag(name = "BackEnd: 백엔드", description = "백엔드 전용 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/images")

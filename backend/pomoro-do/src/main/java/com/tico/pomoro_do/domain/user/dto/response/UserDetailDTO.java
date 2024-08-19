@@ -12,15 +12,25 @@ public class UserDetailDTO {
     @Schema(description = "이메일 주소", example = "example@example.com")
     private final String username;
 
-    private String nickname;
+    private final String nickname;
 
-    private String profileImageUrl;
+    private final String profileImageUrl;
+
+    // 내가 팔로우하는 사람의 수
+    private final int followingCount;
+
+    // 나를 팔로우하는 사람의 수
+    private final int followerCount;
 
     @Builder
-    public UserDetailDTO(Long userId, String username, String nickname, String profileImageUrl) {
+    public UserDetailDTO(Long userId, String username, String nickname, String profileImageUrl,
+                         int followingCount, int followerCount) {
         this.userId = userId;
         this.username = username;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
+        this.followingCount = followingCount;
+        this.followerCount = followerCount;
     }
+
 }

@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@Tag(name = "Admin: 관리자", description = "백엔드 로그인을 위한 API")
+@Tag(name = "BackEnd: 백엔드", description = "백엔드 전용 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admins")
