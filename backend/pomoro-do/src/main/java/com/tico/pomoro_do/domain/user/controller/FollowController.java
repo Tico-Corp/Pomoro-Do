@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.user.controller;
 
+import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
 import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
@@ -12,12 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "User: 사용자", description = "사용자 관련 API")
+import java.util.List;
+
+@Tag(name = "Follow: 팔로우", description = "팔로우 관련 API")
 @RestController
 @RequestMapping("api/users")
 @RequiredArgsConstructor
@@ -59,4 +59,34 @@ public class FollowController {
                 .build();
         return ResponseEntity.ok(successResponse);
     }
+
+    /**
+     * 사용자가 팔로우 중인 사용자 목록을 조회하는 API
+     *
+     * @param customUserDetails 현재 인증된 사용자의 정보
+     * @return 사용자가 팔로우 중인 사용자 목록을 포함한 List<FollowUserDTO> 반환
+     */
+    @Operation(
+            summary = "팔로우 목록 조회",
+            description = "현재 인증된 사용자가 팔로우 중인 사용자 목록을 조회합니다. <br>" +
+                    "성공적으로 팔로우 목록을 반환합니다."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "팔로우 목록 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
+    })
+    @GetMapping("/following")
+    public ResponseEntity<SuccessResponseDTO<List<FollowUserDTO>>> getFollowingList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        String username = customUserDetails.getUsername();
+        List<FollowUserDTO> followingList = followService.getFollowingList(username);
+        SuccessResponseDTO<List<FollowUserDTO>> successResponse = SuccessResponseDTO.<List<FollowUserDTO>>builder()
+                .status(SuccessCode.FOLLOWING_LIST_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.FOLLOWING_LIST_FETCH_SUCCESS.getMessage())
+                .data(followingList)
+                .build();
+        return ResponseEntity.ok(successResponse);
+    }
+
 }
