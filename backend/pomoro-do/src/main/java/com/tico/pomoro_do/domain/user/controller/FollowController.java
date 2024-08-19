@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "User: 사용자", description = "사용자 관련 API")
+@Tag(name = "Follow: 팔로우", description = "팔로우 관련 API")
 @RestController
 @RequestMapping("api/users")
 @RequiredArgsConstructor
