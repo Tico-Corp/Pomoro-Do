@@ -1,11 +1,16 @@
 package com.tico.pomorodo.di
 
 import com.tico.pomorodo.domain.repository.AuthRepository
+import com.tico.pomorodo.domain.repository.CategoryRepository
+import com.tico.pomorodo.domain.repository.TodoRepository
 import com.tico.pomorodo.domain.usecase.ClearAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.ClearIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.GetAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.IsAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.GetAllCategoryUseCase
+import com.tico.pomorodo.domain.usecase.GetAllTodoUseCase
 import com.tico.pomorodo.domain.usecase.GetIdTokenUseCase
+import com.tico.pomorodo.domain.usecase.InsertTodoUseCase
+import com.tico.pomorodo.domain.usecase.IsAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.JoinUseCase
 import com.tico.pomorodo.domain.usecase.LoginUseCase
 import com.tico.pomorodo.domain.usecase.SaveAccessTokenUseCase
@@ -71,5 +76,23 @@ object UseCaseModule {
     @Provides
     fun provideLoginUseCase(authRepository: AuthRepository): LoginUseCase {
         return LoginUseCase(authRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetAllTodoUseCase(todoRepository: TodoRepository): GetAllTodoUseCase {
+        return GetAllTodoUseCase(todoRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideInsertTodoUseCase(todoRepository: TodoRepository): InsertTodoUseCase {
+        return InsertTodoUseCase(todoRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetAllCategoryUseCase(categoryRepository: CategoryRepository): GetAllCategoryUseCase {
+        return GetAllCategoryUseCase(categoryRepository)
     }
 }

@@ -48,10 +48,14 @@ class AuthViewModel @Inject constructor(
     fun requestLogin() = viewModelScope.launch {
         when (val value = loginUseCase()) {
             is Resource.Success -> {
-                if (value.data.status == NetworkConstants.SUCCESS_LOGIN) {
+                if (value.data.status == NetworkConstants.SUCCESS_CODE) {
                     saveAccessToken(value.data.data.accessToken)
                     _authState.value = AuthState.SUCCESS_LOGIN
                 }
+            }
+
+            is Resource.Loading -> {
+
             }
 
             is Resource.Failure.Error -> {

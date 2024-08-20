@@ -28,7 +28,7 @@ class AddCategoryViewModel @Inject constructor() : ViewModel() {
         get() = _openSettingOption.asStateFlow()
 
     private var _selectedGroupMembers =
-        MutableStateFlow<List<SelectedUser>>(listOf())
+        MutableStateFlow<List<SelectedUser>>(emptyList())
     val selectedGroupMembers: StateFlow<List<SelectedUser>>
         get() = _selectedGroupMembers.asStateFlow()
 

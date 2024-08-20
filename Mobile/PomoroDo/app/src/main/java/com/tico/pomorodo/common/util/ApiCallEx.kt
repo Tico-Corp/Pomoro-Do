@@ -1,5 +1,6 @@
 package com.tico.pomorodo.common.util
 
+import android.database.sqlite.SQLiteException
 import com.tico.pomorodo.data.remote.models.response.ErrorResponse
 import com.tico.pomorodo.domain.model.Resource
 import kotlinx.coroutines.CoroutineDispatcher
@@ -25,6 +26,10 @@ suspend fun <T> wrapToResource(
             is HttpException -> {
                 val errorResponse = parseErrorResponse(throwable)
                 Resource.Failure.Error(errorResponse?.message ?: "HTTP Error", errorResponse?.code)
+            }
+
+            is SQLiteException -> {
+                Resource.Failure.Exception(throwable.message ?: "SQLiteException")
             }
 
             else -> {

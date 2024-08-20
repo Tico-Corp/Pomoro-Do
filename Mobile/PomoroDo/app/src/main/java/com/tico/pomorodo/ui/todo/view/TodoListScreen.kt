@@ -250,7 +250,7 @@ fun TodoListItem(
                 )
             }
         }
-        if (todoData.likedNumber > 0) {
+        if (todoData.likes > 0) {
             Column(
                 modifier = Modifier.clickableWithoutRipple(enabled = isFriend) { onLikedClicked() },
                 verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -266,7 +266,7 @@ fun TodoListItem(
 
                 SimpleText(
                     modifier = Modifier,
-                    text = todoData.likedNumber.toString(),
+                    text = todoData.likes.toString(),
                     style = PomoroDoTheme.typography.laundryGothicRegular10,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )

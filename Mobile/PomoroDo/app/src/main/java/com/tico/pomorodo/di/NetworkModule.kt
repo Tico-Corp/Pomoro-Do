@@ -1,15 +1,19 @@
 package com.tico.pomorodo.di
 
+import android.content.Context
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.tico.pomorodo.BuildConfig
-import com.tico.pomorodo.common.util.AuthInterceptorClient
+import com.tico.pomorodo.common.util.AccessTokenInterceptorClient
 import com.tico.pomorodo.common.util.IdTokenInterceptorClient
+import com.tico.pomorodo.common.util.NetworkHelper
+import com.tico.pomorodo.common.util.RefreshTokenInterceptorClient
 import com.tico.pomorodo.data.local.PreferencesManager
-import com.tico.pomorodo.data.remote.interceptor.AuthInterceptor
+import com.tico.pomorodo.data.remote.interceptor.AccessTokenInterceptor
 import com.tico.pomorodo.data.remote.interceptor.IdTokenInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -27,7 +31,7 @@ object NetworkModule {
     @Provides
     @Singleton
     @IdTokenInterceptorClient
-    fun provideHttpClient(preferencesManager: PreferencesManager): OkHttpClient {
+    fun provideIdTokenHttpClient(preferencesManager: PreferencesManager): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val idTokenInterceptor = IdTokenInterceptor(preferencesManager)
@@ -42,26 +46,26 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @AuthInterceptorClient
-    fun provideAuthHttpClient(
+    @AccessTokenInterceptorClient
+    fun provideAccessTokenHttpClient(
         preferencesManager: PreferencesManager
     ): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        val authInterceptor = AuthInterceptor(preferencesManager)
+        val accessTokenInterceptor = AccessTokenInterceptor(preferencesManager)
         return OkHttpClient.Builder()
             .readTimeout(TIME, TimeUnit.SECONDS)
             .connectTimeout(TIME, TimeUnit.SECONDS)
             .writeTimeout(TIME, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
-            .addInterceptor(authInterceptor)
+            .addInterceptor(accessTokenInterceptor)
             .build()
     }
 
     @Provides
     @Singleton
     @IdTokenInterceptorClient
-    fun provideRetrofit(
+    fun provideIdTokenRetrofit(
         @IdTokenInterceptorClient
         okHttpClient: OkHttpClient,
     ): Retrofit {
@@ -76,9 +80,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @AuthInterceptorClient
-    fun provideAuthRetrofit(
-        @AuthInterceptorClient
+    @RefreshTokenInterceptorClient
+    fun provideRefreshTokenRetrofit(
+        @RefreshTokenInterceptorClient
         okHttpClient: OkHttpClient,
     ): Retrofit {
         val json = Json { ignoreUnknownKeys = true }
@@ -88,5 +92,27 @@ object NetworkModule {
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    @AccessTokenInterceptorClient
+    fun provideAuthRetrofit(
+        @AccessTokenInterceptorClient
+        okHttpClient: OkHttpClient,
+    ): Retrofit {
+        val json = Json { ignoreUnknownKeys = true }
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
+        return NetworkHelper(context)
     }
 }

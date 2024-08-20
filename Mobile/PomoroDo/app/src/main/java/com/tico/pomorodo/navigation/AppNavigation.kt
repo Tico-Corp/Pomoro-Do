@@ -57,7 +57,7 @@ fun NavController.navigateToBreakMode() =
 
 fun NavController.navigateToCategory() = navigate(MainNavigationDestination.Category.name)
 fun NavController.navigateToAddCategory() = navigate(MainNavigationDestination.AddCategory.name)
-fun NavController.navigateToInfoCategory(categoryId: String) =
+fun NavController.navigateToInfoCategory(categoryId: Int) =
     navigate("${MainNavigationDestination.InfoCategory.name}/$categoryId")
 
 fun NavController.navigateToGroupMemberChoose(previousScreenType: String) =
@@ -193,7 +193,7 @@ fun NavGraphBuilder.breakModeScreen(navController: NavController) {
 
 fun NavGraphBuilder.categoryScreen(
     navigateToAddCategory: () -> Unit,
-    navigateToInfoCategory: (String) -> Unit,
+    navigateToInfoCategory: (Int) -> Unit,
     navigateToBack: () -> Unit
 ) {
     composable(route = MainNavigationDestination.Category.name) {
@@ -222,7 +222,7 @@ fun NavGraphBuilder.addCategoryScreen(
 private const val CATEGORY_ID = "categoryId"
 
 internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
-    val categoryId: String = checkNotNull(savedStateHandle[CATEGORY_ID]) {
+    val categoryId: Int = checkNotNull(savedStateHandle[CATEGORY_ID]) {
         "Missing categoryId"
     }
 }
@@ -234,7 +234,7 @@ fun NavGraphBuilder.infoCategoryScreen(
 ) {
     composable(
         route = "${MainNavigationDestination.InfoCategory.name}/{$CATEGORY_ID}",
-        arguments = listOf(navArgument(name = CATEGORY_ID) { type = NavType.StringType })
+        arguments = listOf(navArgument(name = CATEGORY_ID) { type = NavType.IntType })
     ) {
         InfoCategoryScreenRoute(
             navigateToCategory = navigateToCategory,

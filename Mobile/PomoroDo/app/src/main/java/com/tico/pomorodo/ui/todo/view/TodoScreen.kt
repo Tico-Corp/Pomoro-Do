@@ -98,7 +98,7 @@ fun TodoScreen(
                                         onTodoStateChanged(
                                             categoryIndex,
                                             itemIndex,
-                                            todoList[itemIndex].state
+                                            todoList[itemIndex].status
                                         )
                                     },
                                     onMoreInfoEditClicked = {},
@@ -159,7 +159,7 @@ fun TodoScreenRoute(
                 categoryList[selectedCategoryGroupIndex].todoList?.get(selectedGroupItemIndex)
                     ?.let { todo ->
                         GroupBottomSheet(
-                            title = todo.name,
+                            title = todo.title,
                             sheetState = sheetState,
                             onShowBottomSheetChange = { showGroupBottomSheet = it },
                             completedList = DataSource.userList,

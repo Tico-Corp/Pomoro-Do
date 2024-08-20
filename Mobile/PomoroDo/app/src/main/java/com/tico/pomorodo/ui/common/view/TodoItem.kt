@@ -31,12 +31,12 @@ fun TodoItem(
     ) {
         TodoCheckBox(
             size = iconSize,
-            state = todoData.state,
+            state = todoData.status,
             enabled = enabled,
             onStateChanged = { onStateChanged?.invoke() })
         SimpleText(
             modifier = Modifier,
-            text = todoData.name,
+            text = todoData.title,
             style = textStyle,
             color = PomoroDoTheme.colorScheme.onBackground
         )
