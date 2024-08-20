@@ -64,7 +64,7 @@ class InfoCategoryViewModel @Inject constructor(
     }
 
     private fun fetchCategoryInfo(categoryId: Int) {
-        // category 목록에서 categoryId로 조회
+        TODO("category 목록에서 categoryId로 조회")
     }
 
     private fun fetchFollower() {
