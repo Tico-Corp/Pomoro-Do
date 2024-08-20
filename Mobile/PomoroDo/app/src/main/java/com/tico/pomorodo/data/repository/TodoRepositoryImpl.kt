@@ -26,7 +26,7 @@ class TodoRepositoryImpl @Inject constructor(
     private val networkHelper: NetworkHelper
 ) : TodoRepository {
     override suspend fun getAllTodo(): Flow<Resource<List<TodoData>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         if (networkHelper.isNetworkConnected()) {
             emit(wrapToResource(Dispatchers.IO) {
                 val remoteAllTodo = todoRemoteDataSource.getAllTodo()
