@@ -23,6 +23,8 @@
     <string name="content_try_one_more">다시 한 번 시도해 주세요.</string>
     <string name="content_please_permission">권한을 허용해 주세요.</string>
     <string name="content_please_update_google_play_service">"google play service를 업데이트 해주세요."</string>
+    <string name="content_nickname_range_message">"잘못된 닉네임입니다.(2–10자)"</string>
+    <string name="content_nickname_invalid_message">"문자, 숫자, _로 이루어진 닉네임만 설정 가능합니다."</string>
 
     // pomodoro timer
     <string name="content_ic_timer_pin">타이머의 중심 아이콘</string>
