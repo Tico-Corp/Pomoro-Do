@@ -28,27 +28,19 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun getAllTodo(): Flow<Resource<List<TodoData>>> = flow {
         emit(Resource.Loading())
         if (networkHelper.isNetworkConnected()) {
-            try {
+            emit(wrapToResource(Dispatchers.IO) {
                 val remoteAllTodo = todoRemoteDataSource.getAllTodo()
                 todoLocalDataSource.insertAll(remoteAllTodo.map { it.toTodoEntity() })
-                emit(wrapToResource(Dispatchers.IO) {
-                    remoteAllTodo.map { it.toTodoData() }
-                })
-            } catch (e: Exception) {
-                emitAll(
-                    todoLocalDataSource.getAllTodo().map {
-                        wrapToResource(Dispatchers.IO) {
-                            it.map { entity -> entity.toTodoData() }
-                        }
-                    })
-            }
+                remoteAllTodo.map { it.toTodoData() }
+            })
         } else {
             emitAll(
                 todoLocalDataSource.getAllTodo().map {
                     wrapToResource(Dispatchers.IO) {
                         it.map { entity -> entity.toTodoData() }
                     }
-                })
+                }
+            )
         }
     }.flowOn(Dispatchers.IO)
 
