@@ -1,6 +1,5 @@
 package com.tico.pomorodo.data.repository
 
-import android.util.Log
 import com.tico.pomorodo.common.util.NetworkHelper
 import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.local.datasource.CategoryLocalDataSource
@@ -24,15 +23,8 @@ class CategoryRepositoryImpl @Inject constructor(
         emit(Resource.Loading())
 
         if (networkHelper.isNetworkConnected()) {
-            Log.d("CategoryRepositoryImpl", "network connected")
-            emitAll(categoryLocalDataSource.getAllCategory().map {
-                wrapToResource(Dispatchers.IO) {
-                    it.map { entity -> entity.toCategory() }
-                }
-            })
+            TODO("bring network data")
         } else {
-            Log.d("CategoryRepositoryImpl", "network not connected")
-
             emitAll(categoryLocalDataSource.getAllCategory().map {
                 wrapToResource(Dispatchers.IO) {
                     it.map { entity -> entity.toCategory() }
