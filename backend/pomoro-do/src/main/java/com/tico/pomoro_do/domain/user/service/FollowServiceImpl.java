@@ -47,7 +47,7 @@ public class FollowServiceImpl implements FollowService {
         }
 
         // 이미 팔로우 중인지 확인
-        if (followRepository.existsBySenderAndReceiver(sender, receiver)) {
+        if (isFollowedByUser(sender.getId(), receiverId)) {
             log.warn("사용자 '{}'가 이미 사용자 ID '{}'를 팔로우했습니다.", senderUsername, receiverId);
             throw new CustomException(ErrorCode.ALREADY_FOLLOWED);
         }
@@ -76,5 +76,17 @@ public class FollowServiceImpl implements FollowService {
                         .build())
                 .collect(Collectors.toList());
 
+    }
+
+    /**
+     * 특정 사용자가 다른 사용자를 팔로우하고 있는지 확인
+     *
+     * @param senderId 팔로우를 한 사용자의 ID
+     * @param receiverId 팔로우 당한 사용자의 ID
+     * @return 팔로우 중이면 true, 그렇지 않으면 false
+     */
+    @Override
+    public boolean isFollowedByUser(Long senderId, Long receiverId) {
+        return followRepository.existsBySenderIdAndReceiverId(senderId, receiverId);
     }
 }

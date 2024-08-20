@@ -4,6 +4,8 @@ import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Set;
+
 @Slf4j
 public class ValidationUtils {
 
@@ -48,4 +50,17 @@ public class ValidationUtils {
             throw new CustomException(ErrorCode.NICKNAME_TOO_LONG);
         }
     }
+
+    /**
+     * 그룹 멤버 등록 검증 메서드
+     *
+     * @param members 지정한 그룹 멤버들 ID
+     */
+    public static void validateGroupMembers(Set<Long> members) {
+        if (members == null || members.isEmpty()) {
+            log.error("그룹 멤버가 지정되지 않음");
+            throw new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_FOUND);
+        }
+    }
+
 }

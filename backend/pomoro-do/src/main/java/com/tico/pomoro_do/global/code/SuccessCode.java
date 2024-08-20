@@ -30,6 +30,14 @@ public enum SuccessCode {
 
     // 이미지
     IMAGE_UPLOAD_SUCCESS(HttpStatus.OK, "이미지가 성공적으로 업로드되었습니다."),
+
+    // 카테고리
+    CATEGORY_CREATION_SUCCESS(HttpStatus.CREATED, "카테고리 생성에 성공했습니다."),
+    CATEGORY_DELETION_SUCCESS(HttpStatus.OK, "카테고리 삭제에 성공했습니다."),
+    CATEGORY_UPDATE_SUCCESS(HttpStatus.OK, "카테고리 업데이트에 성공했습니다."),
+    CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "카테고리 조회에 성공했습니다."),
+    CATEGORY_MEMBER_ADDITION_SUCCESS(HttpStatus.OK, "그룹 카테고리에 멤버 추가에 성공했습니다."),
+    CATEGORY_MEMBER_REMOVAL_SUCCESS(HttpStatus.OK, "그룹 카테고리에서 멤버 삭제에 성공했습니다.");
     ;
 
     private final HttpStatus httpStatus;	// HttpStatus
