@@ -7,12 +7,15 @@ import com.tico.pomorodo.data.local.datasource.CategoryLocalDataSource
 import com.tico.pomorodo.data.local.datasource.TodoLocalDataSource
 import com.tico.pomorodo.data.remote.datasource.AuthDataSource
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource
+import com.tico.pomorodo.data.remote.datasource.TokenDataSource
 import com.tico.pomorodo.data.repository.AuthRepositoryImpl
 import com.tico.pomorodo.data.repository.CategoryRepositoryImpl
 import com.tico.pomorodo.data.repository.TodoRepositoryImpl
+import com.tico.pomorodo.data.repository.TokenRepositoryImpl
 import com.tico.pomorodo.domain.repository.AuthRepository
 import com.tico.pomorodo.domain.repository.CategoryRepository
 import com.tico.pomorodo.domain.repository.TodoRepository
+import com.tico.pomorodo.domain.repository.TokenRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,6 +39,14 @@ object RepositoryModule {
         authDataSource: AuthDataSource
     ): AuthRepository {
         return AuthRepositoryImpl(preferencesManager, authDataSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTokenRepository(
+        tokenDataSource: TokenDataSource
+    ): TokenRepository {
+        return TokenRepositoryImpl(tokenDataSource)
     }
 
     @Provides
