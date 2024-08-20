@@ -28,7 +28,7 @@ abstract class PomorodoDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     PomorodoDatabase::class.java,
-                    "pomorodo_database"
+                    DATABASE_NAME
                 )
                     .addCallback(TodoDatabaseCallback())
                     .build()
@@ -55,5 +55,7 @@ abstract class PomorodoDatabase : RoomDatabase() {
                 CategoryEntity(id = 3, title = "카테고리 3", type = CategoryType.NORMAL)
             )
         }
+
+        const val DATABASE_NAME = "pomorodo_database"
     }
 }
