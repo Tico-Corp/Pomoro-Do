@@ -5,11 +5,15 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.CategoryType;
 import com.tico.pomoro_do.global.enums.CategoryVisibility;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Table(name = "category")
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,5 +47,15 @@ public class Category {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    @Builder
+    public Category(User host, String title, String color, CategoryVisibility visibility, CategoryType type){
+        this.host = host;
+        this.title = title;
+        this.color = color;
+        this.visibility = visibility;
+        this.type = type;
+
     }
 }

@@ -4,11 +4,15 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.GroupInviteStatus;
 import com.tico.pomoro_do.global.enums.GroupRole;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Table(name = "group_member")
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +20,8 @@ public class GroupMember {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private Category group;
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -41,5 +45,14 @@ public class GroupMember {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    @Builder
+    public GroupMember(Category category, User user, GroupInviteStatus status, GroupRole role){
+        this.category = category;
+        this.user = user;
+        this.status = status;
+        this.role = role;
+    }
+
 
 }

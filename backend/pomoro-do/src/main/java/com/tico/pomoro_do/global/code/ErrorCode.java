@@ -154,8 +154,21 @@ public enum ErrorCode {
     AWS_ACCESS_DENIED(HttpStatus.FORBIDDEN, "F-510", "AWS 접근이 거부되었습니다."),
     AWS_INVALID_BUCKET(HttpStatus.NOT_FOUND, "F-511", "AWS 버킷이 유효하지 않습니다."),
     AWS_FILE_TOO_LARGE(HttpStatus.BAD_REQUEST, "F-512", "파일이 너무 큽니다."),
-    AWS_ACL_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "F-513", "AWS ACL이 지원되지 않습니다.");
+    AWS_ACL_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "F-513", "AWS ACL이 지원되지 않습니다."),
 
+    // 카테고리 관련 에러: -600번대
+    CATEGORY_TITLE_MISSING(HttpStatus.BAD_REQUEST, "C-600", "카테고리 제목이 누락되었습니다."),
+    CATEGORY_VISIBILITY_INVALID(HttpStatus.BAD_REQUEST, "C-601", "카테고리 공개 설정이 유효하지 않습니다."),
+    CATEGORY_COLOR_MISSING(HttpStatus.BAD_REQUEST, "C-602", "카테고리 색상이 누락되었습니다."),
+    CATEGORY_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-603", "카테고리 생성 중 오류가 발생했습니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "C-604", "해당 카테고리를 찾을 수 없습니다."),
+    CATEGORY_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-605", "카테고리 삭제 중 오류가 발생했습니다."),
+    CATEGORY_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-606", "카테고리 업데이트 중 오류가 발생했습니다."),
+    CATEGORY_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "C-607", "그룹 카테고리의 멤버를 찾을 수 없습니다."),
+    CATEGORY_MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "C-608", "해당 멤버는 이미 그룹에 포함되어 있습니다."),
+    CATEGORY_MEMBER_ADDITION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-609", "그룹 카테고리에 멤버 추가 중 오류가 발생했습니다."),
+    CATEGORY_MEMBER_REMOVAL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-610", "그룹 카테고리에서 멤버 삭제 중 오류가 발생했습니다."),
+    CATEGORY_MEMBER_NOT_FOLLOWED(HttpStatus.BAD_REQUEST, "C-611", "해당 멤버는 호스트가 팔로우한 사용자가 아닙니다."),
 
     ;
 
