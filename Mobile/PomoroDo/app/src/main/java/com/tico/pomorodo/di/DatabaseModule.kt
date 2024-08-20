@@ -29,10 +29,4 @@ object DatabaseModule {
     @Provides
     fun provideCategoryDao(pomorodoDatabase: PomorodoDatabase): CategoryDao =
         pomorodoDatabase.categoryDao()
-
-    @Provides
-    @Singleton
-    fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
-        return NetworkHelper(context)
-    }
 }
