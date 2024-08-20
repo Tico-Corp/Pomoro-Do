@@ -10,7 +10,7 @@ class AccessTokenInterceptor(private val preferences: PreferencesManager) : Inte
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request().newBuilder()
             .addHeader(
-                NetworkConstants.TOKEN_NAME,
+                NetworkConstants.ACCESS_TOKEN_NAME,
                 "${BuildConfig.HEADER_PREFIX}${preferences.getAccessToken()}"
             ).build()
         return chain.proceed(request)
