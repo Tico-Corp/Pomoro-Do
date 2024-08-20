@@ -1,8 +1,16 @@
 package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDTO;
+import com.tico.pomoro_do.domain.category.entity.Category;
+import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.global.enums.CategoryType;
+import com.tico.pomoro_do.global.enums.CategoryVisibility;
 
 public interface CategoryService {
 
+    // 일반/그룹 생성할 때 그룹 멤버까지 생성
     void createCategory(String hostName, CategoryDTO categoryDTO);
+
+    // 카테고리만 생성
+    Category createNewCategory(User host, String title, String color, CategoryVisibility visibility, CategoryType type);
 }

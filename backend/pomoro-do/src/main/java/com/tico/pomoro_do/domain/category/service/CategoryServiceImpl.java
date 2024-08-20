@@ -10,6 +10,7 @@ import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.enums.CategoryType;
+import com.tico.pomoro_do.global.enums.CategoryVisibility;
 import com.tico.pomoro_do.global.enums.GroupInviteStatus;
 import com.tico.pomoro_do.global.enums.GroupRole;
 import com.tico.pomoro_do.global.exception.CustomException;
@@ -44,7 +45,13 @@ public class CategoryServiceImpl implements CategoryService {
         User host = userService.findByUsername(hostName);
 
         // 일반/그룹 카테고리 생성
-        Category category = createNewCategory(host, categoryDTO);
+        Category category = createNewCategory(
+                host,
+                categoryDTO.getTitle(),
+                categoryDTO.getColor(),
+                categoryDTO.getVisibility(),
+                categoryDTO.getType()
+        );
 
         // 그룹 카테고리면 그룹 멤버 생성 로직
         if (categoryDTO.getType() == CategoryType.GROUP) {
@@ -59,19 +66,24 @@ public class CategoryServiceImpl implements CategoryService {
      * 새로운 카테고리 객체를 생성하고 저장
      *
      * @param host 카테고리를 생성하는 호스트 유저 객체
-     * @param categoryDTO 생성할 카테고리의 정보가 담긴 DTO
+     * @param title 카테고리의 제목
+     * @param color 카테고리의 색상
+     * @param visibility 카테고리의 공개 설정
+     * @param type 카테고리의 유형 (일반/그룹)
      * @return 저장된 카테고리 객체
      */
-    private Category createNewCategory(User host, CategoryDTO categoryDTO) {
+    @Override
+    public Category createNewCategory(User host, String title, String color, CategoryVisibility visibility, CategoryType type) {
         Category category = Category.builder()
                 .host(host)
-                .title(categoryDTO.getTitle())
-                .color(categoryDTO.getColor())
-                .visibility(categoryDTO.getVisibility())
-                .type(categoryDTO.getType())
+                .title(title)
+                .color(color)
+                .visibility(visibility)
+                .type(type)
                 .build();
         return categoryRepository.save(category);
     }
+
 
     /**
      * 그룹 카테고리의 멤버들을 생성하여 저장
