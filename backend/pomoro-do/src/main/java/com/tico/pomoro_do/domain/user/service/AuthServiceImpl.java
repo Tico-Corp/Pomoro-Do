@@ -5,6 +5,8 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.tico.pomoro_do.domain.category.entity.Category;
+import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
 import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.Refresh;
@@ -15,6 +17,7 @@ import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.common.constants.CategoryConstants;
 import com.tico.pomoro_do.global.enums.*;
 import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.util.ValidationUtils;
@@ -51,6 +54,8 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshRepository refreshRepository;
     private final TokenService tokenService;
     private final ImageService imageService;
+    private final CategoryService categoryService;
+
 
     /**
      * 구글 ID 토큰으로 무결성 검증
@@ -165,6 +170,15 @@ public class AuthServiceImpl implements AuthService {
         User user = createUser(userInfo.getEmail(), nickname, profileImageUrl, UserRole.USER);
         // 소셜 로그인 정보 저장
         saveSocialLogin(user, userInfo.getUserId());
+
+        // 기본 카테고리 생성
+        Category category = categoryService.createNewCategory(
+                user,
+                CategoryConstants.DEFAULT_CATEGORY_TITLE,
+                CategoryConstants.DEFAULT_CATEGORY_COLOR,
+                CategoryConstants.DEFAULT_CATEGORY_VISIBILITY,
+                CategoryConstants.DEFAULT_CATEGORY_TYPE
+        );
 
         log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
         return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
