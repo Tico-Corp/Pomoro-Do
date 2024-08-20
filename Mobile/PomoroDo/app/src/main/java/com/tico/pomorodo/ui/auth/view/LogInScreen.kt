@@ -46,6 +46,7 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
+import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.ui.auth.viewModel.AuthState
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.BackOnPressed
@@ -91,7 +92,7 @@ fun LogInRoute(
         navigateToHome = navigateToHome,
         onLoginSuccess = { result ->
             viewModel.saveIdToken(result.idToken)
-            viewModel.setProfile(result.profilePictureUri)
+            viewModel.setProfile(result.profilePictureUri, null, ProfileImageType.GOOGLE)
             viewModel.requestLogin()
         }
     )
@@ -224,10 +225,8 @@ private suspend fun handleLogin(
             request = request,
             context = context,
         )
-        Log.d(TAG, "requestGoogleLogin: runCatching")
         handleSignIn(result)
     }.onSuccess { result ->
-        Log.d(TAG, "requestGoogleLogin: Success login!!")
         onSuccess(result)
     }.onFailure {
         Log.e(TAG, "requestGoogleLogin: onFailure")

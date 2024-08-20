@@ -4,23 +4,33 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.installations.FirebaseInstallations
 import com.tico.pomorodo.common.util.NetworkConstants
+import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.GetFIDUseCase
 import com.tico.pomorodo.domain.usecase.JoinUseCase
 import com.tico.pomorodo.domain.usecase.LoginUseCase
 import com.tico.pomorodo.domain.usecase.SaveAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.SaveFIDUseCase
 import com.tico.pomorodo.domain.usecase.SaveIdTokenUseCase
+import com.tico.pomorodo.domain.usecase.SaveRefreshTokenUseCase
+import com.tico.pomorodo.data.model.NameErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase,
     private val saveAccessTokenUseCase: SaveAccessTokenUseCase,
     private val saveIdTokenUseCase: SaveIdTokenUseCase,
+    private val saveFIDUseCase: SaveFIDUseCase,
+    private val getFIDUseCase: GetFIDUseCase,
     private val loginUseCase: LoginUseCase,
     private val joinUseCase: JoinUseCase
 ) : ViewModel() {
@@ -33,64 +43,115 @@ class AuthViewModel @Inject constructor(
     val name: StateFlow<String>
         get() = _name.asStateFlow()
 
-    private var _profile = MutableStateFlow<Uri?>(null)
-    val profile: StateFlow<Uri?>
-        get() = _profile.asStateFlow()
+    private var profileImageType = ProfileImageType.DEFAULT
+
+    private var profile = MutableStateFlow<File?>(null)
+
+    private var _profileUri = MutableStateFlow<Uri?>(null)
+    val profileUri: StateFlow<Uri?>
+        get() = _profileUri.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val fid = getFIDUseCase()
+            if (fid == null) {
+                getAndSaveFid()
+            }
+        }
+    }
+
+    private fun getAndSaveFid() {
+        FirebaseInstallations.getInstance().id.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val fid = task.result
+                viewModelScope.launch { saveFIDUseCase(fid) }
+            } else {
+                Log.e("AuthViewModel", "Failed to get FID", task.exception)
+            }
+        }
+    }
 
     fun setName(inputText: String) {
         _name.value = inputText
     }
 
-    fun setProfile(url: Uri?) {
-        _profile.value = url
+    fun nameValidate(inputText: String): NameErrorType {
+        val regex = "[^ㄱ-ㅎ가-힣a-zA-Z0-9_]".toRegex()
+        return if (inputText.length !in NICKNAME_MIN_RANGE..NICKNAME_MAX_RANGE) {
+            NameErrorType.RANGE_ERROR
+        } else if (regex.containsMatchIn(inputText)) {
+            NameErrorType.INVALID_ERROR
+        } else {
+            NameErrorType.NONE
+        }
+    }
+
+    fun setProfile(uri: Uri?, file: File?, type: ProfileImageType) {
+        _profileUri.value = uri
+        profile.value = file
+        profileImageType = type
     }
 
     fun requestLogin() = viewModelScope.launch {
-        when (val value = loginUseCase()) {
-            is Resource.Success -> {
-                if (value.data.status == NetworkConstants.SUCCESS_CODE) {
-                    saveAccessToken(value.data.data.accessToken)
-                    _authState.value = AuthState.SUCCESS_LOGIN
+        loginUseCase().collect { result ->
+            when (result) {
+                is Resource.Success -> {
+                    if (result.data.status == NetworkConstants.SUCCESS_CODE) {
+                        saveRefreshToken(result.data.data.refreshToken)
+                        saveAccessToken(result.data.data.accessToken)
+                        _authState.value = AuthState.SUCCESS_LOGIN
+                    }
                 }
-            }
 
-            is Resource.Loading -> {
+                is Resource.Loading -> {
 
-            }
-
-            is Resource.Failure.Error -> {
-                if (value.code == NetworkConstants.USER_NOT_FOUND) {
-                    _authState.value = AuthState.NEED_JOIN
-                } else {
-                    Log.e("AuthViewModel", "requestLogin: ${value.code} ${value.message}")
                 }
-            }
 
-            is Resource.Failure.Exception -> {
-                Log.e("AuthViewModel", "requestLogin: ${value.message}")
+                is Resource.Failure.Error -> {
+                    if (result.code == NetworkConstants.USER_NOT_FOUND) {
+                        _authState.value = AuthState.NEED_JOIN
+                    } else {
+                        Log.e("AuthViewModel", "requestLogin: ${result.code} ${result.message}")
+                    }
+                }
+
+                is Resource.Failure.Exception -> {
+                    Log.e("AuthViewModel", "requestLogin: ${result.message}")
+                }
             }
         }
     }
 
     fun requestJoin() = viewModelScope.launch {
-        _authState.value = AuthState.SUCCESS_JOIN
-        // 회원 가입하는 로직
-        /*when (val value = joinUseCase(UserInfoRequestBody(nickname = name.value))) {
-            is Resource.Success -> {
-                if (value.data.status == NetworkConstants.SUCCESS_JOIN) {
-                    saveAccessToken(value.data.data.accessToken)
-                    _authState.value = AuthState.SUCCESS_JOIN
+        joinUseCase(name.value, profile.value, profileImageType).collect { result ->
+            when (result) {
+                is Resource.Success -> {
+                    if (result.data.status == NetworkConstants.SUCCESS_JOIN_CODE) {
+                        saveRefreshToken(result.data.data.refreshToken)
+                        saveAccessToken(result.data.data.accessToken)
+                        _authState.value = AuthState.SUCCESS_JOIN
+                    }
+                }
+
+                is Resource.Loading -> {
+
+                }
+
+                is Resource.Failure.Error -> {
+                    Log.e("AuthViewModel", "requestJoin: ${result.code} ${result.message}")
+                }
+
+                is Resource.Failure.Exception -> {
+                    Log.e("AuthViewModel", "requestJoin: ${result.message}")
                 }
             }
+        }
+    }
 
-            is Resource.Failure.Error -> {
-                Log.e("AuthViewModel", "requestJoin: ${value.code} ${value.message}")
-            }
-
-            is Resource.Failure.Exception -> {
-                Log.e("AuthViewModel", "requestJoin: ${value.message}")
-            }
-        }*/
+    private fun saveRefreshToken(token: String) {
+        viewModelScope.launch {
+            saveRefreshTokenUseCase(token)
+        }
     }
 
     private fun saveAccessToken(token: String) {
@@ -107,5 +168,10 @@ class AuthViewModel @Inject constructor(
 
     fun setAuthState(authState: AuthState) {
         _authState.value = authState
+    }
+
+    companion object {
+        private const val NICKNAME_MIN_RANGE = 2
+        private const val NICKNAME_MAX_RANGE = 10
     }
 }

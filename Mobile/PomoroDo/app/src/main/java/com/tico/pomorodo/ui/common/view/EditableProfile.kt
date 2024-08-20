@@ -41,6 +41,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.NameErrorType
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcProfileDefault
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -52,7 +53,8 @@ fun EditableProfile(
     profileUri: Uri?,
     onProfileClicked: () -> Unit,
     inputText: String,
-    onInputTextChanged: (String) -> Unit
+    onInputTextChanged: (String) -> Unit,
+    errorType: NameErrorType
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -63,7 +65,11 @@ fun EditableProfile(
             profileUri = profileUri,
             onProfileClicked = onProfileClicked
         )
-        ProfileEditText(inputText = inputText, onInputTextChanged = onInputTextChanged)
+        ProfileEditText(
+            inputText = inputText,
+            onInputTextChanged = onInputTextChanged,
+            errorType = errorType
+        )
     }
 }
 
@@ -107,7 +113,11 @@ fun EditProfileIcon(profileUri: Uri? = null, onProfileClicked: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileEditText(inputText: String, onInputTextChanged: (String) -> Unit) {
+fun ProfileEditText(
+    inputText: String,
+    onInputTextChanged: (String) -> Unit,
+    errorType: NameErrorType
+) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
     val colors = TextFieldDefaults.colors(
@@ -117,7 +127,12 @@ fun ProfileEditText(inputText: String, onInputTextChanged: (String) -> Unit) {
         focusedLabelColor = PomoroDoTheme.colorScheme.primaryContainer,
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
         unfocusedTextColor = PomoroDoTheme.colorScheme.onBackground,
-        cursorColor = PomoroDoTheme.colorScheme.primaryContainer
+        cursorColor = PomoroDoTheme.colorScheme.primaryContainer,
+        errorIndicatorColor = PomoroDoTheme.colorScheme.error,
+        errorTextColor = PomoroDoTheme.colorScheme.error,
+        errorCursorColor = PomoroDoTheme.colorScheme.error,
+        errorSupportingTextColor = PomoroDoTheme.colorScheme.error,
+        errorContainerColor = PomoroDoTheme.colorScheme.background
     )
 
     BasicTextField(
@@ -126,7 +141,7 @@ fun ProfileEditText(inputText: String, onInputTextChanged: (String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .heightIn(min = 0.dp),
-        textStyle = PomoroDoTheme.typography.laundryGothicRegular16.copy(color = colors.unfocusedTextColor),
+        textStyle = PomoroDoTheme.typography.laundryGothicRegular16.copy(color = if (errorType != NameErrorType.NONE) colors.errorTextColor else colors.unfocusedTextColor),
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Done
@@ -142,7 +157,7 @@ fun ProfileEditText(inputText: String, onInputTextChanged: (String) -> Unit) {
             singleLine = true,
             visualTransformation = VisualTransformation.None,
             interactionSource = interactionSource,
-            isError = false,
+            isError = errorType != NameErrorType.NONE,
             label = {
                 Text(
                     text = stringResource(R.string.content_user_name_label),
@@ -161,12 +176,25 @@ fun ProfileEditText(inputText: String, onInputTextChanged: (String) -> Unit) {
             container = {
                 TextFieldDefaults.Container(
                     enabled = true,
-                    isError = false,
+                    isError = errorType != NameErrorType.NONE,
                     interactionSource = interactionSource,
                     colors = colors,
                 )
             },
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 14.dp)
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 14.dp),
+            supportingText = {
+                if (errorType == NameErrorType.INVALID_ERROR) {
+                    Text(
+                        text = stringResource(R.string.content_nickname_invalid_message),
+                        style = PomoroDoTheme.typography.laundryGothicRegular14
+                    )
+                } else if (errorType == NameErrorType.RANGE_ERROR) {
+                    Text(
+                        text = stringResource(R.string.content_nickname_range_message),
+                        style = PomoroDoTheme.typography.laundryGothicRegular14
+                    )
+                }
+            }
         )
     }
 }
