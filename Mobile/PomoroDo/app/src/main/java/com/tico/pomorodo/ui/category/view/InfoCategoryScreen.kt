@@ -103,7 +103,7 @@ fun InfoCategoryScreenRoute(
                     onBackClickedListener = navigateToBack
                 )
                 if (showCheckGroupMemberBottomSheet) {
-                    category!!.groupMember?.let {
+                    requireNotNull(category).groupMember?.let {
                         CheckGroupMemberBottomSheet(
                             sheetState = checkGroupMemberSheetState,
                             onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
@@ -115,7 +115,7 @@ fun InfoCategoryScreenRoute(
                     OpenSettingsBottomSheet(
                         title = stringResource(id = R.string.title_open_settings),
                         sheetState = openSettingsOptionSheetState,
-                        openSettingOption = category!!.openSettings,
+                        openSettingOption = requireNotNull(category).openSettings,
                         onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
                         onOkButtonClicked = {
                             viewModel.setOpenSettingOption(it)
@@ -139,8 +139,8 @@ fun InfoCategoryScreenRoute(
                 }
                 if (groupDeleteSecondDialogVisible) {
                     GroupDeleteSecondDialog(
-                        groupName = category!!.title,
-                        enabled = deleteDialogInputText == category!!.title.getNoSpace(),
+                        groupName = requireNotNull(category).title,
+                        enabled = deleteDialogInputText == requireNotNull(category).title.getNoSpace(),
                         value = deleteDialogInputText,
                         onValueChange = { deleteDialogInputText = it },
                         onConfirmation = { /*TODO: 그룹 카테고리 삭제 로직*/ },
@@ -151,7 +151,7 @@ fun InfoCategoryScreenRoute(
                         title = stringResource(id = R.string.title_group_out),
                         content = stringResource(
                             id = R.string.content_group_out_message,
-                            category!!.title
+                            requireNotNull(category).title
                         ),
                         onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
                         onIncompletedTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
@@ -169,11 +169,11 @@ fun InfoCategoryScreenRoute(
                         onDismissRequest = { normalOutDialogVisible = false })
                 }
                 InfoCategoryScreen(
-                    title = category!!.title,
-                    type = category!!.type,
+                    title = requireNotNull(category).title,
+                    type = requireNotNull(category).type,
                     groupNumber = selectedGroupMembers.filter { it.selected }.size,
-                    openSettingOption = if (category!!.type == CategoryType.GROUP) OpenSettings.GROUP else category!!.openSettings,
-                    groupReader = category!!.groupReader,
+                    openSettingOption = if (requireNotNull(category).type == CategoryType.GROUP) OpenSettings.GROUP else requireNotNull(category).openSettings,
+                    groupReader = requireNotNull(category).groupReader,
                     onTitleChanged = viewModel::setTitle,
                     onShowOpenSettingsBottomSheetChange = {
                         showOpenSettingsBottomSheet = it

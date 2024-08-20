@@ -83,7 +83,7 @@ fun CalendarStatus(
         }
         SimpleIconButton(
             size = 19,
-            imageVector = PomoroDoTheme.iconPack[IC_CALENDAR_DROP_DOWN]!!,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_CALENDAR_DROP_DOWN]),
             contentDescriptionId = R.string.content_calendar_drop_down,
             onClickedListener = onDropDownClicked,
             enabled = true
@@ -105,7 +105,7 @@ fun CalendarDate(
     ) {
         SimpleIconButton(
             size = 19,
-            imageVector = PomoroDoTheme.iconPack[IC_ARROW_BACK]!!,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_BACK]),
             contentDescriptionId = R.string.content_calendar_back,
             onClickedListener = onBackButtonClicked,
             enabled = true
@@ -118,7 +118,7 @@ fun CalendarDate(
         )
         SimpleIconButton(
             size = 19,
-            imageVector = PomoroDoTheme.iconPack[IC_ARROW_FRONT]!!,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_FRONT]),
             contentDescriptionId = R.string.content_calendar_front,
             onClickedListener = onFrontButtonClicked,
             enabled = true
@@ -138,7 +138,7 @@ fun CalendarTotals(
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         CalendarMonthlyTotalItem(
-            PomoroDoTheme.iconPack[IC_CALENDAR_DATE_RED]!!,
+            requireNotNull(PomoroDoTheme.iconPack[IC_CALENDAR_DATE_RED]),
             R.string.content_calendar_full_focus,
             monthlyFullFocusNumber
         )
@@ -278,7 +278,7 @@ fun CalendarDayItem(
         ) {
             SimpleIcon(
                 size = 36,
-                imageVector = PomoroDoTheme.iconPack[focusState.iconString]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[focusState.iconString]),
                 contentDescriptionId = focusState.iconTextId
             )
             if (remainedNumber > 0) {

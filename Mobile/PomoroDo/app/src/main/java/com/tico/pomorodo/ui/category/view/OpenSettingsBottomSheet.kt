@@ -88,7 +88,7 @@ fun OpenSettingsBottomSheet(
             ) {
                 SimpleIcon(
                     size = 15,
-                    imageVector = PomoroDoTheme.iconPack[OpenSettings.FULL.iconString]!!,
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.FULL.iconString]),
                     contentDescriptionId = OpenSettings.FULL.descriptionId
                 )
                 SimpleText(
@@ -113,7 +113,7 @@ fun OpenSettingsBottomSheet(
             ) {
                 SimpleIcon(
                     size = 15,
-                    imageVector = PomoroDoTheme.iconPack[OpenSettings.FOLLOWER.iconString]!!,
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.FOLLOWER.iconString]),
                     contentDescriptionId = OpenSettings.FOLLOWER.descriptionId
                 )
                 SimpleText(
@@ -136,7 +136,7 @@ fun OpenSettingsBottomSheet(
             ) {
                 SimpleIcon(
                     size = 15,
-                    imageVector = PomoroDoTheme.iconPack[OpenSettings.ME.iconString]!!,
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.ME.iconString]),
                     contentDescriptionId = OpenSettings.ME.descriptionId
                 )
                 SimpleText(

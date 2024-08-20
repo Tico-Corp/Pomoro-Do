@@ -513,7 +513,7 @@ fun TimeLineItem(
         Column {
             SimpleIconButton(
                 size = 18,
-                imageVector = PomoroDoTheme.iconPack[IC_TIMELINE_MORE_INFO]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_TIMELINE_MORE_INFO]),
                 contentDescriptionId = R.string.content_ic_more_info,
                 onClickedListener = { showMoreInfo = true },
                 enabled = true

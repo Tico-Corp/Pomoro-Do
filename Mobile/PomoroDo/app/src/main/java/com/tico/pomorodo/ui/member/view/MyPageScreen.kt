@@ -280,7 +280,7 @@ fun SetAlarm(title: String, alarmOptions: AlarmOptions, onClick: () -> Unit) {
             )
             SimpleIcon(
                 size = 15,
-                imageVector = PomoroDoTheme.iconPack[IC_DROP_DOWN]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
                 contentDescriptionId = R.string.content_ic_drop_down
             )
         }

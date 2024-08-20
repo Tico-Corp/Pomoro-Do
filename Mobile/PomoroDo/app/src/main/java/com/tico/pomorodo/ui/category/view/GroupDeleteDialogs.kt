@@ -97,7 +97,7 @@ fun GroupDeleteSecondDialog(
                     if (value.isNotBlank()) {
                         SimpleIconButton(
                             size = 34,
-                            imageVector = PomoroDoTheme.iconPack[IC_ALL_CLEAN]!!,
+                            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ALL_CLEAN]),
                             contentDescriptionId = R.string.content_ic_all_clean,
                             enabled = true,
                             onClickedListener = { onValueChange("") }

@@ -44,7 +44,7 @@ fun BottomBar(
                     ) {
                         Icon(
                             modifier = Modifier.size(26.dp),
-                            imageVector = PomoroDoTheme.iconPack[destination.iconString]!!,
+                            imageVector = requireNotNull(PomoroDoTheme.iconPack[destination.iconString]),
                             tint = Color.Unspecified,
                             contentDescription = stringResource(id = destination.iconTextId)
                         )
