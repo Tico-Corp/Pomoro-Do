@@ -14,8 +14,14 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "Pomoro-Do! API 명세서", // 서비스 이름
-                description =  "Pomoro-Do!는 Pomodoro 기법을 이용한 작업 시간 관리 서비스입니다. 이 API 명세서는 Pomoro-Do! 서비스의 다양한 기능을 설명합니다. <br>" // 서비스 설명
-                        + "API는 모두 HTTPS 프로토콜을 사용하며, 기본 URL은 https://pomorodo.shop/api 입니다.", // API 사용 설명
+                description =  "Pomoro-Do!는 Pomodoro 기법을 활용한 작업 시간 관리 서비스입니다. <br>"
+                        + "<br>"
+                        + "이 API 문서는 Pomoro-Do! 서비스의 주요 기능을 설명합니다. <br>" // 서비스 설명
+                        + "<br>"
+                        + "API는 HTTPS 프로토콜을 통해 제공되며, 기본 URL은 https://pomorodo.shop/api 입니다. <br>" // API 사용 설명
+                        + "<br>"
+                        + "모든 API 요청에는 JWT 인증이 필요하며, Authorization 헤더에 Bearer 토큰을 포함해야 합니다. <br>"
+                        + "단, 회원가입, 로그인, 토큰 재발행 API는 인증이 필요하지 않습니다.", // JWT 인증 설명
                 version = "v1", // 서비스 버전
                 contact = @Contact(
                         name = "TICO", // 연락처 이름
