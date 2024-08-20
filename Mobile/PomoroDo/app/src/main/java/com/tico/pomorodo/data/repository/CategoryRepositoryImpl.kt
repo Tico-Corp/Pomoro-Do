@@ -20,7 +20,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private val networkHelper: NetworkHelper
 ) : CategoryRepository {
     override suspend fun getAllCategory(): Flow<Resource<List<Category>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         if (networkHelper.isNetworkConnected()) {
             TODO("bring network data")
