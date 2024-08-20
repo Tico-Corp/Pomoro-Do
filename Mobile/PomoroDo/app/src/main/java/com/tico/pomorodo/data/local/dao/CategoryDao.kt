@@ -6,8 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.tico.pomorodo.data.local.entity.CategoryEntity
-import com.tico.pomorodo.data.local.entity.TodoEntity
-import com.tico.pomorodo.data.model.Category
 import kotlinx.coroutines.flow.Flow
 
 @Dao
