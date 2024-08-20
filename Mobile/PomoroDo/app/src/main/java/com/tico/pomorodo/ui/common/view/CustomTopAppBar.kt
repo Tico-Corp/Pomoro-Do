@@ -75,11 +75,18 @@ fun CustomTopAppBar(
 }
 
 @Composable
-fun CustomTopAppBarWithSingleButton(title: String, navigationAction: () -> Unit) {
+fun CustomTopAppBarWithSingleButton(
+    title: String,
+    navigationAction: () -> Unit,
+    top: Int = 0,
+    bottom: Int = 0,
+    start: Int = 0,
+    end: Int = 0
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 18.dp, end = 18.dp, top = 24.dp, bottom = 14.dp),
+            .padding(start = start.dp, end = end.dp, top = top.dp, bottom = bottom.dp),
         contentAlignment = Alignment.CenterStart
     ) {
         SimpleIconButton(

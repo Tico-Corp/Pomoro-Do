@@ -64,7 +64,11 @@ fun FollowListScreen() {
     Column(modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background)) {
         CustomTopAppBarWithSingleButton(
             title = stringResource(R.string.title_follow),
-            navigationAction = { /*TODO: top app bar - pop back stack*/ }
+            navigationAction = { /*TODO: top app bar - pop back stack*/ },
+            top = 24,
+            bottom = 14,
+            start = 16,
+            end = 16
         )
 
         FollowTabRow(selectedTabIndex = pagerState.currentPage) { index ->
