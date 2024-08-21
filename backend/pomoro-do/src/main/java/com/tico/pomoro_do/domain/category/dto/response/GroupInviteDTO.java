@@ -1,12 +1,14 @@
 package com.tico.pomoro_do.domain.category.dto.response;
 
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 public class GroupInviteDTO {
 
-    private Long categoryId;
-    private String title;
-    private String hostNickname;
+    private final Long categoryId;
+    private final String title;
+    private final String hostNickname;
 
     @Builder
     public GroupInviteDTO(Long categoryId, String title, String hostNickname) {
