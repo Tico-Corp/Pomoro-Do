@@ -4,6 +4,7 @@ import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
 import com.tico.pomoro_do.domain.category.dto.response.GeneralCategoryDTO;
 import com.tico.pomoro_do.domain.category.dto.response.GroupCategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.response.GroupInviteDTO;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.GroupMember;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
@@ -14,7 +15,7 @@ import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.enums.CategoryType;
 import com.tico.pomoro_do.global.enums.CategoryVisibility;
-import com.tico.pomoro_do.global.enums.GroupInviteStatus;
+import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
 import com.tico.pomoro_do.global.enums.GroupRole;
 import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.util.ValidationUtils;
@@ -98,7 +99,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     private void createGroupMembers(Category category, User host, Set<Long> memberIds) {
         // 호스트 멤버 생성
-        createSingleGroupMember(category, host, GroupInviteStatus.ACCEPTED, GroupRole.HOST);
+        createSingleGroupMember(category, host, GroupInvitationStatus.ACCEPTED, GroupRole.HOST);
 
         // 팔로우한 멤버만 그룹에 추가 가능
         for (Long memberId : memberIds) {
@@ -109,7 +110,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             User member = userService.findByUserId(memberId);
-            createSingleGroupMember(category, member, GroupInviteStatus.INVITED, GroupRole.MEMBER);
+            createSingleGroupMember(category, member, GroupInvitationStatus.INVITED, GroupRole.MEMBER);
         }
     }
 
@@ -121,7 +122,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @param status 그룹 초대 상태 (ACCEPTED, INVITED 등)
      * @param role 그룹 내 유저의 역할 (HOST, MEMBER 등)
      */
-    private void createSingleGroupMember(Category category, User member, GroupInviteStatus status, GroupRole role){
+    private void createSingleGroupMember(Category category, User member, GroupInvitationStatus status, GroupRole role){
         GroupMember groupMember = GroupMember.builder()
                 .category(category)
                 .user(member)
@@ -177,14 +178,31 @@ public class CategoryServiceImpl implements CategoryService {
      */
     private List<GroupCategoryDTO> getGroupCategories(Long userId) {
         // 사용자가 속한 모든 GroupMember를 찾음
-        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(userId, GroupInviteStatus.ACCEPTED);
+        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(userId, GroupInvitationStatus.ACCEPTED);
 
         return groupMembers.stream()
                 .map(groupMember -> GroupCategoryDTO.builder()
                         .categoryId(groupMember.getCategory().getId())
                         .title(groupMember.getCategory().getTitle())
-                        .memberCount(groupMemberRepository.countByCategoryIdAndStatus(groupMember.getCategory().getId(), GroupInviteStatus.ACCEPTED))
+                        .memberCount(groupMemberRepository.countByCategoryIdAndStatus(groupMember.getCategory().getId(), GroupInvitationStatus.ACCEPTED))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<GroupInviteDTO> getInvitedGroupCategories(String username, GroupInvitationStatus invitationStatus) {
+        User user = userService.findByUsername(username);
+        // 사용자가 초대받은 모든 GroupMember를 찾음
+        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(user.getId(), invitationStatus);
+
+        return groupMembers.stream()
+                .map(groupMember -> GroupInviteDTO.builder()
+                        .categoryId(groupMember.getCategory().getId())
+                        .title(groupMember.getCategory().getTitle())
+                        .hostNickname(groupMember.getCategory().getHost().getNickname())
+                        .build())
+                .collect(Collectors.toList());
+
     }
 }

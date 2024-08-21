@@ -2,9 +2,11 @@ package com.tico.pomoro_do.domain.category.controller;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.response.GroupInviteDTO;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "Category: 카테고리", description = "투두리스트의 카테고리 관련 API")
 @RestController
@@ -85,4 +89,25 @@ public class CategoryController {
                 .build();
         return ResponseEntity.ok(successResponse);
     }
+
+    @Operation(
+            summary = "초대 상태에 따른 그룹 카테고리 조회",
+            description = "현재 인증된 사용자가 초대된 그룹 카테고리를 조회하며, 'status' 파라미터를 통해 초대 상태(INVITED, ACCEPTED, DECLINED)에 따라 필터링할 수 있습니다."
+    )
+    @GetMapping
+    public ResponseEntity<SuccessResponseDTO<List<GroupInviteDTO>>> getInvitedGroupCategories(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam("status") GroupInvitationStatus invitationStatus
+    ) {
+        String username = customUserDetails.getUsername();
+        List<GroupInviteDTO> categoryDTO = categoryService.getInvitedGroupCategories(username, invitationStatus);
+
+        SuccessResponseDTO<List<GroupInviteDTO>> successResponse = SuccessResponseDTO.<List<GroupInviteDTO>>builder()
+                .status(SuccessCode.CATEGORY_INVITED_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.CATEGORY_INVITED_FETCH_SUCCESS.getMessage())
+                .data(categoryDTO)
+                .build();
+        return ResponseEntity.ok(successResponse);
+    }
+
 }
