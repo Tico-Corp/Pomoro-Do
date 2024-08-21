@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.category.entity;
 
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.enums.GroupInviteStatus;
+import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
 import com.tico.pomoro_do.global.enums.GroupRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -31,7 +31,7 @@ public class GroupMember {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private GroupInviteStatus status;
+    private GroupInvitationStatus status;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,7 +49,7 @@ public class GroupMember {
     }
 
     @Builder
-    public GroupMember(Category category, User user, GroupInviteStatus status, GroupRole role){
+    public GroupMember(Category category, User user, GroupInvitationStatus status, GroupRole role){
         this.category = category;
         this.user = user;
         this.status = status;
