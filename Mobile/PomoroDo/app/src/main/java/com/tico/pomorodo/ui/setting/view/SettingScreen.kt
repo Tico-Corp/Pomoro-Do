@@ -67,11 +67,11 @@ fun SettingMenuList(
     navigateToPrivacyPolicyScreen: () -> Unit
 ) {
     val menuList: Map<SettingMenu, (() -> Unit)?> = mapOf(
-        SettingMenu.MODIFY_PROFILE to navigateToModifyProfileScreen,
-        SettingMenu.APP_THEME to navigateToAppThemeScreen,
-        SettingMenu.TERMS_OF_USE to navigateToTermsOfUseScreen,
-        SettingMenu.PRIVACY_POLICY to navigateToPrivacyPolicyScreen,
-        SettingMenu.APP_VERSION to null
+        SettingMenu.ModifyProfile to navigateToModifyProfileScreen,
+        SettingMenu.AppTheme to navigateToAppThemeScreen,
+        SettingMenu.TermsOfUse to navigateToTermsOfUseScreen,
+        SettingMenu.PrivacyPolicy to navigateToPrivacyPolicyScreen,
+        SettingMenu.AppVersion to null
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -114,7 +114,7 @@ fun SettingMenuItem(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             val contentString: String =
-                if (menuType == SettingMenuType.APP_THEME)
+                if (menuType == SettingMenuType.AppTheme)
                     stringResource(id = requireNotNull(appThemeMode[content]))
                 else content?.toString() ?: ""
 
@@ -127,7 +127,7 @@ fun SettingMenuItem(
 
             Spacer(modifier = Modifier.width(2.dp))
 
-            if (menuType != SettingMenuType.APP_VERSION)
+            if (menuType != SettingMenuType.AppVersion)
                 SimpleIcon(
                     size = 20,
                     imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_RIGHT]),
