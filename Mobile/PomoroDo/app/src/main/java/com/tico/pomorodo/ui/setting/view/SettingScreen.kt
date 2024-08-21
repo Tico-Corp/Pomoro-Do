@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithSingleButton
@@ -26,9 +25,13 @@ import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.theme.IC_ARROW_RIGHT
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun SettingScreen() {
+fun SettingScreen(
+    navigateToModifyProfileScreen: () -> Unit,
+    navigateToAppThemeScreen: () -> Unit,
+    navigateToTermsOfUseScreen: () -> Unit,
+    navigateToPrivacyPolicyScreen: () -> Unit
+) {
     PomoroDoTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
@@ -45,32 +48,42 @@ fun SettingScreen() {
                     navigationAction = { TODO("top app bar - pop back stack") }
                 )
 
-                SettingMenuList()
+                SettingMenuList(
+                    navigateToModifyProfileScreen,
+                    navigateToAppThemeScreen,
+                    navigateToTermsOfUseScreen,
+                    navigateToPrivacyPolicyScreen,
+                )
             }
         }
     }
 }
 
 @Composable
-fun SettingMenuList() {
-    val menuList: List<SettingMenu> = listOf(
-        SettingMenu.MODIFY_PROFILE,
-        SettingMenu.APP_THEME,
-        SettingMenu.TERMS_OF_USE,
-        SettingMenu.PRIVACY_POLICY,
-        SettingMenu.APP_VERSION
+fun SettingMenuList(
+    navigateToModifyProfileScreen: () -> Unit,
+    navigateToAppThemeScreen: () -> Unit,
+    navigateToTermsOfUseScreen: () -> Unit,
+    navigateToPrivacyPolicyScreen: () -> Unit
+) {
+    val menuList: Map<SettingMenu, (() -> Unit)?> = mapOf(
+        SettingMenu.MODIFY_PROFILE to navigateToModifyProfileScreen,
+        SettingMenu.APP_THEME to navigateToAppThemeScreen,
+        SettingMenu.TERMS_OF_USE to navigateToTermsOfUseScreen,
+        SettingMenu.PRIVACY_POLICY to navigateToPrivacyPolicyScreen,
+        SettingMenu.APP_VERSION to null
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        menuList.forEachIndexed { index, settingMenu ->
+        menuList.entries.forEachIndexed { index, settingMenu ->
             SettingMenuItem(
-                menuStringResId = settingMenu.titleResId,
-                menuType = settingMenu.type,
-                content = settingMenu.content,
-                onClick = settingMenu.onClick
+                menuStringResId = settingMenu.key.titleResId,
+                menuType = settingMenu.key.type,
+                content = settingMenu.key.content,
+                onClick = settingMenu.value
             )
 
-            if (index != menuList.lastIndex)
+            if (index != menuList.size - 1)
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray70)
         }
     }
