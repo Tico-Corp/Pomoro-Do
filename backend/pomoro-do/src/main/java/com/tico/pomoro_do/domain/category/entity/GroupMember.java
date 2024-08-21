@@ -6,6 +6,7 @@ import com.tico.pomoro_do.global.enums.GroupRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "group_member")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class GroupMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +55,5 @@ public class GroupMember {
         this.status = status;
         this.role = role;
     }
-
 
 }

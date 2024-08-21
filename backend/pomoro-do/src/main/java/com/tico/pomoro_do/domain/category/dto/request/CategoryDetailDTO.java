@@ -11,7 +11,7 @@ import lombok.Getter;
 import java.util.Set;
 
 @Getter
-public class CategoryDTO {
+public class CategoryDetailDTO {
 
     @NotBlank(message = "제목을 입력해주세요.")
     @Schema(description = "카테고리의 제목", example = "My New Category")
