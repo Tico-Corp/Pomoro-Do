@@ -7,6 +7,7 @@ import com.tico.pomoro_do.global.enums.CategoryVisibility;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "category")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

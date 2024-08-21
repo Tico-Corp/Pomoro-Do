@@ -1,6 +1,7 @@
 package com.tico.pomoro_do.domain.category.controller;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
@@ -15,10 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Category: 카테고리", description = "투두리스트의 카테고리 관련 API")
 @RestController
@@ -54,7 +52,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<SuccessResponseDTO<String>> createCategory(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @Valid @RequestBody CategoryDTO request
+            @Valid @RequestBody CategoryDetailDTO request
     ){
         String username = customUserDetails.getUsername();
         categoryService.createCategory(username, request);
@@ -67,5 +65,24 @@ public class CategoryController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
 
+    }
+
+    @Operation(
+            summary = "일반 및 그룹 카테고리 조회",
+            description = "현재 인증된 사용자의 그룹 및 일반 카테고리를 조회합니다."
+    )
+    @GetMapping("/me")
+    public ResponseEntity<SuccessResponseDTO<CategoryDTO>> getCategories(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        String username = customUserDetails.getUsername();
+        CategoryDTO categoryDTO = categoryService.getCategories(username);
+
+        SuccessResponseDTO<CategoryDTO> successResponse = SuccessResponseDTO.<CategoryDTO>builder()
+                .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.CATEGORY_FETCH_SUCCESS.getMessage())
+                .data(categoryDTO)
+                .build();
+        return ResponseEntity.ok(successResponse);
     }
 }

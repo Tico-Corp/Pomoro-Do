@@ -1,6 +1,9 @@
 package com.tico.pomoro_do.domain.category.service;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.response.GeneralCategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.response.GroupCategoryDTO;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.GroupMember;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
@@ -20,7 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,29 +40,29 @@ public class CategoryServiceImpl implements CategoryService {
      * 카테고리 생성
      *
      * @param hostName 카테고리를 생성하는 호스트 유저의 이름
-     * @param categoryDTO 생성할 카테고리의 정보가 담긴 DTO
+     * @param categoryDetailDTO 생성할 카테고리의 정보가 담긴 DTO
      */
     @Override
     @Transactional
-    public void createCategory(String hostName, CategoryDTO categoryDTO){
+    public void createCategory(String hostName, CategoryDetailDTO categoryDetailDTO){
 
         User host = userService.findByUsername(hostName);
 
         // 일반/그룹 카테고리 생성
         Category category = createNewCategory(
                 host,
-                categoryDTO.getTitle(),
-                categoryDTO.getColor(),
-                categoryDTO.getVisibility(),
-                categoryDTO.getType()
+                categoryDetailDTO.getTitle(),
+                categoryDetailDTO.getColor(),
+                categoryDetailDTO.getVisibility(),
+                categoryDetailDTO.getType()
         );
 
         // 그룹 카테고리면 그룹 멤버 생성 로직
-        if (categoryDTO.getType() == CategoryType.GROUP) {
+        if (categoryDetailDTO.getType() == CategoryType.GROUP) {
             // 그룹 멤버를 받아왔는 지 검사
-            ValidationUtils.validateGroupMembers(categoryDTO.getMembers());
+            ValidationUtils.validateGroupMembers(categoryDetailDTO.getMembers());
             // GroupMember 생성
-            createGroupMembers(category, host, categoryDTO.getMembers());
+            createGroupMembers(category, host, categoryDetailDTO.getMembers());
         }
     }
 
@@ -128,4 +132,59 @@ public class CategoryServiceImpl implements CategoryService {
         groupMemberRepository.save(groupMember);
     }
 
+    /**
+     * 주어진 사용자 이름을 기반으로 사용자의 일반 카테고리와 그룹 카테고리를 조회
+     *
+     * @param username 사용자의 이름
+     * @return 사용자에 해당하는 일반 카테고리와 그룹 카테고리를 포함하는 CategoryDTO 객체
+     */
+    @Override
+    public CategoryDTO getCategories(String username) {
+        User user = userService.findByUsername(username);
+        List<GeneralCategoryDTO> generalCategories = getGeneralCategories(user.getId());
+        List<GroupCategoryDTO> groupCategories = getGroupCategories(user.getId());
+
+        return CategoryDTO.builder()
+                .generalCategories(generalCategories)
+                .groupCategories(groupCategories)
+                .build();
+
+    }
+
+    /**
+     * 주어진 사용자 ID를 기반으로 일반 카테고리를 조회
+     *
+     * @param userId 사용자의 ID
+     * @return 사용자의 일반 카테고리를 포함하는 GeneralCategoryDTO 리스트
+     */
+    private List<GeneralCategoryDTO> getGeneralCategories(Long userId) {
+
+        List<Category> generalCategories = categoryRepository.findByHostIdAndTypeOrderByCreatedAtAsc(userId, CategoryType.GENERAL);
+
+        return generalCategories.stream()
+                .map(generalCategory -> GeneralCategoryDTO.builder()
+                        .categoryId(generalCategory.getId())
+                        .title(generalCategory.getTitle())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 주어진 사용자 ID를 기반으로 사용자가 속한 그룹 카테고리를 조회
+     *
+     * @param userId 사용자의 ID
+     * @return 사용자가 속한 그룹 카테고리를 포함하는 GroupCategoryDTO 리스트
+     */
+    private List<GroupCategoryDTO> getGroupCategories(Long userId) {
+        // 사용자가 속한 모든 GroupMember를 찾음
+        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(userId, GroupInviteStatus.ACCEPTED);
+
+        return groupMembers.stream()
+                .map(groupMember -> GroupCategoryDTO.builder()
+                        .categoryId(groupMember.getCategory().getId())
+                        .title(groupMember.getCategory().getTitle())
+                        .memberCount(groupMemberRepository.countByCategoryIdAndStatus(groupMember.getCategory().getId(), GroupInviteStatus.ACCEPTED))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
