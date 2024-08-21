@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,18 +46,9 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
     val authViewModel: AuthViewModel = hiltViewModel()
     val name by authViewModel.name.collectAsState()
     val profileUri by authViewModel.profile.collectAsState()
-
-    val (concentrationAlarmBottomSheet, setConcentrationAlarmBottomSheet) = remember {
-        mutableStateOf(
-            false
-        )
-    }
-    val (breakAlarmBottomSheet, setBreakAlarmBottomSheet) = remember { mutableStateOf(false) }
-    val (concentrationAlarmOption, setConcentrationAlarmOption) = remember {
-        mutableStateOf(
-            AlarmOptions.Sound
-        )
-    }
+    var concentrationAlarmBottomSheet by remember { mutableStateOf(false) }
+    var breakAlarmBottomSheet by remember { mutableStateOf(false) }
+    var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.Sound) }
     val (breakAlarmOption, setBreakAlarmOption) = remember { mutableStateOf(AlarmOptions.Sound) }
 
     Column(
@@ -90,18 +82,18 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
         MyPageMenuList(
             concentrationAlarmOption,
             breakAlarmOption,
-            onConcentrationAlarmClicked = { setConcentrationAlarmBottomSheet(true) },
-            onBreakAlarmClicked = { setBreakAlarmBottomSheet(true) }
+            onConcentrationAlarmClicked = { concentrationAlarmBottomSheet = true },
+            onBreakAlarmClicked = { breakAlarmBottomSheet = true }
         )
 
         if (concentrationAlarmBottomSheet) {
             SettingAlarmBottomSheet(
                 title = stringResource(id = R.string.title_alarm_concentration),
                 initialSelect = concentrationAlarmOption,
-                onDismissRequest = { setConcentrationAlarmBottomSheet(false) },
+                onDismissRequest = { concentrationAlarmBottomSheet = false },
                 onConfirmation = { alarmOptions ->
-                    setConcentrationAlarmOption(alarmOptions)
-                    setConcentrationAlarmBottomSheet(false)
+                    concentrationAlarmOption = alarmOptions
+                    concentrationAlarmBottomSheet = false
                 }
             )
         }
@@ -110,10 +102,10 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
             SettingAlarmBottomSheet(
                 title = stringResource(id = R.string.title_alarm_break),
                 initialSelect = breakAlarmOption,
-                onDismissRequest = { setBreakAlarmBottomSheet(false) },
+                onDismissRequest = { breakAlarmBottomSheet = false },
                 onConfirmation = { alarmOptions ->
                     setBreakAlarmOption(alarmOptions)
-                    setBreakAlarmBottomSheet(false)
+                    breakAlarmBottomSheet = false
                 }
             )
         }
