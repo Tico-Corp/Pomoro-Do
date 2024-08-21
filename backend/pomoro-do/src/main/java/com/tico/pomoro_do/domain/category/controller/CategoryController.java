@@ -97,15 +97,15 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<SuccessResponseDTO<List<GroupInviteDTO>>> getInvitedGroupCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam("status") GroupInvitationStatus invitationStatus
+            @RequestParam("status") GroupInvitationStatus status
     ) {
         String username = customUserDetails.getUsername();
-        List<GroupInviteDTO> categoryDTO = categoryService.getInvitedGroupCategories(username, invitationStatus);
+        List<GroupInviteDTO> groupCategories = categoryService.getInvitedGroupCategories(username, status);
 
         SuccessResponseDTO<List<GroupInviteDTO>> successResponse = SuccessResponseDTO.<List<GroupInviteDTO>>builder()
                 .status(SuccessCode.CATEGORY_INVITED_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_INVITED_FETCH_SUCCESS.getMessage())
-                .data(categoryDTO)
+                .data(groupCategories)
                 .build();
         return ResponseEntity.ok(successResponse);
     }

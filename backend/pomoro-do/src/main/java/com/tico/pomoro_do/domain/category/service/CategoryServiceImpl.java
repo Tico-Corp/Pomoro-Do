@@ -191,10 +191,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public List<GroupInviteDTO> getInvitedGroupCategories(String username, GroupInvitationStatus invitationStatus) {
+    public List<GroupInviteDTO> getInvitedGroupCategories(String username, GroupInvitationStatus status) {
         User user = userService.findByUsername(username);
         // 사용자가 초대받은 모든 GroupMember를 찾음
-        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(user.getId(), invitationStatus);
+        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(user.getId(), status);
 
         return groupMembers.stream()
                 .map(groupMember -> GroupInviteDTO.builder()
@@ -203,6 +203,5 @@ public class CategoryServiceImpl implements CategoryService {
                         .hostNickname(groupMember.getCategory().getHost().getNickname())
                         .build())
                 .collect(Collectors.toList());
-
     }
 }
