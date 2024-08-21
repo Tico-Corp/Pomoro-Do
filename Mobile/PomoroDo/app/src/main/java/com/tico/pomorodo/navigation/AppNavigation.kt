@@ -20,6 +20,7 @@ import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.member.view.FollowListScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
+import com.tico.pomorodo.ui.setting.view.SettingScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
 import com.tico.pomorodo.ui.timer.running.view.ConcentrationTimerScreen
@@ -69,6 +70,8 @@ fun NavController.navigateToModifyProfile() = navigate(MainNavigationDestination
 
 fun NavController.navigateToFollowListScreen() =
     navigate(MainNavigationDestination.FollowListScreen.name)
+
+fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination.SettingScreen.name)
 
 
 // home navigation - composable route
@@ -287,5 +290,16 @@ fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
 fun NavGraphBuilder.followListScreen() {
     composable(route = MainNavigationDestination.FollowListScreen.name) {
         FollowListScreen()
+    }
+}
+
+fun NavGraphBuilder.settingScreen(navController: NavController) {
+    composable(route = MainNavigationDestination.SettingScreen.name) {
+        SettingScreen(
+            navigateToModifyProfileScreen = { /*TODO*/ },
+            navigateToAppThemeScreen = { /*TODO*/ },
+            navigateToTermsOfUseScreen = { /*TODO*/ },
+            navigateToPrivacyPolicyScreen = {}
+        )
     }
 }

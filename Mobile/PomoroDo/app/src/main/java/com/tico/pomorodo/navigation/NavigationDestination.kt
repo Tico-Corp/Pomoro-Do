@@ -45,4 +45,6 @@ enum class MainNavigationDestination {
 
     ModifyProfile,
     FollowListScreen,
+
+    SettingScreen,
 }

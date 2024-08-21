@@ -40,6 +40,7 @@ import com.tico.pomorodo.navigation.navigateToLogIn
 import com.tico.pomorodo.navigation.navigateToModifyProfile
 import com.tico.pomorodo.navigation.navigateToSignUp
 import com.tico.pomorodo.navigation.setState
+import com.tico.pomorodo.navigation.settingScreen
 import com.tico.pomorodo.navigation.signUpScreen
 import com.tico.pomorodo.navigation.splashScreen
 import com.tico.pomorodo.ui.common.view.BREAK_TIME
@@ -132,7 +133,10 @@ fun MainScreen() {
                 historyScreen(navigateToBack = mainNavController::popBackStack)
 
                 modifyProfileScreen(navController = mainNavController)
+
                 followListScreen()
+
+                settingScreen(navController = mainNavController)
             }
         }
     }
