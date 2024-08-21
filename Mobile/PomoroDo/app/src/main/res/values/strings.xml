@@ -184,6 +184,7 @@
     <string name="content_remove_follower_dialog">팔로워를 삭제하시겠습니까?\n팔로워를 삭제하면 목록에서 사라집니다.</string>
 
     // setting
+    <string name="title_setting_screen">환경설정</string>
     <string name="title_app_theme">앱 테마</string>
     <string name="title_terms_of_use">이용 약관</string>
     <string name="title_privacy_policy">개인 정보 처리 방침</string>
