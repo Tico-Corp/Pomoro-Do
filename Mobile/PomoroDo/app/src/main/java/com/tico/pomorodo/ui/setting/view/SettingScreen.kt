@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithSingleButton
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
@@ -40,7 +41,7 @@ fun SettingScreen() {
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 CustomTopAppBarWithSingleButton(
-                    title = "환경설정",
+                    title = stringResource(R.string.title_setting_screen),
                     navigationAction = { TODO("top app bar - pop back stack") }
                 )
 
@@ -82,10 +83,12 @@ fun SettingMenuItem(
     content: Any? = null,
     onClick: (() -> Unit)? = null
 ) {
+    val modifier =
+        if (onClick != null) Modifier.clickableWithRipple { onClick() } else Modifier
+
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clickableWithRipple { onClick?.let { it() } }
             .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

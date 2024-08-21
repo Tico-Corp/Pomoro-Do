@@ -18,33 +18,34 @@ enum class SettingMenu(
     @StringRes val titleResId: Int,
     val type: SettingMenuType,
     var content: String?,
-    val onClick: () -> Unit
+    val onClick: (() -> Unit)?
 ) {
     MODIFY_PROFILE(
         titleResId = R.string.title_modify_profile,
         type = SettingMenuType.OTHERS,
         content = null,
-        onClick = {}),
+        onClick = { TODO() }),
     APP_THEME(
         titleResId = R.string.title_app_theme,
         type = SettingMenuType.APP_THEME,
         content = LIGHT,
-        onClick = {}),
+        onClick = { TODO() }),
     TERMS_OF_USE(
         titleResId = R.string.title_terms_of_use,
         type = SettingMenuType.OTHERS,
         content = null,
-        onClick = {}),
+        onClick = { TODO() }),
     PRIVACY_POLICY(
         titleResId = R.string.title_privacy_policy,
         type = SettingMenuType.OTHERS,
         content = null,
-        onClick = {}),
+        onClick = { TODO() }),
     APP_VERSION(
         titleResId = R.string.title_app_version,
         type = SettingMenuType.APP_VERSION,
         content = "1.0.0",
-        onClick = {});
+        onClick = null
+    );
 
     fun SettingMenu.setAppTheme(mode: String): Boolean =
         if (this.type == SettingMenuType.APP_THEME) {
