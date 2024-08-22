@@ -6,7 +6,6 @@ import com.tico.pomoro_do.domain.category.dto.response.GroupInviteDTO;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
-import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -73,9 +72,10 @@ public class CategoryController {
 
     @Operation(
             summary = "일반 및 그룹 카테고리 조회",
-            description = "현재 인증된 사용자의 그룹 및 일반 카테고리를 조회합니다."
+            description = "현재 인증된 사용자의 그룹 및 일반 카테고리를 조회합니다. <br>" +
+                    "일반 카테고리와 그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
-    @GetMapping("/me")
+    @GetMapping
     public ResponseEntity<SuccessResponseDTO<CategoryDTO>> getCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
@@ -91,16 +91,17 @@ public class CategoryController {
     }
 
     @Operation(
-            summary = "초대 상태에 따른 그룹 카테고리 조회",
-            description = "현재 인증된 사용자가 초대된 그룹 카테고리를 조회하며, 'status' 파라미터를 통해 초대 상태(INVITED, ACCEPTED, DECLINED)에 따라 필터링할 수 있습니다."
+            summary = "초대된 모든 그룹 카테고리의 초대장을 조회",
+            description = "현재 인증된 사용자가 초대된 모든 그룹 카테고리 초대장을 조회합니다. <br>" +
+                    "초대된 그룹이 없을 경우 빈 배열([])을 반환하며, " +
+                    "정상적인 응답일 경우 초대장 목록이 포함된 배열을 반환합니다."
     )
-    @GetMapping
+    @GetMapping("/group/invitations")
     public ResponseEntity<SuccessResponseDTO<List<GroupInviteDTO>>> getInvitedGroupCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam("status") GroupInvitationStatus status
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String username = customUserDetails.getUsername();
-        List<GroupInviteDTO> groupCategories = categoryService.getInvitedGroupCategories(username, status);
+        List<GroupInviteDTO> groupCategories = categoryService.getInvitedGroupCategories(username);
 
         SuccessResponseDTO<List<GroupInviteDTO>> successResponse = SuccessResponseDTO.<List<GroupInviteDTO>>builder()
                 .status(SuccessCode.CATEGORY_INVITED_FETCH_SUCCESS.getHttpStatus().value())

@@ -7,7 +7,6 @@ import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.CategoryType;
 import com.tico.pomoro_do.global.enums.CategoryVisibility;
-import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
 
 import java.util.List;
 
@@ -23,5 +22,5 @@ public interface CategoryService {
     CategoryDTO getCategories(String username);
 
     // 초대된 카테고리 조회
-    List<GroupInviteDTO> getInvitedGroupCategories(String username, GroupInvitationStatus invitationStatus);
+    List<GroupInviteDTO> getInvitedGroupCategories(String username);
 }

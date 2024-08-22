@@ -24,7 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -191,14 +192,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public List<GroupInviteDTO> getInvitedGroupCategories(String username, GroupInvitationStatus status) {
+    public List<GroupInviteDTO> getInvitedGroupCategories(String username) {
         User user = userService.findByUsername(username);
         // 사용자가 초대받은 모든 GroupMember를 찾음
-        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(user.getId(), status);
+        List<GroupMember> groupMembers = groupMemberRepository.findByUserIdAndStatusOrderByUpdatedAtAsc(user.getId(), GroupInvitationStatus.INVITED);
 
         return groupMembers.stream()
                 .map(groupMember -> GroupInviteDTO.builder()
-                        .categoryId(groupMember.getCategory().getId())
+                        .groupMemberId(groupMember.getId())
                         .title(groupMember.getCategory().getTitle())
                         .hostNickname(groupMember.getCategory().getHost().getNickname())
                         .build())
