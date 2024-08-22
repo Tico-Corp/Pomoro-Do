@@ -6,13 +6,13 @@ import lombok.Getter;
 @Getter
 public class GroupInviteDTO {
 
-    private final Long categoryId;
+    private final Long groupMemberId;
     private final String title;
     private final String hostNickname;
 
     @Builder
-    public GroupInviteDTO(Long categoryId, String title, String hostNickname) {
-        this.categoryId = categoryId;
+    public GroupInviteDTO(Long groupMemberId, String title, String hostNickname) {
+        this.groupMemberId = groupMemberId;
         this.title = title;
         this.hostNickname = hostNickname;
     }
