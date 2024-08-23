@@ -5,6 +5,7 @@ import com.tico.pomorodo.data.model.Base
 import com.tico.pomorodo.data.model.Token
 import com.tico.pomorodo.data.remote.datasource.TokenDataSource
 import com.tico.pomorodo.data.remote.models.response.toBase
+import com.tico.pomorodo.data.remote.models.response.toToken
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.TokenRepository
 import kotlinx.coroutines.Dispatchers
@@ -28,12 +29,7 @@ class TokenRepositoryImpl @Inject constructor(
         emit(Resource.Loading)
         val data = wrapToResource(Dispatchers.IO) {
             val response = tokenDataSource.reissueToken()
-            response.toBase { tokenResponse ->
-                Token(
-                    accessToken = tokenResponse.accessToken,
-                    refreshToken = tokenResponse.refreshToken
-                )
-            }
+            response.toBase { tokenResponse -> tokenResponse.toToken() }
         }
         emit(data)
     }.flowOn(Dispatchers.IO)

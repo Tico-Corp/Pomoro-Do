@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.installations.FirebaseInstallations
 import com.tico.pomorodo.common.util.NetworkConstants
+import com.tico.pomorodo.data.model.NameErrorType
 import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.usecase.GetFIDUseCase
@@ -15,7 +16,6 @@ import com.tico.pomorodo.domain.usecase.SaveAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.SaveFIDUseCase
 import com.tico.pomorodo.domain.usecase.SaveIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.SaveRefreshTokenUseCase
-import com.tico.pomorodo.data.model.NameErrorType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -66,7 +66,7 @@ class AuthViewModel @Inject constructor(
                 val fid = task.result
                 viewModelScope.launch { saveFIDUseCase(fid) }
             } else {
-                Log.e("AuthViewModel", "Failed to get FID", task.exception)
+                Log.e(TAG, "Failed to get FID", task.exception)
             }
         }
     }
@@ -103,20 +103,18 @@ class AuthViewModel @Inject constructor(
                     }
                 }
 
-                is Resource.Loading -> {
-
-                }
+                is Resource.Loading -> {}
 
                 is Resource.Failure.Error -> {
                     if (result.code == NetworkConstants.USER_NOT_FOUND) {
                         _authState.value = AuthState.NEED_JOIN
                     } else {
-                        Log.e("AuthViewModel", "requestLogin: ${result.code} ${result.message}")
+                        Log.e(TAG, "requestLogin: ${result.code} ${result.message}")
                     }
                 }
 
                 is Resource.Failure.Exception -> {
-                    Log.e("AuthViewModel", "requestLogin: ${result.message}")
+                    Log.e(TAG, "requestLogin: ${result.message}")
                 }
             }
         }
@@ -133,16 +131,14 @@ class AuthViewModel @Inject constructor(
                     }
                 }
 
-                is Resource.Loading -> {
-
-                }
+                is Resource.Loading -> {}
 
                 is Resource.Failure.Error -> {
-                    Log.e("AuthViewModel", "requestJoin: ${result.code} ${result.message}")
+                    Log.e(TAG, "requestJoin: ${result.code} ${result.message}")
                 }
 
                 is Resource.Failure.Exception -> {
-                    Log.e("AuthViewModel", "requestJoin: ${result.message}")
+                    Log.e(TAG, "requestJoin: ${result.message}")
                 }
             }
         }
@@ -171,6 +167,7 @@ class AuthViewModel @Inject constructor(
     }
 
     companion object {
+        private const val TAG = "AuthViewModel"
         private const val NICKNAME_MIN_RANGE = 2
         private const val NICKNAME_MAX_RANGE = 10
     }

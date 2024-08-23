@@ -72,7 +72,6 @@ class SplashViewModel @Inject constructor(
                 is Resource.Failure.Exception -> {
                     Log.e("SplashViewModel", "checkAccessToken: ${result.message}")
                 }
-
             }
         }
     }
@@ -107,7 +106,6 @@ class SplashViewModel @Inject constructor(
                     _authState.value = AuthState.NEED_LOGIN
                     Log.e("SplashViewModel", "getAccessTokenAsRefreshToken: ${result.message}")
                 }
-
             }
         }
     }

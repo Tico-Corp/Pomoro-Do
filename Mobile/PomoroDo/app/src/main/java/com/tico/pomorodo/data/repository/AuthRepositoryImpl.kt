@@ -81,12 +81,7 @@ class AuthRepositoryImpl @Inject constructor(
             val data = wrapToResource(Dispatchers.IO) {
                 val response =
                     authDataSource.requestJoin(name, profile, profileImageType)
-                response.toBase { tokenResponse ->
-                    Token(
-                        accessToken = tokenResponse.accessToken,
-                        refreshToken = tokenResponse.refreshToken
-                    )
-                }
+                response.toBase { tokenResponse -> tokenResponse.toToken() }
             }
             emit(data)
         }.flowOn(Dispatchers.IO)
