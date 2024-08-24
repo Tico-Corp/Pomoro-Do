@@ -2,7 +2,7 @@ package com.tico.pomorodo.data.repository
 
 import com.tico.pomorodo.common.util.NetworkHelper
 import com.tico.pomorodo.common.util.wrapToResource
-import com.tico.pomorodo.data.local.datasource.CategoryLocalDataSource
+import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSource
 import com.tico.pomorodo.data.local.entity.toCategory
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.domain.model.Resource
@@ -20,7 +20,7 @@ class CategoryRepositoryImpl @Inject constructor(
     private val networkHelper: NetworkHelper
 ) : CategoryRepository {
     override suspend fun getAllCategory(): Flow<Resource<List<Category>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         if (networkHelper.isNetworkConnected()) {
             TODO("bring network data")

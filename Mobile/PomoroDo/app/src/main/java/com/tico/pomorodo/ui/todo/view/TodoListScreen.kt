@@ -121,7 +121,7 @@ fun CategoryTag(
         }
         if (isAddButton) {
             Image(
-                imageVector = PomoroDoTheme.iconPack[IC_ADD_TODO]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ADD_TODO]),
                 contentDescription = null
             )
         }
@@ -183,7 +183,7 @@ fun TodoMake(
         SimpleIcon(
             modifier = Modifier,
             size = 26,
-            imageVector = PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]!!,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]),
             contentDescriptionId = R.string.content_todo_unchecked
         )
         CustomTextField(
@@ -277,7 +277,7 @@ fun TodoListItem(
                 SimpleIconButton(
                     modifier = Modifier,
                     size = 15,
-                    imageVector = PomoroDoTheme.iconPack[IC_TODO_MORE_INFO]!!,
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_TODO_MORE_INFO]),
                     contentDescriptionId = R.string.content_ic_todo_more_info,
                     onClickedListener = {
                         showMoreInfo = true

@@ -52,7 +52,8 @@ fun CustomTopAppBar(
             SimpleIconButton(
                 modifier = Modifier.padding(18.dp),
                 size = 28,
-                imageVector = if (enabled) PomoroDoTheme.iconPack[iconString]!! else PomoroDoTheme.iconPack[disableIconString]!!,
+                imageVector = if (enabled) requireNotNull(PomoroDoTheme.iconPack[iconString])
+                else requireNotNull(PomoroDoTheme.iconPack[disableIconString]),
                 contentDescriptionId = descriptionId,
                 enabled = enabled,
                 onClickedListener = onClickedListener
@@ -62,7 +63,7 @@ fun CustomTopAppBar(
             SimpleIconButton(
                 modifier = Modifier.padding(18.dp),
                 size = 28,
-                imageVector = PomoroDoTheme.iconPack[IC_ARROW_BACK]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_BACK]),
                 contentDescriptionId = R.string.content_ic_arrow_back,
                 enabled = true,
                 onClickedListener = onBackClickedListener

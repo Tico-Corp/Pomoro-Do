@@ -2,6 +2,7 @@ package com.tico.pomorodo.ui.member.view
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,16 +29,20 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
+import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.EditableProfile
+import com.tico.pomorodo.data.model.NameErrorType
 import com.tico.pomorodo.ui.common.view.PhotoChooseDialog
 import com.tico.pomorodo.ui.common.view.createImageFile
 import com.tico.pomorodo.ui.common.view.executeToast
+import com.tico.pomorodo.ui.common.view.uriToFile
 import com.tico.pomorodo.ui.theme.IC_OK
 import com.tico.pomorodo.ui.theme.IC_UNOK
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.runBlocking
+import java.io.File
 import java.util.Objects
 
 @Composable
@@ -45,17 +50,22 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
     val authViewModel: AuthViewModel = hiltViewModel(navBackStackEntry)
     val context = LocalContext.current
     val initialInputText by authViewModel.name.collectAsState()
-    val profile by authViewModel.profile.collectAsState()
+    val profileUri by authViewModel.profileUri.collectAsState()
     var inputText by remember { mutableStateOf(initialInputText) }
-    val enable = inputText.isNotBlank() && initialInputText != inputText
+    var enable = inputText.isNotBlank() && initialInputText != inputText
     var showPhotoChooseDialog by rememberSaveable {
         mutableStateOf(false)
     }
-    var file = context.createImageFile()
-    var uri = FileProvider.getUriForFile(
-        Objects.requireNonNull(context),
-        BuildConfig.APPLICATION_ID + ".provider", file
-    )
+    var errorType by remember { mutableStateOf(NameErrorType.NONE) }
+    var file by remember { mutableStateOf<File>(context.createImageFile()) }
+    var uri by remember {
+        mutableStateOf<Uri>(
+            FileProvider.getUriForFile(
+                Objects.requireNonNull(context),
+                BuildConfig.APPLICATION_ID + ".provider", file
+            )
+        )
+    }
     var grantCameraState by remember {
         mutableStateOf(
             ContextCompat.checkSelfPermission(
@@ -66,14 +76,14 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
     }
     val pickPhotoLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { pickUri ->
-            if (pickUri != null) {
-                authViewModel.setProfile(pickUri)
+            pickUri?.let {
+                authViewModel.setProfile(pickUri, context.uriToFile(it), ProfileImageType.FILE)
             }
         }
     val takePhotoCameraLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
             if (isSuccess) {
-                authViewModel.setProfile(uri)
+                authViewModel.setProfile(uri, file, ProfileImageType.FILE)
                 file = context.createImageFile()
                 uri = FileProvider.getUriForFile(
                     Objects.requireNonNull(context),
@@ -119,16 +129,21 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
 
         EditableProfile(
             modifier = Modifier.padding(horizontal = 30.dp),
-            profileUri = profile,
+            profileUri = profileUri,
             onProfileClicked = { showPhotoChooseDialog = true },
             inputText = inputText,
-            onInputTextChanged = { inputText = it }
+            onInputTextChanged = {
+                inputText = it
+                errorType = authViewModel.nameValidate(it)
+                enable = errorType == NameErrorType.NONE && initialInputText != inputText
+            },
+            errorType = errorType
         )
     }
 
     if (showPhotoChooseDialog) {
         PhotoChooseDialog(
-            isDefaultImage = profile == null,
+            isDefaultImage = profileUri == null,
             onDismissRequest = { showPhotoChooseDialog = false },
             onTakePhotoClicked = {
                 if (grantCameraState) {
@@ -147,7 +162,7 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
                 showPhotoChooseDialog = false
             },
             onApplyDefaultImageClicked = {
-                authViewModel.setProfile(null)
+                authViewModel.setProfile(null, null, ProfileImageType.DEFAULT)
                 showPhotoChooseDialog = false
             }
         )

@@ -36,6 +36,20 @@ class PreferencesManager(context: Context) {
         sharedPreferences.edit().remove(ID_TOKEN).apply()
     }
 
+    fun isRefreshToken(): Boolean = getRefreshToken() != null
+
+    fun saveRefreshToken(token: String) {
+        sharedPreferences.edit().putString(REFRESH_TOKEN, token).apply()
+    }
+
+    fun getRefreshToken(): String? {
+        return sharedPreferences.getString(REFRESH_TOKEN, null)
+    }
+
+    fun clearRefreshToken() {
+        sharedPreferences.edit().remove(REFRESH_TOKEN).apply()
+    }
+
     fun isAccessToken(): Boolean = getAccessToken() != null
 
     fun saveAccessToken(token: String) {
@@ -50,9 +64,23 @@ class PreferencesManager(context: Context) {
         sharedPreferences.edit().remove(ACCESS_TOKEN).apply()
     }
 
+    fun saveFID(fid: String) {
+        sharedPreferences.edit().putString(FID, fid).apply()
+    }
+
+    fun getFID(): String? {
+        return sharedPreferences.getString(FID, null)
+    }
+
+    fun clearFID() {
+        sharedPreferences.edit().remove(FID).apply()
+    }
+
     companion object {
         private const val FILE_NAME = "encrypted_perf_file"
         private const val ID_TOKEN = "id_token"
         private const val ACCESS_TOKEN = "access_token"
+        private const val REFRESH_TOKEN = "refresh_token"
+        private const val FID = "firebase_installation_id"
     }
 }

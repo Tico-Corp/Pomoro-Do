@@ -4,15 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tico.pomorodo.data.local.dao.CategoryDao
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.TodoEntity
-import com.tico.pomorodo.data.model.CategoryType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @Database(entities = [TodoEntity::class, CategoryEntity::class], version = 1, exportSchema = false)
 abstract class PomorodoDatabase : RoomDatabase() {
@@ -30,32 +25,12 @@ abstract class PomorodoDatabase : RoomDatabase() {
                     PomorodoDatabase::class.java,
                     DATABASE_NAME
                 )
-                    .addCallback(TodoDatabaseCallback())
                     .build()
                 INSTANCE = instance
                 instance
             }
         }
 
-        private class TodoDatabaseCallback : RoomDatabase.Callback() {
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                INSTANCE?.let { database ->
-                    CoroutineScope(Dispatchers.IO).launch {
-                        database.categoryDao().insertAll(prepopulateCategories())
-                    }
-                }
-            }
-        }
-
-        private fun prepopulateCategories(): List<CategoryEntity> {
-            return listOf(
-                CategoryEntity(id = 1, title = "카테고리 1", type = CategoryType.NORMAL),
-                CategoryEntity(id = 2, title = "카테고리 2", type = CategoryType.NORMAL),
-                CategoryEntity(id = 3, title = "카테고리 3", type = CategoryType.NORMAL)
-            )
-        }
-
-        const val DATABASE_NAME = "pomorodo_database"
+        private const val DATABASE_NAME = "pomorodo_database"
     }
 }

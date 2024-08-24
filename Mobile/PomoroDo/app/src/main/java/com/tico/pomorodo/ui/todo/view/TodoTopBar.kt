@@ -42,7 +42,7 @@ fun TopBar(
             IconButton(onClick = { showMenu = true }) {
                 SimpleIcon(
                     size = 28,
-                    imageVector = PomoroDoTheme.iconPack[IC_MORE_INFO]!!,
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_MORE_INFO]),
                     contentDescriptionId = R.string.content_ic_more_info
                 )
                 TodoDropDownMenu(
@@ -75,7 +75,7 @@ fun TodoDropDownMenu(
                 onAddCategoryClicked()
                 onShowMenuChange(false)
             },
-            trailingIcon = PomoroDoTheme.iconPack[IC_ADD_CATEGORY]!!,
+            trailingIcon = requireNotNull(PomoroDoTheme.iconPack[IC_ADD_CATEGORY]),
             trailingIconSize = 14,
             trailingIconContentDescriptionId = R.string.content_ic_add_category,
             contentPadding = PaddingValues(10.dp),

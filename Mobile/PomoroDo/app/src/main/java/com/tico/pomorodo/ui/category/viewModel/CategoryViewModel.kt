@@ -7,7 +7,7 @@ import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.domain.model.Resource
-import com.tico.pomorodo.domain.usecase.GetAllCategoryUseCase
+import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

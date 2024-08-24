@@ -56,9 +56,9 @@ private fun TodoCheckBox(
         },
         size = size,
         imageVector = when (state) {
-            TodoState.UNCHECKED -> PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]!!
-            TodoState.GOING -> PomoroDoTheme.iconPack[IC_TODO_GOING]!!
-            TodoState.CHECKED -> PomoroDoTheme.iconPack[IC_TODO_CHECKED]!!
+            TodoState.UNCHECKED -> requireNotNull(PomoroDoTheme.iconPack[IC_TODO_UNCHECKED])
+            TodoState.GOING -> requireNotNull(PomoroDoTheme.iconPack[IC_TODO_GOING])
+            TodoState.CHECKED -> requireNotNull(PomoroDoTheme.iconPack[IC_TODO_CHECKED])
         },
         contentDescriptionId = when (state) {
             TodoState.UNCHECKED -> R.string.content_todo_unchecked

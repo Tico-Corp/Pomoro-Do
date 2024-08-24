@@ -44,7 +44,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen: () -> Unit) {
     val authViewModel: AuthViewModel = hiltViewModel()
     val name by authViewModel.name.collectAsState()
-    val profileUri by authViewModel.profile.collectAsState()
+    val profileUri by authViewModel.profileUri.collectAsState()
 
     val (concentrationAlarmBottomSheet, setConcentrationAlarmBottomSheet) = remember {
         mutableStateOf(
@@ -77,7 +77,7 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
         )
 
         MyProfile(
-            uri = profileUri,
+            profileUri = profileUri,
             userName = name,
             followingCount = 4,
             followerCount = 2,
@@ -122,7 +122,7 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
 
 @Composable
 fun MyProfile(
-    uri: Uri?,
+    profileUri: Uri?,
     userName: String,
     followingCount: Int,
     followerCount: Int,
@@ -135,7 +135,7 @@ fun MyProfile(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Profile(
-            uri = uri,
+            uri = profileUri,
             modifier = Modifier.clickableWithoutRipple { onProfileClick() },
             size = 60
         )
@@ -280,7 +280,7 @@ fun SetAlarm(title: String, alarmOptions: AlarmOptions, onClick: () -> Unit) {
             )
             SimpleIcon(
                 size = 15,
-                imageVector = PomoroDoTheme.iconPack[IC_DROP_DOWN]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
                 contentDescriptionId = R.string.content_ic_drop_down
             )
         }

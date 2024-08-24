@@ -3,18 +3,22 @@ package com.tico.pomorodo.di
 import com.tico.pomorodo.domain.repository.AuthRepository
 import com.tico.pomorodo.domain.repository.CategoryRepository
 import com.tico.pomorodo.domain.repository.TodoRepository
-import com.tico.pomorodo.domain.usecase.ClearAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.ClearIdTokenUseCase
-import com.tico.pomorodo.domain.usecase.GetAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.GetAllCategoryUseCase
-import com.tico.pomorodo.domain.usecase.GetAllTodoUseCase
-import com.tico.pomorodo.domain.usecase.GetIdTokenUseCase
-import com.tico.pomorodo.domain.usecase.InsertTodoUseCase
-import com.tico.pomorodo.domain.usecase.IsAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.JoinUseCase
-import com.tico.pomorodo.domain.usecase.LoginUseCase
-import com.tico.pomorodo.domain.usecase.SaveAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.SaveIdTokenUseCase
+import com.tico.pomorodo.domain.repository.TokenRepository
+import com.tico.pomorodo.domain.usecase.auth.ClearAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.ClearIdTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.GetAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
+import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
+import com.tico.pomorodo.domain.usecase.auth.GetIdTokenUseCase
+import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
+import com.tico.pomorodo.domain.usecase.auth.IsAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.JoinUseCase
+import com.tico.pomorodo.domain.usecase.auth.LoginUseCase
+import com.tico.pomorodo.domain.usecase.auth.ReissueTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.SaveAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.SaveIdTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.SaveRefreshTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.ValidateTokenUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +28,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object UseCaseModule {
+    @Singleton
+    @Provides
+    fun provideSaveRefreshTokenUseCase(authRepository: AuthRepository): SaveRefreshTokenUseCase {
+        return SaveRefreshTokenUseCase(authRepository)
+    }
+
     @Singleton
     @Provides
     fun provideSaveAccessTokenUseCase(authRepository: AuthRepository): SaveAccessTokenUseCase {
@@ -76,6 +86,18 @@ object UseCaseModule {
     @Provides
     fun provideLoginUseCase(authRepository: AuthRepository): LoginUseCase {
         return LoginUseCase(authRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideValidateTokenUseCase(tokenRepository: TokenRepository): ValidateTokenUseCase {
+        return ValidateTokenUseCase(tokenRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideReissueTokenUseCase(tokenRepository: TokenRepository): ReissueTokenUseCase {
+        return ReissueTokenUseCase(tokenRepository)
     }
 
     @Singleton

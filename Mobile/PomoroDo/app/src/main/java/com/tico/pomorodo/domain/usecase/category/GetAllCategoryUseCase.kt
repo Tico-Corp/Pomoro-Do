@@ -1,4 +1,4 @@
-package com.tico.pomorodo.domain.usecase
+package com.tico.pomorodo.domain.usecase.category
 
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.domain.model.Resource
