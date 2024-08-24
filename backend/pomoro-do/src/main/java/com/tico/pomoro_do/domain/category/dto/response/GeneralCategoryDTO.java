@@ -8,10 +8,12 @@ public class GeneralCategoryDTO {
 
     private Long categoryId;
     private String title;
+    private String color;
 
     @Builder
-    public GeneralCategoryDTO(Long categoryId, String title) {
+    public GeneralCategoryDTO(Long categoryId, String title, String color) {
         this.categoryId = categoryId;
         this.title = title;
+        this.color = color;
     }
 }

@@ -8,12 +8,14 @@ public class GroupCategoryDTO {
 
     private Long categoryId;
     private String title;
+    private String color;
     private int memberCount; // 그룹 인원 수
 
     @Builder
-    public GroupCategoryDTO(Long categoryId, String title, int memberCount) {
+    public GroupCategoryDTO(Long categoryId, String title, String color, int memberCount) {
         this.categoryId = categoryId;
         this.title = title;
+        this.color = color;
         this.memberCount = memberCount;
     }
 }

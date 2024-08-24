@@ -4,14 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class GroupInviteDTO {
+public class InvitedGroupDTO {
 
     private final Long groupMemberId;
     private final String title;
     private final String hostNickname;
 
     @Builder
-    public GroupInviteDTO(Long groupMemberId, String title, String hostNickname) {
+    public InvitedGroupDTO(Long groupMemberId, String title, String hostNickname) {
         this.groupMemberId = groupMemberId;
         this.title = title;
         this.hostNickname = hostNickname;
