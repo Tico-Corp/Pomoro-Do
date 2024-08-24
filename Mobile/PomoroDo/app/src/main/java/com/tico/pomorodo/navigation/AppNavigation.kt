@@ -20,6 +20,7 @@ import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.member.view.FollowListScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
+import com.tico.pomorodo.ui.setting.view.AppThemeScreen
 import com.tico.pomorodo.ui.setting.view.SettingScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
@@ -66,12 +67,16 @@ fun NavController.navigateToGroupMemberChoose(previousScreenType: String) =
 
 fun NavController.navigateToHistory() = navigate(MainNavigationDestination.HISTORY.name)
 
-fun NavController.navigateToModifyProfile() = navigate(MainNavigationDestination.MODIFY_PROFILE.name)
+fun NavController.navigateToModifyProfile() =
+    navigate(MainNavigationDestination.MODIFY_PROFILE.name)
 
 fun NavController.navigateToFollowListScreen() =
     navigate(MainNavigationDestination.FOLLOW.name)
 
 fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination.SETTING.name)
+
+fun NavController.navigateToAppThemeScreen(appThemeMode: String) =
+    navigate("${MainNavigationDestination.APP_THEME.name}/$appThemeMode")
 
 
 // home navigation - composable route
@@ -297,14 +302,30 @@ fun NavGraphBuilder.followListScreen() {
     }
 }
 
-fun NavGraphBuilder.settingScreen(navController: NavController) {
+fun NavGraphBuilder.settingScreen(navigateToAppThemeScreen: (String) -> Unit, popBackStack: () -> Unit) {
     composable(route = MainNavigationDestination.SETTING.name) {
         SettingScreen(
             navigateToModifyProfileScreen = { /*TODO*/ },
-            navigateToAppThemeScreen = { /*TODO*/ },
+            navigateToAppThemeScreen = navigateToAppThemeScreen,
             navigateToTermsOfUseScreen = { /*TODO*/ },
             navigateToPrivacyPolicyScreen = {},
-            popBackStack = { navController.popBackStack() }
+            popBackStack = { popBackStack() }
+        )
+    }
+}
+
+private const val APP_THEME_MODE = "AppThemeMode"
+
+fun NavGraphBuilder.appThemeScreen(popBackStack: () -> Unit) {
+    composable(
+        route = "${MainNavigationDestination.APP_THEME.name}/{$APP_THEME_MODE}",
+        arguments = listOf(navArgument(name = APP_THEME_MODE) { type = NavType.StringType })
+    ) { navBackStackEntry ->
+        val appThemeMode = navBackStackEntry.arguments?.getString(APP_THEME_MODE) ?: ""
+
+        AppThemeScreen(
+            initialSelectedMode = appThemeMode,
+            popBackStack = { popBackStack() }
         )
     }
 }

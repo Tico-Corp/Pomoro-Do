@@ -28,7 +28,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun SettingScreen(
     navigateToModifyProfileScreen: () -> Unit,
-    navigateToAppThemeScreen: () -> Unit,
+    navigateToAppThemeScreen: (String) -> Unit,
     navigateToTermsOfUseScreen: () -> Unit,
     navigateToPrivacyPolicyScreen: () -> Unit,
     popBackStack: () -> Unit
@@ -58,18 +58,23 @@ fun SettingScreen(
     }
 }
 
+sealed class MenuNavigateFunction {
+    data class StringFunction(val function: (String) -> Unit) : MenuNavigateFunction()
+    data class UnitFunction(val function: () -> Unit) : MenuNavigateFunction()
+}
+
 @Composable
 fun SettingMenuList(
     navigateToModifyProfileScreen: () -> Unit,
-    navigateToAppThemeScreen: () -> Unit,
+    navigateToAppThemeScreen: (String) -> Unit,
     navigateToTermsOfUseScreen: () -> Unit,
     navigateToPrivacyPolicyScreen: () -> Unit
 ) {
-    val menuList: Map<SettingMenu, (() -> Unit)?> = mapOf(
-        SettingMenu.MODIFY_PROFILE to navigateToModifyProfileScreen,
-        SettingMenu.APP_THEME to navigateToAppThemeScreen,
-        SettingMenu.TERMS_OF_USE to navigateToTermsOfUseScreen,
-        SettingMenu.PRIVACY_POLICY to navigateToPrivacyPolicyScreen,
+    val menuList: Map<SettingMenu, MenuNavigateFunction?> = mapOf(
+        SettingMenu.MODIFY_PROFILE to MenuNavigateFunction.UnitFunction(navigateToModifyProfileScreen),
+        SettingMenu.APP_THEME to MenuNavigateFunction.StringFunction(navigateToAppThemeScreen),
+        SettingMenu.TERMS_OF_USE to MenuNavigateFunction.UnitFunction(navigateToTermsOfUseScreen),
+        SettingMenu.PRIVACY_POLICY to MenuNavigateFunction.UnitFunction(navigateToPrivacyPolicyScreen),
         SettingMenu.APP_VERSION to null
     )
 
@@ -93,10 +98,19 @@ fun SettingMenuItem(
     @StringRes menuStringResId: Int,
     menuType: SettingMenuType,
     content: Any? = null,
-    onClick: (() -> Unit)? = null
+    onClick: MenuNavigateFunction? = null
 ) {
     val modifier =
-        if (onClick != null) Modifier.clickableWithRipple { onClick() } else Modifier
+        if (onClick != null) {
+            Modifier.clickableWithRipple {
+                when (onClick) {
+                    is MenuNavigateFunction.UnitFunction -> onClick.function()
+                    is MenuNavigateFunction.StringFunction -> onClick.function(content as String)
+                }
+            }
+        } else {
+            Modifier
+        }
 
     Row(
         modifier = modifier
