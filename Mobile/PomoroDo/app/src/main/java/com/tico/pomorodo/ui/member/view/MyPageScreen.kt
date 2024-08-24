@@ -73,7 +73,7 @@ fun MyPageScreen(
         )
 
         MyProfile(
-            uri = profileUri,
+            profileUri = profileUri,
             userName = name,
             followingCount = 4,
             followerCount = 2,
@@ -118,7 +118,7 @@ fun MyPageScreen(
 
 @Composable
 fun MyProfile(
-    uri: Uri?,
+    profileUri: Uri?,
     userName: String,
     followingCount: Int,
     followerCount: Int,
@@ -131,7 +131,7 @@ fun MyProfile(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Profile(
-            uri = uri,
+            uri = profileUri,
             modifier = Modifier.clickableWithoutRipple { onProfileClick() },
             size = 60
         )
@@ -276,7 +276,7 @@ fun SetAlarm(title: String, alarmOptions: AlarmOptions, onClick: () -> Unit) {
             )
             SimpleIcon(
                 size = 15,
-                imageVector = PomoroDoTheme.iconPack[IC_DROP_DOWN]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
                 contentDescriptionId = R.string.content_ic_drop_down
             )
         }

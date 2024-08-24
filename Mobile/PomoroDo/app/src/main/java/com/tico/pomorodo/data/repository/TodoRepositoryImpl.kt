@@ -2,7 +2,7 @@ package com.tico.pomorodo.data.repository
 
 import com.tico.pomorodo.common.util.NetworkHelper
 import com.tico.pomorodo.common.util.wrapToResource
-import com.tico.pomorodo.data.local.datasource.TodoLocalDataSource
+import com.tico.pomorodo.data.local.datasource.todo.TodoLocalDataSource
 import com.tico.pomorodo.data.local.entity.toTodoData
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.toTodoEntity
@@ -26,7 +26,7 @@ class TodoRepositoryImpl @Inject constructor(
     private val networkHelper: NetworkHelper
 ) : TodoRepository {
     override suspend fun getAllTodo(): Flow<Resource<List<TodoData>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         if (networkHelper.isNetworkConnected()) {
             emit(wrapToResource(Dispatchers.IO) {
                 val remoteAllTodo = todoRemoteDataSource.getAllTodo()

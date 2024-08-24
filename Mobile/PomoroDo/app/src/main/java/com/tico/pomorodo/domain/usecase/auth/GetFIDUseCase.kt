@@ -1,11 +1,11 @@
-package com.tico.pomorodo.domain.usecase
+package com.tico.pomorodo.domain.usecase.auth
 
 import com.tico.pomorodo.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class GetAccessTokenUseCase @Inject constructor(private val authRepository: AuthRepository) {
+class GetFIDUseCase @Inject constructor(private val authRepository: AuthRepository) {
     suspend operator fun invoke(): String? =
-        withContext(Dispatchers.IO) { authRepository.getAccessToken() }
+        withContext(Dispatchers.IO) { authRepository.getIdToken() }
 }

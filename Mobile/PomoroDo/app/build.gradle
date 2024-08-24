@@ -5,6 +5,7 @@ plugins {
     alias libs.plugins.hilt
     alias libs.plugins.ksp
     alias libs.plugins.room
+    alias libs.plugins.google.services
 }
 
 def localProperties = new Properties()
@@ -103,6 +104,13 @@ dependencies {
 
     // 암호화된 sharedpreference를 사용하기 위한 라이브러리
     implementation libs.androidx.security
+
+    // Firebase를 위한 라이브러리
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.analytics
+
+    // FID를 위한 라이브러리
+    implementation libs.firebase.installations
 
     // room을 사용하기 위한 라이브러리
     implementation libs.bundles.room

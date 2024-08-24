@@ -145,7 +145,7 @@ fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: 
         ) {
             SimpleIcon(
                 size = 15,
-                imageVector = PomoroDoTheme.iconPack[IC_CATEGORY_FOLLOWER_OPEN]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_CATEGORY_FOLLOWER_OPEN]),
                 contentDescriptionId = R.string.content_group_member
             )
             SimpleText(
@@ -155,7 +155,8 @@ fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: 
             )
             SimpleIcon(
                 size = 15,
-                imageVector = if (isGroupReader == true) PomoroDoTheme.iconPack[IC_ARROW_RIGHT]!! else PomoroDoTheme.iconPack[IC_DROP_DOWN]!!,
+                imageVector = if (isGroupReader == true) requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_RIGHT])
+                else requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
                 contentDescriptionId = R.string.content_full_open
             )
         }
@@ -193,7 +194,7 @@ fun CategoryOpenSettings(
             ) {
                 SimpleIcon(
                     size = 15,
-                    imageVector = PomoroDoTheme.iconPack[iconString]!!,
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[iconString]),
                     contentDescriptionId = descriptionId
                 )
                 SimpleText(
@@ -204,7 +205,8 @@ fun CategoryOpenSettings(
                 if (!isGroupInfo) {
                     SimpleIcon(
                         size = 15,
-                        imageVector = if (enabled) PomoroDoTheme.iconPack[IC_DROP_DOWN]!! else PomoroDoTheme.iconPack[IC_DROP_DOWN_DISABLE]!!,
+                        imageVector = if (enabled) requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN])
+                        else requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN_DISABLE]),
                         contentDescriptionId = if (enabled) R.string.content_ic_drop_down else R.string.content_ic_drop_down_disable
                     )
                 }

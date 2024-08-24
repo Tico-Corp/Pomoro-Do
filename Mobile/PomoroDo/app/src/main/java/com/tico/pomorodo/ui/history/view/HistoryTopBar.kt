@@ -51,7 +51,7 @@ fun HistoryTopBar(
             SimpleIconButton(
                 modifier = Modifier.padding(18.dp),
                 size = 28,
-                imageVector = PomoroDoTheme.iconPack[IC_ARROW_BACK]!!,
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_BACK]),
                 contentDescriptionId = R.string.content_ic_arrow_back,
                 enabled = true,
                 onClickedListener = onBackClickedListener

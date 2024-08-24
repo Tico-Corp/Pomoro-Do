@@ -193,7 +193,7 @@ fun GroupMemberChooseContent(
                         SimpleIcon(
                             modifier = Modifier.align(Alignment.TopEnd),
                             size = 13,
-                            imageVector = PomoroDoTheme.iconPack[IC_SELECTED_GROUP_MEMBER_CANCEL]!!,
+                            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_SELECTED_GROUP_MEMBER_CANCEL]),
                             contentDescriptionId = R.string.content_ic_selected_group_member_cancel
                         )
                     }
@@ -223,7 +223,7 @@ fun GroupMemberChooseContent(
                 if (searchName.isNotBlank()) {
                     SimpleIconButton(
                         size = 34,
-                        imageVector = PomoroDoTheme.iconPack[IC_ALL_CLEAN]!!,
+                        imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ALL_CLEAN]),
                         contentDescriptionId = R.string.content_ic_all_clean,
                         enabled = true,
                         onClickedListener = { onSearchNameChanged("") }
@@ -284,7 +284,7 @@ fun GroupMemberChooseContent(
                         } else {
                             SimpleIcon(
                                 size = 20,
-                                imageVector = PomoroDoTheme.iconPack[IC_GROUP_SELECTED_UNCHECKED]!!,
+                                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_GROUP_SELECTED_UNCHECKED]),
                                 contentDescriptionId = R.string.content_ic_group_selected_checked
                             )
                         }

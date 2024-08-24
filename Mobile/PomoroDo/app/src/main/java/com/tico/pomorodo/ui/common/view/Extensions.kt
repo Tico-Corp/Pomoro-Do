@@ -1,6 +1,8 @@
 package com.tico.pomorodo.ui.common.view
 
 import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateFloat
@@ -114,6 +116,26 @@ fun Context.createImageFile(): File {
         externalCacheDir
     )
     return image
+}
+
+fun Context.uriToFile(uri: Uri): File? {
+    val inputStream = this.contentResolver.openInputStream(uri) ?: return null
+    val file = File(this.externalCacheDir, getFileName(uri))
+    file.outputStream().use { outputStream ->
+        inputStream.copyTo(outputStream)
+    }
+    return file
+}
+
+fun Context.getFileName(uri: Uri): String {
+    val cursor = this.contentResolver.query(uri, null, null, null, null)
+    val fileName = cursor?.use { c ->
+        c.moveToFirst()
+        val index = c.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        if (index != -1) c.getString(index)
+        else null
+    }
+    return fileName ?: "unknown_file"
 }
 
 fun Context.executeToast(@StringRes messageId: Int) {

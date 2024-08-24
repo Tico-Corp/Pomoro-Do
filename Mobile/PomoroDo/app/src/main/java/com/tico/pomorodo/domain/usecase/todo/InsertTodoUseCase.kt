@@ -1,4 +1,4 @@
-package com.tico.pomorodo.domain.usecase
+package com.tico.pomorodo.domain.usecase.todo
 
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.domain.repository.TodoRepository

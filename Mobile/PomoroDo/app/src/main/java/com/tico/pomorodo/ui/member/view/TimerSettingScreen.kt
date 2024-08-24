@@ -143,7 +143,7 @@ fun SettingAlarmBottomSheetItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            imageVector = PomoroDoTheme.iconPack[alarmOptions.iconName]!!,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[alarmOptions.iconName]),
             contentDescription = stringResource(id = alarmOptions.title),
             modifier = Modifier.size(16.dp),
             tint = Color.Unspecified,

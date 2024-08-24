@@ -1,4 +1,4 @@
-package com.tico.pomorodo.domain.usecase
+package com.tico.pomorodo.domain.usecase.auth
 
 import com.tico.pomorodo.domain.repository.AuthRepository
 import kotlinx.coroutines.Dispatchers
