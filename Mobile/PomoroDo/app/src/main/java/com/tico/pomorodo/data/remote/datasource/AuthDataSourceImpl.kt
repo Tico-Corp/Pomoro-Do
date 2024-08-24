@@ -38,6 +38,6 @@ class AuthDataSourceImpl @Inject constructor(
     }
 
     companion object {
-        const val PROFILE_NAME = "profileImage"
+        private const val PROFILE_NAME = "profileImage"
     }
 }
