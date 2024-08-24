@@ -29,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomSwitch
 import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -37,15 +36,20 @@ import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcSetting
+import com.tico.pomorodo.ui.member.viewmodel.MyPageViewModel
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen: () -> Unit) {
-    val authViewModel: AuthViewModel = hiltViewModel()
-    val name by authViewModel.name.collectAsState()
-    val profileUri by authViewModel.profile.collectAsState()
+fun MyPageScreen(
+    navigateToModifyProfile: () -> Unit,
+    navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit
+) {
+    val myPageViewModel: MyPageViewModel = hiltViewModel()
+    val name by myPageViewModel.name.collectAsState()
+    val profileUri by myPageViewModel.profile.collectAsState()
     var concentrationAlarmBottomSheet by remember { mutableStateOf(false) }
     var breakAlarmBottomSheet by remember { mutableStateOf(false) }
     var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.Sound) }
@@ -64,7 +68,7 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
                 .size(28.dp)
                 .clickableWithRipple(
                     roundedCornerRadius = 150.dp,
-                    onClick = { /*TODO: 설정 화면이 나타남*/ }),
+                    onClick = { navigateToSettingScreen() }),
             tint = Color.Unspecified
         )
 
