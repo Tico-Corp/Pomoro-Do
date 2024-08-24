@@ -31,7 +31,7 @@ fun HomeScreen(
         AppNavHost(
             appState = appState,
             Modifier.padding(innerPadding),
-            startDestination = BottomNavigationDestination.Timer.name,
+            startDestination = BottomNavigationDestination.TIMER.name,
             navigateToConcentrationMode = navigateToConcentrationMode,
             navigateToCategory = navigateToCategory,
             navigateToAddCategory = navigateToAddCategory,

@@ -29,9 +29,9 @@ class AppState(val navController: NavHostController) {
         }
 
         when (topLevelDestination) {
-            BottomNavigationDestination.Timer -> navController.navigateToTimer(navOptions)
-            BottomNavigationDestination.Todo -> navController.navigateToTodo(navOptions)
-            BottomNavigationDestination.MyInfo -> navController.navigateToMyInfo(navOptions)
+            BottomNavigationDestination.TIMER -> navController.navigateToTimer(navOptions)
+            BottomNavigationDestination.TODO -> navController.navigateToTodo(navOptions)
+            BottomNavigationDestination.MY_INFO -> navController.navigateToMyInfo(navOptions)
         }
     }
 }

@@ -33,29 +33,27 @@ fun SettingScreen(
     navigateToPrivacyPolicyScreen: () -> Unit,
     popBackStack: () -> Unit
 ) {
-    PomoroDoTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = PomoroDoTheme.colorScheme.background
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = PomoroDoTheme.colorScheme.background
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 18.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                CustomTopAppBarWithSingleButton(
-                    title = stringResource(R.string.title_setting_screen),
-                    navigationAction = { popBackStack() }
-                )
+            CustomTopAppBarWithSingleButton(
+                title = stringResource(R.string.title_setting_screen),
+                navigationAction = { popBackStack() }
+            )
 
-                SettingMenuList(
-                    navigateToModifyProfileScreen,
-                    navigateToAppThemeScreen,
-                    navigateToTermsOfUseScreen,
-                    navigateToPrivacyPolicyScreen,
-                )
-            }
+            SettingMenuList(
+                navigateToModifyProfileScreen,
+                navigateToAppThemeScreen,
+                navigateToTermsOfUseScreen,
+                navigateToPrivacyPolicyScreen,
+            )
         }
     }
 }
@@ -68,11 +66,11 @@ fun SettingMenuList(
     navigateToPrivacyPolicyScreen: () -> Unit
 ) {
     val menuList: Map<SettingMenu, (() -> Unit)?> = mapOf(
-        SettingMenu.ModifyProfile to navigateToModifyProfileScreen,
-        SettingMenu.AppTheme to navigateToAppThemeScreen,
-        SettingMenu.TermsOfUse to navigateToTermsOfUseScreen,
-        SettingMenu.PrivacyPolicy to navigateToPrivacyPolicyScreen,
-        SettingMenu.AppVersion to null
+        SettingMenu.MODIFY_PROFILE to navigateToModifyProfileScreen,
+        SettingMenu.APP_THEME to navigateToAppThemeScreen,
+        SettingMenu.TERMS_OF_USE to navigateToTermsOfUseScreen,
+        SettingMenu.PRIVACY_POLICY to navigateToPrivacyPolicyScreen,
+        SettingMenu.APP_VERSION to null
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -115,7 +113,7 @@ fun SettingMenuItem(
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             val contentString: String =
-                if (menuType == SettingMenuType.AppTheme)
+                if (menuType == SettingMenuType.APP_THEME)
                     stringResource(id = requireNotNull(appThemeMode[content]))
                 else content?.toString() ?: ""
 
@@ -128,7 +126,7 @@ fun SettingMenuItem(
 
             Spacer(modifier = Modifier.width(2.dp))
 
-            if (menuType != SettingMenuType.AppVersion)
+            if (menuType != SettingMenuType.APP_VERSION)
                 SimpleIcon(
                     size = 20,
                     imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_RIGHT]),

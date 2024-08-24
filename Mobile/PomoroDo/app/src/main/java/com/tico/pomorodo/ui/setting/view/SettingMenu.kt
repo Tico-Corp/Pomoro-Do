@@ -19,34 +19,34 @@ enum class SettingMenu(
     val type: SettingMenuType,
     var content: String?,
 ) {
-    ModifyProfile(
+    MODIFY_PROFILE(
         titleResId = R.string.title_modify_profile,
-        type = SettingMenuType.Others,
+        type = SettingMenuType.OTHERS,
         content = null,
     ),
-    AppTheme(
+    APP_THEME(
         titleResId = R.string.title_app_theme,
-        type = SettingMenuType.AppTheme,
+        type = SettingMenuType.APP_THEME,
         content = LIGHT,
     ),
-    TermsOfUse(
+    TERMS_OF_USE(
         titleResId = R.string.title_terms_of_use,
-        type = SettingMenuType.Others,
+        type = SettingMenuType.OTHERS,
         content = null,
     ),
-    PrivacyPolicy(
+    PRIVACY_POLICY(
         titleResId = R.string.title_privacy_policy,
-        type = SettingMenuType.Others,
+        type = SettingMenuType.OTHERS,
         content = null,
     ),
-    AppVersion(
+    APP_VERSION(
         titleResId = R.string.title_app_version,
-        type = SettingMenuType.AppVersion,
+        type = SettingMenuType.APP_VERSION,
         content = "1.0.0",
     );
 
     fun SettingMenu.setAppTheme(mode: String): Boolean =
-        if (this.type == SettingMenuType.AppTheme) {
+        if (this.type == SettingMenuType.APP_THEME) {
             this.content = mode
             true
         } else {
@@ -55,5 +55,5 @@ enum class SettingMenu(
 }
 
 enum class SettingMenuType {
-    AppTheme, AppVersion, Others
+    APP_THEME, APP_VERSION, OTHERS
 }

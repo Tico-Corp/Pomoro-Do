@@ -52,8 +52,8 @@ fun MyPageScreen(
     val profileUri by myPageViewModel.profile.collectAsState()
     var concentrationAlarmBottomSheet by remember { mutableStateOf(false) }
     var breakAlarmBottomSheet by remember { mutableStateOf(false) }
-    var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.Sound) }
-    val (breakAlarmOption, setBreakAlarmOption) = remember { mutableStateOf(AlarmOptions.Sound) }
+    var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.SOUND) }
+    val (breakAlarmOption, setBreakAlarmOption) = remember { mutableStateOf(AlarmOptions.SOUND) }
 
     Column(
         modifier = Modifier

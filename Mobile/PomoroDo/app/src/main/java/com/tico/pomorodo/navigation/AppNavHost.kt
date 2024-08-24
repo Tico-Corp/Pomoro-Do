@@ -9,7 +9,7 @@ import com.tico.pomorodo.ui.home.view.AppState
 fun AppNavHost(
     appState: AppState,
     modifier: Modifier = Modifier,
-    startDestination: String = BottomNavigationDestination.Timer.name,
+    startDestination: String = BottomNavigationDestination.TIMER.name,
     navigateToConcentrationMode: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,

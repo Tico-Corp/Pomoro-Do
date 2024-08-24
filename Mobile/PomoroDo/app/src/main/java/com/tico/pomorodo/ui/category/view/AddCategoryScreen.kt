@@ -342,7 +342,7 @@ fun AddCategoryScreenRoute(
                 onShowOpenSettingsBottomSheetChange = {
                     showOpenSettingsBottomSheet = it
                 },
-                onGroupMemberChooseClicked = { navigateToGroupMemberChoose(MainNavigationDestination.AddCategory.name) }
+                onGroupMemberChooseClicked = { navigateToGroupMemberChoose(MainNavigationDestination.ADD_CATEGORY.name) }
             )
         }
     }
