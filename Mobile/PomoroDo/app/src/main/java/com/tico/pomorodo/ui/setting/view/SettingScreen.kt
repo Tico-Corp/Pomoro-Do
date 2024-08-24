@@ -30,7 +30,8 @@ fun SettingScreen(
     navigateToModifyProfileScreen: () -> Unit,
     navigateToAppThemeScreen: () -> Unit,
     navigateToTermsOfUseScreen: () -> Unit,
-    navigateToPrivacyPolicyScreen: () -> Unit
+    navigateToPrivacyPolicyScreen: () -> Unit,
+    popBackStack: () -> Unit
 ) {
     PomoroDoTheme {
         Surface(
@@ -45,7 +46,7 @@ fun SettingScreen(
             ) {
                 CustomTopAppBarWithSingleButton(
                     title = stringResource(R.string.title_setting_screen),
-                    navigationAction = { TODO("top app bar - pop back stack") }
+                    navigationAction = { popBackStack() }
                 )
 
                 SettingMenuList(

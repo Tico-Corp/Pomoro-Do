@@ -38,6 +38,7 @@ import com.tico.pomorodo.navigation.navigateToHome
 import com.tico.pomorodo.navigation.navigateToInfoCategory
 import com.tico.pomorodo.navigation.navigateToLogIn
 import com.tico.pomorodo.navigation.navigateToModifyProfile
+import com.tico.pomorodo.navigation.navigateToSettingScreen
 import com.tico.pomorodo.navigation.navigateToSignUp
 import com.tico.pomorodo.navigation.setState
 import com.tico.pomorodo.navigation.settingScreen
@@ -97,7 +98,8 @@ fun MainScreen() {
                     navigateToAddCategory = mainNavController::navigateToAddCategory,
                     navigateToHistory = mainNavController::navigateToHistory,
                     navigateToModifyProfile = mainNavController::navigateToModifyProfile,
-                    navigateToFollowListScreen = mainNavController::navigateToFollowListScreen
+                    navigateToFollowListScreen = mainNavController::navigateToFollowListScreen,
+                    navigateToSettingScreen = mainNavController::navigateToSettingScreen
                 )
 
                 concentrationModeScreen(

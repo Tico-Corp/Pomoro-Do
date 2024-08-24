@@ -100,12 +100,14 @@ fun NavGraphBuilder.todoScreen(
 
 fun NavGraphBuilder.myInfoScreen(
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit
+    navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit,
 ) {
     composable(route = BottomNavigationDestination.MyInfo.name) {
         MyPageScreen(
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen
+            navigateToFollowListScreen = navigateToFollowListScreen,
+            navigateToSettingScreen = navigateToSettingScreen
         )
     }
 }
@@ -153,7 +155,8 @@ fun NavGraphBuilder.homeScreen(
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit
+    navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit
 ) {
     composable(route = MainNavigationDestination.Home.name) {
         HomeScreen(
@@ -163,7 +166,8 @@ fun NavGraphBuilder.homeScreen(
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen
+            navigateToFollowListScreen = navigateToFollowListScreen,
+            navigateToSettingScreen = navigateToSettingScreen
         )
     }
 }
@@ -299,7 +303,8 @@ fun NavGraphBuilder.settingScreen(navController: NavController) {
             navigateToModifyProfileScreen = { /*TODO*/ },
             navigateToAppThemeScreen = { /*TODO*/ },
             navigateToTermsOfUseScreen = { /*TODO*/ },
-            navigateToPrivacyPolicyScreen = {}
+            navigateToPrivacyPolicyScreen = {},
+            popBackStack = { navController.popBackStack() }
         )
     }
 }

@@ -16,6 +16,7 @@ fun AppNavHost(
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
     navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
 ) {
     val navController = appState.navController
@@ -32,7 +33,8 @@ fun AppNavHost(
         )
         myInfoScreen(
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen
+            navigateToFollowListScreen = navigateToFollowListScreen,
+            navigateToSettingScreen = navigateToSettingScreen
         )
     }
 }
