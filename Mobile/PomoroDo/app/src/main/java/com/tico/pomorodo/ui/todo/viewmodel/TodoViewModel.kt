@@ -6,8 +6,8 @@ import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
-import com.tico.pomorodo.domain.usecase.GetAllTodoUseCase
-import com.tico.pomorodo.domain.usecase.InsertTodoUseCase
+import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
+import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tico.pomorodo.common.util.NetworkConstants
 import com.tico.pomorodo.domain.model.Resource
-import com.tico.pomorodo.domain.usecase.IsAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.ReissueTokenUseCase
-import com.tico.pomorodo.domain.usecase.SaveAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.SaveRefreshTokenUseCase
-import com.tico.pomorodo.domain.usecase.ValidateTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.IsAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.ReissueTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.SaveAccessTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.SaveRefreshTokenUseCase
+import com.tico.pomorodo.domain.usecase.auth.ValidateTokenUseCase
 import com.tico.pomorodo.ui.auth.viewModel.AuthState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

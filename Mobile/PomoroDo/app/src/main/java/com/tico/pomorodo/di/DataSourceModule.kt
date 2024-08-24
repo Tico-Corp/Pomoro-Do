@@ -2,10 +2,10 @@ package com.tico.pomorodo.di
 
 import com.tico.pomorodo.data.local.dao.CategoryDao
 import com.tico.pomorodo.data.local.dao.TodoDao
-import com.tico.pomorodo.data.local.datasource.CategoryLocalDataSource
-import com.tico.pomorodo.data.local.datasource.CategoryLocalDataSourceImpl
-import com.tico.pomorodo.data.local.datasource.TodoLocalDataSource
-import com.tico.pomorodo.data.local.datasource.TodoLocalDataSourceImpl
+import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSource
+import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSourceImpl
+import com.tico.pomorodo.data.local.datasource.todo.TodoLocalDataSource
+import com.tico.pomorodo.data.local.datasource.todo.TodoLocalDataSourceImpl
 import com.tico.pomorodo.data.remote.datasource.AuthDataSource
 import com.tico.pomorodo.data.remote.datasource.AuthDataSourceImpl
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource

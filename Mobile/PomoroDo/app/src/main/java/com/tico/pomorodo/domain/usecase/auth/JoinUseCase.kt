@@ -1,4 +1,4 @@
-package com.tico.pomorodo.domain.usecase
+package com.tico.pomorodo.domain.usecase.auth
 
 import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.domain.repository.AuthRepository

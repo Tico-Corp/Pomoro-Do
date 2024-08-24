@@ -1,4 +1,4 @@
-package com.tico.pomorodo.data.local.datasource
+package com.tico.pomorodo.data.local.datasource.todo
 
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.entity.TodoEntity
