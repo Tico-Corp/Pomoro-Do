@@ -10,8 +10,8 @@ const val SYSTEM = "system"
 
 val appThemeMode = mapOf(
     LIGHT to R.string.content_app_theme_light,
-    DARK to (R.string.content_app_theme_dark),
-    SYSTEM to (R.string.content_app_theme_system)
+    DARK to R.string.content_app_theme_dark,
+    SYSTEM to R.string.content_app_theme_system
 )
 
 enum class SettingMenu(
