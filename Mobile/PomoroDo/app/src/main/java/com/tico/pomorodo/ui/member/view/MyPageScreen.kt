@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +29,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomSwitch
 import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -36,28 +36,24 @@ import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcSetting
+import com.tico.pomorodo.ui.member.viewmodel.MyPageViewModel
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen: () -> Unit) {
-    val authViewModel: AuthViewModel = hiltViewModel()
-    val name by authViewModel.name.collectAsState()
-    val profileUri by authViewModel.profileUri.collectAsState()
-
-    val (concentrationAlarmBottomSheet, setConcentrationAlarmBottomSheet) = remember {
-        mutableStateOf(
-            false
-        )
-    }
-    val (breakAlarmBottomSheet, setBreakAlarmBottomSheet) = remember { mutableStateOf(false) }
-    val (concentrationAlarmOption, setConcentrationAlarmOption) = remember {
-        mutableStateOf(
-            AlarmOptions.Sound
-        )
-    }
-    val (breakAlarmOption, setBreakAlarmOption) = remember { mutableStateOf(AlarmOptions.Sound) }
+fun MyPageScreen(
+    navigateToModifyProfile: () -> Unit,
+    navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit
+) {
+    val myPageViewModel: MyPageViewModel = hiltViewModel()
+    val name by myPageViewModel.name.collectAsState()
+    val profileUri by myPageViewModel.profile.collectAsState()
+    var concentrationAlarmBottomSheet by remember { mutableStateOf(false) }
+    var breakAlarmBottomSheet by remember { mutableStateOf(false) }
+    var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.SOUND) }
+    val (breakAlarmOption, setBreakAlarmOption) = remember { mutableStateOf(AlarmOptions.SOUND) }
 
     Column(
         modifier = Modifier
@@ -72,7 +68,7 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
                 .size(28.dp)
                 .clickableWithRipple(
                     roundedCornerRadius = 150.dp,
-                    onClick = { /*TODO: 설정 화면이 나타남*/ }),
+                    onClick = { navigateToSettingScreen() }),
             tint = Color.Unspecified
         )
 
@@ -90,18 +86,18 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
         MyPageMenuList(
             concentrationAlarmOption,
             breakAlarmOption,
-            onConcentrationAlarmClicked = { setConcentrationAlarmBottomSheet(true) },
-            onBreakAlarmClicked = { setBreakAlarmBottomSheet(true) }
+            onConcentrationAlarmClicked = { concentrationAlarmBottomSheet = true },
+            onBreakAlarmClicked = { breakAlarmBottomSheet = true }
         )
 
         if (concentrationAlarmBottomSheet) {
             SettingAlarmBottomSheet(
                 title = stringResource(id = R.string.title_alarm_concentration),
                 initialSelect = concentrationAlarmOption,
-                onDismissRequest = { setConcentrationAlarmBottomSheet(false) },
+                onDismissRequest = { concentrationAlarmBottomSheet = false },
                 onConfirmation = { alarmOptions ->
-                    setConcentrationAlarmOption(alarmOptions)
-                    setConcentrationAlarmBottomSheet(false)
+                    concentrationAlarmOption = alarmOptions
+                    concentrationAlarmBottomSheet = false
                 }
             )
         }
@@ -110,10 +106,10 @@ fun MyPageScreen(navigateToModifyProfile: () -> Unit, navigateToFollowListScreen
             SettingAlarmBottomSheet(
                 title = stringResource(id = R.string.title_alarm_break),
                 initialSelect = breakAlarmOption,
-                onDismissRequest = { setBreakAlarmBottomSheet(false) },
+                onDismissRequest = { breakAlarmBottomSheet = false },
                 onConfirmation = { alarmOptions ->
                     setBreakAlarmOption(alarmOptions)
-                    setBreakAlarmBottomSheet(false)
+                    breakAlarmBottomSheet = false
                 }
             )
         }

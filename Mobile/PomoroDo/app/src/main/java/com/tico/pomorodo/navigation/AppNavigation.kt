@@ -20,6 +20,7 @@ import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.member.view.FollowListScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
+import com.tico.pomorodo.ui.setting.view.SettingScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
 import com.tico.pomorodo.ui.timer.running.view.ConcentrationTimerScreen
@@ -28,47 +29,49 @@ import com.tico.pomorodo.ui.todo.view.TodoScreenRoute
 
 // home navigation - navigate
 fun NavController.navigateToTimer(navOptions: NavOptions) =
-    navigate(BottomNavigationDestination.Timer.name, navOptions)
+    navigate(BottomNavigationDestination.TIMER.name, navOptions)
 
 fun NavController.navigateToTodo(navOptions: NavOptions) =
-    navigate(BottomNavigationDestination.Todo.name, navOptions)
+    navigate(BottomNavigationDestination.TODO.name, navOptions)
 
 fun NavController.navigateToMyInfo(navOptions: NavOptions) =
-    navigate(BottomNavigationDestination.MyInfo.name, navOptions)
+    navigate(BottomNavigationDestination.MY_INFO.name, navOptions)
 
 // main navigation - navigate
-fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LogIn.name) {
-    popUpTo(MainNavigationDestination.Splash.name) { inclusive = true }
+fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LOG_IN.name) {
+    popUpTo(MainNavigationDestination.SPLASH.name) { inclusive = true }
 }
 
-fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SignUp.name)
+fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SIGN_UP.name)
 
 fun NavController.navigateToHome() {
-    navigate(MainNavigationDestination.Home.name) {
+    navigate(MainNavigationDestination.HOME.name) {
         popUpTo(graph.id) { inclusive = true }
     }
 }
 
 fun NavController.navigateToConcentrationMode() =
-    navigate(MainNavigationDestination.ConcentrationMode.name)
+    navigate(MainNavigationDestination.CONCENTRATION_MODE.name)
 
 fun NavController.navigateToBreakMode() =
-    navigate(MainNavigationDestination.BreakMode.name)
+    navigate(MainNavigationDestination.BREAK_MODE.name)
 
-fun NavController.navigateToCategory() = navigate(MainNavigationDestination.Category.name)
-fun NavController.navigateToAddCategory() = navigate(MainNavigationDestination.AddCategory.name)
+fun NavController.navigateToCategory() = navigate(MainNavigationDestination.CATEGORY.name)
+fun NavController.navigateToAddCategory() = navigate(MainNavigationDestination.ADD_CATEGORY.name)
 fun NavController.navigateToInfoCategory(categoryId: Int) =
-    navigate("${MainNavigationDestination.InfoCategory.name}/$categoryId")
+    navigate("${MainNavigationDestination.INFO_CATEGORY.name}/$categoryId")
 
 fun NavController.navigateToGroupMemberChoose(previousScreenType: String) =
-    navigate("${MainNavigationDestination.GroupMemberChoose.name}/$previousScreenType")
+    navigate("${MainNavigationDestination.GROUP_MEMBER_CHOOSE.name}/$previousScreenType")
 
-fun NavController.navigateToHistory() = navigate(MainNavigationDestination.History.name)
+fun NavController.navigateToHistory() = navigate(MainNavigationDestination.HISTORY.name)
 
-fun NavController.navigateToModifyProfile() = navigate(MainNavigationDestination.ModifyProfile.name)
+fun NavController.navigateToModifyProfile() = navigate(MainNavigationDestination.MODIFY_PROFILE.name)
 
 fun NavController.navigateToFollowListScreen() =
-    navigate(MainNavigationDestination.FollowListScreen.name)
+    navigate(MainNavigationDestination.FOLLOW.name)
+
+fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination.SETTING.name)
 
 
 // home navigation - composable route
@@ -76,7 +79,7 @@ fun NavGraphBuilder.timerScreen(
     setState: (concentrationTime: Int, breakTime: Int) -> Unit,
     navigate: () -> Unit
 ) {
-    composable(route = BottomNavigationDestination.Timer.name) {
+    composable(route = BottomNavigationDestination.TIMER.name) {
         TimerRootScreen(setState = setState, navigate = navigate)
     }
 }
@@ -86,7 +89,7 @@ fun NavGraphBuilder.todoScreen(
     navigateToCategory: () -> Unit,
     navigateToHistory: () -> Unit
 ) {
-    composable(route = BottomNavigationDestination.Todo.name) {
+    composable(route = BottomNavigationDestination.TODO.name) {
         TodoScreenRoute(
             navigateToAddCategory = navigateToAddCategory,
             navigateToCategory = navigateToCategory,
@@ -97,19 +100,21 @@ fun NavGraphBuilder.todoScreen(
 
 fun NavGraphBuilder.myInfoScreen(
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit
+    navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit,
 ) {
-    composable(route = BottomNavigationDestination.MyInfo.name) {
+    composable(route = BottomNavigationDestination.MY_INFO.name) {
         MyPageScreen(
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen
+            navigateToFollowListScreen = navigateToFollowListScreen,
+            navigateToSettingScreen = navigateToSettingScreen
         )
     }
 }
 
 // main navigation - composable route
 fun NavGraphBuilder.splashScreen(navigateToLogin: () -> Unit, navigateToHome: () -> Unit) {
-    composable(route = MainNavigationDestination.Splash.name) {
+    composable(route = MainNavigationDestination.SPLASH.name) {
         SplashScreen(navigateToLogin = navigateToLogin, navigateToHome = navigateToHome)
     }
 }
@@ -118,7 +123,7 @@ fun NavGraphBuilder.logInScreen(
     navigateToSignUp: () -> Unit,
     navigateToHome: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.LogIn.name) {
+    composable(route = MainNavigationDestination.LOG_IN.name) {
         LogInRoute(
             navigateToSignUp = navigateToSignUp,
             navigateToHome = navigateToHome
@@ -131,9 +136,9 @@ fun NavGraphBuilder.signUpScreen(
     navigateToHome: () -> Unit,
     navigateToBack: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.SignUp.name) { navBackStackEntry ->
+    composable(route = MainNavigationDestination.SIGN_UP.name) { navBackStackEntry ->
         val authNavBackStackEntry = remember(navBackStackEntry) {
-            navController.getBackStackEntry(MainNavigationDestination.LogIn.name)
+            navController.getBackStackEntry(MainNavigationDestination.LOG_IN.name)
         }
         SignUpRoute(
             navBackStackEntry = authNavBackStackEntry,
@@ -150,9 +155,10 @@ fun NavGraphBuilder.homeScreen(
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit
+    navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.Home.name) {
+    composable(route = MainNavigationDestination.HOME.name) {
         HomeScreen(
             setTimerState = setTimerState,
             navigateToConcentrationMode = navigateToConcentrationMode,
@@ -160,7 +166,8 @@ fun NavGraphBuilder.homeScreen(
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen
+            navigateToFollowListScreen = navigateToFollowListScreen,
+            navigateToSettingScreen = navigateToSettingScreen
         )
     }
 }
@@ -169,21 +176,21 @@ fun NavGraphBuilder.concentrationModeScreen(
     getState: (String) -> Int?,
     navigateToBreakMode: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.ConcentrationMode.name) {
+    composable(route = MainNavigationDestination.CONCENTRATION_MODE.name) {
         ConcentrationTimerScreen(getState = getState, navigate = navigateToBreakMode)
     }
 }
 
 fun NavGraphBuilder.breakModeScreen(navController: NavController) {
-    composable(route = MainNavigationDestination.BreakMode.name) { backStackEntry ->
+    composable(route = MainNavigationDestination.BREAK_MODE.name) { backStackEntry ->
         val navBackStackEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(MainNavigationDestination.ConcentrationMode.name)
+            navController.getBackStackEntry(MainNavigationDestination.CONCENTRATION_MODE.name)
         }
         BreakTimerScreen(
             navBackStackEntry = navBackStackEntry,
             navigate = {
                 navController.popBackStack(
-                    MainNavigationDestination.Home.name,
+                    MainNavigationDestination.HOME.name,
                     inclusive = false
                 )
             }
@@ -196,7 +203,7 @@ fun NavGraphBuilder.categoryScreen(
     navigateToInfoCategory: (Int) -> Unit,
     navigateToBack: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.Category.name) {
+    composable(route = MainNavigationDestination.CATEGORY.name) {
         CategoryScreenRoute(
             navigateToAddCategory = navigateToAddCategory,
             navigateToBack = navigateToBack,
@@ -210,7 +217,7 @@ fun NavGraphBuilder.addCategoryScreen(
     navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit,
 ) {
-    composable(route = MainNavigationDestination.AddCategory.name) {
+    composable(route = MainNavigationDestination.ADD_CATEGORY.name) {
         AddCategoryScreenRoute(
             navigateToCategory = navigateToCategory,
             navigateToBack = navigateToBack,
@@ -233,7 +240,7 @@ fun NavGraphBuilder.infoCategoryScreen(
     navigateToBack: () -> Unit
 ) {
     composable(
-        route = "${MainNavigationDestination.InfoCategory.name}/{$CATEGORY_ID}",
+        route = "${MainNavigationDestination.INFO_CATEGORY.name}/{$CATEGORY_ID}",
         arguments = listOf(navArgument(name = CATEGORY_ID) { type = NavType.IntType })
     ) {
         InfoCategoryScreenRoute(
@@ -247,7 +254,7 @@ fun NavGraphBuilder.infoCategoryScreen(
 fun NavGraphBuilder.historyScreen(
     navigateToBack: () -> Unit
 ) {
-    composable(route = MainNavigationDestination.History.name) {
+    composable(route = MainNavigationDestination.HISTORY.name) {
         HistoryRoute(navigateToBack = navigateToBack)
     }
 }
@@ -259,7 +266,7 @@ fun NavGraphBuilder.groupMemberChooseScreen(
     navigateToBack: () -> Unit
 ) {
     composable(
-        route = "${MainNavigationDestination.GroupMemberChoose.name}/{$PREVIOUS_SCREEN_TYPE}",
+        route = "${MainNavigationDestination.GROUP_MEMBER_CHOOSE.name}/{$PREVIOUS_SCREEN_TYPE}",
         arguments = listOf(navArgument(name = PREVIOUS_SCREEN_TYPE) { type = NavType.StringType })
     ) { backStackEntry ->
         val parentEntry = remember {
@@ -279,13 +286,25 @@ fun NavGraphBuilder.groupMemberChooseScreen(
 }
 
 fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
-    composable(route = MainNavigationDestination.ModifyProfile.name) { navBackStackEntry ->
+    composable(route = MainNavigationDestination.MODIFY_PROFILE.name) { navBackStackEntry ->
         ModifyProfileScreen(navController = navController, navBackStackEntry = navBackStackEntry)
     }
 }
 
 fun NavGraphBuilder.followListScreen() {
-    composable(route = MainNavigationDestination.FollowListScreen.name) {
+    composable(route = MainNavigationDestination.FOLLOW.name) {
         FollowListScreen()
+    }
+}
+
+fun NavGraphBuilder.settingScreen(navController: NavController) {
+    composable(route = MainNavigationDestination.SETTING.name) {
+        SettingScreen(
+            navigateToModifyProfileScreen = { /*TODO*/ },
+            navigateToAppThemeScreen = { /*TODO*/ },
+            navigateToTermsOfUseScreen = { /*TODO*/ },
+            navigateToPrivacyPolicyScreen = {},
+            popBackStack = { navController.popBackStack() }
+        )
     }
 }

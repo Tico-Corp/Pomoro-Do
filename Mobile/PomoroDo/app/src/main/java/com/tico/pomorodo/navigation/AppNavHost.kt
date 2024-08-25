@@ -9,13 +9,14 @@ import com.tico.pomorodo.ui.home.view.AppState
 fun AppNavHost(
     appState: AppState,
     modifier: Modifier = Modifier,
-    startDestination: String = BottomNavigationDestination.Timer.name,
+    startDestination: String = BottomNavigationDestination.TIMER.name,
     navigateToConcentrationMode: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
     navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
 ) {
     val navController = appState.navController
@@ -32,7 +33,8 @@ fun AppNavHost(
         )
         myInfoScreen(
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen
+            navigateToFollowListScreen = navigateToFollowListScreen,
+            navigateToSettingScreen = navigateToSettingScreen
         )
     }
 }

@@ -90,8 +90,8 @@ fun SettingAlarmBottomSheet(
                 SettingAlarmBottomSheetItem(
                     modifier = Modifier.padding(bottom = 12.dp),
                     radioButtonColors = radioButtonColors,
-                    alarmOptions = AlarmOptions.Sound,
-                    selected = (selectedOption == AlarmOptions.Sound),
+                    alarmOptions = AlarmOptions.SOUND,
+                    selected = (selectedOption == AlarmOptions.SOUND),
                     onClick = setSelectedOption
                 )
 
@@ -100,8 +100,8 @@ fun SettingAlarmBottomSheet(
                 SettingAlarmBottomSheetItem(
                     modifier = Modifier.padding(vertical = 12.dp),
                     radioButtonColors = radioButtonColors,
-                    alarmOptions = AlarmOptions.Vibrate,
-                    selected = (selectedOption == AlarmOptions.Vibrate),
+                    alarmOptions = AlarmOptions.VIBRATE,
+                    selected = (selectedOption == AlarmOptions.VIBRATE),
                     onClick = setSelectedOption
                 )
 
@@ -110,8 +110,8 @@ fun SettingAlarmBottomSheet(
                 SettingAlarmBottomSheetItem(
                     modifier = Modifier.padding(top = 12.dp),
                     radioButtonColors = radioButtonColors,
-                    alarmOptions = AlarmOptions.Mute,
-                    selected = (selectedOption == AlarmOptions.Mute),
+                    alarmOptions = AlarmOptions.MUTE,
+                    selected = (selectedOption == AlarmOptions.MUTE),
                     onClick = setSelectedOption
                 )
             }

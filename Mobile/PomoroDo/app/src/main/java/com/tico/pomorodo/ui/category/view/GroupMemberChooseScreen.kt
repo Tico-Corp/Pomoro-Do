@@ -67,13 +67,13 @@ fun GroupMemberChooseRoute(
     previousScreenType: String
 ) {
     when (previousScreenType) {
-        MainNavigationDestination.InfoCategory.name -> {
+        MainNavigationDestination.INFO_CATEGORY.name -> {
             val viewModel = hiltViewModel<InfoCategoryViewModel>(navBackStackEntry)
             GroupMemberChooseScreen(viewModel, navigateToBack)
 
         }
 
-        MainNavigationDestination.AddCategory.name -> {
+        MainNavigationDestination.ADD_CATEGORY.name -> {
             val viewModel = hiltViewModel<AddCategoryViewModel>(navBackStackEntry)
             GroupMemberChooseScreen(viewModel, navigateToBack)
         }

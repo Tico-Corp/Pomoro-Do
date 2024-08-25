@@ -1,12 +1,15 @@
 package com.tico.pomorodo.ui.common.view
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -70,4 +73,37 @@ fun CustomTopAppBar(
             )
         }
     )
+}
+
+@Composable
+fun CustomTopAppBarWithSingleButton(
+    title: String,
+    navigationAction: () -> Unit,
+    top: Int = 0,
+    bottom: Int = 0,
+    start: Int = 0,
+    end: Int = 0
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = start.dp, end = end.dp, top = top.dp, bottom = bottom.dp),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        SimpleIconButton(
+            size = 28,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_BACK]),
+            contentDescriptionId = R.string.content_ic_arrow_back,
+            enabled = true,
+            onClickedListener = navigationAction
+        )
+
+        Text(
+            text = title,
+            modifier = Modifier.fillMaxWidth(),
+            color = PomoroDoTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            style = PomoroDoTheme.typography.laundryGothicBold20
+        )
+    }
 }

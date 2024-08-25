@@ -180,7 +180,7 @@ fun InfoCategoryScreenRoute(
                     },
                     onGroupMemberChooseClicked = {
                         navigateToGroupMemberChoose(
-                            MainNavigationDestination.InfoCategory.name
+                            MainNavigationDestination.INFO_CATEGORY.name
                         )
                     },
                     onShowCheckGroupMemberBottomSheetChange = {

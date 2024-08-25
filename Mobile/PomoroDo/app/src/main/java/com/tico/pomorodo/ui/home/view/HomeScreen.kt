@@ -18,6 +18,7 @@ fun HomeScreen(
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
     navigateToFollowListScreen: () -> Unit,
+    navigateToSettingScreen: () -> Unit,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit
 ) {
     val homeNavController = rememberNavController()
@@ -30,13 +31,14 @@ fun HomeScreen(
         AppNavHost(
             appState = appState,
             Modifier.padding(innerPadding),
-            startDestination = BottomNavigationDestination.Timer.name,
+            startDestination = BottomNavigationDestination.TIMER.name,
             navigateToConcentrationMode = navigateToConcentrationMode,
             navigateToCategory = navigateToCategory,
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,
             navigateToModifyProfile = navigateToModifyProfile,
             navigateToFollowListScreen = navigateToFollowListScreen,
+            navigateToSettingScreen = navigateToSettingScreen,
             setTimerState = setTimerState,
         )
     }

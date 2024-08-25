@@ -29,6 +29,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -82,7 +83,7 @@ fun Modifier.clickableWithoutRipple(
 )
 
 fun Modifier.clickableWithRipple(
-    roundedCornerRadius: Dp,
+    roundedCornerRadius: Dp = 0.dp,
     enabled: Boolean = true,
     onClick: () -> Unit
 ) = composed(
@@ -107,7 +108,7 @@ fun Modifier.clickableWithRipple(
 fun LocalDateTime.getTimeFormat(): String = format(DateTimeFormatter.ofPattern("a h:mm", Locale.US))
 
 fun Context.createImageFile(): File {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.KOREA).format(Date())
     val imageFileName = "Profile_Image_$timeStamp"
     val image = File.createTempFile(
         imageFileName,
