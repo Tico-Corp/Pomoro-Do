@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor() : ViewModel() {
-    private var _name = MutableStateFlow("모카커피짱귀엽")
+    private var _name = MutableStateFlow("")
     val name: StateFlow<String> = _name.asStateFlow()
 
     private var _profile = MutableStateFlow<Uri?>(null)
