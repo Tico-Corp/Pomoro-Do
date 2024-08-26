@@ -2,8 +2,12 @@ package com.tico.pomoro_do.domain.category.controller;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.GroupInviteDTO;
+import com.tico.pomoro_do.domain.category.dto.response.GeneralCategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.response.GroupCategoryDTO;
+import com.tico.pomoro_do.domain.category.dto.response.InvitedGroupDTO;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
+import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
@@ -29,6 +33,7 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final UserService userService;
 
     /**
      * 카테고리 생성 API
@@ -71,9 +76,9 @@ public class CategoryController {
     }
 
     @Operation(
-            summary = "일반 및 그룹 카테고리 조회",
-            description = "현재 인증된 사용자의 그룹 및 일반 카테고리를 조회합니다. <br>" +
-                    "일반 카테고리와 그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
+            summary = "일반 / 그룹 / 초대받은 그룹 카테고리 조회",
+            description = "현재 인증된 사용자의 일반 / 그룹 / 초대받은 그룹 카테고리를 조회합니다. <br>" +
+                    "일반 / 그룹 / 초대받은 그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping
     public ResponseEntity<SuccessResponseDTO<CategoryDTO>> getCategories(
@@ -91,21 +96,63 @@ public class CategoryController {
     }
 
     @Operation(
-            summary = "초대된 모든 그룹 카테고리의 초대장을 조회",
-            description = "현재 인증된 사용자가 초대된 모든 그룹 카테고리 초대장을 조회합니다. <br>" +
-                    "초대된 그룹이 없을 경우 빈 배열([])을 반환하며, " +
-                    "정상적인 응답일 경우 초대장 목록이 포함된 배열을 반환합니다."
+            summary = "일반 카테고리 조회",
+            description = "현재 인증된 사용자의 일반 카테고리를 조회합니다. <br>" +
+                    "일반 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
-    @GetMapping("/group/invitations")
-    public ResponseEntity<SuccessResponseDTO<List<GroupInviteDTO>>> getInvitedGroupCategories(
+    @GetMapping("/general")
+    public ResponseEntity<SuccessResponseDTO<List<GeneralCategoryDTO>>> getGeneralCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String username = customUserDetails.getUsername();
-        List<GroupInviteDTO> groupCategories = categoryService.getInvitedGroupCategories(username);
+        User user = userService.findByUsername(username);
+        List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user);
 
-        SuccessResponseDTO<List<GroupInviteDTO>> successResponse = SuccessResponseDTO.<List<GroupInviteDTO>>builder()
-                .status(SuccessCode.CATEGORY_INVITED_FETCH_SUCCESS.getHttpStatus().value())
-                .message(SuccessCode.CATEGORY_INVITED_FETCH_SUCCESS.getMessage())
+        SuccessResponseDTO<List<GeneralCategoryDTO>> successResponse = SuccessResponseDTO.<List<GeneralCategoryDTO>>builder()
+                .status(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getMessage())
+                .data(categories)
+                .build();
+        return ResponseEntity.ok(successResponse);
+    }
+
+    @Operation(
+            summary = "그룹 카테고리 조회",
+            description = "현재 인증된 사용자의 그룹 카테고리를 조회합니다. <br>" +
+                    "그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
+    )
+    @GetMapping("/groups")
+    public ResponseEntity<SuccessResponseDTO<List<GroupCategoryDTO>>> getGroupCategories(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        String username = customUserDetails.getUsername();
+        User user = userService.findByUsername(username);
+        List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user);
+
+        SuccessResponseDTO<List<GroupCategoryDTO>> successResponse = SuccessResponseDTO.<List<GroupCategoryDTO>>builder()
+                .status(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getMessage())
+                .data(categories)
+                .build();
+        return ResponseEntity.ok(successResponse);
+    }
+
+    @Operation(
+            summary = "초대받은 그룹 카테고리 초대장 조회",
+            description = "현재 인증된 사용자가 초대받은 그룹 카테고리의 초대장을 조회합니다. <br>" +
+                    "초대받은 그룹 카테고리가 없을 경우 빈 배열([])을 반환합니다."
+    )
+    @GetMapping("/groups/invitations")
+    public ResponseEntity<SuccessResponseDTO<List<InvitedGroupDTO>>> getInvitedGroupCategories(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        String username = customUserDetails.getUsername();
+        User user = userService.findByUsername(username);
+        List<InvitedGroupDTO> groupCategories = categoryService.getInvitedGroups(user);
+
+        SuccessResponseDTO<List<InvitedGroupDTO>> successResponse = SuccessResponseDTO.<List<InvitedGroupDTO>>builder()
+                .status(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(groupCategories)
                 .build();
         return ResponseEntity.ok(successResponse);
