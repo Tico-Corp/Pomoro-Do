@@ -29,9 +29,9 @@ public class SecurityConfig {
 
     // 허용 주소
     private static final String[] WHITE_LIST = {
-            "/api/info",
-            "/api/admins/**",
-            "/api/auth/google/**", "/api/auth/tokens/**"
+            "/api/v1/info",
+            "/api/v1/admins/**",
+            "/api/v1/auth/google/**", "/api/v1/auth/tokens/**"
     };
 
     private static final String[] swaggerURL = {

@@ -33,7 +33,7 @@ import java.security.GeneralSecurityException;
 @Tag(name = "Auth: 인증", description = "인증 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @Slf4j
 public class AuthController {
     // 사용자 로그인

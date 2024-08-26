@@ -23,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "BackEnd: 백엔드", description = "백엔드 전용 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/images")
+@RequestMapping("/api/v1/images")
 @Slf4j
 public class ImageController {
 

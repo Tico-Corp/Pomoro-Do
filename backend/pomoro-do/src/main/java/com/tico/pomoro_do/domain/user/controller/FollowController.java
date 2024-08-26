@@ -19,7 +19,7 @@ import java.util.List;
 
 @Tag(name = "Follow: 팔로우", description = "팔로우 관련 API")
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("api/v1/users")
 @RequiredArgsConstructor
 @Slf4j
 public class FollowController {

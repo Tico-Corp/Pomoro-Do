@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Tag(name = "BackEnd: 백엔드", description = "백엔드 전용 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admins")
+@RequestMapping("/api/v1/admins")
 @Slf4j
 public class AdminController {
     //백엔드에서는 구글 로그인이 불가하므로 생성함.
