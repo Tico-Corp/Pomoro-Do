@@ -37,34 +37,34 @@ public class JWTFilter extends OncePerRequestFilter {
         //필터 위치에 따라 OAuth2 인증을 진행하는 필터보다 JWTFilter가 앞에 존재하는 경우 에러 발생
         String requestUri = request.getRequestURI();
         //JWTFilter 내부에 if문을 통해 특정 경로 요청은 넘어가도록 수정
-        if (requestUri.matches("^\\/api/auth/google/login(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/v1/auth/google/login(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/api/auth/google/signup(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/v1/auth/google/signup(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
         // 토큰 관련
-        if (requestUri.matches("^\\/api/auth/tokens/reissue(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/v1/auth/tokens/reissue(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/api/auth/tokens/validation(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/v1/auth/tokens/validation(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
         // 관리자
-        if (requestUri.matches("^\\/api/admins/login(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/v1/admins/login(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;
         }
-        if (requestUri.matches("^\\/api/admins(?:\\/.*)?$")) {
+        if (requestUri.matches("^\\/api/v1/admins(?:\\/.*)?$")) {
 
             filterChain.doFilter(request, response);
             return;

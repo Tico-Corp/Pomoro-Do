@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -64,5 +65,27 @@ public class SwaggerConfig {
                 // 보안 규칙 추가
                 .addSecurityItem(securityRequirement);
     }
+
+    private GroupedOpenApi createGroupedOpenApi(String groupName, String pathPattern) {
+        return GroupedOpenApi.builder()
+                .group(groupName)
+                .pathsToMatch(pathPattern)
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi groupedOpenApiV1() {
+        return createGroupedOpenApi("Version 1 API", "/api/v1/**");
+    }
+
+//    @Bean
+//    public GroupedOpenApi groupedOpenApiV2() {
+//        return createGroupedOpenApi("Version 2 API", "/api/v2/**");
+//    }
+//
+//    @Bean
+//    public GroupedOpenApi groupedOpenApiV3() {
+//        return createGroupedOpenApi("Version 3 API", "/api/v3/**");
+//    }
 
 }

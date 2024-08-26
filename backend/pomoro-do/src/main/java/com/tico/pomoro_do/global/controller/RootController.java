@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "BackEnd: 백엔드", description = "백엔드 전용 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/info")
+@RequestMapping("/api/v1/info")
 public class RootController {
 
     @Operation(summary = "애플리케이션 기본 정보", description = "애플리케이션의 기본 정보를 제공합니다.")
