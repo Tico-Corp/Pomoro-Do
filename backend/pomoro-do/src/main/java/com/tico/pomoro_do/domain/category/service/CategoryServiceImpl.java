@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -137,7 +138,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 주어진 사용자 이름을 기반으로 사용자의 일반 카테고리와 그룹 카테고리를 조회
+     * 주어진 사용자 이름을 기반으로 사용자의 일반, 그룹, 초대받은 카테고리를 조회
      *
      * @param username 사용자의 이름
      * @return 사용자에 해당하는 일반 카테고리와 그룹 카테고리를 포함하는 CategoryDTO 객체
@@ -170,16 +171,14 @@ public class CategoryServiceImpl implements CategoryService {
         // 사용자가 호스트로 있는 일반 카테고리 조회
         List<Category> generalCategories = categoryRepository.findAllByHostAndType(host, CategoryType.GENERAL);
 
-        // 일반 카테고리 제목(title) 기준으로 가나다 순 정렬
-        generalCategories.sort(Comparator.comparing(Category::getTitle));
-
         return generalCategories.stream()
-                .map(this::createGeneralCategory)
+                .sorted(Comparator.comparing(Category::getTitle)) // 제목(title) 기준으로 가나다 순 정렬
+                .map(this::convertToGeneralCategory)
                 .collect(Collectors.toList());
     }
 
     // 일반 카테고리 응답 생성
-    private GeneralCategoryDTO createGeneralCategory(Category category) {
+    private GeneralCategoryDTO convertToGeneralCategory(Category category) {
         return GeneralCategoryDTO.builder()
                 .categoryId(category.getId())
                 .title(category.getTitle())
@@ -188,37 +187,52 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 주어진 사용자를 기반으로 사용자가 속한 그룹 카테고리를 조회
+     * 주어진 사용자를 기반으로 사용자가 속한 그룹 카테고리를 조회 (가나다 순 정렬)
      *
      * @param user 사용자
      * @return 사용자가 속한 그룹 카테고리를 포함하는 GroupCategoryDTO 리스트
      */
     @Override
     public List<GroupCategoryDTO> getGroupCategories(User user) {
-        // 사용자가 이미 승낙한 그룹 카테고리 조회
-        List<GroupMember> acceptedGroups = groupMemberRepository.findAllByUserAndStatus(user, GroupInvitationStatus.ACCEPTED);
-        List<Category> groupCategories = acceptedGroups.stream()
-                .map(GroupMember::getCategory)
-                .distinct()
-                .collect(Collectors.toList());
+        // 사용자가 속한 그룹의 카테고리들을 조회
+        List<Category> groupCategories = getUserGroupCategories(user);
 
-        // 그룹 카테고리 제목(title) 기준으로 가나다 순 정렬
-        groupCategories.sort(Comparator.comparing(Category::getTitle));
+        // 모든 카테고리에 대해 멤버 수를 한 번에 조회
+        Map<Category, Long> categoryMemberCountMap = getCategoryMemberCountMap(groupCategories);
 
+        // 카테고리와 멤버 수 정보를 GroupCategoryDTO로 변환하여 반환 (가나다 순 정렬)
         return groupCategories.stream()
-                .map(this::createGroupCategory)
+                .sorted(Comparator.comparing(Category::getTitle)) // 가나다 순 정렬
+                .map(category -> convertToGroupCategory(category, categoryMemberCountMap.get(category)))
                 .collect(Collectors.toList());
     }
 
+    // 사용자의 그룹 카테고리 조회
+    private List<Category> getUserGroupCategories(User user) {
+        List<GroupMember> userAcceptedGroups = groupMemberRepository.findAllByUserAndStatus(user, GroupInvitationStatus.ACCEPTED);
+        return userAcceptedGroups.stream()
+                .map(GroupMember::getCategory)
+                .collect(Collectors.toList());
+    }
+
+    // 각 카테고리의 멤버 수를 계산하여 맵으로 반환
+    private Map<Category, Long> getCategoryMemberCountMap(List<Category> groupCategories) {
+        List<GroupMember> allAcceptedMembers = groupMemberRepository.findByCategoryInAndStatus(groupCategories, GroupInvitationStatus.ACCEPTED);
+        return allAcceptedMembers.stream()
+                .collect(Collectors.groupingBy(
+                        GroupMember::getCategory,  // 카테고리별로 그룹화
+                        Collectors.counting()      // 각 카테고리의 멤버 수 계산
+                ));
+    }
+
     // 그룹 카테고리 응답 생성
-    private GroupCategoryDTO createGroupCategory(Category category) {
-        // 그룹 멤버 수 계산
-        int memberCount = category.getMembers().size();
+    private GroupCategoryDTO convertToGroupCategory(Category category, Long memberCount) {
+
         return GroupCategoryDTO.builder()
                 .categoryId(category.getId())
                 .title(category.getTitle())
                 .color(category.getColor())
-                .memberCount(memberCount)
+                .memberCount(Math.toIntExact(memberCount))
                 .build();
     }
 
