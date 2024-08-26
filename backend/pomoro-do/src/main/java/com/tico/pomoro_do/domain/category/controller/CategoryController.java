@@ -1,10 +1,7 @@
 package com.tico.pomoro_do.domain.category.controller;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
-import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.GeneralCategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.GroupCategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.InvitedGroupDTO;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
+import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.UserService;
@@ -60,7 +57,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<SuccessResponseDTO<String>> createCategory(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @Valid @RequestBody CategoryDetailDTO request
+            @Valid @RequestBody CategoryCreationDTO request
     ){
         String username = customUserDetails.getUsername();
         categoryService.createCategory(username, request);
@@ -154,6 +151,26 @@ public class CategoryController {
                 .status(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(groupCategories)
+                .build();
+        return ResponseEntity.ok(successResponse);
+    }
+
+    @Operation(
+            summary = "카테고리 상세 정보 조회",
+            description = "카테고리 상세 정보를 조회합니다. <br>" +
+                    "일반 카테고리는 멤버에 빈 배열([])을 반환합니다."
+    )
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<SuccessResponseDTO<CategoryDetailDTO>> getCategoryDetail(
+            @PathVariable  Long categoryId
+    ) {
+
+        CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId);
+
+        SuccessResponseDTO<CategoryDetailDTO> successResponse = SuccessResponseDTO.<CategoryDetailDTO>builder()
+                .status(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getMessage())
+                .data(categoryDetailDTO)
                 .build();
         return ResponseEntity.ok(successResponse);
     }

@@ -1,10 +1,7 @@
 package com.tico.pomoro_do.domain.category.service;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
-import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.GeneralCategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.GroupCategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.InvitedGroupDTO;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
+import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.GroupMember;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
@@ -24,10 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,29 +39,29 @@ public class CategoryServiceImpl implements CategoryService {
      * 카테고리 생성
      *
      * @param hostName 카테고리를 생성하는 호스트 유저의 이름
-     * @param categoryDetailDTO 생성할 카테고리의 정보가 담긴 DTO
+     * @param categoryCreationDTO 생성할 카테고리의 정보가 담긴 DTO
      */
     @Override
     @Transactional
-    public void createCategory(String hostName, CategoryDetailDTO categoryDetailDTO){
+    public void createCategory(String hostName, CategoryCreationDTO categoryCreationDTO){
 
         User host = userService.findByUsername(hostName);
 
         // 일반/그룹 카테고리 생성
         Category category = createNewCategory(
                 host,
-                categoryDetailDTO.getTitle(),
-                categoryDetailDTO.getColor(),
-                categoryDetailDTO.getVisibility(),
-                categoryDetailDTO.getType()
+                categoryCreationDTO.getTitle(),
+                categoryCreationDTO.getColor(),
+                categoryCreationDTO.getVisibility(),
+                categoryCreationDTO.getType()
         );
 
         // 그룹 카테고리면 그룹 멤버 생성 로직
-        if (categoryDetailDTO.getType() == CategoryType.GROUP) {
+        if (categoryCreationDTO.getType() == CategoryType.GROUP) {
             // 그룹 멤버를 받아왔는 지 검사
-            ValidationUtils.validateGroupMembers(categoryDetailDTO.getMembers());
+            ValidationUtils.validateGroupMembers(categoryCreationDTO.getMembers());
             // GroupMember 생성
-            createGroupMembers(category, host, categoryDetailDTO.getMembers());
+            createGroupMembers(category, host, categoryCreationDTO.getMembers());
         }
     }
 
@@ -260,5 +254,45 @@ public class CategoryServiceImpl implements CategoryService {
                 .hostNickname(category.getHost().getNickname())
                 .title(category.getTitle())
                 .build();
+    }
+
+    @Override
+    public CategoryDetailDTO getCategoryDetail(Long categoryId){
+        Category category = findByCategoryId(categoryId);
+        List<GroupMemberDTO> groupMemberDTOList = new ArrayList<>();
+        // 그룹 멤버 조회
+        if (category.getType().equals(CategoryType.GROUP)) {
+            List<GroupMember> groupMembers = groupMemberRepository.findAllByCategoryAndStatus(category, GroupInvitationStatus.ACCEPTED);
+            groupMemberDTOList = groupMembers.stream()
+                    .sorted(Comparator.comparing(groupMember -> groupMember.getUser().getNickname())) // 닉네임으로 정렬
+                    .map(groupMember -> GroupMemberDTO.builder()
+                            .groupMemberId(groupMember.getId())
+                            .nickname(groupMember.getUser().getNickname())
+                            .profileImageUrl(groupMember.getUser().getProfileImageUrl())
+                            .build())
+                    .collect(Collectors.toList());
+        }
+
+        // memberCount 계산
+        int memberCount = groupMemberDTOList.size();
+
+        return CategoryDetailDTO.builder()
+                .categoryId(categoryId)
+                .title(category.getTitle())
+                .hostNickname(category.getHost().getNickname())
+                .type(category.getType())
+                .visibility(category.getVisibility())
+                .members(groupMemberDTOList)
+                .memberCount(memberCount)
+                .color(category.getColor())
+                .build();
+    }
+
+    private Category findByCategoryId(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> {
+                    log.error("카테고리를 찾을 수 없음: {}", categoryId);
+                    return new CustomException(ErrorCode.CATEGORY_NOT_FOUND);
+                });
     }
 }

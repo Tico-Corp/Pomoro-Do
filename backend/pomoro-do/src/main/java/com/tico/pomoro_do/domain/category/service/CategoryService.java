@@ -1,10 +1,7 @@
 package com.tico.pomoro_do.domain.category.service;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryDetailDTO;
-import com.tico.pomoro_do.domain.category.dto.response.CategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.GeneralCategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.GroupCategoryDTO;
-import com.tico.pomoro_do.domain.category.dto.response.InvitedGroupDTO;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
+import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.CategoryType;
@@ -15,7 +12,7 @@ import java.util.List;
 public interface CategoryService {
 
     // 일반/그룹 생성할 때 그룹 멤버까지 생성
-    void createCategory(String hostName, CategoryDetailDTO categoryDetailDTO);
+    void createCategory(String hostName, CategoryCreationDTO categoryCreationDTO);
 
     // 카테고리만 생성
     Category createNewCategory(User host, String title, String color, CategoryVisibility visibility, CategoryType type);
@@ -29,4 +26,7 @@ public interface CategoryService {
 
     // 초대받은 그룹 카테고리를 최신순으로 가져옴
     List<InvitedGroupDTO> getInvitedGroups(User user);
+
+    // 카테고리 상세 조회
+    CategoryDetailDTO getCategoryDetail(Long categoryId);
 }

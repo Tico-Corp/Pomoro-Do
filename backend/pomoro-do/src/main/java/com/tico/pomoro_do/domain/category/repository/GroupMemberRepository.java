@@ -18,6 +18,8 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
     // 동일한 카테고리의 ACCEPTED 상태의 멤버만 조회
     List<GroupMember> findByCategoryInAndStatus(List<Category> categories, GroupInvitationStatus status);
 
+    List<GroupMember> findAllByCategoryAndStatus(Category category, GroupInvitationStatus status);
+
     // 초대된 그룹원 수 (카테고리와 상태로 멤버 수를 카운트)
     int countByCategoryAndStatus(Category category, GroupInvitationStatus status);
 
