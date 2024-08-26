@@ -39,6 +39,7 @@ public enum SuccessCode {
     GENERAL_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "일반 카테고리 조회에 성공했습니다."),
     GROUP_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "그룹 카테고리 조회에 성공했습니다."),
     INVITED_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "초대받은 카테고리 조회에 성공했습니다."),
+    CATEGORY_DETAIL_FETCH_SUCCESS(HttpStatus.OK, "카테고리 상세 정보 조회에 성공했습니다."),
     CATEGORY_MEMBER_ADDITION_SUCCESS(HttpStatus.OK, "그룹 카테고리에 멤버 추가에 성공했습니다."),
     CATEGORY_MEMBER_REMOVAL_SUCCESS(HttpStatus.OK, "그룹 카테고리에서 멤버 삭제에 성공했습니다."),
 
