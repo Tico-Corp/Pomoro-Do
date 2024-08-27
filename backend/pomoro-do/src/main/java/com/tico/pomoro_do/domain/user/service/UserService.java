@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
+import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 
@@ -15,7 +16,7 @@ public interface UserService {
     User findByUserId(Long userId);
 
     // 특정 유저 조회
-    UserDetailDTO getUserDetail(Long userId);
+    FollowUserDTO getUserDetail(String username, Long userId);
 
     // 유저 삭제
     void deleteUser(String username, String deviceId, String refreshHeader);
