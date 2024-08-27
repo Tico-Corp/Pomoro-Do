@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,20 +63,26 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public List<FollowUserDTO> getFollowingList(String username) {
-
+        // 사용자 조회
         User user = userService.findByUsername(username);
+        // 사용자와 관련된 팔로우 목록을 조회
         List<Follow> followList = followRepository.findBySender(user);
 
-        return followList.isEmpty() ? Collections.emptyList() :
-                followList.stream()
+        // 팔로우 리스트가 비어 있으면 빈 리스트 반환
+        if (followList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // FollowUserDTO 리스트 생성 및 변환
+        return followList.stream()
                 .map(follow -> FollowUserDTO.builder()
                         .userId(follow.getReceiver().getId())
                         .nickname(follow.getReceiver().getNickname())
                         .profileImageUrl(follow.getReceiver().getProfileImageUrl())
                         .following(true)
                         .build())
+                .sorted(Comparator.comparing(FollowUserDTO::getNickname)) // 닉네임으로 정렬
                 .collect(Collectors.toList());
-
     }
 
     /**

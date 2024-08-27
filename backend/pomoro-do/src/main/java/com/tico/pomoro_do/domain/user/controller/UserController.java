@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.user.controller;
 
+import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
@@ -30,7 +31,9 @@ public class UserController {
      */
     @Operation(summary = "현재 사용자 정보 조회", description = "인증된 사용자의 상세 정보를 조회합니다.")
     @GetMapping("/me")
-    public ResponseEntity<SuccessResponseDTO<UserDetailDTO>> getMyDetail(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<SuccessResponseDTO<UserDetailDTO>> getMyDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
 
         UserDetailDTO userDetailResponse = userService.getMyDetail(customUserDetails.getUsername());
         SuccessResponseDTO<UserDetailDTO> successResponse = SuccessResponseDTO.<UserDetailDTO>builder()
@@ -44,19 +47,23 @@ public class UserController {
     }
 
     /**
-     * 주어진 사용자 ID에 대한 상세 정보를 조회합니다.
+     * 특정 사용자의 상세 정보 및 팔로우 상태를 조회합니다.
      *
      * @param userId 조회할 사용자 ID
-     * @return 성공 시 사용자 상세 정보가 담긴 SuccessResponseDTO 반환
+     * @return 성공 시 사용자 정보와 팔로우 상태가 담긴 SuccessResponseDTO 반환
      */
-    @Operation(summary = "특정 사용자 정보 조회", description = "주어진 사용자 ID에 대한 상세 정보를 조회합니다.")
+    @Operation(summary = "특정 사용자 정보 조회", description = "주어진 사용자 ID에 대한 상세 정보 및 팔로우 상태를 조회합니다.")
     @GetMapping("/{userId}")
-    public ResponseEntity<SuccessResponseDTO<UserDetailDTO>> getUserDetail(@PathVariable Long userId) {
-        UserDetailDTO userDetailResponse = userService.getUserDetail(userId);
-        SuccessResponseDTO<UserDetailDTO> successResponse = SuccessResponseDTO.<UserDetailDTO>builder()
+    public ResponseEntity<SuccessResponseDTO<FollowUserDTO>> getUserDetail(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long userId
+    ) {
+        String username = customUserDetails.getUsername();
+        FollowUserDTO response = userService.getUserDetail(username, userId);
+        SuccessResponseDTO<FollowUserDTO> successResponse = SuccessResponseDTO.<FollowUserDTO>builder()
                 .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())
-                .data(userDetailResponse)
+                .data(response)
                 .build();
 
         return ResponseEntity.ok(successResponse);

@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
+import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.FollowRepository;
@@ -41,22 +42,22 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDetailDTO getUserDetail(Long userId) {
+    public FollowUserDTO getUserDetail(String username, Long userId) {
 
+        // 주어진 username에 해당하는 현재 사용자 ID 조회
+        Long myUserId = findByUsername(username).getId();
+        // 주어진 userId에 해당하는 특정 사용자 정보 조회
         User user = findByUserId(userId);
 
-        // 내가 팔로우하는 사람의 수 계산
-        int followingCount = followRepository.countBySender(user);
-        // 나를 팔로우하는 사람의 수 계산
-        int followerCount = followRepository.countByReceiver(user);
+        // 현재 사용자가 해당 특정 사용자를 팔로우하고 있는지 여부 확인
+        boolean isFollowing = followRepository.existsBySenderIdAndReceiverId(myUserId, userId);
 
-        return UserDetailDTO.builder()
+        // 사용자 정보 및 팔로우 상태를 포함한 DTO 반환
+        return FollowUserDTO.builder()
                 .userId(user.getId())
-                .username(user.getUsername())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
-                .followingCount(followingCount)
-                .followerCount(followerCount)
+                .following(isFollowing)
                 .build();
     }
 
