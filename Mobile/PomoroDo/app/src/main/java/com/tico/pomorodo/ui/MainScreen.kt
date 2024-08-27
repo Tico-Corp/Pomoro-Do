@@ -16,6 +16,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.navigation.addCategoryScreen
+import com.tico.pomorodo.navigation.appThemeScreen
 import com.tico.pomorodo.navigation.breakModeScreen
 import com.tico.pomorodo.navigation.categoryScreen
 import com.tico.pomorodo.navigation.concentrationModeScreen
@@ -28,6 +29,7 @@ import com.tico.pomorodo.navigation.infoCategoryScreen
 import com.tico.pomorodo.navigation.logInScreen
 import com.tico.pomorodo.navigation.modifyProfileScreen
 import com.tico.pomorodo.navigation.navigateToAddCategory
+import com.tico.pomorodo.navigation.navigateToAppThemeScreen
 import com.tico.pomorodo.navigation.navigateToBreakMode
 import com.tico.pomorodo.navigation.navigateToCategory
 import com.tico.pomorodo.navigation.navigateToConcentrationMode
@@ -62,7 +64,7 @@ fun MainScreen() {
         ) { innerPadding ->
             NavHost(
                 navController = mainNavController,
-                startDestination = MainNavigationDestination.SPLASH.name,
+                startDestination = MainNavigationDestination.HOME.name,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
@@ -138,7 +140,11 @@ fun MainScreen() {
 
                 followListScreen()
 
-                settingScreen(navController = mainNavController)
+                settingScreen(
+                    navigateToAppThemeScreen = mainNavController::navigateToAppThemeScreen,
+                    popBackStack = mainNavController::popBackStack
+                )
+                appThemeScreen(popBackStack = mainNavController::popBackStack)
             }
         }
     }

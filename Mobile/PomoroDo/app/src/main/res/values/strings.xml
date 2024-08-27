@@ -191,7 +191,9 @@
     <string name="title_terms_of_use">이용 약관</string>
     <string name="title_privacy_policy">개인 정보 처리 방침</string>
     <string name="title_app_version">앱 버전</string>
-    <string name="content_app_theme_light">라이트 모드</string>
+    <string name="content_app_theme_light">라이트</string>
+    <string name="content_app_theme_dark">다크</string>
+    <string name="content_app_theme_system">시스템 설정</string>
 
     // common
     <string name="content_next">다음</string>
@@ -211,6 +213,4 @@
     <string name="content_unfollow">언팔로우</string>
     <string name="title_following">팔로잉</string>
     <string name="title_follower">팔로워</string>
-    <string name="content_app_theme_dark">다크 모드</string>
-    <string name="content_app_theme_system">시스템 설정</string>
 </resources>
