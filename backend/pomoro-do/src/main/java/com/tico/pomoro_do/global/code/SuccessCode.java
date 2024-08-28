@@ -17,7 +17,9 @@ public enum SuccessCode {
     USER_FETCH_SUCCESS(HttpStatus.OK, "회원 조회에 성공했습니다."),
     USER_DELETION_SUCCESS(HttpStatus.OK, "회원 탈퇴가 성공적으로 처리되었습니다."),
     FOLLOW_SUCCESS(HttpStatus.CREATED, "팔로우에 성공했습니다."),
-    FOLLOWING_LIST_FETCH_SUCCESS(HttpStatus.OK, "내가 팔로우하고 있는 사용자 목록을 조회에 성공했습니다."),
+    FOLLOWING_LIST_FETCH_SUCCESS(HttpStatus.OK, "내가 팔로우하고 있는 사용자 목록 조회에 성공했습니다."),
+    FOLLOWERS_LIST_FETCH_SUCCESS(HttpStatus.OK, "나를 팔로우하고 있는 사용자 목록 조회에 성공했습니다."),
+    UNFOLLOW_SUCCESS(HttpStatus.OK, "언팔로우에 성공했습니다."),
 
     //토큰
     ACCESS_TOKEN_REISSUED(HttpStatus.OK,  "액세스 토큰이 성공적으로 재발급되었습니다."),

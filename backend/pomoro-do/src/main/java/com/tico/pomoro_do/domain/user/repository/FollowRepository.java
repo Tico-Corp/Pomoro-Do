@@ -9,10 +9,12 @@ import java.util.List;
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     // 팔로우 중인지 체크
-    boolean existsBySenderIdAndReceiverId(Long senderId, Long receiverId);
+    boolean existsBySenderIdAndReceiverId(Long currentUserId, Long targetUserId);
 
     // 내가 팔로우하고 있는 사용자 목록을 조회
     List<Follow> findBySender(User sender);
+    // 나를 팔로우하고 있는 사용자 목록을 조회
+    List<Follow> findByReceiver(User receiver);
 
     // 내가 팔로우하는 사람의 수
     int countBySender(User sender);
