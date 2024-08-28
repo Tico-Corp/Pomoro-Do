@@ -85,6 +85,25 @@ public class FollowServiceImpl implements FollowService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<FollowUserDTO> getFollowersList(String username) {
+        // 사용자 조회
+        User user = userService.findByUsername(username);
+        // 사용자와 관련된 팔로우 목록을 조회
+        List<Follow> followList = followRepository.findByReceiver(user);
+        // FollowUserDTO 리스트 생성 및 변환
+        return followList.stream()
+                .map(follow -> FollowUserDTO.builder()
+                        .userId(follow.getSender().getId())
+                        .nickname(follow.getSender().getNickname())
+                        .profileImageUrl(follow.getSender().getProfileImageUrl())
+                        .following(isFollowedByUser(user.getId(), follow.getSender().getId()))
+                        .build())
+                .sorted(Comparator.comparing(FollowUserDTO::getNickname))
+                .collect(Collectors.toList());
+    }
+
+
     /**
      * 특정 사용자가 다른 사용자를 팔로우하고 있는지 확인
      *
@@ -96,4 +115,5 @@ public class FollowServiceImpl implements FollowService {
     public boolean isFollowedByUser(Long senderId, Long receiverId) {
         return followRepository.existsBySenderIdAndReceiverId(senderId, receiverId);
     }
+
 }

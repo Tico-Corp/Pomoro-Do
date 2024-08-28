@@ -89,4 +89,23 @@ public class FollowController {
         return ResponseEntity.ok(successResponse);
     }
 
+    @Operation(
+            summary = "현재 사용자의 팔로워 목록 조회",
+            description = "현재 인증된 사용자를 팔로우 중인 사용자 목록을 조회합니다. <br>" +
+                    "성공적으로 조회되면 사용자가 팔로우 중인 모든 사용자 정보를 포함한 리스트를 가나다 순으로 반환합니다."
+    )
+    @GetMapping("/me/followers")
+    public ResponseEntity<SuccessResponseDTO<List<FollowUserDTO>>> getFollowersList(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ){
+        String username = customUserDetails.getUsername();
+        List<FollowUserDTO> followersList = followService.getFollowersList(username);
+        SuccessResponseDTO<List<FollowUserDTO>> successResponse = SuccessResponseDTO.<List<FollowUserDTO>>builder()
+                .status(SuccessCode.FOLLOWERS_LIST_FETCH_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.FOLLOWERS_LIST_FETCH_SUCCESS.getMessage())
+                .data(followersList)
+                .build();
+        return ResponseEntity.ok(successResponse);
+    }
+
 }
