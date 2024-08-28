@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,59 +60,87 @@ public class FollowServiceImpl implements FollowService {
         followRepository.save(follow);
     }
 
-    @Override
-    public List<FollowUserDTO> getFollowingList(String username) {
-        // 사용자 조회
-        User user = userService.findByUsername(username);
-        // 사용자와 관련된 팔로우 목록을 조회
-        List<Follow> followList = followRepository.findBySender(user);
-
-        // 팔로우 리스트가 비어 있으면 빈 리스트 반환
-        if (followList.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        // FollowUserDTO 리스트 생성 및 변환
-        return followList.stream()
-                .map(follow -> FollowUserDTO.builder()
-                        .userId(follow.getReceiver().getId())
-                        .nickname(follow.getReceiver().getNickname())
-                        .profileImageUrl(follow.getReceiver().getProfileImageUrl())
-                        .following(true)
-                        .build())
-                .sorted(Comparator.comparing(FollowUserDTO::getNickname)) // 닉네임으로 정렬
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<FollowUserDTO> getFollowersList(String username) {
-        // 사용자 조회
-        User user = userService.findByUsername(username);
-        // 사용자와 관련된 팔로우 목록을 조회
-        List<Follow> followList = followRepository.findByReceiver(user);
-        // FollowUserDTO 리스트 생성 및 변환
-        return followList.stream()
-                .map(follow -> FollowUserDTO.builder()
-                        .userId(follow.getSender().getId())
-                        .nickname(follow.getSender().getNickname())
-                        .profileImageUrl(follow.getSender().getProfileImageUrl())
-                        .following(isFollowedByUser(user.getId(), follow.getSender().getId()))
-                        .build())
-                .sorted(Comparator.comparing(FollowUserDTO::getNickname))
-                .collect(Collectors.toList());
-    }
-
-
     /**
-     * 특정 사용자가 다른 사용자를 팔로우하고 있는지 확인
+     * 사용자가 팔로우 중인 사용자 목록을 조회하는 서비스 메서드
      *
-     * @param senderId 팔로우를 한 사용자의 ID
-     * @param receiverId 팔로우 당한 사용자의 ID
-     * @return 팔로우 중이면 true, 그렇지 않으면 false
+     * @param username 현재 인증된 사용자의 사용자 이름
+     * @return FollowUserDTO 객체 리스트 반환
      */
     @Override
-    public boolean isFollowedByUser(Long senderId, Long receiverId) {
-        return followRepository.existsBySenderIdAndReceiverId(senderId, receiverId);
+    public List<FollowUserDTO> getFollowingList(String username) {
+        // 팔로우 중인 사용자 목록을 조회
+        return getFollowList(username, true);
+    }
+
+    /**
+     * 사용자를 팔로우 중인 사용자 목록을 조회하는 서비스 메서드
+     *
+     * @param username 현재 인증된 사용자의 사용자 이름
+     * @return FollowUserDTO 객체 리스트 반환
+     */
+    @Override
+    public List<FollowUserDTO> getFollowersList(String username) {
+        // 사용자를 팔로우하는 사용자 목록을 조회
+        return getFollowList(username, false);
+    }
+
+    /**
+     * 팔로우 목록 또는 팔로워 목록을 조회하고 DTO 리스트로 변환하는 메서드
+     *
+     * @param username 현재 인증된 사용자의 사용자 이름
+     * @param isFollowingList 팔로우 목록인지 여부 (true: 팔로우 목록, false: 팔로워 목록)
+     * @return FollowUserDTO 객체 리스트 반환
+     */
+    private List<FollowUserDTO> getFollowList(String username, boolean isFollowingList) {
+        // 사용자 정보 조회
+        User user = userService.findByUsername(username);
+
+        // 팔로우 목록 또는 팔로워 목록을 조회
+        List<Follow> followList = isFollowingList
+                ? followRepository.findBySender(user) // 팔로우 목록(팔로잉) 조회
+                : followRepository.findByReceiver(user); // 팔로워 목록 조회
+
+        // Follow 엔티티 리스트를 FollowUserDTO 리스트로 변환하여 반환
+        return followList.stream()
+                .map(follow -> convertToFollowUserDTO(follow, isFollowingList, user.getId())) // DTO 변환
+                .sorted(Comparator.comparing(FollowUserDTO::getNickname)) // 닉네임 기준으로 정렬
+                .collect(Collectors.toList()); // 리스트로 수집하여 반환
+    }
+
+    /**
+     * Follow 엔티티를 FollowUserDTO로 변환하는 메서드
+     *
+     * @param follow Follow 엔티티
+     * @param isFollowingList 팔로우 목록인지 여부
+     * @param currentUserId 현재 인증된 사용자의 ID
+     * @return FollowUserDTO 객체 반환
+     */
+    private FollowUserDTO convertToFollowUserDTO(Follow follow, boolean isFollowingList, Long currentUserId) {
+        // 타겟 유저를 결정: 팔로우 목록일 경우 수신자, 팔로워 목록일 경우 발신자
+        User targetUser = isFollowingList ? follow.getReceiver() : follow.getSender();
+
+        // 현재 사용자가 해당 타겟 유저를 팔로우하고 있는지 여부를 확인
+        boolean isFollowing = isFollowingList || isFollowedByUser(currentUserId, targetUser.getId());
+
+        // FollowUserDTO 객체 생성 및 반환
+        return FollowUserDTO.builder()
+                .userId(targetUser.getId()) // 타겟 유저의 ID 설정
+                .nickname(targetUser.getNickname()) // 타겟 유저의 닉네임 설정
+                .profileImageUrl(targetUser.getProfileImageUrl()) // 타겟 유저의 프로필 이미지 URL 설정
+                .following(isFollowing) // 팔로우 여부 설정
+                .build();
+    }
+
+    /**
+     * 현재 사용자가 특정 사용자를 팔로우하고 있는지 여부를 확인하는 메서드
+     *
+     * @param currentUserId 현재 인증된 사용자의 ID
+     * @param targetUserId 팔로우 여부를 확인할 대상 사용자의 ID
+     * @return 팔로우 여부 반환
+     */
+    @Override
+    public boolean isFollowedByUser(Long currentUserId, Long targetUserId) {
+        return followRepository.existsBySenderIdAndReceiverId(currentUserId, targetUserId);
     }
 
 }
