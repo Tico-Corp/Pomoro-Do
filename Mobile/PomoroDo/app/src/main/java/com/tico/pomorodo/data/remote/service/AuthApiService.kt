@@ -10,11 +10,11 @@ import retrofit2.http.Part
 import retrofit2.http.Query
 
 interface AuthApiService {
-    @POST("/api/auth/google/login")
+    @POST("/api/v1/auth/google/login")
     suspend fun requestLogin(): BaseResponse<TokenResponse>
 
     @Multipart
-    @POST("/api/auth/google/signup")
+    @POST("/api/v1/auth/google/signup")
     suspend fun requestJoin(
         @Query("nickname")
         nickname: String,
