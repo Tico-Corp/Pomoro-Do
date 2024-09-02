@@ -23,7 +23,7 @@ class CategoryRepositoryImpl @Inject constructor(
         emit(Resource.Loading)
 
         if (networkHelper.isNetworkConnected()) {
-            TODO("bring network data")
+            // TODO:bring network data
         } else {
             emitAll(categoryLocalDataSource.getAllCategory().map {
                 wrapToResource(Dispatchers.IO) {
