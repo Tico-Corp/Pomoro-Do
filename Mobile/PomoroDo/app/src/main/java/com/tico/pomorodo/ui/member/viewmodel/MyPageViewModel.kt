@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class MyPageViewModel @Inject constructor(val networkHelper: NetworkHelper) : ViewModel() {
+class MyPageViewModel @Inject constructor(networkHelper: NetworkHelper) : ViewModel() {
     private var _name = MutableStateFlow("")
     val name: StateFlow<String> = _name.asStateFlow()
 
