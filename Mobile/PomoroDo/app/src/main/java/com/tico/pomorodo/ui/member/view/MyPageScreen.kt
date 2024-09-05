@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomSwitch
 import com.tico.pomorodo.ui.common.view.Profile
@@ -53,7 +54,7 @@ fun MyPageScreen(
     var concentrationAlarmBottomSheet by remember { mutableStateOf(false) }
     var breakAlarmBottomSheet by remember { mutableStateOf(false) }
     var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.SOUND) }
-    val (breakAlarmOption, setBreakAlarmOption) = remember { mutableStateOf(AlarmOptions.SOUND) }
+    var breakAlarmOption by remember { mutableStateOf(AlarmOptions.SOUND) }
 
     Column(
         modifier = Modifier
@@ -84,8 +85,9 @@ fun MyPageScreen(
         Spacer(modifier = Modifier.height(28.dp))
 
         MyPageMenuList(
-            concentrationAlarmOption,
-            breakAlarmOption,
+            isNetworkConnected = myPageViewModel.isNetworkConnected,
+            concentrationAlarmOptions = concentrationAlarmOption,
+            breakAlarmOptions = breakAlarmOption,
             onConcentrationAlarmClicked = { concentrationAlarmBottomSheet = true },
             onBreakAlarmClicked = { breakAlarmBottomSheet = true }
         )
@@ -108,7 +110,7 @@ fun MyPageScreen(
                 initialSelect = breakAlarmOption,
                 onDismissRequest = { breakAlarmBottomSheet = false },
                 onConfirmation = { alarmOptions ->
-                    setBreakAlarmOption(alarmOptions)
+                    breakAlarmOption = alarmOptions
                     breakAlarmBottomSheet = false
                 }
             )
@@ -169,6 +171,7 @@ fun FollowText(title: String, count: Int) {
 
 @Composable
 fun MyPageMenuList(
+    isNetworkConnected: Boolean,
     concentrationAlarmOptions: AlarmOptions,
     breakAlarmOptions: AlarmOptions,
     onConcentrationAlarmClicked: () -> Unit,
@@ -178,24 +181,6 @@ fun MyPageMenuList(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            color = PomoroDoTheme.colorScheme.myPageMenuBackgroundColor
-        ) {
-            Text(
-                text = stringResource(id = R.string.title_invite),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickableWithRipple(
-                        roundedCornerRadius = 10.dp,
-                        onClick = {/*TODO: 친구 초대 기능 구현*/ })
-                    .padding(horizontal = 18.dp, vertical = 16.dp),
-                color = PomoroDoTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Start,
-                style = PomoroDoTheme.typography.laundryGothicRegular14
-            )
-        }
-
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
@@ -223,26 +208,32 @@ fun MyPageMenuList(
                     onClick = onBreakAlarmClicked
                 )
 
-                lineSpacer()
+                if (BuildConfig.APP_VERSION >= "2.0.0") {
+                    lineSpacer()
 
-                val (checked1, setChecked1) = remember { mutableStateOf(false) }
-                SetStopWatchMode(
-                    title = stringResource(R.string.title_stopwatch_concentration),
-                    checked = checked1
-                ) {
-                    setChecked1(it)
-                }
+                    val (checked1, setChecked1) = remember { mutableStateOf(false) }
+                    SetStopWatchMode(
+                        title = stringResource(R.string.title_stopwatch_concentration),
+                        checked = checked1
+                    ) {
+                        setChecked1(it)
+                    }
 
-                lineSpacer()
+                    lineSpacer()
 
-                val (checked2, setChecked2) = remember { mutableStateOf(false) }
-                SetStopWatchMode(
-                    title = stringResource(R.string.title_stopwatch_break),
-                    checked = checked2
-                ) {
-                    setChecked2(it)
+                    val (checked2, setChecked2) = remember { mutableStateOf(false) }
+                    SetStopWatchMode(
+                        title = stringResource(R.string.title_stopwatch_break),
+                        checked = checked2
+                    ) {
+                        setChecked2(it)
+                    }
                 }
             }
+        }
+
+        if (!isNetworkConnected) {
+            NetworkSyncMenu()
         }
     }
 }
@@ -316,5 +307,24 @@ fun SetStopWatchMode(
         }
 
         CustomSwitch(checked = checked, onCheckedChange = onCheckChanged)
+    }
+}
+
+@Composable
+fun NetworkSyncMenu() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+        color = PomoroDoTheme.colorScheme.myPageMenuBackgroundColor
+    ) {
+        Text(
+            modifier = Modifier
+                .clickableWithRipple { TODO("network sync") }
+                .padding(horizontal = 18.dp, vertical = 14.dp),
+            text = stringResource(id = R.string.title_network_sync),
+            color = PomoroDoTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Start,
+            style = PomoroDoTheme.typography.laundryGothicRegular14
+        )
     }
 }
