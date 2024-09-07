@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithSingleButton
 import com.tico.pomorodo.ui.common.view.SimpleIcon
@@ -70,13 +71,38 @@ fun SettingMenuList(
     navigateToTermsOfUseScreen: () -> Unit,
     navigateToPrivacyPolicyScreen: () -> Unit
 ) {
-    val menuList: Map<SettingMenu, MenuNavigateFunction?> = mapOf(
-        SettingMenu.MODIFY_PROFILE to MenuNavigateFunction.UnitFunction(navigateToModifyProfileScreen),
-        SettingMenu.APP_THEME to MenuNavigateFunction.StringFunction(navigateToAppThemeScreen),
-        SettingMenu.TERMS_OF_USE to MenuNavigateFunction.UnitFunction(navigateToTermsOfUseScreen),
-        SettingMenu.PRIVACY_POLICY to MenuNavigateFunction.UnitFunction(navigateToPrivacyPolicyScreen),
-        SettingMenu.APP_VERSION to null
-    )
+    val menuList: Map<SettingMenu, MenuNavigateFunction?> =
+        if (BuildConfig.APP_VERSION < "2.0.0") {
+            mapOf(
+                SettingMenu.MODIFY_PROFILE to MenuNavigateFunction.UnitFunction(
+                    navigateToModifyProfileScreen
+                ),
+                SettingMenu.TERMS_OF_USE to MenuNavigateFunction.UnitFunction(
+                    navigateToTermsOfUseScreen
+                ),
+                SettingMenu.PRIVACY_POLICY to MenuNavigateFunction.UnitFunction(
+                    navigateToPrivacyPolicyScreen
+                ),
+                SettingMenu.APP_VERSION to null
+            )
+        } else {
+            mapOf(
+                SettingMenu.MODIFY_PROFILE to MenuNavigateFunction.UnitFunction(
+                    navigateToModifyProfileScreen
+                ),
+                SettingMenu.APP_THEME to MenuNavigateFunction.StringFunction(
+                    navigateToAppThemeScreen
+                ),
+                SettingMenu.TERMS_OF_USE to MenuNavigateFunction.UnitFunction(
+                    navigateToTermsOfUseScreen
+                ),
+                SettingMenu.PRIVACY_POLICY to MenuNavigateFunction.UnitFunction(
+                    navigateToPrivacyPolicyScreen
+                ),
+                SettingMenu.APP_VERSION to null
+            )
+        }
+
 
     Column(modifier = Modifier.fillMaxWidth()) {
         menuList.entries.forEachIndexed { index, settingMenu ->
