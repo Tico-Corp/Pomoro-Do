@@ -3,11 +3,16 @@ package com.tico.pomoro_do.domain.timer.entity;
 import com.tico.pomoro_do.domain.todo.entity.Todo;
 import com.tico.pomoro_do.global.enums.TodoStatus;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "timer_todo")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TimerTodo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +23,11 @@ public class TimerTodo {
     @JoinColumn(name = "timer_id", nullable = false)
     private Timer timer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "todo_id")
-    private Todo todo;
+    @Column(name = "todo_id", nullable = false)
+    private Long todoId;
+
+    @Column(name = "todo_title", nullable = false)
+    private String todoTitle;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
