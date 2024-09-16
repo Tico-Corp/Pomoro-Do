@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class CategoryServiceImpl implements CategoryService {
         // 일반/그룹 카테고리 생성
         Category category = createNewCategory(
                 host,
+                categoryCreationDTO.getDate(),
                 categoryCreationDTO.getTitle(),
                 categoryCreationDTO.getColor(),
                 categoryCreationDTO.getVisibility(),
@@ -76,9 +78,10 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 저장된 카테고리 객체
      */
     @Override
-    public Category createNewCategory(User host, String title, String color, CategoryVisibility visibility, CategoryType type) {
+    public Category createNewCategory(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type) {
         Category category = Category.builder()
                 .host(host)
+                .date(date)
                 .title(title)
                 .color(color)
                 .visibility(visibility)

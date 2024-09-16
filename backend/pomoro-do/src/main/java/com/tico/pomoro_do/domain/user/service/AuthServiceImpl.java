@@ -20,6 +20,7 @@ import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.common.constants.CategoryConstants;
 import com.tico.pomoro_do.global.enums.*;
 import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.util.DateUtils;
 import com.tico.pomoro_do.global.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -174,6 +175,7 @@ public class AuthServiceImpl implements AuthService {
         // 기본 카테고리 생성
         Category category = categoryService.createNewCategory(
                 user,
+                DateUtils.getCurrentDate(),
                 CategoryConstants.DEFAULT_CATEGORY_TITLE,
                 CategoryConstants.DEFAULT_CATEGORY_COLOR,
                 CategoryConstants.DEFAULT_CATEGORY_VISIBILITY,

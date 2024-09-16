@@ -7,6 +7,7 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.CategoryType;
 import com.tico.pomoro_do.global.enums.CategoryVisibility;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CategoryService {
@@ -15,7 +16,7 @@ public interface CategoryService {
     void createCategory(String hostName, CategoryCreationDTO categoryCreationDTO);
 
     // 카테고리만 생성
-    Category createNewCategory(User host, String title, String color, CategoryVisibility visibility, CategoryType type);
+    Category createNewCategory(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type);
 
     // 일반/그룹 카테고리 조회
     CategoryDTO getCategories(String username);

@@ -8,10 +8,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
 public class CategoryCreationDTO {
+
+    @NotNull(message = "날짜를 입력해주세요.")
+    @Schema(description = "카테고리 생성 날짜", example = "2014-07-24")
+    private LocalDate date;
 
     @NotBlank(message = "제목을 입력해주세요.")
     @Schema(description = "카테고리의 제목", example = "My New Category")
