@@ -5,6 +5,7 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.TimerType;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,6 +19,9 @@ public class Timer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;

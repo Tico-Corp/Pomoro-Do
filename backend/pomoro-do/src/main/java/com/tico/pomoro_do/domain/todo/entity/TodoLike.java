@@ -13,12 +13,12 @@ public class TodoLike {
     @Column(name = "like_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    // 좋아요 누른 유저 개수만 카운팅 -> 따로 필요한 정보없음
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "todo_id")
+    @JoinColumn(name = "todo_id", nullable = false)
     private Todo todo;
 
     @Column(name = "created_at", nullable = false, updatable = false)

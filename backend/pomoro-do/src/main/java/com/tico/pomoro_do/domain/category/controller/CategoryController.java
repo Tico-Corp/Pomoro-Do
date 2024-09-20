@@ -15,11 +15,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Tag(name = "Category: 카테고리", description = "투두리스트의 카테고리 관련 API")
@@ -79,10 +81,12 @@ public class CategoryController {
     )
     @GetMapping
     public ResponseEntity<SuccessResponseDTO<CategoryDTO>> getCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date // 날짜 파라미터 추가
+
     ) {
         String username = customUserDetails.getUsername();
-        CategoryDTO categoryDTO = categoryService.getCategories(username);
+        CategoryDTO categoryDTO = categoryService.getCategories(username, date);
 
         SuccessResponseDTO<CategoryDTO> successResponse = SuccessResponseDTO.<CategoryDTO>builder()
                 .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
@@ -99,11 +103,13 @@ public class CategoryController {
     )
     @GetMapping("/general")
     public ResponseEntity<SuccessResponseDTO<List<GeneralCategoryDTO>>> getGeneralCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date // 날짜 파라미터 추가
+
     ) {
         String username = customUserDetails.getUsername();
         User user = userService.findByUsername(username);
-        List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user);
+        List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user, date);
 
         SuccessResponseDTO<List<GeneralCategoryDTO>> successResponse = SuccessResponseDTO.<List<GeneralCategoryDTO>>builder()
                 .status(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
@@ -120,11 +126,13 @@ public class CategoryController {
     )
     @GetMapping("/groups")
     public ResponseEntity<SuccessResponseDTO<List<GroupCategoryDTO>>> getGroupCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date // 날짜 파라미터 추가
+
     ) {
         String username = customUserDetails.getUsername();
         User user = userService.findByUsername(username);
-        List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user);
+        List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user, date);
 
         SuccessResponseDTO<List<GroupCategoryDTO>> successResponse = SuccessResponseDTO.<List<GroupCategoryDTO>>builder()
                 .status(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
@@ -162,7 +170,7 @@ public class CategoryController {
     )
     @GetMapping("/{categoryId}")
     public ResponseEntity<SuccessResponseDTO<CategoryDetailDTO>> getCategoryDetail(
-            @PathVariable  Long categoryId
+            @PathVariable Long categoryId
     ) {
 
         CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId);

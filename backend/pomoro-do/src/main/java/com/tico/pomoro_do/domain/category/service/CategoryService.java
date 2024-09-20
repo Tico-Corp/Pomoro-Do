@@ -7,6 +7,7 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.CategoryType;
 import com.tico.pomoro_do.global.enums.CategoryVisibility;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface CategoryService {
@@ -15,14 +16,14 @@ public interface CategoryService {
     void createCategory(String hostName, CategoryCreationDTO categoryCreationDTO);
 
     // 카테고리만 생성
-    Category createNewCategory(User host, String title, String color, CategoryVisibility visibility, CategoryType type);
+    Category createNewCategory(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type);
 
     // 일반/그룹 카테고리 조회
-    CategoryDTO getCategories(String username);
+    CategoryDTO getCategories(String username, LocalDate date);
     // 사용자가 호스트로 있는 일반 카테고리 조회
-    List<GeneralCategoryDTO> getGeneralCategories(User host);
+    List<GeneralCategoryDTO> getGeneralCategories(User host, LocalDate date);
     // 사용자가 이미 승낙한 그룹 카테고리 조회
-    List<GroupCategoryDTO> getGroupCategories(User user);
+    List<GroupCategoryDTO> getGroupCategories(User user, LocalDate date);
 
     // 초대받은 그룹 카테고리를 최신순으로 가져옴
     List<InvitedGroupDTO> getInvitedGroups(User user);

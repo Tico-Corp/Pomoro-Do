@@ -2,13 +2,18 @@ package com.tico.pomoro_do.domain.statistics.entity;
 
 import com.tico.pomoro_do.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "daily_stats")
-public class DailyStats {
+@Table(name = "time_stats")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class TimeStats {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "stats_id")

@@ -15,12 +15,14 @@ import com.tico.pomoro_do.global.enums.CategoryVisibility;
 import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
 import com.tico.pomoro_do.global.enums.GroupRole;
 import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.util.DateUtils;
 import com.tico.pomoro_do.global.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
         // 일반/그룹 카테고리 생성
         Category category = createNewCategory(
                 host,
+                categoryCreationDTO.getDate(),
                 categoryCreationDTO.getTitle(),
                 categoryCreationDTO.getColor(),
                 categoryCreationDTO.getVisibility(),
@@ -76,9 +79,10 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 저장된 카테고리 객체
      */
     @Override
-    public Category createNewCategory(User host, String title, String color, CategoryVisibility visibility, CategoryType type) {
+    public Category createNewCategory(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type) {
         Category category = Category.builder()
                 .host(host)
+                .date(date)
                 .title(title)
                 .color(color)
                 .visibility(visibility)
@@ -138,12 +142,12 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 사용자에 해당하는 일반 카테고리와 그룹 카테고리를 포함하는 CategoryDTO 객체
      */
     @Override
-    public CategoryDTO getCategories(String username) {
+    public CategoryDTO getCategories(String username, LocalDate date) {
         User user = userService.findByUsername(username);
         // 일반 카테고리: 사용자가 호스트인 제너럴 카테고리
-        List<GeneralCategoryDTO> generalCategories = getGeneralCategories(user);
+        List<GeneralCategoryDTO> generalCategories = getGeneralCategories(user, date);
         // 그룹 카테고리: 사용자가 멤버로 있는 그룹 카테고리 (승낙된 것)
-        List<GroupCategoryDTO> groupCategories = getGroupCategories(user);
+        List<GroupCategoryDTO> groupCategories = getGroupCategories(user, date);
         // 초대받은 그룹 카테고리: 사용자가 초대받은 그룹 카테고리 (초대 시간 순으로 정렬)
         List<InvitedGroupDTO> invitedgroupCategories = getInvitedGroups(user);
 
@@ -161,9 +165,14 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 사용자의 일반 카테고리를 포함하는 GeneralCategoryDTO 리스트
      */
     @Override
-    public List<GeneralCategoryDTO> getGeneralCategories(User host) {
+    public List<GeneralCategoryDTO> getGeneralCategories(User host, LocalDate date) {
+        // date가 null인 경우 오늘 날짜
+        if (date == null) {
+            date = DateUtils.getCurrentDate();
+        }
+
         // 사용자가 호스트로 있는 일반 카테고리 조회
-        List<Category> generalCategories = categoryRepository.findAllByHostAndType(host, CategoryType.GENERAL);
+        List<Category> generalCategories = categoryRepository.findAllByHostAndTypeAndDate(host, CategoryType.GENERAL, date);
 
         return generalCategories.stream()
                 .sorted(Comparator.comparing(Category::getTitle)) // 제목(title) 기준으로 가나다 순 정렬
@@ -187,9 +196,14 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 사용자가 속한 그룹 카테고리를 포함하는 GroupCategoryDTO 리스트
      */
     @Override
-    public List<GroupCategoryDTO> getGroupCategories(User user) {
-        // 사용자가 속한 그룹의 카테고리들을 조회
-        List<Category> groupCategories = getUserGroupCategories(user);
+    public List<GroupCategoryDTO> getGroupCategories(User user, LocalDate date) {
+        // date가 null인 경우 오늘 날짜
+        if (date == null) {
+            date = DateUtils.getCurrentDate();
+        }
+
+        // 사용자가 속한 해당 날짜의 그룹 카테고리들을 조회
+        List<Category> groupCategories = getUserGroupCategories(user, date);
 
         // 모든 카테고리에 대해 멤버 수를 한 번에 조회
         Map<Category, Long> categoryMemberCountMap = getCategoryMemberCountMap(groupCategories);
@@ -202,10 +216,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     // 사용자의 그룹 카테고리 조회
-    private List<Category> getUserGroupCategories(User user) {
+    private List<Category> getUserGroupCategories(User user, LocalDate date) {
         List<GroupMember> userAcceptedGroups = groupMemberRepository.findAllByUserAndStatus(user, GroupInvitationStatus.ACCEPTED);
         return userAcceptedGroups.stream()
                 .map(GroupMember::getCategory)
+                .filter(category -> category.getDate().equals(date)) // date와 같은 카테고리 필터링
                 .collect(Collectors.toList());
     }
 

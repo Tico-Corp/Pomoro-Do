@@ -10,9 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Table(name = "category")
 @Entity
@@ -25,13 +24,16 @@ public class Category {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "host_id")
+    @JoinColumn(name = "host_id", nullable = false)
     private User host;
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 7)
     private String color;
 
     @Enumerated(EnumType.STRING)
@@ -54,8 +56,9 @@ public class Category {
     }
 
     @Builder
-    public Category(User host, String title, String color, CategoryVisibility visibility, CategoryType type){
+    public Category(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type){
         this.host = host;
+        this.date = date;
         this.title = title;
         this.color = color;
         this.visibility = visibility;
