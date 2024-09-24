@@ -76,17 +76,16 @@ public class CategoryController {
 
     @Operation(
             summary = "일반 / 그룹 / 초대받은 그룹 카테고리 조회",
-            description = "현재 인증된 사용자의 일반 / 그룹 / 초대받은 그룹 카테고리를 조회합니다. <br>" +
+            description = "현재 인증된 사용자의 오늘 날짜에 해당하는 일반 카테고리와 그룹 카테고리를 제목순으로 정렬하여 조회하고," +
+                    " 아직 응답하지 않은 초대받은 그룹 카테고리를 최신순으로 조회합니다. <br>" +
                     "일반 / 그룹 / 초대받은 그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping
     public ResponseEntity<SuccessResponseDTO<CategoryDTO>> getCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date // 날짜 파라미터 추가
-
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String username = customUserDetails.getUsername();
-        CategoryDTO categoryDTO = categoryService.getCategories(username, date);
+        CategoryDTO categoryDTO = categoryService.getCategories(username);
 
         SuccessResponseDTO<CategoryDTO> successResponse = SuccessResponseDTO.<CategoryDTO>builder()
                 .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
@@ -97,19 +96,17 @@ public class CategoryController {
     }
 
     @Operation(
-            summary = "일반 카테고리 조회",
-            description = "현재 인증된 사용자의 일반 카테고리를 조회합니다. <br>" +
+            summary = "오늘의 일반 카테고리 조회",
+            description = "현재 인증된 사용자의 오늘 날짜에 해당하는 일반 카테고리를 제목순으로 정렬하여 조회합니다. <br>" +
                     "일반 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping("/general")
     public ResponseEntity<SuccessResponseDTO<List<GeneralCategoryDTO>>> getGeneralCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date // 날짜 파라미터 추가
-
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String username = customUserDetails.getUsername();
         User user = userService.findByUsername(username);
-        List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user, date);
+        List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user);
 
         SuccessResponseDTO<List<GeneralCategoryDTO>> successResponse = SuccessResponseDTO.<List<GeneralCategoryDTO>>builder()
                 .status(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
@@ -120,19 +117,17 @@ public class CategoryController {
     }
 
     @Operation(
-            summary = "그룹 카테고리 조회",
-            description = "현재 인증된 사용자의 그룹 카테고리를 조회합니다. <br>" +
+            summary = "오늘의 그룹 카테고리 조회",
+            description = "현재 인증된 사용자의 오늘 날짜에 해당하는 그룹 카테고리를 제목순으로 정렬하여 조회합니다. <br>" +
                     "그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping("/groups")
     public ResponseEntity<SuccessResponseDTO<List<GroupCategoryDTO>>> getGroupCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date // 날짜 파라미터 추가
-
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String username = customUserDetails.getUsername();
         User user = userService.findByUsername(username);
-        List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user, date);
+        List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user);
 
         SuccessResponseDTO<List<GroupCategoryDTO>> successResponse = SuccessResponseDTO.<List<GroupCategoryDTO>>builder()
                 .status(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
@@ -143,9 +138,9 @@ public class CategoryController {
     }
 
     @Operation(
-            summary = "초대받은 그룹 카테고리 초대장 조회",
-            description = "현재 인증된 사용자가 초대받은 그룹 카테고리의 초대장을 조회합니다. <br>" +
-                    "초대받은 그룹 카테고리가 없을 경우 빈 배열([])을 반환합니다."
+            summary = "응답하지 않은 초대받은 그룹 카테고리 조회",
+            description = "현재 인증된 사용자가 아직 응답하지 않은 초대받은 그룹 카테고리를 최신순으로 조회합니다. <br>" +
+                    "응답하지 않은 초대 그룹 카테고리가 없는 경우 빈 배열([])을 반환합니다."
     )
     @GetMapping("/groups/invitations")
     public ResponseEntity<SuccessResponseDTO<List<InvitedGroupDTO>>> getInvitedGroupCategories(
@@ -153,7 +148,7 @@ public class CategoryController {
     ) {
         String username = customUserDetails.getUsername();
         User user = userService.findByUsername(username);
-        List<InvitedGroupDTO> groupCategories = categoryService.getInvitedGroups(user);
+        List<InvitedGroupDTO> groupCategories = categoryService.getInvitedGroupCategories(user);
 
         SuccessResponseDTO<List<InvitedGroupDTO>> successResponse = SuccessResponseDTO.<List<InvitedGroupDTO>>builder()
                 .status(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
