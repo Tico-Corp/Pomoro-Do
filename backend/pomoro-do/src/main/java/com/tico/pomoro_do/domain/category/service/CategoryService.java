@@ -18,15 +18,14 @@ public interface CategoryService {
     // 카테고리만 생성
     Category createNewCategory(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type);
 
-    // 일반/그룹 카테고리 조회
-    CategoryDTO getCategories(String username, LocalDate date);
+    // 일반/그룹/초대받은 카테고리 조회
+    CategoryDTO getCategories(String username);
     // 사용자가 호스트로 있는 일반 카테고리 조회
-    List<GeneralCategoryDTO> getGeneralCategories(User host, LocalDate date);
+    List<GeneralCategoryDTO> getGeneralCategories(User host);
     // 사용자가 이미 승낙한 그룹 카테고리 조회
-    List<GroupCategoryDTO> getGroupCategories(User user, LocalDate date);
-
+    List<GroupCategoryDTO> getGroupCategories(User user);
     // 초대받은 그룹 카테고리를 최신순으로 가져옴
-    List<InvitedGroupDTO> getInvitedGroups(User user);
+    List<InvitedGroupDTO> getInvitedGroupCategories(User user);
 
     // 카테고리 상세 조회
     CategoryDetailDTO getCategoryDetail(Long categoryId);
