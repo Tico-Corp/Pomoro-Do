@@ -17,7 +17,6 @@ import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
 import com.tico.pomorodo.ui.category.view.InfoCategoryScreenRoute
 import com.tico.pomorodo.ui.history.view.HistoryRoute
 import com.tico.pomorodo.ui.home.view.HomeScreen
-import com.tico.pomorodo.ui.member.view.FollowListScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
 import com.tico.pomorodo.ui.setting.view.AppThemeScreen
@@ -73,9 +72,6 @@ fun NavController.navigateToHistory() = navigate(MainNavigationDestination.HISTO
 fun NavController.navigateToModifyProfile() =
     navigate(MainNavigationDestination.MODIFY_PROFILE.name)
 
-fun NavController.navigateToFollowListScreen() =
-    navigate(MainNavigationDestination.FOLLOW.name)
-
 fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination.SETTING.name)
 
 fun NavController.navigateToAppThemeScreen(appThemeMode: String) =
@@ -114,13 +110,11 @@ fun NavGraphBuilder.followScreen() {
 
 fun NavGraphBuilder.myInfoScreen(
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit,
     navigateToSettingScreen: () -> Unit,
 ) {
     composable(route = BottomNavigationDestination.MY_INFO.name) {
         MyPageScreen(
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen,
             navigateToSettingScreen = navigateToSettingScreen
         )
     }
@@ -169,7 +163,6 @@ fun NavGraphBuilder.homeScreen(
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit,
     navigateToSettingScreen: () -> Unit
 ) {
     composable(route = MainNavigationDestination.HOME.name) {
@@ -180,7 +173,6 @@ fun NavGraphBuilder.homeScreen(
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen,
             navigateToSettingScreen = navigateToSettingScreen
         )
     }
@@ -302,12 +294,6 @@ fun NavGraphBuilder.groupMemberChooseScreen(
 fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
     composable(route = MainNavigationDestination.MODIFY_PROFILE.name) { navBackStackEntry ->
         ModifyProfileScreen(navController = navController, navBackStackEntry = navBackStackEntry)
-    }
-}
-
-fun NavGraphBuilder.followListScreen() {
-    composable(route = MainNavigationDestination.FOLLOW.name) {
-        FollowListScreen()
     }
 }
 

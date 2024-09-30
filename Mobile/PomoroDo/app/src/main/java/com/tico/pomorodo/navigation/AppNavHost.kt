@@ -15,7 +15,6 @@ fun AppNavHost(
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit,
     navigateToSettingScreen: () -> Unit,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
 ) {
@@ -34,7 +33,6 @@ fun AppNavHost(
         followScreen()
         myInfoScreen(
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen,
             navigateToSettingScreen = navigateToSettingScreen
         )
     }

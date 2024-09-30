@@ -196,6 +196,9 @@
     <string name="content_app_theme_dark">다크</string>
     <string name="content_app_theme_system">시스템 설정</string>
 
+    // follow
+    <string name="content_ic_add_follower">팔로워 추가 버튼</string>
+
     // common
     <string name="content_next">다음</string>
     <string name="content_cancel">취소</string>

@@ -49,7 +49,6 @@ enum class MainNavigationDestination {
     HISTORY,
 
     MODIFY_PROFILE,
-    FOLLOW,
 
     SETTING,
     APP_THEME,
