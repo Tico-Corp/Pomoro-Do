@@ -8,6 +8,7 @@ import com.tico.pomorodo.ui.iconpack.lighticonpack.IcAllCleanLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcArrowBackLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcArrowFrontLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcArrowRightLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcBottomFollowLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcBottomMyInfoLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcBottomTimerLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcBottomTodoLight
@@ -42,6 +43,7 @@ object LightIconPack {
         mapOf(
             IC_BOTTOM_MY_INFO to IcBottomMyInfoLight,
             IC_BOTTOM_TODO to IcBottomTodoLight,
+            IC_BOTTOM_FOLLOW to IcBottomFollowLight,
             IC_BOTTOM_TIMER to IcBottomTimerLight,
             BG_CIRCULAR_TIMER to BgCircularTimerLight,
             IC_ARROW_FRONT to IcArrowFrontLight,

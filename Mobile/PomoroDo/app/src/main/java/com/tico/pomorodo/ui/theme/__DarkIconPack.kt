@@ -8,6 +8,7 @@ import com.tico.pomorodo.ui.iconpack.darkiconpack.IcAllCleanDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcArrowBackDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcArrowFrontDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcArrowRightDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcBottomFollowDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcBottomMyInfoDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcBottomTimerDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcBottomTodoDark
@@ -42,6 +43,7 @@ object DarkIconPack {
         mapOf(
             IC_BOTTOM_MY_INFO to IcBottomMyInfoDark,
             IC_BOTTOM_TODO to IcBottomTodoDark,
+            IC_BOTTOM_FOLLOW to IcBottomFollowDark,
             IC_BOTTOM_TIMER to IcBottomTimerDark,
             BG_CIRCULAR_TIMER to BgCircularTimerDark,
             IC_ARROW_FRONT to IcArrowFrontDark,
