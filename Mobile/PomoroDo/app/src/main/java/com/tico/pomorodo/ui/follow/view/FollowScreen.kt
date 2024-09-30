@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.member.view
+package com.tico.pomorodo.ui.follow.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -44,12 +45,14 @@ import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
 import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTextButton
-import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithSingleButton
+import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithRightButton
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
+import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
 
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun FollowListScreen() {
     val followViewModel: FollowViewModel = hiltViewModel()
@@ -62,9 +65,11 @@ fun FollowListScreen() {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background)) {
-        CustomTopAppBarWithSingleButton(
+        CustomTopAppBarWithRightButton(
             title = stringResource(R.string.title_follow),
-            navigationAction = { /*TODO: top app bar - pop back stack*/ },
+            iconString = IC_ADD_CATEGORY,
+            iconDescriptionId = R.string.content_ic_add_follower,
+            onClickedListener = { /*TODO: top app bar - pop back stack*/ },
             top = 24,
             bottom = 14,
             start = 16,
@@ -257,7 +262,7 @@ fun FollowItem(
         GlideImage(
             imageModel = { user.profileUrl },
             modifier = Modifier
-                .size(48.dp)
+                .size(40.dp)
                 .clip(shape = CircleShape),
             requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
             imageOptions = ImageOptions(
@@ -268,9 +273,10 @@ fun FollowItem(
 
         Text(
             text = user.name,
+            modifier = Modifier.padding(start = 16.dp),
             color = PomoroDoTheme.colorScheme.onBackground,
             textAlign = TextAlign.Start,
-            style = PomoroDoTheme.typography.laundryGothicRegular18
+            style = PomoroDoTheme.typography.laundryGothicRegular16
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -279,9 +285,9 @@ fun FollowItem(
             text = buttonText,
             containerColor = buttonContainerColor,
             contentColor = buttonContentColor,
-            textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-            verticalPadding = 8.dp,
-            horizontalPadding = 15.dp,
+            textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
+            verticalPadding = 6.dp,
+            horizontalPadding = 12.dp,
             onClick = onClick
         )
     }
