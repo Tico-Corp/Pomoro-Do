@@ -35,6 +35,9 @@ fun NavController.navigateToTimer(navOptions: NavOptions) =
 fun NavController.navigateToTodo(navOptions: NavOptions) =
     navigate(BottomNavigationDestination.TODO.name, navOptions)
 
+fun NavController.navigateToFollow(navOptions: NavOptions) =
+    navigate(BottomNavigationDestination.FOLLOW.name, navOptions)
+
 fun NavController.navigateToMyInfo(navOptions: NavOptions) =
     navigate(BottomNavigationDestination.MY_INFO.name, navOptions)
 
@@ -100,6 +103,12 @@ fun NavGraphBuilder.todoScreen(
             navigateToCategory = navigateToCategory,
             navigateToHistory = navigateToHistory
         )
+    }
+}
+
+fun NavGraphBuilder.followScreen() {
+    composable(route = BottomNavigationDestination.FOLLOW.name) {
+        com.tico.pomorodo.ui.follow.view.FollowListScreen()
     }
 }
 
@@ -302,7 +311,10 @@ fun NavGraphBuilder.followListScreen() {
     }
 }
 
-fun NavGraphBuilder.settingScreen(navigateToAppThemeScreen: (String) -> Unit, popBackStack: () -> Unit) {
+fun NavGraphBuilder.settingScreen(
+    navigateToAppThemeScreen: (String) -> Unit,
+    popBackStack: () -> Unit
+) {
     composable(route = MainNavigationDestination.SETTING.name) {
         SettingScreen(
             navigateToModifyProfileScreen = { /*TODO*/ },

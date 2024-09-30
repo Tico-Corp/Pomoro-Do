@@ -31,6 +31,7 @@ fun AppNavHost(
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory
         )
+        followScreen()
         myInfoScreen(
             navigateToModifyProfile = navigateToModifyProfile,
             navigateToFollowListScreen = navigateToFollowListScreen,
