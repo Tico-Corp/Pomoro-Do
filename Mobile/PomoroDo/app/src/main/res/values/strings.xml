@@ -156,6 +156,7 @@
     // bottom navigation bar
     <string name="title_timer">타이머</string>
     <string name="title_todo">할 일 목록</string>
+    <string name="title_follow">팔로우</string>
     <string name="title_my_info">내 정보</string>
 
     // todo list dialog
@@ -195,6 +196,9 @@
     <string name="content_app_theme_dark">다크</string>
     <string name="content_app_theme_system">시스템 설정</string>
 
+    // follow
+    <string name="content_ic_add_follower">팔로워 추가 버튼</string>
+
     // common
     <string name="content_next">다음</string>
     <string name="content_cancel">취소</string>
@@ -209,7 +213,6 @@
     <string name="format_hour_minute_second">%02d:%02d:%02d</string>
 
     // common - follow
-    <string name="title_follow">팔로우</string>
     <string name="content_unfollow">언팔로우</string>
     <string name="title_following">팔로잉</string>
     <string name="title_follower">팔로워</string>

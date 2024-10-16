@@ -76,7 +76,7 @@ fun CustomTopAppBar(
 }
 
 @Composable
-fun CustomTopAppBarWithSingleButton(
+fun CustomTopAppBarWithNavigation(
     title: String,
     navigationAction: () -> Unit,
     top: Int = 0,
@@ -104,6 +104,41 @@ fun CustomTopAppBarWithSingleButton(
             color = PomoroDoTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center,
             style = PomoroDoTheme.typography.laundryGothicBold20
+        )
+    }
+}
+
+@Composable
+fun CustomTopAppBarWithRightButton(
+    title: String,
+    iconString: String,
+    @StringRes iconDescriptionId: Int,
+    onClickedListener: () -> Unit,
+    top: Int = 0,
+    bottom: Int = 0,
+    start: Int = 0,
+    end: Int = 0
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = start.dp, end = end.dp, top = top.dp, bottom = bottom.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Text(
+            text = title,
+            modifier = Modifier.fillMaxWidth(),
+            color = PomoroDoTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Center,
+            style = PomoroDoTheme.typography.laundryGothicBold20
+        )
+
+        SimpleIconButton(
+            size = 28,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[iconString]),
+            contentDescriptionId = iconDescriptionId,
+            enabled = true,
+            onClickedListener = onClickedListener
         )
     }
 }

@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithSingleButton
+import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithNavigation
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.theme.IC_ARROW_RIGHT
@@ -44,7 +44,7 @@ fun SettingScreen(
                 .padding(horizontal = 18.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            CustomTopAppBarWithSingleButton(
+            CustomTopAppBarWithNavigation(
                 title = stringResource(R.string.title_setting_screen),
                 navigationAction = { popBackStack() }
             )

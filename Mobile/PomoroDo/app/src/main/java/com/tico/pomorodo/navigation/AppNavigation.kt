@@ -17,7 +17,6 @@ import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
 import com.tico.pomorodo.ui.category.view.InfoCategoryScreenRoute
 import com.tico.pomorodo.ui.history.view.HistoryRoute
 import com.tico.pomorodo.ui.home.view.HomeScreen
-import com.tico.pomorodo.ui.member.view.FollowListScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
 import com.tico.pomorodo.ui.setting.view.AppThemeScreen
@@ -34,6 +33,9 @@ fun NavController.navigateToTimer(navOptions: NavOptions) =
 
 fun NavController.navigateToTodo(navOptions: NavOptions) =
     navigate(BottomNavigationDestination.TODO.name, navOptions)
+
+fun NavController.navigateToFollow(navOptions: NavOptions) =
+    navigate(BottomNavigationDestination.FOLLOW.name, navOptions)
 
 fun NavController.navigateToMyInfo(navOptions: NavOptions) =
     navigate(BottomNavigationDestination.MY_INFO.name, navOptions)
@@ -70,9 +72,6 @@ fun NavController.navigateToHistory() = navigate(MainNavigationDestination.HISTO
 fun NavController.navigateToModifyProfile() =
     navigate(MainNavigationDestination.MODIFY_PROFILE.name)
 
-fun NavController.navigateToFollowListScreen() =
-    navigate(MainNavigationDestination.FOLLOW.name)
-
 fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination.SETTING.name)
 
 fun NavController.navigateToAppThemeScreen(appThemeMode: String) =
@@ -103,15 +102,19 @@ fun NavGraphBuilder.todoScreen(
     }
 }
 
+fun NavGraphBuilder.followScreen() {
+    composable(route = BottomNavigationDestination.FOLLOW.name) {
+        com.tico.pomorodo.ui.follow.view.FollowListScreen()
+    }
+}
+
 fun NavGraphBuilder.myInfoScreen(
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit,
     navigateToSettingScreen: () -> Unit,
 ) {
     composable(route = BottomNavigationDestination.MY_INFO.name) {
         MyPageScreen(
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen,
             navigateToSettingScreen = navigateToSettingScreen
         )
     }
@@ -160,7 +163,6 @@ fun NavGraphBuilder.homeScreen(
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit,
     navigateToSettingScreen: () -> Unit
 ) {
     composable(route = MainNavigationDestination.HOME.name) {
@@ -171,7 +173,6 @@ fun NavGraphBuilder.homeScreen(
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToFollowListScreen = navigateToFollowListScreen,
             navigateToSettingScreen = navigateToSettingScreen
         )
     }
@@ -296,13 +297,10 @@ fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
     }
 }
 
-fun NavGraphBuilder.followListScreen() {
-    composable(route = MainNavigationDestination.FOLLOW.name) {
-        FollowListScreen()
-    }
-}
-
-fun NavGraphBuilder.settingScreen(navigateToAppThemeScreen: (String) -> Unit, popBackStack: () -> Unit) {
+fun NavGraphBuilder.settingScreen(
+    navigateToAppThemeScreen: (String) -> Unit,
+    popBackStack: () -> Unit
+) {
     composable(route = MainNavigationDestination.SETTING.name) {
         SettingScreen(
             navigateToModifyProfileScreen = { /*TODO*/ },

@@ -20,7 +20,6 @@ import com.tico.pomorodo.navigation.appThemeScreen
 import com.tico.pomorodo.navigation.breakModeScreen
 import com.tico.pomorodo.navigation.categoryScreen
 import com.tico.pomorodo.navigation.concentrationModeScreen
-import com.tico.pomorodo.navigation.followListScreen
 import com.tico.pomorodo.navigation.getState
 import com.tico.pomorodo.navigation.groupMemberChooseScreen
 import com.tico.pomorodo.navigation.historyScreen
@@ -33,7 +32,6 @@ import com.tico.pomorodo.navigation.navigateToAppThemeScreen
 import com.tico.pomorodo.navigation.navigateToBreakMode
 import com.tico.pomorodo.navigation.navigateToCategory
 import com.tico.pomorodo.navigation.navigateToConcentrationMode
-import com.tico.pomorodo.navigation.navigateToFollowListScreen
 import com.tico.pomorodo.navigation.navigateToGroupMemberChoose
 import com.tico.pomorodo.navigation.navigateToHistory
 import com.tico.pomorodo.navigation.navigateToHome
@@ -100,7 +98,6 @@ fun MainScreen() {
                     navigateToAddCategory = mainNavController::navigateToAddCategory,
                     navigateToHistory = mainNavController::navigateToHistory,
                     navigateToModifyProfile = mainNavController::navigateToModifyProfile,
-                    navigateToFollowListScreen = mainNavController::navigateToFollowListScreen,
                     navigateToSettingScreen = mainNavController::navigateToSettingScreen
                 )
 
@@ -137,8 +134,6 @@ fun MainScreen() {
                 historyScreen(navigateToBack = mainNavController::popBackStack)
 
                 modifyProfileScreen(navController = mainNavController)
-
-                followListScreen()
 
                 settingScreen(
                     navigateToAppThemeScreen = mainNavController::navigateToAppThemeScreen,

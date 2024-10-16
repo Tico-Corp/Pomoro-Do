@@ -45,7 +45,6 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun MyPageScreen(
     navigateToModifyProfile: () -> Unit,
-    navigateToFollowListScreen: () -> Unit,
     navigateToSettingScreen: () -> Unit
 ) {
     val myPageViewModel: MyPageViewModel = hiltViewModel()
@@ -79,7 +78,6 @@ fun MyPageScreen(
             followingCount = 4,
             followerCount = 2,
             onProfileClick = navigateToModifyProfile,
-            onFollowListClick = navigateToFollowListScreen
         )
 
         Spacer(modifier = Modifier.height(28.dp))
@@ -125,7 +123,6 @@ fun MyProfile(
     followingCount: Int,
     followerCount: Int,
     onProfileClick: () -> Unit,
-    onFollowListClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -147,10 +144,7 @@ fun MyProfile(
                 style = PomoroDoTheme.typography.laundryGothicRegular20
             )
 
-            Row(
-                modifier = Modifier.clickableWithoutRipple { onFollowListClick() },
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 FollowText(title = stringResource(R.string.title_following), count = followingCount)
                 FollowText(title = stringResource(R.string.title_follower), count = followerCount)
             }

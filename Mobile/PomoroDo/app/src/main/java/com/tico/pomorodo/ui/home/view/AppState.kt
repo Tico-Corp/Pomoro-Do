@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navOptions
 import com.tico.pomorodo.navigation.BottomNavigationDestination
+import com.tico.pomorodo.navigation.navigateToFollow
 import com.tico.pomorodo.navigation.navigateToMyInfo
 import com.tico.pomorodo.navigation.navigateToTimer
 import com.tico.pomorodo.navigation.navigateToTodo
@@ -31,6 +32,7 @@ class AppState(val navController: NavHostController) {
         when (topLevelDestination) {
             BottomNavigationDestination.TIMER -> navController.navigateToTimer(navOptions)
             BottomNavigationDestination.TODO -> navController.navigateToTodo(navOptions)
+            BottomNavigationDestination.FOLLOW -> navController.navigateToFollow(navOptions)
             BottomNavigationDestination.MY_INFO -> navController.navigateToMyInfo(navOptions)
         }
     }
