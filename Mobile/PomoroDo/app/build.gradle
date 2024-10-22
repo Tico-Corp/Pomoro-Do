@@ -23,9 +23,9 @@ android {
     defaultConfig {
         applicationId "com.tico.pomorodo"
         minSdk 26
-        targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        targetSdk 34
+        versionCode 5
+        versionName "beta-1.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -41,8 +41,11 @@ android {
                 buildConfigField "String", "HEADER_PREFIX", "\"${localProperties["HEADER_PREFIX"]}\""
                 buildConfigField "String", "APP_VERSION", "\"${localProperties["APP_VERSION"]}\""
             }
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk{
+                debugSymbolLevel 'FULL'
+            }
         }
     }
     compileOptions {
