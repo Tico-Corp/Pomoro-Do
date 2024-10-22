@@ -64,7 +64,7 @@ fun MainScreen() {
         ) { innerPadding ->
             NavHost(
                 navController = mainNavController,
-                startDestination = MainNavigationDestination.SPLASH.name,
+                startDestination = MainNavigationDestination.HOME.name,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
