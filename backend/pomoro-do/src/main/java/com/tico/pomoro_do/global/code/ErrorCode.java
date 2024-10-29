@@ -107,6 +107,7 @@ public enum ErrorCode {
     //follow 관련 에러: -130번대
     SELF_FOLLOW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "U-130", "본인은 팔로우할 수 없습니다."),
     ALREADY_FOLLOWED(HttpStatus.CONFLICT, "U-131", "이미 팔로우 중입니다."), // 중복 팔로우 에러 코드
+    NOT_FOLLOWING(HttpStatus.CONFLICT, "U-132", "팔로우하고 있지 않습니다."),
 
     //Token 관련 에러 -200번대
     ACCESS_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "T-201", "액세스 토큰이 만료되었습니다."),
