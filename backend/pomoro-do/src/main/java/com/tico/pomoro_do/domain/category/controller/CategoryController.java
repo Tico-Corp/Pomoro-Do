@@ -165,10 +165,11 @@ public class CategoryController {
     )
     @GetMapping("/{categoryId}")
     public ResponseEntity<SuccessResponseDTO<CategoryDetailDTO>> getCategoryDetail(
-            @PathVariable Long categoryId
+            @PathVariable Long categoryId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-
-        CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId);
+        String username = customUserDetails.getUsername();
+        CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId, username);
 
         SuccessResponseDTO<CategoryDetailDTO> successResponse = SuccessResponseDTO.<CategoryDetailDTO>builder()
                 .status(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getHttpStatus().value())

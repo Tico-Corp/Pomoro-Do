@@ -28,5 +28,5 @@ public interface CategoryService {
     List<InvitedGroupDTO> getInvitedGroupCategories(User user);
 
     // 카테고리 상세 조회
-    CategoryDetailDTO getCategoryDetail(Long categoryId);
+    CategoryDetailDTO getCategoryDetail(Long categoryId, String username);
 }
