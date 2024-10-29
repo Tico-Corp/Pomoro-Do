@@ -26,7 +26,7 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
 
     /**
-     * 사용자 팔로우 로직
+     * 특정 사용자 팔로우
      *
      * @param senderUsername 팔로우하는 사용자 이름
      * @param receiverId   팔로우될 사용자 ID
@@ -141,6 +141,45 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public boolean isFollowedByUser(Long currentUserId, Long targetUserId) {
         return followRepository.existsBySenderIdAndReceiverId(currentUserId, targetUserId);
+    }
+
+    /**
+     * 특정 사용자 팔로우 취소
+     *
+     * @param senderUsername 현재 사용자 이름
+     * @param receiverId   팔로우 취소하는 사용자 ID
+     */
+    @Override
+    @Transactional
+    public void unfollow(String senderUsername, Long receiverId) {
+        // 유효성 검사 (null 또는 음수 체크)
+        ValidationUtils.validateUserId(receiverId);
+
+        // 팔로워 유저 조회
+        User sender = userService.findByUsername(senderUsername);
+        // 팔로이 유저 조회
+        User receiver = userService.findByUserId(receiverId);
+
+        // 팔로우 관계 조회 및 확인
+        Follow follow = findFollowRelationship(sender.getId(), receiverId);
+
+        // 팔로우 관계 삭제
+        followRepository.delete(follow);
+    }
+
+    /**
+     * 팔로우 관계를 조회하고 없을 경우 예외를 발생시킵니다.
+     *
+     * @param senderId 팔로워의 ID
+     * @param receiverId 팔로이의 ID
+     * @return Follow 객체
+     */
+    private Follow findFollowRelationship(Long senderId, Long receiverId) {
+        return followRepository.findBySenderIdAndReceiverId(senderId, receiverId)
+                .orElseThrow(() -> {
+                    log.warn("언팔로우 요청 실패: 팔로워 ID '{}'가 팔로이 ID '{}'를 팔로우하고 있지 않습니다.", senderId, receiverId);
+                    return new CustomException(ErrorCode.NOT_FOLLOWING);
+                });
     }
 
 }

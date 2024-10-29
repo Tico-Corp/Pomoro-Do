@@ -122,4 +122,31 @@ public class FollowController {
         return ResponseEntity.ok(successResponse);
     }
 
+    /**
+     * 현재 인증된 사용자가 팔로우하는 특정 계정을 팔로우 취소합니다.
+     *
+     * @param customUserDetails 현재 인증된 사용자의 정보
+     * @param userId 팔로우 취소할 사용자의 ID
+     * @return 성공 시 성공 메시지를 포함한 SuccessResponseDTO 반환
+     */
+    @Operation(
+            summary = "현재 사용자가 특정 사용자를 팔로우 취소",
+            description = "현재 인증된 사용자가 팔로우하는 특정 사용자를 팔로우 취소합니다."
+    )
+    @DeleteMapping("/{userId}/unfollow")
+    public ResponseEntity<SuccessResponseDTO<String>> unfollow(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long userId
+    ){
+        String username = customUserDetails.getUsername();
+        followService.unfollow(username, userId);
+        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+                .status(SuccessCode.UNFOLLOW_SUCCESS.getHttpStatus().value())
+                .message(SuccessCode.UNFOLLOW_SUCCESS.getMessage())
+                .data(SuccessCode.UNFOLLOW_SUCCESS.name())
+                .build();
+
+        return ResponseEntity.ok(successResponse);
+    }
+
 }
