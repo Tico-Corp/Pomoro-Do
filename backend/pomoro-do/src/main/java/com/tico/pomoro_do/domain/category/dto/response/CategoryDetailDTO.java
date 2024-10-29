@@ -14,6 +14,7 @@ public class CategoryDetailDTO {
     private String title;
     private CategoryType type;
     private String hostNickname;
+    private boolean hostStatus;
     private CategoryVisibility visibility;
     private List<GroupMemberDTO> members;
     private int memberCount; // 그룹 인원 수
@@ -21,13 +22,14 @@ public class CategoryDetailDTO {
 
     @Builder
     public CategoryDetailDTO(Long categoryId, String title, CategoryType type,
-                             String hostNickname, CategoryVisibility visibility,
+                             String hostNickname, boolean hostStatus, CategoryVisibility visibility,
                              List<GroupMemberDTO> members, int memberCount, String color
     ) {
         this.categoryId = categoryId;
         this.title = title;
         this.type = type;
         this.hostNickname = hostNickname;
+        this.hostStatus = hostStatus;
         this.visibility = visibility;
         this.members = members;
         this.memberCount = memberCount;

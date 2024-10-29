@@ -249,10 +249,11 @@ public class CategoryServiceImpl implements CategoryService {
      * 카테고리 상세 조회
      *
      * @param categoryId 카테고리 ID
+     * @param username 조회한 유저 이메일
      * @return CategoryDetailDTO 객체
      */
     @Override
-    public CategoryDetailDTO getCategoryDetail(Long categoryId){
+    public CategoryDetailDTO getCategoryDetail(Long categoryId, String username){
         Category category = findByCategoryId(categoryId);
         List<GroupMemberDTO> groupMemberDTOList = new ArrayList<>();
         // 그룹 멤버 조회
@@ -275,6 +276,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryId(categoryId)
                 .title(category.getTitle())
                 .hostNickname(category.getHost().getNickname())
+                .hostStatus(category.getHost().getUsername().equals(username))
                 .type(category.getType())
                 .visibility(category.getVisibility())
                 .members(groupMemberDTOList)
