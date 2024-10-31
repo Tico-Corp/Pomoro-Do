@@ -124,7 +124,8 @@ public class CategoryServiceImpl implements CategoryService {
      * @param status 그룹 초대 상태 (ACCEPTED, INVITED 등)
      * @param role 그룹 내 유저의 역할 (HOST, MEMBER 등)
      */
-    private void createGroupMember(Category category, User member, GroupInvitationStatus status, GroupRole role){
+    @Override
+    public void createGroupMember(Category category, User member, GroupInvitationStatus status, GroupRole role){
         GroupMember groupMember = GroupMember.builder()
                 .category(category)
                 .user(member)
@@ -339,6 +340,29 @@ public class CategoryServiceImpl implements CategoryService {
                 .hostNickname(category.getHost().getNickname())
                 .title(category.getTitle())
                 .build();
+    }
+
+    /**
+     * 해당 날짜에 속하는 모든 카테고리 조회
+     *
+     * @param targetDate 조회할 날짜
+     * @return 해당 날짜에 속하는 모든 카테고리 리스트
+     */
+    @Override
+    public List<Category> findByDate(LocalDate targetDate) {
+        // DB에서 한번에 해당 날짜의 일반 카테고리를 조회
+        return categoryRepository.findByDate(targetDate);
+    }
+
+    /**
+     * 해당 카테고리에 속하는 모든 승인된 그룹 멤버 조회
+     *
+     * @param category 조회할 카테고리
+     * @return 해당 카테고리에 속하는 모든 승인된 그룹 멤버 리스트
+     */
+    @Override
+    public List<GroupMember> findAcceptedMembersByCategory(Category category) {
+        return groupMemberRepository.findAllByCategoryAndStatus(category, GroupInvitationStatus.ACCEPTED);
     }
 
 }

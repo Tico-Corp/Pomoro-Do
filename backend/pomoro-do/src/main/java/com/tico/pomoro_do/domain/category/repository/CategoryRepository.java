@@ -14,4 +14,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findAllByHostAndTypeAndDate(User host, CategoryType type, LocalDate date);
 
     Optional<Category> findById(Long categoryId);
+
+    List<Category> findByDate(LocalDate date);
 }

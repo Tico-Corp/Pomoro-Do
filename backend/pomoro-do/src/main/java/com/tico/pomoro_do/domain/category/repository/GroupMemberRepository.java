@@ -28,5 +28,4 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
 
     List<GroupMember> findAllByCategoryAndStatus(Category category, GroupInvitationStatus status);
 
-
 }
