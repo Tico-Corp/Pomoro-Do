@@ -41,3 +41,5 @@ const val IC_TIMELINE_MORE_INFO = "ic_timeline_more_info"
 const val IC_ALARM_OPTION_SOUND = "ic_alarm_option_sound"
 const val IC_ALARM_OPTION_VIBRATE = "ic_alarm_option_vibrate"
 const val IC_ALARM_OPTION_MUTE = "ic_alarm_option_mute"
+
+const val IC_SEARCH = "ic_search"

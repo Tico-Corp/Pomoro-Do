@@ -29,6 +29,7 @@ import com.tico.pomorodo.ui.iconpack.darkiconpack.IcGroupSelectedUncheckedDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcMoreInfoDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcMuteDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcOkDark
+import com.tico.pomorodo.ui.iconpack.darkiconpack.IcSearchDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcSoundDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcTimelineMoreDark
 import com.tico.pomorodo.ui.iconpack.darkiconpack.IcTodoCheckedDark
@@ -77,6 +78,7 @@ object DarkIconPack {
             IC_ALARM_OPTION_SOUND to IcSoundDark,
             IC_ALARM_OPTION_VIBRATE to IcVibrateDark,
             IC_ALARM_OPTION_MUTE to IcMuteDark,
+            IC_SEARCH to IcSearchDark,
         )
     }
 
