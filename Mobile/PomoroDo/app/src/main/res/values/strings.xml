@@ -199,6 +199,11 @@
     // follow
     <string name="content_ic_add_follower">팔로워 추가 버튼</string>
 
+    // follow
+    <string name="title_add_following">팔로우 추가</string>
+    <string name="content_ic_search">검색 아이콘</string>
+
+
     // common
     <string name="content_next">다음</string>
     <string name="content_cancel">취소</string>

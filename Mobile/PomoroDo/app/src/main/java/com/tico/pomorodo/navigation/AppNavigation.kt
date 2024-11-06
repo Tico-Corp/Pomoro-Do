@@ -15,6 +15,8 @@ import com.tico.pomorodo.ui.category.view.AddCategoryScreenRoute
 import com.tico.pomorodo.ui.category.view.CategoryScreenRoute
 import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
 import com.tico.pomorodo.ui.category.view.InfoCategoryScreenRoute
+import com.tico.pomorodo.ui.follow.view.AddFollowerScreen
+import com.tico.pomorodo.ui.follow.view.FollowListScreen
 import com.tico.pomorodo.ui.history.view.HistoryRoute
 import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
@@ -77,6 +79,9 @@ fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination
 fun NavController.navigateToAppThemeScreen(appThemeMode: String) =
     navigate("${MainNavigationDestination.APP_THEME.name}/$appThemeMode")
 
+fun NavController.navigateToAddFollowerScreen() =
+    navigate(MainNavigationDestination.ADD_FOLLOWER.name)
+
 
 // home navigation - composable route
 fun NavGraphBuilder.timerScreen(
@@ -102,9 +107,9 @@ fun NavGraphBuilder.todoScreen(
     }
 }
 
-fun NavGraphBuilder.followScreen() {
+fun NavGraphBuilder.followScreen(navigateToAddFollowerScreen: () -> Unit) {
     composable(route = BottomNavigationDestination.FOLLOW.name) {
-        com.tico.pomorodo.ui.follow.view.FollowListScreen()
+        FollowListScreen(navigateToAddFollowerScreen)
     }
 }
 
@@ -163,7 +168,8 @@ fun NavGraphBuilder.homeScreen(
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     navigateToModifyProfile: () -> Unit,
-    navigateToSettingScreen: () -> Unit
+    navigateToSettingScreen: () -> Unit,
+    navigateToAddFollowerScreen: () -> Unit
 ) {
     composable(route = MainNavigationDestination.HOME.name) {
         HomeScreen(
@@ -173,7 +179,8 @@ fun NavGraphBuilder.homeScreen(
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,
             navigateToModifyProfile = navigateToModifyProfile,
-            navigateToSettingScreen = navigateToSettingScreen
+            navigateToSettingScreen = navigateToSettingScreen,
+            navigateToAddFollowerScreen = navigateToAddFollowerScreen,
         )
     }
 }
@@ -325,5 +332,11 @@ fun NavGraphBuilder.appThemeScreen(popBackStack: () -> Unit) {
             initialSelectedMode = appThemeMode,
             popBackStack = { popBackStack() }
         )
+    }
+}
+
+fun NavGraphBuilder.addFollowerScreen(popBackToFollowScreen: () -> Unit) {
+    composable(route = MainNavigationDestination.ADD_FOLLOWER.name) {
+        AddFollowerScreen(popBackToFollowScreen)
     }
 }
