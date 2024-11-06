@@ -29,6 +29,7 @@ import com.tico.pomorodo.ui.iconpack.lighticonpack.IcGroupSelectedUncheckedLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcMoreInfoLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcMuteLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcOkLight
+import com.tico.pomorodo.ui.iconpack.lighticonpack.IcSearchLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcSoundLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTimelineMoreLight
 import com.tico.pomorodo.ui.iconpack.lighticonpack.IcTodoCheckedLight
@@ -77,6 +78,7 @@ object LightIconPack {
             IC_ALARM_OPTION_SOUND to IcSoundLight,
             IC_ALARM_OPTION_VIBRATE to IcVibrateLight,
             IC_ALARM_OPTION_MUTE to IcMuteLight,
+            IC_SEARCH to IcSearchLight,
         )
     }
 

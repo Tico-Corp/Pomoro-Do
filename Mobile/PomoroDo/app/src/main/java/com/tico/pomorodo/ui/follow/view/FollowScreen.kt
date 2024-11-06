@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -52,9 +51,8 @@ import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun FollowListScreen() {
+fun FollowListScreen(navigateToAddFollowerScreen: () -> Unit) {
     val followViewModel: FollowViewModel = hiltViewModel()
     val followerList by followViewModel.followerList.collectAsState()
     val followingList by followViewModel.followingList.collectAsState()
@@ -69,7 +67,7 @@ fun FollowListScreen() {
             title = stringResource(R.string.title_follow),
             iconString = IC_ADD_CATEGORY,
             iconDescriptionId = R.string.content_ic_add_follower,
-            onClickedListener = { /*TODO: top app bar - pop back stack*/ },
+            onClickedListener = navigateToAddFollowerScreen,
             top = 24,
             bottom = 14,
             start = 16,

@@ -52,4 +52,6 @@ enum class MainNavigationDestination {
 
     SETTING,
     APP_THEME,
+
+    ADD_FOLLOWER,
 }
