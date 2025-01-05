@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.domain.user.entity;
+package com.tico.pomoro_do.domain.auth.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,15 +6,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
-@Table(name = "refresh")
+@Table(name = "refresh_token")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Refresh {
+public class RefreshToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "refresh_id")
+    @Column(name = "token_id")
     private Long id;
 
     private String username;
@@ -22,17 +24,18 @@ public class Refresh {
     @Column(name = "refresh_token")
     private String refreshToken;
 
-    private String expiration;
-
     @Column(name = "device_id")
     private String deviceId;
 
+    @Column(name = "expires_at", nullable = false)
+    private LocalDateTime expiresAt;
     // 생성자
+
     @Builder
-    public Refresh(String username, String refreshToken, String expiration, String deviceId) {
+    public RefreshToken(String username, String refreshToken, String deviceId, LocalDateTime expiresAt) {
         this.username = username;
         this.refreshToken = refreshToken;
-        this.expiration = expiration;
         this.deviceId = deviceId;
+        this.expiresAt = expiresAt;
     }
 }
