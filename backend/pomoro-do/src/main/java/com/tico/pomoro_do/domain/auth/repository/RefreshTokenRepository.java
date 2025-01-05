@@ -1,16 +1,15 @@
-package com.tico.pomoro_do.domain.user.repository;
+package com.tico.pomoro_do.domain.auth.repository;
 
-import com.tico.pomoro_do.domain.user.entity.Refresh;
+import com.tico.pomoro_do.domain.auth.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-public interface RefreshRepository extends JpaRepository<Refresh, Long> {
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
     // 해당 리프레쉬 토큰의 존재 여부를 판단하는 메소드
-    Optional<Refresh> findByDeviceId(String deviceId);
-    Optional<Refresh> findByRefreshToken(String refreshToken);
+    Optional<RefreshToken> findByDeviceId(String deviceId);
+    Optional<RefreshToken> findByRefreshToken(String refreshToken);
 
     // 해당 리프레쉬 토큰을 삭제하는 메소드
     void deleteByRefreshToken(String refreshToken);

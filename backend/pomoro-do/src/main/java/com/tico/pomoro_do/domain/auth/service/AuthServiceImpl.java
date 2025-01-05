@@ -1,20 +1,20 @@
-package com.tico.pomoro_do.domain.user.service;
+package com.tico.pomoro_do.domain.auth.service;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
+import com.tico.pomoro_do.domain.auth.repository.RefreshTokenRepository;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
-import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
-import com.tico.pomoro_do.domain.user.entity.Refresh;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.domain.user.repository.RefreshRepository;
 import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
+import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.common.constants.CategoryConstants;
@@ -43,30 +43,17 @@ public class AuthServiceImpl implements AuthService {
     @Value("${google.clientId}")
     private String clientId;
 
-    @Value("${jwt.access-expiration}")
-    private long accessExpiration;
-
-    @Value("${jwt.refresh-expiration}")
-    private long refreshExpiration;
-
+    //jwt관리 및 검증 utill
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
-    private final RefreshRepository refreshRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final TokenService tokenService;
     private final ImageService imageService;
     private final CategoryService categoryService;
 
 
-    /**
-     * 구글 ID 토큰으로 무결성 검증
-     *
-     * @param idToken 구글 ID 토큰
-     * @return 검증된 GoogleUserInfoDTO
-     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
-     * @throws IOException IO 예외
-     * @throws CustomException 구글 ID 토큰이 유효하지 않은 경우 예외
-     */
+    // 구글 ID 토큰 무결성 검사
     @Override
     public GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException {
         NetHttpTransport transport = new NetHttpTransport();
@@ -90,70 +77,26 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    /**
-     * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
-     *
-     * @param username 사용자 이메일
-     * @param role 사용자 역할
-     * @param deviceId 기기 고유 번호
-     * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
-     */
-    @Override
-    public TokenDTO generateAndStoreTokens(String username, String role, String deviceId) {
-        // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제
-        refreshRepository.deleteByDeviceId(deviceId);
-
-        // 액세스 토큰 생성
-        String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); // 60분
-        // 리프레시 토큰 생성
-        String refreshToken = jwtUtil.createJwt(TokenType.REFRESH.name(), username, role, refreshExpiration); // 24시간
-        // 리프레시 토큰을 DB에 저장
-        tokenService.addRefreshEntity(username, refreshToken, refreshExpiration, deviceId);
-
-        return new TokenDTO(accessToken, refreshToken);
-    }
-
-    /**
-     * 구글 ID 토큰으로 로그인 처리
-     *
-     * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
-     * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
-     * @return TokenDTO를 포함하는 객체
-     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
-     * @throws IOException IO 예외
-     * @throws CustomException 구글 ID 토큰이 유효하지 않거나 등록되지 않은 사용자인 경우 예외
-     */
+    // 구글 로그인
     @Override
     @Transactional
-    public TokenDTO googleLogin(String idTokenHeader, String deviceId) throws GeneralSecurityException, IOException {
+    public TokenResponse googleLogin(String idTokenHeader, String deviceId) throws GeneralSecurityException, IOException {
         // deviceId 유효성 검사
         ValidationUtils.validateDeviceId(deviceId);
         // 토큰 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 토큰 유효성 검증
         GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
-        // 회원 가입 여부 판단
+        // 회원 가입 여부 판단 -> 회원 가입 x -> 에러 발생
         validateUserExists(userInfo.getEmail());
-
-        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
+        // 회원 가입되어 있으면 토큰 발급
+        return tokenService.createAuthTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
 
-    /**
-     * 구글 ID 토큰으로 회원가입 처리
-     *
-     * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
-     * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
-     * @param nickname 닉네임
-     * @param profileImage 프로필 이미지
-     * @param imageType 프로필 이미지 타입
-     * @return TokenDTO를 포함하는 객체
-     * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
-     * @throws IOException IO 예외
-     * @throws CustomException 구글 ID 토큰이 유효하지 않거나 이미 등록된 사용자인 경우 예외
-     */
+    // 구글 회원가입
     @Override
     @Transactional
-    public TokenDTO googleJoin(String idTokenHeader, String deviceId, String nickname, MultipartFile profileImage, ProfileImageType imageType) throws GeneralSecurityException, IOException {
+    public TokenResponse googleJoin(String idTokenHeader, String deviceId, String nickname, MultipartFile profileImage, ProfileImageType imageType) throws GeneralSecurityException, IOException {
 
         // 입력값 유효성 검사
         joinValidateInputs(deviceId, nickname);
@@ -170,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
         // 사용자 정보 저장
         User user = createUser(userInfo.getEmail(), nickname, profileImageUrl, UserRole.USER);
         // 소셜 로그인 정보 저장
-        saveSocialLogin(user, userInfo.getUserId());
+        createSocialLogin(user, userInfo.getUserId());
 
         // 기본 카테고리 생성
         Category category = categoryService.createNewCategory(
@@ -183,7 +126,7 @@ public class AuthServiceImpl implements AuthService {
         );
 
         log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
-        return generateAndStoreTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
+        return tokenService.createAuthTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
 
     /**
@@ -232,26 +175,15 @@ public class AuthServiceImpl implements AuthService {
      *         DEFAULT 유형인 경우 null을 반환합니다.
      */
     private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfoDTO userInfo) {
-        switch (imageType) {
-            case FILE:
-                return imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
-            case GOOGLE:
-                return userInfo.getPictureUrl();
-            // DEFAULT와 default를 통합하여 간결하게 처리
-            default:
-                return null;
-        }
+        return switch (imageType) {
+            case FILE -> imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
+            case GOOGLE -> userInfo.getPictureUrl();
+            // DEFAULT 타입일 때 default로 통합하여 처리
+            default -> null;
+        };
     }
 
-    /**
-     * 새 사용자 생성
-     *
-     * @param username 사용자 이메일
-     * @param nickname 사용자 닉네임
-     * @param profileImageUrl 사용자 프로필 이미지 URL
-     * @param role 사용자 역할
-     * @return 생성된 User 객체
-     */
+    // User 생성
     @Override
     public User createUser(String username, String nickname, String profileImageUrl, UserRole role) {
 
@@ -270,62 +202,35 @@ public class AuthServiceImpl implements AuthService {
     /**
      * 소셜 로그인 정보를 저장합니다.
      *
-     * @param user     사용자 객체
-     * @param socialId 소셜 로그인 ID
+     * @param user       사용자 객체
+     * @param providerId 소셜 로그인 제공자 ID
      */
-    private void saveSocialLogin(User user, String socialId) {
-
+    private void createSocialLogin(User user, String providerId) {
+        // 추후에 소셜 로그인이 추가된다면, provider을 변수로 받는다.
         SocialLogin socialLogin = SocialLogin.builder()
                 .user(user)
                 .provider(SocialProvider.GOOGLE)
-                .socialId(socialId)
+                .providerId(providerId)
                 .build();
 
         socialLoginRepository.save(socialLogin);
 
-        log.info("소셜 로그인 정보 저장 성공: 소셜 ID = {}", socialId);
+        log.info("소셜 로그인 정보 저장 성공: 소셜 ID = {}", providerId);
     }
 
-    /**
-     * Refresh 토큰을 사용하여 Access 토큰 재발급
-     *
-     * @param deviceId 기기 고유 번호
-     * @param refreshHeader 리프레시 토큰
-     * @return 새 Access 토큰을 포함하는 TokenDTO
-     */
+    // Refresh 토큰으로 Access토큰 발급
     @Transactional
     @Override
-    public TokenDTO reissueToken(String deviceId, String refreshHeader) {
-        // 헤더를 검증합니다.
-        String refresh = jwtUtil.extractToken(refreshHeader, TokenType.REFRESH);
+    public TokenResponse reissueToken(String deviceId, String refreshHeader) {
+        // 검증 로직
+        String refresh = tokenService.validateAndGetRefreshToken(refreshHeader, deviceId);
 
-        // 리프레시 토큰을 검증합니다.
-        jwtUtil.validateToken(refresh, TokenType.REFRESH);
-
-        // DB에서 리프레시 토큰에 해당하는 리프레시 토큰 정보를 가져옵니다.
-        Refresh refreshEntity = tokenService.getRefreshByRefreshToken(refresh);
-
-        // DB에 저장된 deviceId와 요청된 deviceId이 일치하는지 확인합니다.
-        if (!refreshEntity.getDeviceId().equals(deviceId)) {
-            log.error("Device ID가 DB에 존재하지 않음: deviceId = {}", deviceId);
-            throw new CustomException(ErrorCode.DEVICE_ID_MISMATCH);
-        }
-
+        // 생성 로직
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
         String username = jwtUtil.getUsername(refresh);
         String role = jwtUtil.getRole(refresh);
+        // 토큰 재발행
+        return tokenService.createAuthTokens(username, role, deviceId);
 
-        // 새로운 액세스 및 리프레시 토큰을 생성합니다.
-        String newAccess = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); // 60분
-        String newRefresh = jwtUtil.createJwt(TokenType.REFRESH.name(), username, role, refreshExpiration);
-
-        // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제하고,
-        // 새로운 리프레시 토큰을 저장합니다.
-        refreshRepository.deleteByDeviceId(deviceId);
-        tokenService.addRefreshEntity(username, newRefresh, refreshExpiration, deviceId);
-
-        // 새로운 액세스 토큰을 DTO로 반환합니다.
-        log.info("Access 토큰 및 Refresh 토큰 재발급 완료: newAccessToken = {}, newRefreshToken = {}", newAccess, newRefresh);
-        return new TokenDTO(newAccess, newRefresh);
     }
 }

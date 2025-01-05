@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
+import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
@@ -64,8 +65,10 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void deleteUser(String username, String deviceId, String refreshHeader) {
+        // 회원 토큰 검증
+        tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, username);
         // 해당 회원의 모든 리프레시 토큰 삭제
-        tokenService.deleteAllRefreshTokensByUsername(username,deviceId,refreshHeader);
+        tokenService.deleteAllRefreshTokensByUsername(username);
         // 해당 유저 삭제
         userRepository.deleteByUsername(username);
     }

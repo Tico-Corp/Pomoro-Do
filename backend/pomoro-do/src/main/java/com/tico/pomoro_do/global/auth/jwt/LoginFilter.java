@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.global.auth.jwt;
 
-import com.tico.pomoro_do.domain.user.service.TokenService;
+import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
@@ -75,7 +75,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //Refresh 토큰 저장
         String deviceId = request.getHeader("Device-ID");
-        tokenService.addRefreshEntity(username, refresh, refreshExpiration, deviceId);
+        tokenService.createRefreshToken(username, refresh, refreshExpiration, deviceId);
 
         //응답 설정
         //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)

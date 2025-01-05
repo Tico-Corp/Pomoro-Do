@@ -1,7 +1,9 @@
 package com.tico.pomoro_do.domain.user.service;
 
+import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
+import com.tico.pomoro_do.domain.auth.service.AuthService;
+import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.domain.user.dto.request.AdminDTO;
-import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.code.ErrorCode;
@@ -25,6 +27,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final UserRepository userRepository;
     private final AuthService authService;
+    private final TokenService tokenService;
     private final ImageService imageService;
 
     private static final String ADMIN_EMAIL_DOMAIN = "pomorodo.shop";
@@ -39,7 +42,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public TokenDTO adminJoin(AdminDTO adminDTO, MultipartFile profileImage) {
+    public TokenResponse adminJoin(AdminDTO adminDTO, MultipartFile profileImage) {
         String username = adminDTO.getUsername();
         String nickname = adminDTO.getNickname();
 
@@ -66,7 +69,7 @@ public class AdminServiceImpl implements AdminService {
         // 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
 
-        return authService.generateAndStoreTokens(username, String.valueOf(UserRole.ADMIN), deviceId);
+        return tokenService.createAuthTokens(username, String.valueOf(UserRole.ADMIN), deviceId);
     }
 
     /**
@@ -78,7 +81,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public TokenDTO adminLogin(AdminDTO adminDTO){
+    public TokenResponse adminLogin(AdminDTO adminDTO){
         String username = adminDTO.getUsername();
         String nickname = adminDTO.getNickname();
 
@@ -92,7 +95,7 @@ public class AdminServiceImpl implements AdminService {
         String role = String.valueOf(UserRole.ADMIN);
         // 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
-        return authService.generateAndStoreTokens(username, role, deviceId);
+        return tokenService.createAuthTokens(username, role, deviceId);
     }
 
     /**

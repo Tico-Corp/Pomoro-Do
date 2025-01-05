@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.user.controller;
 
+import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.user.dto.request.AdminDTO;
-import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
 import com.tico.pomoro_do.domain.user.service.AdminService;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
@@ -49,13 +49,13 @@ public class AdminController {
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminJoin(
+    public ResponseEntity<SuccessResponseDTO<TokenResponse>> adminJoin(
             @Valid @RequestPart AdminDTO adminDTO,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
 
-        TokenDTO jwtResponse = adminService.adminJoin(adminDTO, profileImage);
-        SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
+        TokenResponse jwtResponse = adminService.adminJoin(adminDTO, profileImage);
+        SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
@@ -82,12 +82,12 @@ public class AdminController {
             @ApiResponse(responseCode = "403", description = "관리자 권한이 없음")
     })
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponseDTO<TokenDTO>> adminLogin(
+    public ResponseEntity<SuccessResponseDTO<TokenResponse>> adminLogin(
             @Valid @RequestBody AdminDTO request
     ) {
         log.info("관리자 로그인 요청: {}", request.getUsername());
-        TokenDTO jwtResponse = adminService.adminLogin(request);
-        SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
+        TokenResponse jwtResponse = adminService.adminLogin(request);
+        SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                 .status(SuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())
                 .data(jwtResponse)
