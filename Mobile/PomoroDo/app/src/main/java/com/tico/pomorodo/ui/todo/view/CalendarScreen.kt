@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -26,12 +25,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CalendarFocusState
 import com.tico.pomorodo.data.model.DayOfWeeks
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.atEndOfMonth
+import com.tico.pomorodo.ui.common.view.atStartOfMonth
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
+import com.tico.pomorodo.ui.common.view.daysInMonth
+import com.tico.pomorodo.ui.common.view.weekOfMonth
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcAllCheckTodoState
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcCalendarChecked
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcFavoriteFilled
@@ -41,17 +45,99 @@ import com.tico.pomorodo.ui.theme.IC_CALENDAR_DATE_RED
 import com.tico.pomorodo.ui.theme.IC_CALENDAR_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAdjusters
-import java.time.temporal.WeekFields
-import java.util.Locale
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+import kotlin.math.ceil
+
+@Composable
+fun TodoCalendarScreen(
+    selectedDate: LocalDate,
+    onDateSelected: (LocalDate) -> Unit,
+    monthlyLikedNumber: Int,
+    monthlyFullFocusNumber: Int,
+    monthlyAllCheckedNumber: Int,
+    calendarDates: List<CalendarDate>
+) {
+    var showMonthly by remember { mutableStateOf(false) }
+
+    val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+
+    var currentMonth by remember {
+        mutableStateOf(LocalDate(currentDate.year, currentDate.month, 1))
+    }
+    val calendarTitle = if (showMonthly) {
+        stringResource(
+            id = R.string.content_calendar_monthly_title,
+            selectedDate.year,
+            selectedDate.monthNumber
+        )
+    } else {
+        stringResource(
+            id = R.string.content_calendar_weekly_title,
+            selectedDate.year,
+            selectedDate.monthNumber,
+            selectedDate.weekOfMonth()
+        )
+    }
+    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        CalendarStatus(
+            title = calendarTitle,
+            onBackButtonClicked = {
+                if (showMonthly) {
+                    currentMonth = currentMonth.minus(DatePeriod(months = 1))
+                    onDateSelected(currentMonth.atEndOfMonth())
+                } else {
+                    onDateSelected(selectedDate.minus(DatePeriod(days = 7)))
+                }
+            },
+            onFrontButtonClicked = {
+                if (showMonthly) {
+                    currentMonth = currentMonth.plus(DatePeriod(months = 1))
+                    onDateSelected(currentMonth.atStartOfMonth())
+                } else {
+                    onDateSelected(selectedDate.plus(DatePeriod(days = 7)))
+                }
+            },
+            onDropDownClicked = { showMonthly = !showMonthly },
+            onTitleDateClicked = {
+                currentMonth = LocalDate(currentDate.year, currentDate.month, 1)
+                onDateSelected(currentDate)
+            },
+            monthlyLikedNumber = monthlyLikedNumber,
+            monthlyFullFocusNumber = monthlyFullFocusNumber,
+            monthlyAllCheckedNumber = monthlyAllCheckedNumber
+        )
+        CalendarDayOfWeek()
+
+        if (showMonthly) {
+            MonthlyCalendar(
+                currentMonth = currentMonth,
+                selectedDate = selectedDate,
+                today = currentDate,
+                onDateSelected = onDateSelected,
+                calendarDates = calendarDates
+            )
+        } else {
+            WeeklyCalendar(
+                selectedDate = selectedDate,
+                today = currentDate,
+                onDateSelected = onDateSelected,
+                calendarDates = calendarDates
+            )
+        }
+    }
+}
 
 @Composable
 fun CalendarStatus(
-    titleDate: String,
+    title: String,
     onBackButtonClicked: () -> Unit,
     onFrontButtonClicked: () -> Unit,
     onDropDownClicked: () -> Unit,
@@ -70,7 +156,7 @@ fun CalendarStatus(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             CalendarDate(
-                titleDate = titleDate,
+                title = title,
                 onBackButtonClicked = onBackButtonClicked,
                 onFrontButtonClicked = onFrontButtonClicked,
                 onTitleDateClicked = onTitleDateClicked
@@ -93,10 +179,10 @@ fun CalendarStatus(
 
 @Composable
 fun CalendarDate(
+    title: String,
     onBackButtonClicked: () -> Unit,
     onFrontButtonClicked: () -> Unit,
-    titleDate: String,
-    onTitleDateClicked: () -> Unit,
+    onTitleDateClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier,
@@ -112,7 +198,7 @@ fun CalendarDate(
         )
         SimpleText(
             modifier = Modifier.clickableWithoutRipple { onTitleDateClicked() },
-            text = titleDate,
+            text = title,
             style = PomoroDoTheme.typography.laundryGothicBold12,
             color = PomoroDoTheme.colorScheme.onBackground
         )
@@ -128,9 +214,9 @@ fun CalendarDate(
 
 @Composable
 fun CalendarTotals(
+    monthlyLikedNumber: Int,
     monthlyFullFocusNumber: Int,
-    monthlyAllCheckedNumber: Int,
-    monthlyLikedNumber: Int
+    monthlyAllCheckedNumber: Int
 ) {
     Row(
         modifier = Modifier,
@@ -195,59 +281,28 @@ fun CalendarDayOfWeek() {
 }
 
 @Composable
-fun MonthlyCalendar(
-    currentMonth: YearMonth,
-    selectedDate: LocalDate,
-    today: LocalDate,
-    onDateSelected: (LocalDate) -> Unit
-) {
-    // 이번달 날짜 개수
-    val daysInMonth = currentMonth.lengthOfMonth()
-    // 0(sun) ~ 6(sat)
-    val firstDayOfMonth = currentMonth.atDay(1).dayOfWeek.value % 7
-
-    val totalWeeks = (firstDayOfMonth + daysInMonth + 6) / 7
-    for (week in 0 until totalWeeks) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
-            for (dayOfWeek in 0 until 7) {
-                val day = week * 7 + dayOfWeek - firstDayOfMonth + 1
-                if (day in 1..daysInMonth) {
-                    CalendarDayItem(
-                        day = day,
-                        date = currentMonth.atDay(day),
-                        selectedDate = selectedDate,
-                        today = today,
-                        onDateSelected = onDateSelected
-                    )
-                } else {
-                    Spacer(modifier = Modifier.size(36.dp))
-                }
-            }
-        }
-    }
-}
-
-@Composable
 fun WeeklyCalendar(
     selectedDate: LocalDate,
     today: LocalDate,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    calendarDates: List<CalendarDate>
 ) {
-    val startOfWeek = selectedDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-    val daysInWeek = (0..6).map { startOfWeek.plusDays(it.toLong()) }
+    val startOfWeek =
+        selectedDate.minus((selectedDate.dayOfWeek.isoDayNumber % 7).toLong(), DateTimeUnit.DAY)
+    val daysInWeek = (0..6).map { startOfWeek.plus(it, DateTimeUnit.DAY) }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Absolute.SpaceAround
+        horizontalArrangement = Arrangement.SpaceAround
     ) {
         for (date in daysInWeek) {
             CalendarDayItem(
-                day = date.dayOfMonth,
                 date = date,
                 selectedDate = selectedDate,
                 today = today,
-                onDateSelected = onDateSelected
+                onDateSelected = onDateSelected,
+                calendarDate = calendarDates.find { it.date == date } ?: CalendarDate(date)
             )
         }
     }
@@ -255,13 +310,12 @@ fun WeeklyCalendar(
 
 @Composable
 fun CalendarDayItem(
-    day: Int = 1,
-    remainedNumber: Int = 3,
     date: LocalDate,
     selectedDate: LocalDate,
     today: LocalDate,
     focusState: CalendarFocusState = CalendarFocusState.WHITE,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    calendarDate: CalendarDate
 ) {
     val isSelected = date == selectedDate
     val isToday = date == today
@@ -281,20 +335,22 @@ fun CalendarDayItem(
                 imageVector = requireNotNull(PomoroDoTheme.iconPack[focusState.iconString]),
                 contentDescriptionId = focusState.iconTextId
             )
-            if (remainedNumber > 0) {
+            if (calendarDate.remainedTodoCount > 0) {
                 SimpleText(
                     modifier = Modifier.offset(y = 4.dp),
-                    text = remainedNumber.toString(),
+                    text = calendarDate.remainedTodoCount.toString(),
                     style = PomoroDoTheme.typography.singleDayRegular18,
                     color = Color.Black
                 )
             } else {
-                SimpleIcon(
-                    modifier = Modifier.offset(y = 4.dp),
-                    size = 16,
-                    imageVector = IconPack.IcCalendarChecked,
-                    contentDescriptionId = focusState.iconTextId
-                )
+                if (calendarDate.totalCount > 0) {
+                    SimpleIcon(
+                        modifier = Modifier.offset(y = 4.dp),
+                        size = 16,
+                        imageVector = IconPack.IcCalendarChecked,
+                        contentDescriptionId = focusState.iconTextId
+                    )
+                }
             }
         }
         Box(
@@ -321,7 +377,7 @@ fun CalendarDayItem(
             SimpleText(
                 modifier = Modifier
                     .align(Alignment.Center),
-                text = day.toString(),
+                text = date.dayOfMonth.toString(),
                 style = PomoroDoTheme.typography.singleDayRegular12,
                 color = if (isSelected) {
                     PomoroDoTheme.colorScheme.background
@@ -335,74 +391,47 @@ fun CalendarDayItem(
     }
 }
 
+
 @Composable
-fun TodoCalendarScreen() {
-    var currentMonth by remember { mutableStateOf(YearMonth.now()) }
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var showMonthly by remember { mutableStateOf(true) }
-    val monthlyLikedNumber by remember { mutableIntStateOf(3) }
-    val monthlyFullFocusNumber by remember { mutableIntStateOf(3) }
-    val monthlyAllCheckedNumber by remember { mutableIntStateOf(3) }
-    val today = LocalDate.now()
+fun MonthlyCalendar(
+    currentMonth: LocalDate,
+    selectedDate: LocalDate,
+    today: LocalDate,
+    onDateSelected: (LocalDate) -> Unit,
+    calendarDates: List<CalendarDate>
+) {
+    val daysInMonth = currentMonth.daysInMonth()
+    val firstDayOfMonth = currentMonth.dayOfWeek.isoDayNumber % 7
+    val totalWeeks = ceil((firstDayOfMonth + daysInMonth) / 7.0).toInt()
 
-    val year = selectedDate.year
-    val month = selectedDate.month.value
-    val weekOfMonth = selectedDate.get(WeekFields.of(Locale.getDefault()).weekOfMonth())
-
-    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        CalendarStatus(
-            titleDate = if (showMonthly) {
-                currentMonth.format(DateTimeFormatter.ofPattern("yyyy년 M월"))
-            } else {
-                stringResource(
-                    id = R.string.content_calendar_weekly_title,
-                    year,
-                    month,
-                    weekOfMonth
-                )
-            },
-            onBackButtonClicked = {
-                if (showMonthly) {
-                    currentMonth = currentMonth.minusMonths(1)
-                    selectedDate = currentMonth.atEndOfMonth()
+    for (week in 0 until totalWeeks) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround) {
+            for (dayOfWeek in 0 until 7) {
+                val day = week * 7 + dayOfWeek - firstDayOfMonth + 1
+                if (day in 1..daysInMonth) {
+                    CalendarDayItem(
+                        date = currentMonth.plus(DatePeriod(days = day - 1)),
+                        selectedDate = selectedDate,
+                        today = today,
+                        onDateSelected = onDateSelected,
+                        calendarDate = calendarDates.find {
+                            it.date == LocalDate(
+                                currentMonth.year,
+                                currentMonth.monthNumber,
+                                day
+                            )
+                        } ?: CalendarDate(
+                            LocalDate(
+                                currentMonth.year,
+                                currentMonth.monthNumber,
+                                day
+                            )
+                        )
+                    )
                 } else {
-                    selectedDate = selectedDate.minusWeeks(1)
-                    currentMonth = YearMonth.of(selectedDate.year, selectedDate.month)
+                    Spacer(modifier = Modifier.size(36.dp))
                 }
-            },
-            onFrontButtonClicked = {
-                if (showMonthly) {
-                    currentMonth = currentMonth.plusMonths(1)
-                    selectedDate = currentMonth.atDay(1)
-                } else {
-                    selectedDate = selectedDate.plusWeeks(1)
-                    currentMonth = YearMonth.of(selectedDate.year, selectedDate.month)
-                }
-            },
-            onDropDownClicked = { showMonthly = !showMonthly },
-            onTitleDateClicked = {
-                currentMonth = YearMonth.now()
-                selectedDate = LocalDate.now()
-            },
-            monthlyLikedNumber = monthlyLikedNumber,
-            monthlyFullFocusNumber = monthlyFullFocusNumber,
-            monthlyAllCheckedNumber = monthlyAllCheckedNumber
-        )
-        CalendarDayOfWeek()
-
-        if (showMonthly) {
-            MonthlyCalendar(
-                currentMonth = currentMonth,
-                selectedDate = selectedDate,
-                today = today,
-                onDateSelected = { selectedDate = it }
-            )
-        } else {
-            WeeklyCalendar(
-                selectedDate = selectedDate,
-                today = today,
-                onDateSelected = { selectedDate = it }
-            )
+            }
         }
     }
 }
