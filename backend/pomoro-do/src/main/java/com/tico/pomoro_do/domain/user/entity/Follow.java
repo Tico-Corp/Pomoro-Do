@@ -19,19 +19,19 @@ public class Follow {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
+    @JoinColumn(name = "follower_id", nullable = false)
+    private User follower; // 팔로우 요청을 한 사용자 (보낸사람)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;
+    @JoinColumn(name = "following_id", nullable = false)
+    private User following; // 팔로우 대상 사용자
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder
-    public Follow(User sender, User receiver) {
-        this.sender = sender;
-        this.receiver = receiver;
+    public Follow(User follower, User following) {
+        this.follower = follower;
+        this.following = following;
     }
 }

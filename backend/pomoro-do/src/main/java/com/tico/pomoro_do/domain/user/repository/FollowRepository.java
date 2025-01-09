@@ -9,20 +9,21 @@ import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
-    // 팔로우 중인지 체크
-    boolean existsBySenderIdAndReceiverId(Long currentUserId, Long targetUserId);
+    // 특정 사용자를 팔로우 중인지 체크
+    boolean existsByFollowerIdAndFollowingId(Long currentUserId, Long targetUserId);
 
     // 내가 팔로우하고 있는 사용자 목록을 조회
-    List<Follow> findBySender(User sender);
+    List<Follow> findByFollower(User follower);
+
     // 나를 팔로우하고 있는 사용자 목록을 조회
-    List<Follow> findByReceiver(User receiver);
+    List<Follow> findByFollowing(User following);
 
     // 내가 팔로우하는 사람의 수
-    int countBySender(User sender);
+    int countByFollower(User follower);
 
     // 나를 팔로우하는 사람의 수
-    int countByReceiver(User receiver);
+    int countByFollowing(User following);
 
     // 팔로우 엔티티 찾기
-    Optional<Follow> findBySenderIdAndReceiverId(Long currentUserId, Long targetUserId);
+    Optional<Follow> findByFollowerIdAndFollowingId(Long currentUserId, Long targetUserId);
 }
