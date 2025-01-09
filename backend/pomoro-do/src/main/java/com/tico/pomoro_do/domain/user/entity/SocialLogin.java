@@ -26,13 +26,13 @@ public class SocialLogin {
     @Column(nullable = false)
     private SocialProvider provider;
 
-    @Column(name = "social_id", nullable = false)
-    private String socialId;
+    @Column(name = "provider_id", nullable = false)
+    private String providerId;    // 소셜 로그인 제공자의 ID
 
     @Builder
-    public SocialLogin(User user, SocialProvider provider, String socialId) {
+    public SocialLogin(User user, SocialProvider provider, String providerId) {
         this.user = user;
         this.provider = provider;
-        this.socialId = socialId;
+        this.providerId = providerId;
     }
 }

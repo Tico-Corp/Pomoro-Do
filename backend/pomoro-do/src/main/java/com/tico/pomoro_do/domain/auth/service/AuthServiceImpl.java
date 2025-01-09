@@ -6,7 +6,6 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
-import com.tico.pomoro_do.domain.auth.repository.RefreshTokenRepository;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
@@ -47,7 +46,6 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final TokenService tokenService;
     private final ImageService imageService;
     private final CategoryService categoryService;
