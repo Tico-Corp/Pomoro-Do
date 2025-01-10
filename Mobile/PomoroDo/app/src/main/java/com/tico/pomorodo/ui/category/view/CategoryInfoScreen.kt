@@ -108,6 +108,7 @@ fun InfoCategoryScreenRoute(
                             sheetState = checkGroupMemberSheetState,
                             onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
                             memberList = it
+                            onClicked = {}
                         )
                     }
                 }

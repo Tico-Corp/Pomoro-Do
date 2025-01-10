@@ -110,10 +110,11 @@ fun ProfileHorizontal(
     size: Int,
     defaultProfileUri: String? = null,
     name: String,
-    textStyle: TextStyle
+    textStyle: TextStyle,
+    onClicked: () -> Unit = {}
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.clickableWithoutRipple { onClicked() },
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
