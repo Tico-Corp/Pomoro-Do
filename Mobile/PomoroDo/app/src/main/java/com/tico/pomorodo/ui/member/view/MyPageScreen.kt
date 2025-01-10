@@ -118,7 +118,7 @@ fun MyPageScreen(
 
 @Composable
 fun MyProfile(
-    profileUri: Uri?,
+    profileUri: String?,
     userName: String,
     followingCount: Int,
     followerCount: Int,
