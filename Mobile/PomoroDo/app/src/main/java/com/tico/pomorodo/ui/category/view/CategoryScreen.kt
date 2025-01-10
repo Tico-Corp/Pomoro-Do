@@ -68,7 +68,12 @@ fun CategoryScreen(
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(title = category.title, groupNumber = 0)
+                            CategoryTag(
+                                title = category.title,
+                                groupMemberCount = category.groupMemberCount,
+                                isAddButton = false,
+                                onAddClicked = { onCategoryClicked(category.id) }
+                            )
                         }
                     }
                 }
@@ -89,7 +94,12 @@ fun CategoryScreen(
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(title = category.title, groupNumber = 6)
+                            CategoryTag(
+                                title = category.title,
+                                groupMemberCount = category.groupMemberCount,
+                                isAddButton = false,
+                                onAddClicked = { onCategoryClicked(category.id) }
+                            )
                         }
                     }
                 }

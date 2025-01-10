@@ -1,107 +1,99 @@
 package com.tico.pomorodo.ui.todo.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.tico.pomorodo.data.local.datasource.DataSource
-import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.CalendarDate
+import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
-import com.tico.pomorodo.data.model.User
-import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
-import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
+import com.tico.pomorodo.ui.common.view.toTimeZoneOf5AM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class TodoViewModel @Inject constructor(
-    getAllTodoUseCase: GetAllTodoUseCase,
-    insertTodoUseCase: InsertTodoUseCase
-) : ViewModel() {
-    private var _selectedProfileIndex = MutableStateFlow(-1)
-    val selectedProfileIndex: StateFlow<Int>
-        get() = _selectedProfileIndex.asStateFlow()
+class TodoViewModel @Inject constructor() : ViewModel() {
 
-    private var _userList = MutableStateFlow(DataSource.userList)
-    val userList: StateFlow<List<User>>
-        get() = _userList.asStateFlow()
+    private var _categoryWithTodoItemList =
+        MutableStateFlow<List<CategoryWithTodoItem>>(emptyList())
+    val categoryWithTodoItemList: StateFlow<List<CategoryWithTodoItem>>
+        get() = _categoryWithTodoItemList.asStateFlow()
 
-    private var _categoryList = MutableStateFlow<List<Category>>(emptyList())
-    val categoryList: StateFlow<List<Category>>
-        get() = _categoryList.asStateFlow()
+    private var _selectedDate =
+        MutableStateFlow<LocalDate>(
+            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toTimeZoneOf5AM()
+        )
+    val selectedDate: StateFlow<LocalDate>
+        get() = _selectedDate.asStateFlow()
 
-    private var _todoMakeVisible = MutableStateFlow(false)
-    val todoMakeVisible: StateFlow<Boolean>
-        get() = _todoMakeVisible
+    private var _monthlyLikedNumber = MutableStateFlow<Int>(0)
+    val monthlyLikedNumber: StateFlow<Int>
+        get() = _monthlyLikedNumber.asStateFlow()
 
-    private var _selectedCategoryIndex = MutableStateFlow(-1)
-    val selectedCategoryIndex: StateFlow<Int>
-        get() = _selectedCategoryIndex
+    private var _monthlyFullFocusNumber = MutableStateFlow<Int>(0)
+    val monthlyFullFocusNumber: StateFlow<Int>
+        get() = _monthlyFullFocusNumber.asStateFlow()
 
-    private var _inputText = MutableStateFlow("")
-    val inputText: StateFlow<String>
-        get() = _inputText
+    private var _monthlyAllCheckedNumber = MutableStateFlow<Int>(0)
+    val monthlyAllCheckedNumber: StateFlow<Int>
+        get() = _monthlyAllCheckedNumber.asStateFlow()
 
-    fun setSelectedProfileIndex(index: Int) {
-        _selectedProfileIndex.value = index
+    private var _calendarDates = MutableStateFlow<List<CalendarDate>>(emptyList())
+    val calendarDates: StateFlow<List<CalendarDate>>
+        get() = _calendarDates.asStateFlow()
+
+    private var _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading: StateFlow<Boolean>
+        get() = _isLoading.asStateFlow()
+
+    init {
+        getCategoryWithTodoItems()
+        getCalendarDates()
     }
 
-    fun setSelectedCategoryIndex(index: Int) {
-        _selectedCategoryIndex.value = index
+    private fun getCalendarDates() {
+        // TODO: get calendarDate
     }
 
-    fun setTodoMakeVisible(value: Boolean) {
-        _todoMakeVisible.value = value
+    fun setSelectedDate(date: LocalDate) {
+        _selectedDate.value = date
     }
 
-    fun setInputText(text: String) {
-        _inputText.value = text
+    private fun getCategoryWithTodoItems() {
+        // TODO: get categoryWithTodo
     }
 
-    fun addNewTodoItem() {
-        _inputText.value = _inputText.value.trim()
-        if (validateTodoInput(inputText.value)) {
-            val newTodoData = TodoData(
-                id = 3,
-                title = inputText.value,
-                status = TodoState.UNCHECKED,
-                categoryId = 2,
-                completeGroupNumber = 0,
-                createdAt = 2000,
-                updatedAt = 30000
-            )
-            val newList = categoryList.value.toMutableList()
-            if (selectedCategoryIndex.value != -1) {
-                val newTodoList = newList[selectedCategoryIndex.value].todoList?.toMutableList()
-                newTodoList?.add(0, newTodoData)
-                newList[selectedCategoryIndex.value] =
-                    newList[selectedCategoryIndex.value].copy(todoList = newTodoList)
-                _categoryList.value = newList
-            }
+    fun addNewTodoItem(title: String, categoryIndex: Int) {
+        if (validateTodoInput(title)) {
+            // TODO: add new todo
         }
-        _todoMakeVisible.value = false
-        _selectedCategoryIndex.value = -1
-        _inputText.value = ""
     }
 
-    fun changeTodoState(categoryIndex: Int, todoIndex: Int, state: TodoState) {
-        val newState = when (state) {
+    fun updateTodoState(todo: TodoData) {
+        val newState = when (todo.status) {
             TodoState.UNCHECKED -> TodoState.CHECKED
             TodoState.CHECKED -> TodoState.GOING
             TodoState.GOING -> TodoState.UNCHECKED
         }
-        val newList = categoryList.value.toMutableList()
-        newList[categoryIndex].todoList?.let { newListTodo ->
-            val newTodoList = newListTodo.toMutableList()
-            val newItem = newTodoList[todoIndex].copy(status = newState)
-            newTodoList[todoIndex] = newItem
-            newList[categoryIndex] = newList[categoryIndex].copy(todoList = newTodoList)
-            _categoryList.value = newList
-        }
+        // TODO: update todo state
     }
 
-    private fun validateTodoInput(inputText: String): Boolean {
-        return inputText.isNotBlank()
+    private suspend fun updateCalendarData(categoryWithTodos: List<CategoryWithTodoItem>) {
+        // TODO: update calendarDate
+    }
+
+    private fun validateTodoInput(inputText: String): Boolean = inputText.isNotBlank()
+
+    fun updateTodoItem(categoryIndex: Int, todoItemIndex: Int, title: String) {
+        // TODO: update todo
+    }
+
+    fun deleteTodoItem(todoId: Int) {
+        // TODO: delete todo
     }
 }
