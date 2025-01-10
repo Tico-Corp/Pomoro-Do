@@ -10,6 +10,4 @@ data class TodoRequest(
     var status: TodoState,
     var categoryId: Int,
     val likes: Int = 0,
-    val createdAt: Long,
-    val updatedAt: Long,
 )
