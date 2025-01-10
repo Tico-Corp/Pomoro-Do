@@ -30,8 +30,6 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.tico.pomorodo.data.model.SelectedUser
-import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import java.io.File
 import java.text.SimpleDateFormat
@@ -52,17 +50,6 @@ fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit =
 }
 
 fun String.getNoSpace(): String = this.replace(" ", "")
-
-fun User.toSelectedUser(selected: Boolean = false): SelectedUser =
-    SelectedUser(
-        id = this.id,
-        name = this.name,
-        profileUrl = this.profileUrl,
-        selected = selected
-    )
-
-fun SelectedUser.toUser(): User =
-    User(id = this.id, name = this.name, profileUrl = this.profileUrl)
 
 fun Modifier.clickableWithoutRipple(
     enabled: Boolean = true,
