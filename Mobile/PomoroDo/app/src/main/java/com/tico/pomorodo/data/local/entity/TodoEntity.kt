@@ -5,20 +5,25 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
+import kotlinx.datetime.LocalDate
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "todo_table")
+@Serializable
 data class TodoEntity(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     @ColumnInfo(name = "category_id")
     val categoryId: Int,
     val title: String,
-    val status: TodoState,
+    val status: TodoState = TodoState.UNCHECKED,
+    @ColumnInfo(name = "target_date")
+    val targetDate: LocalDate,
     @ColumnInfo(name = "created_at")
-    val createdAt: Long,
+    val createdAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "updated_at")
-    val updatedAt: Long,
-    val likes: Int
+    val updatedAt: Long = System.currentTimeMillis(),
+    val likes: Int = 0
 )
 
 fun TodoEntity.toTodoData() = TodoData(
@@ -26,7 +31,8 @@ fun TodoEntity.toTodoData() = TodoData(
     categoryId = categoryId,
     title = title,
     status = status,
+    likes = likes,
     createdAt = createdAt,
     updatedAt = updatedAt,
-    likes = likes
+    targetDate = targetDate
 )
