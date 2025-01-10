@@ -19,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class InfoCategoryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
+class CategoryInfoViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val args = CategoryArgs(savedStateHandle)
@@ -54,7 +55,7 @@ class InfoCategoryViewModel @Inject constructor(
 
     fun validateInput(): Boolean {
         category.value?.let { category ->
-            if (category.type == CategoryType.NORMAL) {
+            if (category.type == CategoryType.GENERAL) {
                 return category.title.isNotBlank()
             } else {
                 return category.title.isNotBlank() && selectedGroupMembers.value.any { it.selected }

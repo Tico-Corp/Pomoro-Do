@@ -33,7 +33,7 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.navigation.MainNavigationDestination
-import com.tico.pomorodo.ui.category.viewModel.InfoCategoryViewModel
+import com.tico.pomorodo.ui.category.viewModel.CategoryInfoViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
@@ -47,8 +47,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoCategoryScreenRoute(
-    viewModel: InfoCategoryViewModel = hiltViewModel(),
+fun CategoryInfoScreenRoute(
+    viewModel: CategoryInfoViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
@@ -62,7 +62,7 @@ fun InfoCategoryScreenRoute(
     var groupDeleteFirstDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
-    var normalOutDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var generalOutDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     val category by viewModel.category.collectAsState()
     val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
@@ -103,11 +103,11 @@ fun InfoCategoryScreenRoute(
                     onBackClickedListener = navigateToBack
                 )
                 if (showCheckGroupMemberBottomSheet) {
-                    requireNotNull(category).groupMember?.let {
+                    requireNotNull(category).groupMember?.let { user ->
                         CheckGroupMemberBottomSheet(
                             sheetState = checkGroupMemberSheetState,
                             onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
-                            memberList = it,
+                            memberList = user,
                             onClicked = {}
                         )
                     }
@@ -160,20 +160,21 @@ fun InfoCategoryScreenRoute(
                         onDismissRequest = { groupOutDialogVisible = false }
                     )
                 }
-                if (normalOutDialogVisible) {
+                if (generalOutDialogVisible) {
                     CategoryOutDialog(
                         title = stringResource(id = R.string.title_category_delete),
                         content = stringResource(id = R.string.content_category_delete_message),
                         onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
                         onIncompletedTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
                         onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ },
-                        onDismissRequest = { normalOutDialogVisible = false })
+                        onDismissRequest = { generalOutDialogVisible = false })
                 }
-                InfoCategoryScreen(
+                CategoryInfoScreen(
                     title = requireNotNull(category).title,
                     type = requireNotNull(category).type,
-                    groupNumber = selectedGroupMembers.filter { it.selected }.size,
-                    openSettingOption = if (requireNotNull(category).type == CategoryType.GROUP) OpenSettings.GROUP else requireNotNull(category).openSettings,
+                    groupMemberCount = selectedGroupMembers.filter { it.selected }.size,
+                    openSettingOption = if (requireNotNull(category).type == CategoryType.GROUP) OpenSettings.GROUP
+                    else requireNotNull(category).openSettings,
                     groupReader = requireNotNull(category).groupReader,
                     onTitleChanged = viewModel::setTitle,
                     onShowOpenSettingsBottomSheetChange = {
@@ -190,7 +191,7 @@ fun InfoCategoryScreenRoute(
                     isGroupReader = category!!.isGroupReader,
                     onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
                     onGroupOutClicked = { groupOutDialogVisible = true },
-                    onNormalDeletedClicked = { normalOutDialogVisible = true }
+                    onGeneralDeletedClicked = { generalOutDialogVisible = true }
                 )
             }
         }
@@ -198,10 +199,10 @@ fun InfoCategoryScreenRoute(
 }
 
 @Composable
-fun InfoCategoryScreen(
+fun CategoryInfoScreen(
     title: String,
     type: CategoryType,
-    groupNumber: Int,
+    groupMemberCount: Int,
     onTitleChanged: (String) -> Unit,
     openSettingOption: OpenSettings,
     groupReader: String? = null,
@@ -211,7 +212,7 @@ fun InfoCategoryScreen(
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
     onGroupOutClicked: () -> Unit,
     onGroupDeleteClicked: () -> Unit,
-    onNormalDeletedClicked: () -> Unit,
+    onGeneralDeletedClicked: () -> Unit,
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
@@ -263,18 +264,18 @@ fun InfoCategoryScreen(
                 isGroupInfo = type == CategoryType.GROUP
             )
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
-            if (type == CategoryType.NORMAL) {
+            if (type == CategoryType.GENERAL) {
                 CustomTextButton(
                     text = stringResource(id = R.string.content_do_delete),
                     containerColor = PomoroDoTheme.colorScheme.error50,
                     contentColor = Color.White,
                     textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
                     verticalPadding = 12.dp,
-                    onClick = onNormalDeletedClicked
+                    onClick = onGeneralDeletedClicked
                 )
             } else {
                 CategoryGroupNumber(
-                    groupNumber = groupNumber,
+                    groupMemberCount = groupMemberCount,
                     onClicked = {
                         if (isGroupReader == true) {
                             onGroupMemberChooseClicked()
@@ -356,7 +357,7 @@ private fun CategoryType(type: CategoryType) {
         )
         Spacer(modifier = Modifier.weight(1f))
         SimpleText(
-            textId = if (type == CategoryType.NORMAL) R.string.content_category_normal else R.string.content_category_group,
+            textId = if (type == CategoryType.GENERAL) R.string.content_category_general else R.string.content_category_group,
             style = PomoroDoTheme.typography.laundryGothicRegular14,
             color = PomoroDoTheme.colorScheme.onBackground
         )

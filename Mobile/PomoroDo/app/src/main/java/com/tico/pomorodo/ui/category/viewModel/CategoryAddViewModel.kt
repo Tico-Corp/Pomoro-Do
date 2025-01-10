@@ -13,13 +13,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCategoryViewModel @Inject constructor() : ViewModel() {
+class CategoryAddViewModel @Inject constructor() : ViewModel() {
 
     private var _title = MutableStateFlow("")
     val title: StateFlow<String>
         get() = _title.asStateFlow()
 
-    private var _type = MutableStateFlow(CategoryType.NORMAL)
+    private var _type = MutableStateFlow(CategoryType.GENERAL)
     val type: StateFlow<CategoryType>
         get() = _type.asStateFlow()
 
@@ -53,7 +53,7 @@ class AddCategoryViewModel @Inject constructor() : ViewModel() {
     }
 
     fun validateInput(): Boolean =
-        if (type.value == CategoryType.NORMAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
+        if (type.value == CategoryType.GENERAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
 
     private fun fetchSelectedGroupMembers() {
         _selectedGroupMembers.value = DataSource.userList.map { it.toSelectedUser() }

@@ -35,7 +35,7 @@ import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.navigation.MainNavigationDestination
-import com.tico.pomorodo.ui.category.viewModel.AddCategoryViewModel
+import com.tico.pomorodo.ui.category.viewModel.CategoryAddViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.NoPaddingRadioButton
@@ -53,10 +53,10 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun AddCategoryScreen(
+fun CategoryAddScreen(
     title: String,
     type: CategoryType,
-    groupNumber: Int,
+    groupMemberCount: Int,
     onTitleChanged: (String) -> Unit,
     onTypeChanged: (CategoryType) -> Unit,
     openSettingOption: OpenSettings,
@@ -116,7 +116,7 @@ fun AddCategoryScreen(
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             if (type == CategoryType.GROUP) {
                 CategoryGroupNumber(
-                    groupNumber = groupNumber,
+                    groupMemberCount = groupMemberCount,
                     onClicked = onGroupMemberChooseClicked,
                 )
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
@@ -126,7 +126,7 @@ fun AddCategoryScreen(
 }
 
 @Composable
-fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: Boolean? = true) {
+fun CategoryGroupNumber(groupMemberCount: Int, onClicked: () -> Unit, isGroupReader: Boolean? = true) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -149,7 +149,7 @@ fun CategoryGroupNumber(groupNumber: Int, onClicked: () -> Unit, isGroupReader: 
                 contentDescriptionId = R.string.content_group_member
             )
             SimpleText(
-                text = stringResource(id = R.string.content_group_member_number, groupNumber),
+                text = stringResource(id = R.string.content_group_member_number, groupMemberCount),
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.onBackground
             )
@@ -243,14 +243,14 @@ private fun CategoryType(
             verticalAlignment = Alignment.CenterVertically
         ) {
             NoPaddingRadioButton(
-                selected = type == CategoryType.NORMAL,
-                onClick = { onTypeChanged(CategoryType.NORMAL) },
+                selected = type == CategoryType.GENERAL,
+                onClick = { onTypeChanged(CategoryType.GENERAL) },
                 colors = colors,
                 padding = PaddingValues(horizontal = 5.dp)
             )
             SimpleText(
-                modifier = Modifier.clickableWithoutRipple { onTypeChanged(CategoryType.NORMAL) },
-                textId = R.string.content_category_normal,
+                modifier = Modifier.clickableWithoutRipple { onTypeChanged(CategoryType.GENERAL) },
+                textId = R.string.content_category_general,
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.onBackground
             )
@@ -272,8 +272,8 @@ private fun CategoryType(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCategoryScreenRoute(
-    viewModel: AddCategoryViewModel = hiltViewModel(),
+fun CategoryAddScreenRoute(
+    viewModel: CategoryAddViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
@@ -332,10 +332,10 @@ fun AddCategoryScreenRoute(
                     }
                 )
             }
-            AddCategoryScreen(
+            CategoryAddScreen(
                 title = title,
                 type = type,
-                groupNumber = selectedGroupMembers.filter { it.selected }.size,
+                groupMemberCount = selectedGroupMembers.filter { it.selected }.size,
                 openSettingOption = if (type == CategoryType.GROUP) OpenSettings.GROUP else openSettingOption,
                 onTypeChanged = viewModel::setType,
                 onTitleChanged = viewModel::setTitle,

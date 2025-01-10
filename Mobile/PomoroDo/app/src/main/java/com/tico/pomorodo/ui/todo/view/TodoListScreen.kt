@@ -91,7 +91,7 @@ fun TotalFocusStatus(hour: Int, minute: Int, second: Int, onHistoryButtonClicked
 @Composable
 fun CategoryTag(
     title: String,
-    groupNumber: Int,
+    groupMemberCount: Int,
     isAddButton: Boolean = true,
     onAddClicked: (() -> Unit)? = null
 ) {
@@ -111,10 +111,13 @@ fun CategoryTag(
             style = PomoroDoTheme.typography.laundryGothicRegular14,
             color = PomoroDoTheme.colorScheme.secondary
         )
-        if (groupNumber > 0) {
+        if (groupMemberCount > 0) {
             SimpleText(
                 modifier = Modifier,
-                text = stringResource(id = R.string.content_add_todo_group_number, groupNumber),
+                text = stringResource(
+                    id = R.string.content_add_todo_group_number,
+                    groupMemberCount
+                ),
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.secondary
             )
