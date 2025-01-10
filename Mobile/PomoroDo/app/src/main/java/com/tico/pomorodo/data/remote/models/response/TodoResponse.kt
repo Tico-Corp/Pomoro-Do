@@ -15,9 +15,7 @@ data class TodoResponse(
     val createdAt: Long,
     val updatedAt: Long,
     val likes: Int,
-    val targetDate: LocalDate,
-    val completedList: List<UserResponse>,
-    val incompletedList: List<UserResponse>,
+    val targetDate: LocalDate
 )
 
 fun TodoResponse.toTodoData() = TodoData(
@@ -26,8 +24,6 @@ fun TodoResponse.toTodoData() = TodoData(
     categoryId = categoryId,
     status = status,
     likes = likes,
-    completedList = completedList.map(UserResponse::toUser),
-    incompletedList = incompletedList.map(UserResponse::toUser),
     createdAt = createdAt,
     updatedAt = updatedAt,
     targetDate = targetDate
