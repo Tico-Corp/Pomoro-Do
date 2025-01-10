@@ -50,7 +50,6 @@ import kotlinx.coroutines.launch
 fun CategoryInfoScreenRoute(
     viewModel: CategoryInfoViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
-    navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
@@ -95,10 +94,12 @@ fun CategoryInfoScreenRoute(
                     titleTextId = R.string.title_info_category,
                     iconString = IC_OK,
                     disableIconString = IC_UNOK,
-                    enabled = selectedGroupMembers.any { it.selected } && viewModel.validateInput(),
+                    enabled = (selectedGroupMembers.any { it.selected } && category?.type == CategoryType.GROUP && viewModel.validateInput())
+                            || (category?.type == CategoryType.GENERAL && viewModel.validateInput()),
                     descriptionId = R.string.content_ic_ok,
                     onClickedListener = {
-                        navigateToCategory()
+                        viewModel.updateCategoryInfo()
+                        navigateToBack()
                     },
                     onBackClickedListener = navigateToBack
                 )

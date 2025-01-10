@@ -226,13 +226,11 @@ fun NavGraphBuilder.categoryScreen(
 }
 
 fun NavGraphBuilder.addCategoryScreen(
-    navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit,
 ) {
     composable(route = MainNavigationDestination.ADD_CATEGORY.name) {
         CategoryAddScreenRoute(
-            navigateToCategory = navigateToCategory,
             navigateToBack = navigateToBack,
             navigateToGroupMemberChoose = navigateToGroupMemberChoose,
         )
@@ -248,7 +246,6 @@ internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
 }
 
 fun NavGraphBuilder.infoCategoryScreen(
-    navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit
 ) {

@@ -1,11 +1,9 @@
 package com.tico.pomorodo.ui.category.viewModel
 
 import androidx.lifecycle.ViewModel
-import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.SelectedUser
-import com.tico.pomorodo.ui.common.view.toSelectedUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,6 +54,10 @@ class CategoryAddViewModel @Inject constructor() : ViewModel() {
         if (type.value == CategoryType.GENERAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
 
     private fun fetchSelectedGroupMembers() {
-        _selectedGroupMembers.value = DataSource.userList.map { it.toSelectedUser() }
+        // TODO: 선택된 그룹원 불러오는 로직
+    }
+
+    fun insertCategory() {
+        // TODO: insert category
     }
 }

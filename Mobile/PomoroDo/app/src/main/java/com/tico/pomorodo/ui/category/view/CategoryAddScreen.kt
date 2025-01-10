@@ -275,7 +275,6 @@ private fun CategoryType(
 fun CategoryAddScreenRoute(
     viewModel: CategoryAddViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
-    navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
@@ -310,7 +309,8 @@ fun CategoryAddScreenRoute(
                 disableIconString = IC_UNOK,
                 descriptionId = R.string.content_ic_add_category,
                 onClickedListener = {
-                    navigateToCategory()
+                    viewModel.insertCategory()
+                    navigateToBack()
                 },
                 onBackClickedListener = navigateToBack,
                 enabled = viewModel.validateInput()

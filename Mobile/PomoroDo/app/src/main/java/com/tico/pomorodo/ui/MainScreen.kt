@@ -120,12 +120,10 @@ fun MainScreen() {
                     }
                 )
                 addCategoryScreen(
-                    navigateToCategory = mainNavController::navigateToCategory,
                     navigateToGroupMemberChoose = mainNavController::navigateToGroupMemberChoose,
                     navigateToBack = mainNavController::popBackStack
                 )
                 infoCategoryScreen(
-                    navigateToCategory = mainNavController::navigateToCategory,
                     navigateToGroupMemberChoose = mainNavController::navigateToGroupMemberChoose,
                     navigateToBack = mainNavController::popBackStack
                 )
