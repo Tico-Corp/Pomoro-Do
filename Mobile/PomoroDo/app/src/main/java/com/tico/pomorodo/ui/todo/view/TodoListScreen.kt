@@ -29,6 +29,7 @@ import com.tico.pomorodo.ui.common.view.SimpleDropDownMoreInfo
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
+import com.tico.pomorodo.ui.common.view.TodoCheckBox
 import com.tico.pomorodo.ui.common.view.TodoItem
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
@@ -166,6 +167,8 @@ fun CategoryTag(
 fun TodoMake(
     callback: () -> Unit,
     inputText: String,
+    isError: Boolean = false,
+    status: TodoState = TodoState.UNCHECKED,
     onValueChange: (String) -> Unit,
 ) {
     val textFieldColors = TextFieldDefaults.colors(
@@ -183,11 +186,10 @@ fun TodoMake(
         horizontalArrangement = Arrangement.spacedBy(5.dp),
         verticalAlignment = Alignment.Top
     ) {
-        SimpleIcon(
-            modifier = Modifier,
+        TodoCheckBox(
             size = 26,
-            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_TODO_UNCHECKED]),
-            contentDescriptionId = R.string.content_todo_unchecked
+            state = status,
+            enabled = false
         )
         CustomTextField(
             modifier = Modifier.weight(1f),

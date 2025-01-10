@@ -44,10 +44,10 @@ fun TodoItem(
 }
 
 @Composable
-private fun TodoCheckBox(
+fun TodoCheckBox(
     size: Int,
     state: TodoState,
-    onStateChanged: () -> Unit,
+    onStateChanged: () -> Unit = {},
     enabled: Boolean
 ) {
     SimpleIcon(
