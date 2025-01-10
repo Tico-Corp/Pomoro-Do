@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.tico.pomorodo.common.util.Converters
 import com.tico.pomorodo.data.local.dao.CategoryDao
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.TodoEntity
 
 @Database(entities = [TodoEntity::class, CategoryEntity::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class PomorodoDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
     abstract fun categoryDao(): CategoryDao
