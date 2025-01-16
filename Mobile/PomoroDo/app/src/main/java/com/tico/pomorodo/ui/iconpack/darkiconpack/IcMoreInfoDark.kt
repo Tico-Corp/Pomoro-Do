@@ -18,8 +18,8 @@ val DarkIconPack.IcMoreInfoDark: ImageVector
             return _icMoreInfoDark!!
         }
         _icMoreInfoDark = Builder(
-            name = "IcMoreInfoDark", defaultWidth = 24.0.dp, defaultHeight =
-            24.0.dp, viewportWidth = 24.0f, viewportHeight = 24.0f
+            name = "IcMoreInfoDark", defaultWidth = 28.0.dp, defaultHeight =
+            28.0.dp, viewportWidth = 28.0f, viewportHeight = 28.0f
         ).apply {
             group {
                 path(
@@ -27,28 +27,27 @@ val DarkIconPack.IcMoreInfoDark: ImageVector
                     strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                     pathFillType = NonZero
                 ) {
-                    moveTo(12.0f, 8.0f)
-                    curveTo(13.1f, 8.0f, 14.0f, 7.1f, 14.0f, 6.0f)
-                    curveTo(14.0f, 4.9f, 13.1f, 4.0f, 12.0f, 4.0f)
-                    curveTo(10.9f, 4.0f, 10.0f, 4.9f, 10.0f, 6.0f)
-                    curveTo(10.0f, 7.1f, 10.9f, 8.0f, 12.0f, 8.0f)
+                    moveTo(14.0f, 9.3337f)
+                    curveTo(15.2833f, 9.3337f, 16.3333f, 8.2837f, 16.3333f, 7.0003f)
+                    curveTo(16.3333f, 5.717f, 15.2833f, 4.667f, 14.0f, 4.667f)
+                    curveTo(12.7166f, 4.667f, 11.6666f, 5.717f, 11.6666f, 7.0003f)
+                    curveTo(11.6666f, 8.2837f, 12.7166f, 9.3337f, 14.0f, 9.3337f)
                     close()
-                    moveTo(12.0f, 10.0f)
-                    curveTo(10.9f, 10.0f, 10.0f, 10.9f, 10.0f, 12.0f)
-                    curveTo(10.0f, 13.1f, 10.9f, 14.0f, 12.0f, 14.0f)
-                    curveTo(13.1f, 14.0f, 14.0f, 13.1f, 14.0f, 12.0f)
-                    curveTo(14.0f, 10.9f, 13.1f, 10.0f, 12.0f, 10.0f)
+                    moveTo(14.0f, 11.667f)
+                    curveTo(12.7166f, 11.667f, 11.6666f, 12.717f, 11.6666f, 14.0003f)
+                    curveTo(11.6666f, 15.2837f, 12.7166f, 16.3337f, 14.0f, 16.3337f)
+                    curveTo(15.2833f, 16.3337f, 16.3333f, 15.2837f, 16.3333f, 14.0003f)
+                    curveTo(16.3333f, 12.717f, 15.2833f, 11.667f, 14.0f, 11.667f)
                     close()
-                    moveTo(12.0f, 16.0f)
-                    curveTo(10.9f, 16.0f, 10.0f, 16.9f, 10.0f, 18.0f)
-                    curveTo(10.0f, 19.1f, 10.9f, 20.0f, 12.0f, 20.0f)
-                    curveTo(13.1f, 20.0f, 14.0f, 19.1f, 14.0f, 18.0f)
-                    curveTo(14.0f, 16.9f, 13.1f, 16.0f, 12.0f, 16.0f)
+                    moveTo(14.0f, 18.667f)
+                    curveTo(12.7166f, 18.667f, 11.6666f, 19.717f, 11.6666f, 21.0003f)
+                    curveTo(11.6666f, 22.2837f, 12.7166f, 23.3337f, 14.0f, 23.3337f)
+                    curveTo(15.2833f, 23.3337f, 16.3333f, 22.2837f, 16.3333f, 21.0003f)
+                    curveTo(16.3333f, 19.717f, 15.2833f, 18.667f, 14.0f, 18.667f)
                     close()
                 }
             }
-        }
-            .build()
+        }.build()
         return _icMoreInfoDark!!
     }
 
