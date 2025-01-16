@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.ui.common.view.CustomTextField
-import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithNavigation
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
@@ -57,14 +57,10 @@ fun AddFollowerScreen(popBackToFollowScreen: () -> Unit) {
         modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        CustomTopAppBarWithNavigation(
-            title = stringResource(R.string.title_add_following),
-            navigationAction = popBackToFollowScreen,
-            top = 24,
-            start = 16,
-            end = 16
+        CustomTopAppBar(
+            titleTextId = R.string.title_add_following,
+            onBackClickedListener = popBackToFollowScreen,
         )
-
         CustomTextField(
             modifier = Modifier
                 .fillMaxWidth()

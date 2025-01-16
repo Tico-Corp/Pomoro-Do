@@ -305,15 +305,15 @@ fun CategoryAddScreenRoute(
             CustomTopAppBar(
                 modifier = Modifier,
                 titleTextId = R.string.title_add_category,
-                iconString = IC_OK,
-                disableIconString = IC_UNOK,
-                descriptionId = R.string.content_ic_add_category,
-                onClickedListener = {
+                actionIconString = IC_OK,
+                actionDisableIconString = IC_UNOK,
+                actionIconDescriptionId = R.string.content_ic_add_category,
+                onActionClickedListener = {
                     viewModel.insertCategory()
                     navigateToBack()
                 },
                 onBackClickedListener = navigateToBack,
-                enabled = viewModel.validateInput()
+                isActionEnabled = viewModel.validateInput()
             )
             if (showOpenSettingsBottomSheet) {
                 OpenSettingsBottomSheet(

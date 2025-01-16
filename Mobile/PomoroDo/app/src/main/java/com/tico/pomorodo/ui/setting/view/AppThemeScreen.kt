@@ -48,11 +48,11 @@ fun AppThemeScreen(initialSelectedMode: String, popBackStack: () -> Unit) {
         Column(modifier = Modifier.fillMaxSize()) {
             CustomTopAppBar(
                 titleTextId = R.string.title_app_theme,
-                iconString = IC_OK,
-                disableIconString = IC_UNOK,
-                descriptionId = R.string.content_ic_ok,
-                enabled = enable,
-                onClickedListener = {
+                actionIconString = IC_OK,
+                actionDisableIconString = IC_UNOK,
+                actionIconDescriptionId = R.string.content_ic_ok,
+                isActionEnabled = enable,
+                onActionClickedListener = {
                     /*TODO: change app theme*/
                     popBackStack()
                 },

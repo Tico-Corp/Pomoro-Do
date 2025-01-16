@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
-import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithNavigation
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
 import com.tico.pomorodo.ui.theme.IC_ARROW_RIGHT
@@ -40,15 +40,13 @@ fun SettingScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 18.dp, vertical = 24.dp),
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            CustomTopAppBarWithNavigation(
-                title = stringResource(R.string.title_setting_screen),
-                navigationAction = { popBackStack() }
+            CustomTopAppBar(
+                titleTextId = R.string.title_setting_screen,
+                onBackClickedListener = popBackStack
             )
-
             SettingMenuList(
                 navigateToModifyProfileScreen,
                 navigateToAppThemeScreen,
@@ -104,7 +102,10 @@ fun SettingMenuList(
         }
 
 
-    Column(modifier = Modifier.fillMaxWidth()) {
+    Column(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 18.dp, vertical = 24.dp)
+    ) {
         menuList.entries.forEachIndexed { index, settingMenu ->
             SettingMenuItem(
                 menuStringResId = settingMenu.key.titleResId,

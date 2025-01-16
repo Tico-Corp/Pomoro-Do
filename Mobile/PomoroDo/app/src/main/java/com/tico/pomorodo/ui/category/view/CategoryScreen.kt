@@ -213,9 +213,9 @@ fun CategoryScreenRoute(
             CustomTopAppBar(
                 modifier = Modifier,
                 titleTextId = R.string.title_category,
-                iconString = IC_ADD_CATEGORY,
-                descriptionId = R.string.content_ic_ok,
-                onClickedListener = navigateToAddCategory,
+                actionIconString = IC_ADD_CATEGORY,
+                actionIconDescriptionId = R.string.content_ic_ok,
+                onActionClickedListener = navigateToAddCategory,
                 onBackClickedListener = navigateToBack
             )
             CategoryScreen(

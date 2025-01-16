@@ -36,7 +36,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTextButton
-import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithRightButton
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
@@ -56,15 +56,12 @@ fun FollowListScreen(navigateToAddFollowerScreen: () -> Unit) {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background)) {
-        CustomTopAppBarWithRightButton(
-            title = stringResource(R.string.title_follow),
-            iconString = IC_ADD_CATEGORY,
-            iconDescriptionId = R.string.content_ic_add_follower,
-            onClickedListener = navigateToAddFollowerScreen,
-            top = 24,
-            bottom = 14,
-            start = 16,
-            end = 16
+        CustomTopAppBar(
+            titleTextId = R.string.title_follow,
+            actionIconString = IC_ADD_CATEGORY,
+            actionIconDescriptionId = R.string.content_ic_add_follower,
+            onActionClickedListener = navigateToAddFollowerScreen,
+            isBackIcon = false
         )
 
         FollowTabRow(selectedTabIndex = pagerState.currentPage) { index ->

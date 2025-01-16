@@ -124,11 +124,11 @@ private fun GroupMemberChooseScreen(viewModel: ViewModel, navigateToBack: () -> 
         ) {
             CustomTopAppBar(
                 titleTextId = R.string.title_group_member_choose,
-                iconString = IC_OK,
-                disableIconString = IC_UNOK,
-                enabled = selectedList.any { it.selected },
-                descriptionId = R.string.content_ic_ok,
-                onClickedListener = {
+                actionIconString = IC_OK,
+                actionDisableIconString = IC_UNOK,
+                isActionEnabled = selectedList.any { it.selected },
+                actionIconDescriptionId = R.string.content_ic_ok,
+                onActionClickedListener = {
                     when (viewModel) {
                         is CategoryAddViewModel -> {
                             viewModel.setSelectedGroupMembers(selectedList)

@@ -92,12 +92,12 @@ fun CategoryInfoScreenRoute(
                 CustomTopAppBar(
                     modifier = Modifier,
                     titleTextId = R.string.title_info_category,
-                    iconString = IC_OK,
-                    disableIconString = IC_UNOK,
-                    enabled = (selectedGroupMembers.any { it.selected } && category?.type == CategoryType.GROUP && viewModel.validateInput())
+                    actionIconString = IC_OK,
+                    actionDisableIconString = IC_UNOK,
+                    isActionEnabled = (selectedGroupMembers.any { it.selected } && category?.type == CategoryType.GROUP && viewModel.validateInput())
                             || (category?.type == CategoryType.GENERAL && viewModel.validateInput()),
-                    descriptionId = R.string.content_ic_ok,
-                    onClickedListener = {
+                    actionIconDescriptionId = R.string.content_ic_ok,
+                    onActionClickedListener = {
                         viewModel.updateCategoryInfo()
                         navigateToBack()
                     },
