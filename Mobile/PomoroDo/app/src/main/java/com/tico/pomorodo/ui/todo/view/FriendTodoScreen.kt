@@ -25,6 +25,7 @@ import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.domain.model.Follow
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.follow.view.FollowItem
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.todo.viewmodel.FriendTodoViewModel
@@ -33,7 +34,8 @@ import kotlinx.datetime.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FriendTodoScreenRoute(
-    viewModel: FriendTodoViewModel = hiltViewModel()
+    viewModel: FriendTodoViewModel = hiltViewModel(),
+    navigateToBack: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
     val user by viewModel.user.collectAsState()
@@ -47,46 +49,49 @@ fun FriendTodoScreenRoute(
 
     var selectedTodoItem: TodoData? by remember { mutableStateOf(null) }
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(start = 18.dp, end = 18.dp, top = 24.dp),
-        color = PomoroDoTheme.colorScheme.background,
-    ) {
-        Column {
-            if (showGroupBottomSheet) {
-                selectedTodoItem?.let { todoItem ->
-                    GroupBottomSheet(
-                        title = todoItem.title,
-                        sheetState = sheetState,
-                        onShowBottomSheetChange = { showGroupBottomSheet = it },
-                        completedList = todoItem.completedList ?: listOf(),
-                        incompletedList = todoItem.incompletedList ?: listOf(),
-                        totalNumber = (todoItem.completedList?.size ?: 0)
-                                + (todoItem.incompletedList?.size ?: 0),
-                        onClicked = {}
-                    )
-
+    user?.let { friendUser ->
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            color = PomoroDoTheme.colorScheme.background,
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                CustomTopAppBar(onBackClickedListener = navigateToBack)
+                if (showGroupBottomSheet) {
+                    selectedTodoItem?.let { todoItem ->
+                        GroupBottomSheet(
+                            title = todoItem.title,
+                            sheetState = sheetState,
+                            onShowBottomSheetChange = { showGroupBottomSheet = it },
+                            completedList = todoItem.completedList ?: listOf(),
+                            incompletedList = todoItem.incompletedList ?: listOf(),
+                            totalNumber = (todoItem.completedList?.size ?: 0)
+                                    + (todoItem.incompletedList?.size ?: 0),
+                            onClicked = {}
+                        )
+                    }
                 }
+                FriendTodoScreen(
+                    user = friendUser,
+                    onButtonClicked = viewModel::setFollowing,
+                    selectedDate = selectedDate,
+                    onDateSelected = viewModel::setSelectedDate,
+                    monthlyLikedNumber = monthlyLikedNumber,
+                    monthlyFullFocusNumber = monthlyFullFocusNumber,
+                    monthlyAllCheckedNumber = monthlyAllCheckedNumber,
+                    categoryWithTodoItemList = categoryWithTodoItemList,
+                    onGroupIconClicked = { todoItem ->
+                        selectedTodoItem = todoItem
+                        showGroupBottomSheet = true
+                    },
+                    onLikedIconClicked = viewModel::updateTodoLicked,
+                    calendarDates = calendarDates,
+                )
             }
         }
-        FriendTodoScreen(
-            user = user!!,
-            onButtonClicked = viewModel::setFollowing,
-            selectedDate = selectedDate,
-            onDateSelected = viewModel::setSelectedDate,
-            monthlyLikedNumber = monthlyLikedNumber,
-            monthlyFullFocusNumber = monthlyFullFocusNumber,
-            monthlyAllCheckedNumber = monthlyAllCheckedNumber,
-            categoryWithTodoItemList = categoryWithTodoItemList,
-            onGroupIconClicked = { todoItem ->
-                selectedTodoItem = todoItem
-                showGroupBottomSheet = true
-            },
-            onLikedIconClicked = viewModel::updateTodoLicked,
-            calendarDates = calendarDates,
-        )
     }
 }
 
@@ -105,6 +110,7 @@ fun FriendTodoScreen(
     calendarDates: List<CalendarDate>,
 ) {
     Column(
+        modifier = Modifier.padding(horizontal = 18.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         FollowItem(
