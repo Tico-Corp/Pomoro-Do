@@ -80,8 +80,7 @@ fun TodoScreenRoute(
                     selectedTodoItemIndex = -1
                     updatedTodoItemTitle = ""
                 }
-            }
-            .padding(horizontal = 18.dp),
+            },
         color = PomoroDoTheme.colorScheme.background,
     ) {
         Column {
@@ -187,6 +186,7 @@ fun TodoScreen(
     calendarDates: List<CalendarDate>
 ) {
     Column(
+        modifier = Modifier.padding(horizontal = 18.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         TodoCalendarScreen(
