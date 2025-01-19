@@ -1,18 +1,17 @@
 package com.tico.pomoro_do.domain.timer.entity;
 
+import com.tico.pomoro_do.global.entity.BaseTimeEntity;
 import com.tico.pomoro_do.global.enums.TodoStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
+@Getter
 @Entity
 @Table(name = "focus_session_todos")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TimerFocusSessionTodo {
+public class TimerFocusSessionTodo extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "focus_session_todo_id")
@@ -31,11 +30,5 @@ public class TimerFocusSessionTodo {
     @Enumerated(EnumType.STRING)
     @Column(name = "todo_status", nullable = false)
     private TodoStatus todoStatus = TodoStatus.TODO;
-
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-    private LocalDateTime updatedAt;
 
 }

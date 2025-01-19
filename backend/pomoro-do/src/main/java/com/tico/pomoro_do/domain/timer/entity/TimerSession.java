@@ -2,6 +2,7 @@ package com.tico.pomoro_do.domain.timer.entity;
 
 
 import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.global.entity.BaseTimeEntity;
 import com.tico.pomoro_do.global.enums.TimerSessionType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,11 +12,11 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(name = "timer_sessions")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
-public class TimerSession {
+public class TimerSession extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "timer_session_id")
@@ -40,8 +41,5 @@ public class TimerSession {
 
     @Column(name = "duration_seconds", nullable = false)
     private int durationSeconds;    // 세션 지속 시간 (초)
-
-    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt;
 
 }
