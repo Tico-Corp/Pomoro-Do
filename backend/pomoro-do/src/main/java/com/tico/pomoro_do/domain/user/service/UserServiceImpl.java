@@ -1,6 +1,7 @@
 package com.tico.pomoro_do.domain.user.service;
 
-import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
+import com.tico.pomoro_do.domain.auth.service.TokenService;
+import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.FollowRepository;
@@ -27,9 +28,9 @@ public class UserServiceImpl implements UserService{
         User user = findByUsername(username);
 
         // 내가 팔로우하는 사람의 수 계산
-        int followingCount = followRepository.countBySender(user);
+        int followingCount = followRepository.countByFollower(user);
         // 나를 팔로우하는 사람의 수 계산
-        int followerCount = followRepository.countByReceiver(user);
+        int followerCount = followRepository.countByFollowing(user);
 
         return UserDetailDTO.builder()
                 .userId(user.getId())
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public FollowUserDTO getUserDetail(String username, Long userId) {
+    public FollowResponse getUserDetail(String username, Long userId) {
 
         // 주어진 username에 해당하는 현재 사용자 ID 조회
         Long myUserId = findByUsername(username).getId();
@@ -50,10 +51,10 @@ public class UserServiceImpl implements UserService{
         User user = findByUserId(userId);
 
         // 현재 사용자가 해당 특정 사용자를 팔로우하고 있는지 여부 확인
-        boolean isFollowing = followRepository.existsBySenderIdAndReceiverId(myUserId, userId);
+        boolean isFollowing = followRepository.existsByFollowerIdAndFollowingId(myUserId, userId);
 
         // 사용자 정보 및 팔로우 상태를 포함한 DTO 반환
-        return FollowUserDTO.builder()
+        return FollowResponse.builder()
                 .userId(user.getId())
                 .nickname(user.getNickname())
                 .profileImageUrl(user.getProfileImageUrl())
@@ -64,8 +65,10 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void deleteUser(String username, String deviceId, String refreshHeader) {
+        // 회원 토큰 검증
+        tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, username);
         // 해당 회원의 모든 리프레시 토큰 삭제
-        tokenService.deleteAllRefreshTokensByUsername(username,deviceId,refreshHeader);
+        tokenService.deleteAllRefreshTokensByUsername(username);
         // 해당 유저 삭제
         userRepository.deleteByUsername(username);
     }

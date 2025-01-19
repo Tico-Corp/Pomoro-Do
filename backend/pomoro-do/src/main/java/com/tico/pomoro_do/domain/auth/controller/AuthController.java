@@ -1,8 +1,8 @@
-package com.tico.pomoro_do.domain.user.controller;
+package com.tico.pomoro_do.domain.auth.controller;
 
-import com.tico.pomoro_do.domain.user.dto.response.TokenDTO;
-import com.tico.pomoro_do.domain.user.service.AuthService;
-import com.tico.pomoro_do.domain.user.service.TokenService;
+import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
+import com.tico.pomoro_do.domain.auth.service.AuthService;
+import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
@@ -43,8 +43,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final TokenService tokenService;
-    //jwt관리 및 검증 utill
-    private final JWTUtil jwtUtil;
 
     /**
      * 구글 로그인 API
@@ -81,16 +79,16 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "등록되지 않은 사용자 (code: U-104)")
     })
     @PostMapping("/google/login")
-    public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleLogin(
+    public ResponseEntity<SuccessResponseDTO<TokenResponse>> googleLogin(
             @RequestHeader("Google-ID-Token") String googleIdToken,
             @RequestHeader("Device-ID") String deviceId
     ) {
         try {
             // AuthService를 통해 구글 로그인을 처리하고 JWT 토큰을 발급받습니다.
-            TokenDTO jwtResponse = authService.googleLogin(googleIdToken, deviceId);
+            TokenResponse jwtResponse = authService.googleLogin(googleIdToken, deviceId);
 
             // 성공 응답 생성
-            SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
+            SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                     .status(SuccessCode.GOOGLE_LOGIN_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_LOGIN_SUCCESS.getMessage())
                     .data(jwtResponse)
@@ -153,7 +151,7 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자 (code: U-105)")
     })
     @PostMapping(value = "/google/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponseDTO<TokenDTO>> googleJoin(
+    public ResponseEntity<SuccessResponseDTO<TokenResponse>> googleJoin(
             @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
             @RequestHeader("Device-ID") String deviceId,
             @RequestParam("nickname") String nickname,
@@ -161,8 +159,8 @@ public class AuthController {
             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage
     ) {
         try {
-            TokenDTO jwtResponse = authService.googleJoin(googleIdTokenHeader, deviceId, nickname, profileImage, imageType);
-            SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
+            TokenResponse jwtResponse = authService.googleJoin(googleIdTokenHeader, deviceId, nickname, profileImage, imageType);
+            SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                     .status(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())
                     .data(jwtResponse)
@@ -207,17 +205,17 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "기기 ID 또는 리프레시 토큰이 DB에 존재하지 않음"),
     })
     @PostMapping("/tokens/reissue")
-    public ResponseEntity<SuccessResponseDTO<TokenDTO>> reissueToken(
+    public ResponseEntity<SuccessResponseDTO<TokenResponse>> reissueToken(
             @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshToken
     ) {
         // AuthService의 reissueToken 메서드 호출하여 결과 받기
-        TokenDTO tokenDTO = authService.reissueToken(deviceId, refreshToken);
+        TokenResponse tokenResponse = authService.reissueToken(deviceId, refreshToken);
 
-        SuccessResponseDTO<TokenDTO> successResponse = SuccessResponseDTO.<TokenDTO>builder()
+        SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                 .status(SuccessCode.ACCESS_TOKEN_REISSUED.getHttpStatus().value())
                 .message(SuccessCode.ACCESS_TOKEN_REISSUED.getMessage())
-                .data(tokenDTO)
+                .data(tokenResponse)
                 .build();
 
         // 재발행 성공 시, HTTP 상태 코드 200(OK)와 함께 결과 반환
@@ -262,8 +260,10 @@ public class AuthController {
             @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshHeader
     ) {
-        // 액세스 토큰으로 현재 Redis 정보 삭제
-        tokenService.deleteRefreshTokenByDeviceId(customUserDetails.getUsername(), deviceId, refreshHeader);
+        // 토큰 검증
+        tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, customUserDetails.getUsername());
+        // 토큰 삭제 (액세스 토큰으로 현재 Redis 정보 삭제)
+        tokenService.deleteRefreshTokenByDeviceId(deviceId);
 
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus().value())
@@ -300,13 +300,8 @@ public class AuthController {
     public ResponseEntity<SuccessResponseDTO<String>> validateToken(HttpServletRequest request, @RequestParam("tokenType") TokenType tokenType) {
 
         String tokenHeader = request.getHeader("Authorization");
-        // 헤더에서 토큰 추출
-        // Authorization 헤더가 없거나 형식이 올바르지 않은 경우: Authorization 헤더 오류 반환
-        String token = jwtUtil.extractToken(tokenHeader, TokenType.ACCESS);
-        // 토큰 검증
-        jwtUtil.validateToken(token, tokenType);
-        // SuccessCode 반환
-        SuccessCode successCode = tokenService.getSuccessCodeForTokenType(tokenType);;
+        // 토큰 검증 후 SuccessCode 반환
+        SuccessCode successCode = tokenService.validateTokenAndGetSuccessCode(tokenHeader, tokenType);;
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(successCode.getHttpStatus().value())
                 .message(successCode.getMessage())

@@ -106,7 +106,7 @@ public class CategoryServiceImpl implements CategoryService {
         // 팔로우한 멤버만 그룹에 추가 가능
         for (Long memberId : memberIds) {
             // 호스트가 팔로우하지 않은 사용자일 경우 예외 발생
-            if (!followService.isFollowedByUser(host.getId(), memberId)) {
+            if (!followService.isFollowing(host.getId(), memberId)) {
                 log.warn("팔로우하지 않은 사용자 [{}] 추가 시도", memberId);
                 throw new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_FOLLOWED);
             }

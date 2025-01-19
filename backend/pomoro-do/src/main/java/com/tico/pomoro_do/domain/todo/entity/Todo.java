@@ -1,15 +1,14 @@
 package com.tico.pomoro_do.domain.todo.entity;
 
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.global.enums.TodoStatus;
+import com.tico.pomoro_do.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "todo")
-public class Todo {
+@Table(name = "todos")
+public class Todo extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todo_id")
@@ -19,28 +18,9 @@ public class Todo {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
-    @Column(nullable = false)
-    private LocalDate date;
+    @Column(name = "due_date", nullable = false)
+    private LocalDate dueDate;      // 할 일 유효 날짜 -> 새벽 5시 기준 날짜로 저장
 
     @Column(nullable = false)
-    private String title;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TodoStatus status;
-
-    @Column(nullable = false)
-    private int likes = 0;
-
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
+    private String title;       // 할 일 제목
 }

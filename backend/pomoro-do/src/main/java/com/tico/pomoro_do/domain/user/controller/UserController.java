@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.domain.user.controller;
 
-import com.tico.pomoro_do.domain.user.dto.response.FollowUserDTO;
+import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.auth.CustomUserDetails;
@@ -54,13 +54,13 @@ public class UserController {
      */
     @Operation(summary = "특정 사용자 정보 조회", description = "주어진 사용자 ID에 대한 상세 정보 및 팔로우 상태를 조회합니다.")
     @GetMapping("/{userId}")
-    public ResponseEntity<SuccessResponseDTO<FollowUserDTO>> getUserDetail(
+    public ResponseEntity<SuccessResponseDTO<FollowResponse>> getUserDetail(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ) {
         String username = customUserDetails.getUsername();
-        FollowUserDTO response = userService.getUserDetail(username, userId);
-        SuccessResponseDTO<FollowUserDTO> successResponse = SuccessResponseDTO.<FollowUserDTO>builder()
+        FollowResponse response = userService.getUserDetail(username, userId);
+        SuccessResponseDTO<FollowResponse> successResponse = SuccessResponseDTO.<FollowResponse>builder()
                 .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())
                 .data(response)
