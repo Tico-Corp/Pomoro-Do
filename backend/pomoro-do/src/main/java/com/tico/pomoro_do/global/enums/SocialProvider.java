@@ -4,7 +4,4 @@ public enum SocialProvider {
     GOOGLE,
     KAKAO,
     NAVER,
-    GITHUB,
-    FACEBOOK,
-    TWITTER
 }
