@@ -15,7 +15,7 @@ import java.time.LocalDate;
 
 @Getter
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category extends BaseTimeEntity {
     @Id

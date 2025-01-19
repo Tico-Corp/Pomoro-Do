@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name = "group_member")
+@Table(name = "group_members")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GroupMember extends BaseTimeEntity {
     @Id
