@@ -30,9 +30,13 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.tico.pomorodo.data.model.SelectedUser
-import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
+import kotlinx.datetime.DatePeriod
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.minus
 import java.io.File
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -52,17 +56,6 @@ fun Modifier.addFocusCleaner(focusManager: FocusManager, doOnClear: () -> Unit =
 }
 
 fun String.getNoSpace(): String = this.replace(" ", "")
-
-fun User.toSelectedUser(selected: Boolean = false): SelectedUser =
-    SelectedUser(
-        id = this.id,
-        name = this.name,
-        profileUrl = this.profileUrl,
-        selected = selected
-    )
-
-fun SelectedUser.toUser(): User =
-    User(id = this.id, name = this.name, profileUrl = this.profileUrl)
 
 fun Modifier.clickableWithoutRipple(
     enabled: Boolean = true,
@@ -167,4 +160,39 @@ fun Modifier.shimmerEffect(): Modifier = composed {
         .onGloballyPositioned {
             size = it.size
         }
+}
+
+fun LocalDate.daysInMonth(): Int {
+    return when (this.month) {
+        Month.FEBRUARY -> if (this.year.isLeapYear()) 29 else 28
+        Month.APRIL, Month.JUNE, Month.SEPTEMBER, Month.NOVEMBER -> 30
+        else -> 31
+    }
+}
+
+fun Int.isLeapYear(): Boolean {
+    return (this % 4 == 0 && this % 100 != 0) || (this % 400 == 0)
+}
+
+fun LocalDate.atStartOfMonth(): LocalDate {
+    return LocalDate(this.year, this.month, 1)
+}
+
+fun LocalDate.atEndOfMonth(): LocalDate {
+    val daysInMonth = this.daysInMonth()
+    return LocalDate(this.year, this.month, daysInMonth)
+}
+
+fun kotlinx.datetime.LocalDateTime.toTimeZoneOf5AM(): LocalDate {
+    val fiveAM = kotlinx.datetime.LocalDateTime(this.date, LocalTime(5, 0))
+    return if (this < fiveAM) {
+        this.date.minus(DatePeriod(days = 1))
+    } else {
+        this.date
+    }
+}
+
+fun LocalDate.weekOfMonth(): Int {
+    val firstDayOfMonth = this.atStartOfMonth().dayOfWeek.isoDayNumber
+    return ((this.dayOfMonth + firstDayOfMonth - 2) / 7) + 1
 }

@@ -11,10 +11,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.tico.pomorodo.ui.auth.view.LogInRoute
 import com.tico.pomorodo.ui.auth.view.SignUpRoute
-import com.tico.pomorodo.ui.category.view.AddCategoryScreenRoute
+import com.tico.pomorodo.ui.category.view.CategoryAddScreenRoute
+import com.tico.pomorodo.ui.category.view.CategoryInfoScreenRoute
 import com.tico.pomorodo.ui.category.view.CategoryScreenRoute
 import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
-import com.tico.pomorodo.ui.category.view.InfoCategoryScreenRoute
 import com.tico.pomorodo.ui.follow.view.AddFollowerScreen
 import com.tico.pomorodo.ui.follow.view.FollowListScreen
 import com.tico.pomorodo.ui.history.view.HistoryRoute
@@ -226,13 +226,11 @@ fun NavGraphBuilder.categoryScreen(
 }
 
 fun NavGraphBuilder.addCategoryScreen(
-    navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit,
 ) {
     composable(route = MainNavigationDestination.ADD_CATEGORY.name) {
-        AddCategoryScreenRoute(
-            navigateToCategory = navigateToCategory,
+        CategoryAddScreenRoute(
             navigateToBack = navigateToBack,
             navigateToGroupMemberChoose = navigateToGroupMemberChoose,
         )
@@ -248,7 +246,6 @@ internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
 }
 
 fun NavGraphBuilder.infoCategoryScreen(
-    navigateToCategory: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit
 ) {
@@ -256,8 +253,7 @@ fun NavGraphBuilder.infoCategoryScreen(
         route = "${MainNavigationDestination.INFO_CATEGORY.name}/{$CATEGORY_ID}",
         arguments = listOf(navArgument(name = CATEGORY_ID) { type = NavType.IntType })
     ) {
-        InfoCategoryScreenRoute(
-            navigateToCategory = navigateToCategory,
+        CategoryInfoScreenRoute(
             navigateToBack = navigateToBack,
             navigateToGroupMemberChoose = navigateToGroupMemberChoose
         )

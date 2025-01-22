@@ -1,11 +1,9 @@
 package com.tico.pomorodo.ui.category.viewModel
 
 import androidx.lifecycle.ViewModel
-import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.SelectedUser
-import com.tico.pomorodo.ui.common.view.toSelectedUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,13 +11,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCategoryViewModel @Inject constructor() : ViewModel() {
+class CategoryAddViewModel @Inject constructor() : ViewModel() {
 
     private var _title = MutableStateFlow("")
     val title: StateFlow<String>
         get() = _title.asStateFlow()
 
-    private var _type = MutableStateFlow(CategoryType.NORMAL)
+    private var _type = MutableStateFlow(CategoryType.GENERAL)
     val type: StateFlow<CategoryType>
         get() = _type.asStateFlow()
 
@@ -53,9 +51,13 @@ class AddCategoryViewModel @Inject constructor() : ViewModel() {
     }
 
     fun validateInput(): Boolean =
-        if (type.value == CategoryType.NORMAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
+        if (type.value == CategoryType.GENERAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
 
     private fun fetchSelectedGroupMembers() {
-        _selectedGroupMembers.value = DataSource.userList.map { it.toSelectedUser() }
+        // TODO: 선택된 그룹원 불러오는 로직
+    }
+
+    fun insertCategory() {
+        // TODO: insert category
     }
 }

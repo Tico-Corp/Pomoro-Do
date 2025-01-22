@@ -34,6 +34,7 @@ fun CheckGroupMemberBottomSheet(
     sheetState: SheetState,
     onShowBottomSheetChange: (Boolean) -> Unit,
     memberList: List<User>,
+    onClicked: () -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -72,7 +73,8 @@ fun CheckGroupMemberBottomSheet(
                     ProfileHorizontal(
                         size = 36,
                         name = it.name,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14
+                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
+                        onClicked = onClicked
                     )
                 }
             }

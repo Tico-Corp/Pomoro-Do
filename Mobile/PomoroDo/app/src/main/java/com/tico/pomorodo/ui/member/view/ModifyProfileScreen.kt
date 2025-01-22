@@ -114,11 +114,11 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
     ) {
         CustomTopAppBar(
             titleTextId = R.string.title_modify_profile,
-            enabled = enable,
-            iconString = IC_OK,
-            disableIconString = IC_UNOK,
-            descriptionId = R.string.content_ic_ok,
-            onClickedListener = {
+            isActionEnabled = enable,
+            actionIconString = IC_OK,
+            actionDisableIconString = IC_UNOK,
+            actionIconDescriptionId = R.string.content_ic_ok,
+            onActionClickedListener = {
                 runBlocking {
                     authViewModel.setName(inputText)
                     navController.popBackStack()

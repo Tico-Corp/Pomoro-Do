@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -30,21 +28,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
 import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTextButton
-import com.tico.pomorodo.ui.common.view.CustomTopAppBarWithRightButton
+import com.tico.pomorodo.ui.common.view.CustomTopAppBar
+import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
@@ -63,15 +56,12 @@ fun FollowListScreen(navigateToAddFollowerScreen: () -> Unit) {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.background(color = PomoroDoTheme.colorScheme.background)) {
-        CustomTopAppBarWithRightButton(
-            title = stringResource(R.string.title_follow),
-            iconString = IC_ADD_CATEGORY,
-            iconDescriptionId = R.string.content_ic_add_follower,
-            onClickedListener = navigateToAddFollowerScreen,
-            top = 24,
-            bottom = 14,
-            start = 16,
-            end = 16
+        CustomTopAppBar(
+            titleTextId = R.string.title_follow,
+            actionIconString = IC_ADD_CATEGORY,
+            actionIconDescriptionId = R.string.content_ic_add_follower,
+            onActionClickedListener = navigateToAddFollowerScreen,
+            isBackIcon = false
         )
 
         FollowTabRow(selectedTabIndex = pagerState.currentPage) { index ->
@@ -257,17 +247,7 @@ fun FollowItem(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        GlideImage(
-            imageModel = { user.profileUrl },
-            modifier = Modifier
-                .size(40.dp)
-                .clip(shape = CircleShape),
-            requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
-            )
-        )
+        Profile(size = 40, uri = user.profileUrl)
 
         Text(
             text = user.name,

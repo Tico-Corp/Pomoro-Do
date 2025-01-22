@@ -3,8 +3,7 @@ package com.tico.pomorodo.ui.todo.viewmodel
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
-import com.tico.pomorodo.data.model.TodoData
-import com.tico.pomorodo.data.model.TodoState
+import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.toTimeZoneOf5AM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,12 +16,16 @@ import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class TodoViewModel @Inject constructor() : ViewModel() {
+class FriendTodoViewModel @Inject constructor() : ViewModel() {
 
     private var _categoryWithTodoItemList =
         MutableStateFlow<List<CategoryWithTodoItem>>(emptyList())
     val categoryWithTodoItemList: StateFlow<List<CategoryWithTodoItem>>
         get() = _categoryWithTodoItemList.asStateFlow()
+
+    private var _user = MutableStateFlow<Follow?>(null)
+    val user: StateFlow<Follow?>
+        get() = _user.asStateFlow()
 
     private var _selectedDate =
         MutableStateFlow<LocalDate>(
@@ -52,48 +55,27 @@ class TodoViewModel @Inject constructor() : ViewModel() {
         get() = _isLoading.asStateFlow()
 
     init {
+        fetchFollowing()
         getCategoryWithTodoItems()
-        getCalendarDates()
-    }
-
-    private fun getCalendarDates() {
-        // TODO: get calendarDate
     }
 
     fun setSelectedDate(date: LocalDate) {
         _selectedDate.value = date
     }
 
+    private fun fetchFollowing() {
+        // TODO: follower user 정보 불러오는 로직 구현
+    }
+
+    fun setFollowing() {
+        // TODO: follow/following 버튼 클릭 로직 구현
+    }
+
+    fun updateTodoLicked(todoId: Int) {
+        // TODO: 좋아요 로직 구현
+    }
+
     private fun getCategoryWithTodoItems() {
-        // TODO: get categoryWithTodo
-    }
-
-    fun addNewTodoItem(title: String, categoryIndex: Int) {
-        if (validateTodoInput(title)) {
-            // TODO: add new todo
-        }
-    }
-
-    fun updateTodoState(todo: TodoData) {
-        val newState = when (todo.status) {
-            TodoState.UNCHECKED -> TodoState.CHECKED
-            TodoState.CHECKED -> TodoState.GOING
-            TodoState.GOING -> TodoState.UNCHECKED
-        }
-        // TODO: update todo state
-    }
-
-    private suspend fun updateCalendarData(categoryWithTodos: List<CategoryWithTodoItem>) {
-        // TODO: update calendarDate
-    }
-
-    private fun validateTodoInput(inputText: String): Boolean = inputText.isNotBlank()
-
-    fun updateTodoItem(categoryIndex: Int, todoItemIndex: Int, title: String) {
-        // TODO: update todo
-    }
-
-    fun deleteTodoItem(todoId: Int) {
-        // TODO: delete todo
+        // TODO: 친구의 카테고리 별 투두 불러오는 로직
     }
 }

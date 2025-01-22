@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.common.view
 
-import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,18 +27,27 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun Profile(uri: Uri?, modifier: Modifier = Modifier, size: Int) {
-    GlideImage(
-        imageModel = { uri },
-        modifier = modifier
-            .size(size.dp)
-            .clip(shape = CircleShape),
-        requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
-        imageOptions = ImageOptions(
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.Center
+fun Profile(uri: String?, modifier: Modifier = Modifier, size: Int) {
+    if (uri == null) {
+        SimpleIcon(
+            modifier = Modifier.clip(shape = CircleShape),
+            size = size,
+            imageVector = IconPack.IcProfileDefault,
+            contentDescriptionId = R.string.content_ic_profile_default
         )
-    )
+    } else {
+        GlideImage(
+            imageModel = { uri },
+            modifier = modifier
+                .size(size.dp)
+                .clip(shape = CircleShape),
+            requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop,
+                alignment = Alignment.Center
+            )
+        )
+    }
 }
 
 @Composable
@@ -102,10 +110,11 @@ fun ProfileHorizontal(
     size: Int,
     defaultProfileUri: String? = null,
     name: String,
-    textStyle: TextStyle
+    textStyle: TextStyle,
+    onClicked: () -> Unit = {}
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.clickableWithoutRipple { onClicked() },
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

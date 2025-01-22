@@ -14,8 +14,8 @@ class MyPageViewModel @Inject constructor(networkHelper: NetworkHelper) : ViewMo
     private var _name = MutableStateFlow("")
     val name: StateFlow<String> = _name.asStateFlow()
 
-    private var _profile = MutableStateFlow<Uri?>(null)
-    val profile: StateFlow<Uri?> = _profile.asStateFlow()
+    private var _profile = MutableStateFlow<String?>(null)
+    val profile: StateFlow<String?> = _profile.asStateFlow()
 
     val isNetworkConnected = networkHelper.isNetworkConnected()
 }

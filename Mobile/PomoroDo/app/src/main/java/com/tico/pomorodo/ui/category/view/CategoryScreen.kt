@@ -35,7 +35,7 @@ import com.tico.pomorodo.ui.todo.view.CategoryTag
 
 @Composable
 fun CategoryScreen(
-    normalCategoryList: List<Category>,
+    generalCategoryList: List<Category>,
     groupCategoryList: List<Category>,
     inviteGroupCategoryList: List<InviteCategory>,
     onCategoryClicked: (Int) -> Unit
@@ -51,7 +51,7 @@ fun CategoryScreen(
         ) {
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 SimpleText(
-                    textId = R.string.content_category_normal,
+                    textId = R.string.content_category_general,
                     style = PomoroDoTheme.typography.laundryGothicBold16,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
@@ -59,7 +59,7 @@ fun CategoryScreen(
                     modifier = Modifier,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    normalCategoryList.forEach { category ->
+                    generalCategoryList.forEach { category ->
                         Row(
                             modifier = Modifier
                                 .clickableWithoutRipple(
@@ -68,7 +68,12 @@ fun CategoryScreen(
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(title = category.title, groupNumber = 0)
+                            CategoryTag(
+                                title = category.title,
+                                groupMemberCount = category.groupMemberCount,
+                                isAddButton = false,
+                                onAddClicked = { onCategoryClicked(category.id) }
+                            )
                         }
                     }
                 }
@@ -89,7 +94,12 @@ fun CategoryScreen(
                                 )
                                 .fillMaxWidth()
                         ) {
-                            CategoryTag(title = category.title, groupNumber = 6)
+                            CategoryTag(
+                                title = category.title,
+                                groupMemberCount = category.groupMemberCount,
+                                isAddButton = false,
+                                onAddClicked = { onCategoryClicked(category.id) }
+                            )
                         }
                     }
                 }
@@ -203,15 +213,15 @@ fun CategoryScreenRoute(
             CustomTopAppBar(
                 modifier = Modifier,
                 titleTextId = R.string.title_category,
-                iconString = IC_ADD_CATEGORY,
-                descriptionId = R.string.content_ic_ok,
-                onClickedListener = navigateToAddCategory,
+                actionIconString = IC_ADD_CATEGORY,
+                actionIconDescriptionId = R.string.content_ic_ok,
+                onActionClickedListener = navigateToAddCategory,
                 onBackClickedListener = navigateToBack
             )
             CategoryScreen(
                 inviteGroupCategoryList = inviteGroupCategoryList,
-                normalCategoryList = categoryList.filter { it.groupNumber == 0 },
-                groupCategoryList = categoryList.filter { it.groupNumber > 0 },
+                generalCategoryList = categoryList.filter { it.groupMemberCount == 0 },
+                groupCategoryList = categoryList.filter { it.groupMemberCount > 0 },
                 onCategoryClicked = navigateToInfoCategory
             )
         }

@@ -48,7 +48,7 @@ fun CustomTextField(
         modifier = modifier
             .indicatorLine(
                 enabled = enabled,
-                isError = false,
+                isError = isError,
                 interactionSource = interactionSource,
                 colors = colors
             ),

@@ -74,12 +74,13 @@
     <string name="content_calendar_date_orange">주황</string>
     <string name="content_calendar_date_red">빨강</string>
     <string name="content_calendar_weekly_title">%d년 %d월 %d주차</string>
+    <string name="content_calendar_monthly_title">%d년 %d월</string>
     <string name="content_me">나</string>
     <string name="content_todo_more_info_edit">수정</string>
     <string name="content_todo_more_info_delete">삭제</string>
 
     // category
-    <string name="content_category_normal">일반</string>
+    <string name="content_category_general">일반</string>
     <string name="content_category_group">그룹</string>
     <string name="content_category_invited_group">초대받은 그룹</string>
     <string name="content_accept">수락</string>

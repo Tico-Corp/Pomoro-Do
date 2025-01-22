@@ -39,8 +39,8 @@ import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.navigation.MainNavigationDestination
-import com.tico.pomorodo.ui.category.viewModel.AddCategoryViewModel
-import com.tico.pomorodo.ui.category.viewModel.InfoCategoryViewModel
+import com.tico.pomorodo.ui.category.viewModel.CategoryAddViewModel
+import com.tico.pomorodo.ui.category.viewModel.CategoryInfoViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextField
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.ProfileHorizontal
@@ -68,13 +68,13 @@ fun GroupMemberChooseRoute(
 ) {
     when (previousScreenType) {
         MainNavigationDestination.INFO_CATEGORY.name -> {
-            val viewModel = hiltViewModel<InfoCategoryViewModel>(navBackStackEntry)
+            val viewModel = hiltViewModel<CategoryInfoViewModel>(navBackStackEntry)
             GroupMemberChooseScreen(viewModel, navigateToBack)
 
         }
 
         MainNavigationDestination.ADD_CATEGORY.name -> {
-            val viewModel = hiltViewModel<AddCategoryViewModel>(navBackStackEntry)
+            val viewModel = hiltViewModel<CategoryAddViewModel>(navBackStackEntry)
             GroupMemberChooseScreen(viewModel, navigateToBack)
         }
     }
@@ -84,11 +84,11 @@ fun GroupMemberChooseRoute(
 private fun GroupMemberChooseScreen(viewModel: ViewModel, navigateToBack: () -> Unit) {
     val selectedList = remember {
         when (viewModel) {
-            is AddCategoryViewModel -> {
+            is CategoryAddViewModel -> {
                 viewModel.selectedGroupMembers.value.toMutableStateList()
             }
 
-            is InfoCategoryViewModel -> {
+            is CategoryInfoViewModel -> {
                 viewModel.selectedGroupMembers.value.toMutableStateList()
             }
 
@@ -124,17 +124,17 @@ private fun GroupMemberChooseScreen(viewModel: ViewModel, navigateToBack: () -> 
         ) {
             CustomTopAppBar(
                 titleTextId = R.string.title_group_member_choose,
-                iconString = IC_OK,
-                disableIconString = IC_UNOK,
-                enabled = selectedList.any { it.selected },
-                descriptionId = R.string.content_ic_ok,
-                onClickedListener = {
+                actionIconString = IC_OK,
+                actionDisableIconString = IC_UNOK,
+                isActionEnabled = selectedList.any { it.selected },
+                actionIconDescriptionId = R.string.content_ic_ok,
+                onActionClickedListener = {
                     when (viewModel) {
-                        is AddCategoryViewModel -> {
+                        is CategoryAddViewModel -> {
                             viewModel.setSelectedGroupMembers(selectedList)
                         }
 
-                        is InfoCategoryViewModel -> {
+                        is CategoryInfoViewModel -> {
                             viewModel.setSelectedGroupMembers(selectedList)
                         }
                     }

@@ -8,8 +8,8 @@ import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.data.model.User
+import com.tico.pomorodo.data.model.toSelectedUser
 import com.tico.pomorodo.navigation.CategoryArgs
-import com.tico.pomorodo.ui.common.view.toSelectedUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class InfoCategoryViewModel @Inject constructor(
+class CategoryInfoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -35,9 +35,12 @@ class InfoCategoryViewModel @Inject constructor(
     private var follower = MutableStateFlow<List<User>?>(null)
 
     init {
+        loadData()
+    }
+
+    private fun loadData() {
         fetchCategoryInfo(args.categoryId)
         fetchFollower()
-        fetchSelectedGroupMembers()
     }
 
     fun setOpenSettingOption(newOption: OpenSettings) {
@@ -54,7 +57,7 @@ class InfoCategoryViewModel @Inject constructor(
 
     fun validateInput(): Boolean {
         category.value?.let { category ->
-            if (category.type == CategoryType.NORMAL) {
+            if (category.type == CategoryType.GENERAL) {
                 return category.title.isNotBlank()
             } else {
                 return category.title.isNotBlank() && selectedGroupMembers.value.any { it.selected }
@@ -64,7 +67,7 @@ class InfoCategoryViewModel @Inject constructor(
     }
 
     private fun fetchCategoryInfo(categoryId: Int) {
-        TODO("category 목록에서 categoryId로 조회")
+        // TODO: category info 조회
     }
 
     private fun fetchFollower() {
@@ -85,5 +88,9 @@ class InfoCategoryViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun updateCategoryInfo() {
+        // TODO: update category info
     }
 }

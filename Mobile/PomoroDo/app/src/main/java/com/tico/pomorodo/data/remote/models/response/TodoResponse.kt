@@ -3,6 +3,7 @@ package com.tico.pomorodo.data.remote.models.response
 import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,7 +14,8 @@ data class TodoResponse(
     val status: TodoState,
     val createdAt: Long,
     val updatedAt: Long,
-    val likes: Int
+    val likes: Int,
+    val targetDate: LocalDate
 )
 
 fun TodoResponse.toTodoData() = TodoData(
@@ -23,7 +25,8 @@ fun TodoResponse.toTodoData() = TodoData(
     status = status,
     likes = likes,
     createdAt = createdAt,
-    updatedAt = updatedAt
+    updatedAt = updatedAt,
+    targetDate = targetDate
 )
 
 fun TodoResponse.toTodoEntity() = TodoEntity(
@@ -32,6 +35,7 @@ fun TodoResponse.toTodoEntity() = TodoEntity(
     categoryId = categoryId,
     status = status,
     likes = likes,
+    targetDate = targetDate,
     createdAt = createdAt,
     updatedAt = updatedAt
 )

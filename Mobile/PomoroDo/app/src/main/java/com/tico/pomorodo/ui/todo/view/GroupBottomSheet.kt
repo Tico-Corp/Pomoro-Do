@@ -34,6 +34,7 @@ fun GroupBottomSheet(
     completedList: List<User>,
     incompletedList: List<User>,
     totalNumber: Int,
+    onClicked: () -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -79,7 +80,8 @@ fun GroupBottomSheet(
                     ProfileHorizontal(
                         size = 36,
                         name = it.name,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14
+                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
+                        onClicked = onClicked
                     )
                 }
                 item {
@@ -104,7 +106,8 @@ fun GroupBottomSheet(
                     ProfileHorizontal(
                         size = 36,
                         name = it.name,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14
+                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
+                        onClicked = onClicked
                     )
                 }
                 item {
