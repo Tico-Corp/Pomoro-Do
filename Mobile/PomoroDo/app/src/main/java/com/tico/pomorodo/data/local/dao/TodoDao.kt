@@ -5,8 +5,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.TodoEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 @Dao
 interface TodoDao {
@@ -19,18 +21,18 @@ interface TodoDao {
     @Update
     suspend fun update(entity: TodoEntity)
 
-    @Update
-    suspend fun updateAll(entities: List<TodoEntity>)
-
-    @Query("SELECT * FROM todo_table")
-    fun getAllTodo(): Flow<List<TodoEntity>>
-
-    @Query("SELECT * from todo_table WHERE id = :id")
-    fun getTodo(id: Int): Flow<TodoEntity>
-
     @Query("DELETE FROM todo_table WHERE id = :id")
     suspend fun deleteTodo(id: Int)
 
-    @Query("SELECT * FROM todo_table WHERE category_id = :categoryId")
-    fun getTodosByCategory(categoryId: Int): Flow<List<TodoEntity>>
+    @Query(
+        """
+    SELECT * 
+    FROM category_table 
+    LEFT OUTER JOIN todo_table 
+    ON category_table.id = todo_table.category_id 
+    AND todo_table.target_date = :targetDate
+    ORDER BY category_table.type ASC, category_table.id ASC, todo_table.created_at DESC
+    """
+    )
+    fun getCategoryWithTodoItems(targetDate: LocalDate): Flow<Map<CategoryEntity, List<TodoEntity>>>
 }
