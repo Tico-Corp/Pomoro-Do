@@ -7,10 +7,7 @@ import com.tico.pomorodo.domain.repository.TokenRepository
 import com.tico.pomorodo.domain.usecase.auth.ClearAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.ClearIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.GetAccessTokenUseCase
-import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
-import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
 import com.tico.pomorodo.domain.usecase.auth.GetIdTokenUseCase
-import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import com.tico.pomorodo.domain.usecase.auth.IsAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.JoinUseCase
 import com.tico.pomorodo.domain.usecase.auth.LoginUseCase
@@ -19,6 +16,11 @@ import com.tico.pomorodo.domain.usecase.auth.SaveAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.SaveIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.SaveRefreshTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.ValidateTokenUseCase
+import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
+import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
+import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
+import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
+import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -116,5 +118,17 @@ object UseCaseModule {
     @Provides
     fun provideGetAllCategoryUseCase(categoryRepository: CategoryRepository): GetAllCategoryUseCase {
         return GetAllCategoryUseCase(categoryRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetCategoryInfoUseCase(categoryRepository: CategoryRepository): GetCategoryInfoUseCase {
+        return GetCategoryInfoUseCase(categoryRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideInsertCategoryUseCase(categoryRepository: CategoryRepository): InsertCategoryUseCase {
+        return InsertCategoryUseCase(categoryRepository)
     }
 }
