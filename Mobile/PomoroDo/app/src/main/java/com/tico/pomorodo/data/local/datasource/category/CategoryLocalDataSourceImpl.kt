@@ -11,8 +11,8 @@ class CategoryLocalDataSourceImpl @Inject constructor(private val categoryDao: C
         return categoryDao.getAllCategory()
     }
 
-    override suspend fun getCategory(id: Int): Flow<CategoryEntity> {
-        return categoryDao.getCategory(id)
+    override suspend fun getCategoryInfo(categoryId: Int): Flow<CategoryEntity> {
+        return categoryDao.getCategoryInfo(categoryId)
     }
 
     override suspend fun insert(entity: CategoryEntity) {

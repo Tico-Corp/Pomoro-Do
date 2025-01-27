@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface CategoryLocalDataSource {
     suspend fun getAllCategory(): Flow<List<CategoryEntity>>
 
-    suspend fun getCategory(id: Int): Flow<CategoryEntity>
+    suspend fun getCategoryInfo(categoryId: Int): Flow<CategoryEntity>
 
     suspend fun insert(entity: CategoryEntity)
 
