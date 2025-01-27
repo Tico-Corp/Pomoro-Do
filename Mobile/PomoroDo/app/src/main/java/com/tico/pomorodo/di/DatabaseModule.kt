@@ -1,10 +1,11 @@
 package com.tico.pomorodo.di
 
 import android.content.Context
-import com.tico.pomorodo.common.util.NetworkHelper
+import androidx.room.Room
 import com.tico.pomorodo.data.local.dao.CategoryDao
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.datasource.PomorodoDatabase
+import com.tico.pomorodo.data.local.datasource.PomorodoDatabase.Companion.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +20,11 @@ object DatabaseModule {
     @Provides
     fun provideAppDatabase(
         @ApplicationContext context: Context
-    ): PomorodoDatabase = PomorodoDatabase.getDatabase(context)
+    ): PomorodoDatabase = Room.databaseBuilder(
+        context.applicationContext,
+        PomorodoDatabase::class.java,
+        DATABASE_NAME
+    ).build()
 
     @Singleton
     @Provides
