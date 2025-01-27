@@ -1,9 +1,30 @@
 package com.tico.pomorodo.common.util
 
 import androidx.room.TypeConverter
+import com.tico.pomorodo.data.local.entity.UserEntity
 import kotlinx.datetime.LocalDate
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class Converters {
+    @TypeConverter
+    fun userListToJson(value: List<UserEntity>?): String {
+        val json = Json {
+            prettyPrint = true
+            ignoreUnknownKeys = true
+        }
+        return json.encodeToString(value)
+    }
+
+    @TypeConverter
+    fun jsonToUserList(value: String): List<UserEntity>? {
+        val json = Json {
+            prettyPrint = true
+            ignoreUnknownKeys = true
+        }
+        return json.decodeFromString(value)
+    }
+
     @TypeConverter
     fun fromLocalDate(date: LocalDate): Int {
         return date.toEpochDays()
