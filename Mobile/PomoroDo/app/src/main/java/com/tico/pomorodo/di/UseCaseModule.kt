@@ -21,6 +21,8 @@ import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
+import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
+import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -100,12 +102,6 @@ object UseCaseModule {
     @Provides
     fun provideReissueTokenUseCase(tokenRepository: TokenRepository): ReissueTokenUseCase {
         return ReissueTokenUseCase(tokenRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideGetAllTodoUseCase(todoRepository: TodoRepository): GetAllTodoUseCase {
-        return GetAllTodoUseCase(todoRepository)
     }
 
     @Singleton
