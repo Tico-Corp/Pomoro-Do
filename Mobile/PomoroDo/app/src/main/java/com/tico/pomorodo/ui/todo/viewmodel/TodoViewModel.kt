@@ -1,15 +1,25 @@
 package com.tico.pomorodo.ui.todo.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
+import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
+import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
+import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
+import com.tico.pomorodo.domain.usecase.todo.UpdateTodoUseCase
 import com.tico.pomorodo.ui.common.view.toTimeZoneOf5AM
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -17,7 +27,12 @@ import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class TodoViewModel @Inject constructor() : ViewModel() {
+class TodoViewModel @Inject constructor(
+    private val deleteTodoUseCase: DeleteTodoUseCase,
+    private val insertTodoUseCase: InsertTodoUseCase,
+    private val getCategoryWithTodoItemsUseCase: GetCategoryWithTodoItemsUseCase,
+    private val updateTodoUseCase: UpdateTodoUseCase
+) : ViewModel() {
 
     private var _categoryWithTodoItemList =
         MutableStateFlow<List<CategoryWithTodoItem>>(emptyList())
@@ -57,20 +72,55 @@ class TodoViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun getCalendarDates() {
-        // TODO: get calendarDate
+        // TODO: get calendar dates
     }
 
     fun setSelectedDate(date: LocalDate) {
         _selectedDate.value = date
     }
 
-    private fun getCategoryWithTodoItems() {
-        // TODO: get categoryWithTodo
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCategoryWithTodoItems() = viewModelScope.launch {
+        _selectedDate.flatMapLatest { date ->
+            getCategoryWithTodoItemsUseCase(date)
+        }.collect { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    _isLoading.value = true
+                }
+
+                is Resource.Success -> {
+                    _isLoading.value = false
+                    _categoryWithTodoItemList.value = result.data
+                    updateCalendarData(result.data)
+                }
+
+                is Resource.Failure.Exception -> {
+                    Log.e("TodoViewModel", "refreshCategoryWithTodoItems: ${result.message}")
+                }
+
+                is Resource.Failure.Error -> {
+                    Log.e(
+                        "TodoViewModel",
+                        "refreshCategoryWithTodoItems: ${result.code} ${result.message}"
+                    )
+                }
+            }
+        }
     }
 
     fun addNewTodoItem(title: String, categoryIndex: Int) {
         if (validateTodoInput(title)) {
-            // TODO: add new todo
+            val category = categoryWithTodoItemList.value[categoryIndex]
+            viewModelScope.launch {
+                insertTodoUseCase(
+                    title = title,
+                    categoryId = category.categoryId,
+                    incompletedList = category.groupMember,
+                    completedList = listOf(),
+                    targetDate = selectedDate.value
+                )
+            }
         }
     }
 
@@ -80,7 +130,9 @@ class TodoViewModel @Inject constructor() : ViewModel() {
             TodoState.CHECKED -> TodoState.GOING
             TodoState.GOING -> TodoState.UNCHECKED
         }
-        // TODO: update todo state
+        viewModelScope.launch {
+            updateTodoUseCase(todo.copy(status = newState, updatedAt = System.currentTimeMillis()))
+        }
     }
 
     private suspend fun updateCalendarData(categoryWithTodos: List<CategoryWithTodoItem>) {
@@ -90,10 +142,19 @@ class TodoViewModel @Inject constructor() : ViewModel() {
     private fun validateTodoInput(inputText: String): Boolean = inputText.isNotBlank()
 
     fun updateTodoItem(categoryIndex: Int, todoItemIndex: Int, title: String) {
-        // TODO: update todo
+        val newTodoData =
+            categoryWithTodoItemList.value[categoryIndex].todoList[todoItemIndex].copy(
+                title = title,
+                updatedAt = System.currentTimeMillis()
+            )
+        viewModelScope.launch {
+            updateTodoUseCase(newTodoData)
+        }
     }
 
     fun deleteTodoItem(todoId: Int) {
-        // TODO: delete todo
+        viewModelScope.launch {
+            deleteTodoUseCase(todoId)
+        }
     }
 }
