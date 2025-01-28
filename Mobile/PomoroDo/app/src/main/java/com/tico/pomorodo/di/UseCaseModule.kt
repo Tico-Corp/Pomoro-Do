@@ -22,7 +22,10 @@ import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
+import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
+import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
+import com.tico.pomorodo.domain.usecase.todo.UpdateTodoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -114,6 +117,24 @@ object UseCaseModule {
     @Provides
     fun provideGetAllCategoryUseCase(categoryRepository: CategoryRepository): GetAllCategoryUseCase {
         return GetAllCategoryUseCase(categoryRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetCategoryWithTodoItemsUseCase(todoRepository: TodoRepository): GetCategoryWithTodoItemsUseCase {
+        return GetCategoryWithTodoItemsUseCase(todoRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUpdateTodoUseCase(todoRepository: TodoRepository): UpdateTodoUseCase {
+        return UpdateTodoUseCase(todoRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDeleteTodoUseCase(todoRepository: TodoRepository): DeleteTodoUseCase {
+        return DeleteTodoUseCase(todoRepository)
     }
 
     @Singleton
