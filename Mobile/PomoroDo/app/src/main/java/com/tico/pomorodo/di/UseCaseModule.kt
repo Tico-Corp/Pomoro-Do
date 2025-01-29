@@ -19,9 +19,6 @@ import com.tico.pomorodo.domain.usecase.auth.ValidateTokenUseCase
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
-import com.tico.pomorodo.domain.usecase.todo.GetAllTodoUseCase
-import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
-import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
