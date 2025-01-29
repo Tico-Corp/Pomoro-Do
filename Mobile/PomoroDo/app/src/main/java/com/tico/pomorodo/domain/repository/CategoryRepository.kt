@@ -1,19 +1,30 @@
 package com.tico.pomorodo.domain.repository
 
 import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
     suspend fun getAllCategory(): Flow<Resource<List<Category>>>
 
-    suspend fun getCategory(id: Int): Flow<Resource<Category>>
+    suspend fun getCategoryInfo(categoryId: Int): Flow<Resource<Category>>
 
-    suspend fun insert(entity: Category)
+    suspend fun insert(
+        title: String,
+        type: CategoryType,
+        isGroupReader: Boolean,
+        openSettings: OpenSettings,
+        groupReader: String,
+        groupMemberCount: Int,
+        groupMember: List<User>
+    )
 
     suspend fun insertAll(entities: List<Category>)
 
-    suspend fun update(entity: Category)
+    suspend fun updateCategoryInfo(entity: Category)
 
-    suspend fun delete(id: Int)
+    suspend fun deleteCategoryInfo(id: Int)
 }

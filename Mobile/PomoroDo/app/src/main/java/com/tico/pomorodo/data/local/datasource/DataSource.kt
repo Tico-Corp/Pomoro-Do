@@ -1,6 +1,10 @@
 package com.tico.pomorodo.data.local.datasource
 
+import com.tico.pomorodo.data.local.entity.CategoryEntity
+import com.tico.pomorodo.data.local.entity.UserEntity
+import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.model.Follow
 
@@ -49,5 +53,54 @@ object DataSource {
         Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
         Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
         Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+    )
+
+    val INITIAL_CATEGORY_DATA = listOf(
+        CategoryEntity(
+            id = 1,
+            type = CategoryType.GROUP,
+            openSettings = OpenSettings.GROUP,
+            title = "그룹 카테고리 1",
+            groupMemberCount = 2,
+            isGroupReader = true,
+            groupReader = "사용자 1",
+            groupMember = listOf(
+                UserEntity(id = 1, name = "사용자 1", email = "abc@abc.abc"),
+                UserEntity(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
+                UserEntity(id = 3, name = "사용자 3", email = "abce@abc.abc")
+            ),
+        ),
+        CategoryEntity(
+            id = 2,
+            type = CategoryType.GROUP,
+            openSettings = OpenSettings.GROUP,
+            title = "그룹 카테고리 2",
+            groupMemberCount = 2,
+            isGroupReader = false,
+            groupReader = "사용자 2",
+            groupMember = listOf(
+                UserEntity(id = 1, name = "사용자 1", email = "abc@abc.abc"),
+                UserEntity(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
+                UserEntity(id = 3, name = "사용자 3", email = "abce@abc.abc")
+            ),
+        ),
+        CategoryEntity(
+            id = 3,
+            type = CategoryType.GENERAL,
+            openSettings = OpenSettings.ME,
+            title = "일반 카테고리 1",
+            isGroupReader = true,
+            groupReader = "사용자 1",
+            groupMember = null
+        ),
+        CategoryEntity(
+            id = 4,
+            type = CategoryType.GENERAL,
+            openSettings = OpenSettings.FOLLOWER,
+            title = "일반 카테고리 2",
+            isGroupReader = true,
+            groupReader = "사용자 1",
+            groupMember = null
+        ),
     )
 }

@@ -21,5 +21,9 @@ fun Category.toCategoryEntity() = CategoryEntity(
     id = id,
     title = title,
     type = type,
-    openSettings = openSettings
+    openSettings = openSettings,
+    groupReader = groupReader,
+    isGroupReader = isGroupReader,
+    groupMemberCount = groupMemberCount,
+    groupMember = groupMember?.map(User::toUserEntity)
 )

@@ -1,15 +1,21 @@
 package com.tico.pomorodo.di
 
 import android.content.Context
-import com.tico.pomorodo.common.util.NetworkHelper
+import androidx.room.Room
+import androidx.room.RoomDatabase.Callback
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tico.pomorodo.data.local.dao.CategoryDao
 import com.tico.pomorodo.data.local.dao.TodoDao
+import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_CATEGORY_DATA
 import com.tico.pomorodo.data.local.datasource.PomorodoDatabase
+import com.tico.pomorodo.data.local.datasource.PomorodoDatabase.Companion.DATABASE_NAME
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
+import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 @Module
@@ -19,7 +25,22 @@ object DatabaseModule {
     @Provides
     fun provideAppDatabase(
         @ApplicationContext context: Context
-    ): PomorodoDatabase = PomorodoDatabase.getDatabase(context)
+    ): PomorodoDatabase = Room.databaseBuilder(
+        context.applicationContext,
+        PomorodoDatabase::class.java,
+        DATABASE_NAME
+    ).addCallback(object : Callback() {
+        override fun onCreate(db: SupportSQLiteDatabase) {
+            super.onCreate(db)
+            Executors.newSingleThreadExecutor().execute {
+                runBlocking {
+                    val database = provideAppDatabase(context)
+                    // 초기 데이터 설정
+                    database.categoryDao().insertAll(INITIAL_CATEGORY_DATA)
+                }
+            }
+        }
+    }).build()
 
     @Singleton
     @Provides
