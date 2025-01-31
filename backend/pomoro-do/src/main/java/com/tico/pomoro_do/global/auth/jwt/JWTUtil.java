@@ -22,22 +22,27 @@ import java.util.Date;
 @Slf4j
 public class JWTUtil {
 
-    //객체키
+    // 객체키
     private SecretKey secretKey;
 
-    //객체변수로 암호화
+    // 객체변수로 암호화
     public JWTUtil(@Value("${jwt.secret-key}")String secret) {
 
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
 
-    //토큰 검증 함수
+    // 토큰 검증 함수
 
-    //토큰 검증 -> 클램 확인 후 -> 특정데이터 가져오기
+    // 토큰 검증 -> 클램 확인 후 -> 특정데이터 가져오기
 
-    // 유저 이름 확인 메서드
-    public String getUsername(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
+//    // 유저 이름 확인 메서드
+//    public String getUsername(String token) {
+//        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
+//    }
+
+    // 유저 이메일 확인 메서드 -> JWT에서 사용자 이메일 추출
+    public String getEmail(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
     }
 
     // 유저 역할 확인 메서드
@@ -58,12 +63,12 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
     }
 
-    // 토큰 생성 메서드 (카테고리, 유저이름, 역할, 만료시간)
-    public String createJwt(String category, String username, String role, Long expiredMs) {
+    // 토큰 생성 메서드 (카테고리, 유저 이메일, 역할, 만료시간)
+    public String createJwt(String category, String email, String role, Long expiredMs) {
 
         return Jwts.builder()
                 .claim("category", category) //access인지? refesh인지?
-                .claim("username", username)
+                .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis())) // 생성 시각
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료 시각

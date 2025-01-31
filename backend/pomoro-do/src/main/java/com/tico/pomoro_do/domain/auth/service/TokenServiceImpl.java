@@ -34,35 +34,35 @@ public class TokenServiceImpl implements TokenService {
 
     // 토큰 생성 및 저장
     @Override
-    public TokenResponse createAuthTokens(String username, String role, String deviceId) {
+    public TokenResponse createAuthTokens(String email, String role, String deviceId) {
         // 액세스 토큰 생성
-        String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); // 60분
+        String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), email, role, accessExpiration); // 60분
         // 리프레시 토큰 생성
-        String refreshToken = jwtUtil.createJwt(TokenType.REFRESH.name(), username, role, refreshExpiration); // 24시간
+        String refreshToken = jwtUtil.createJwt(TokenType.REFRESH.name(), email, role, refreshExpiration); // 24시간
 
         // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제
         deleteRefreshTokenByDeviceId(deviceId);
         // 리프레시 토큰을 DB에 저장
-        createRefreshToken(username, refreshToken, refreshExpiration, deviceId);
+        createRefreshToken(email, refreshToken, refreshExpiration, deviceId);
 
         return new TokenResponse(accessToken, refreshToken);
     }
 
     @Override
-    public void createRefreshToken(String username, String refresh, Long expiredMs, String deviceId) {
+    public void createRefreshToken(String email, String refresh, Long expiredMs, String deviceId) {
 
         // 현재 시간에 만료 시간(밀리초)을 더해서 만료 날짜 계산
         LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(expiredMs));
 
         RefreshToken refreshTokenEntity = RefreshToken.builder()
-                .username(username)
+                .username(email)
                 .refreshToken(refresh)
                 .deviceId(deviceId)
                 .expiresAt(expiresAt)
                 .build();
 
         refreshTokenRepository.save(refreshTokenEntity);
-        log.info("리프레시 토큰 저장 성공: 사용자 = {}, 토큰 = {}, 기기 고유번호 = {}", username, refresh, deviceId);
+        log.info("리프레시 토큰 저장 성공: 사용자 = {}, 토큰 = {}, 기기 고유번호 = {}", email, refresh, deviceId);
 
     }
 
