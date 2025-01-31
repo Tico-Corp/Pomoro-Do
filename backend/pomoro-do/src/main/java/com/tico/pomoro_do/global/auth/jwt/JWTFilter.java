@@ -1,8 +1,8 @@
 package com.tico.pomoro_do.global.auth.jwt;
 
 import com.google.gson.Gson;
-import com.tico.pomoro_do.domain.user.dto.UserDTO;
-import com.tico.pomoro_do.global.auth.CustomUserDetails;
+import com.tico.pomoro_do.domain.auth.dto.AuthUser;
+import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
@@ -153,13 +153,13 @@ public class JWTFilter extends OncePerRequestFilter {
         /* 서버 자체 로그인 삭제 - END */
 
         // DTO로 사용자 정보 저장
-        UserDTO userDTO = UserDTO.builder()
-                .username(username)
+        AuthUser authUser = AuthUser.builder()
+                .email(username)
                 .role(role)
                 .build();
 
         //UserDetails에 회원 정보 객체 담기
-        CustomUserDetails customUserDetails = new CustomUserDetails(userDTO);
+        CustomUserDetails customUserDetails = new CustomUserDetails(authUser);
 
         //스프링 시큐리티 로그인 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());

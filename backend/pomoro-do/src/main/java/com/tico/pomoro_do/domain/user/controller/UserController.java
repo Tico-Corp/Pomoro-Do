@@ -3,7 +3,7 @@ package com.tico.pomoro_do.domain.user.controller;
 import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
 import com.tico.pomoro_do.domain.user.service.UserService;
-import com.tico.pomoro_do.global.auth.CustomUserDetails;
+import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
