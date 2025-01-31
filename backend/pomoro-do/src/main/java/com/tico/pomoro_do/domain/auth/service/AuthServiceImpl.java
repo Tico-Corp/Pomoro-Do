@@ -225,10 +225,10 @@ public class AuthServiceImpl implements AuthService {
 
         // 생성 로직
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
-        String username = jwtUtil.getUsername(refresh);
+        String email = jwtUtil.getEmail(refresh);
         String role = jwtUtil.getRole(refresh);
         // 토큰 재발행
-        return tokenService.createAuthTokens(username, role, deviceId);
+        return tokenService.createAuthTokens(email, role, deviceId);
 
     }
 }

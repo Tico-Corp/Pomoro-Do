@@ -19,7 +19,7 @@ public class TodoState extends BaseTimeEntity {
     private Todo todo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Enumerated(EnumType.STRING)
