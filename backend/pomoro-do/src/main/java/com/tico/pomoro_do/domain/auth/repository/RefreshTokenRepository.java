@@ -15,7 +15,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     void deleteByRefreshToken(String refreshToken);
 
     // 사용자 이름을 기준으로 모든 리프레쉬 토큰을 삭제하는 메소드
-    void deleteByUsername(String username);
+    void deleteByEmail(String email);
 
     // 디바이스 id를 기준으로 모든 리프레쉬 토큰을 삭제하는 메소드
     void deleteByDeviceId(String deviceId);

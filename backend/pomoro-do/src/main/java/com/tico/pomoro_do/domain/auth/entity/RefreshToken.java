@@ -19,7 +19,8 @@ public class RefreshToken {
     @Column(name = "token_id")
     private Long id;
 
-    private String username;
+    @Column(name = "email", nullable = false) // username → email
+    private String email;
 
     @Column(name = "refresh_token")
     private String refreshToken;
@@ -32,8 +33,8 @@ public class RefreshToken {
     // 생성자
 
     @Builder
-    public RefreshToken(String username, String refreshToken, String deviceId, LocalDateTime expiresAt) {
-        this.username = username;
+    public RefreshToken(String email, String refreshToken, String deviceId, LocalDateTime expiresAt) {
+        this.email = email;
         this.refreshToken = refreshToken;
         this.deviceId = deviceId;
         this.expiresAt = expiresAt;

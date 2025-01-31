@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService{
         // 회원 토큰 검증
         tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, username);
         // 해당 회원의 모든 리프레시 토큰 삭제
-        tokenService.deleteAllRefreshTokensByUsername(username);
+        tokenService.deleteAllRefreshTokensByEmail(username);
         // 해당 유저 삭제
         userRepository.deleteByUsername(username);
     }

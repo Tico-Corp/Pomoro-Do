@@ -55,7 +55,7 @@ public class TokenServiceImpl implements TokenService {
         LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(expiredMs));
 
         RefreshToken refreshTokenEntity = RefreshToken.builder()
-                .username(email)
+                .email(email)
                 .refreshToken(refresh)
                 .deviceId(deviceId)
                 .expiresAt(expiresAt)
@@ -92,19 +92,19 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void deleteAllRefreshTokensByUsername(String username) {
-        // DB에서 username에 해당하는 모든 엔티티를 제거합니다.
-        refreshTokenRepository.deleteByUsername(username);
+    public void deleteAllRefreshTokensByEmail(String email) {
+        // DB에서 email에 해당하는 모든 엔티티를 제거합니다.
+        refreshTokenRepository.deleteByEmail(email);
     }
 
     @Override
-    public void validateRefreshTokenDetails(String refreshHeader, String deviceId, String username) {
+    public void validateRefreshTokenDetails(String refreshHeader, String deviceId, String email) {
         // 1. 토큰 검증
         String refresh = extractAndValidateToken(refreshHeader, TokenType.REFRESH);
         // 2. DB에서 토큰 조회
         RefreshToken refreshToken = getRefreshByRefreshToken(refresh);
         // 3. DB 데이터 검증
-        validateRefreshTokenWithUsername(refreshToken, deviceId, username);
+        validateRefreshTokenWithEmail(refreshToken, deviceId, email);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class TokenServiceImpl implements TokenService {
         // 2. DB에서 토큰 조회
         RefreshToken refreshToken = getRefreshByRefreshToken(refresh);
         // 3. DB 데이터 검증
-        validateRefreshTokenWithoutUsername(refreshToken, deviceId);
+        validateRefreshTokenWithoutEmail(refreshToken, deviceId);
         return refresh;
     }
 
@@ -128,14 +128,14 @@ public class TokenServiceImpl implements TokenService {
         return token;
     }
 
-    // username 포함 검증
-    private void validateRefreshTokenWithUsername(RefreshToken refreshToken, String deviceId, String username) {
+    // email 포함 검증
+    private void validateRefreshTokenWithEmail(RefreshToken refreshToken, String deviceId, String email) {
         validateDeviceIdMatch(refreshToken, deviceId);
-        validateUsernameMatch(refreshToken, username);
+        validateEmailMatch(refreshToken, email);
     }
 
-    // username 제외 검증
-    private void validateRefreshTokenWithoutUsername(RefreshToken refreshToken, String deviceId) {
+    // email 제외 검증
+    private void validateRefreshTokenWithoutEmail(RefreshToken refreshToken, String deviceId) {
         validateDeviceIdMatch(refreshToken, deviceId);
     }
 
@@ -147,10 +147,10 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
-    // Username 검증
-    private void validateUsernameMatch(RefreshToken refreshToken, String username) {
-        if (!refreshToken.getUsername().equals(username)) {
-            log.error("Username이 일치하지 않음: username = {}", username);
+    // email 검증
+    private void validateEmailMatch(RefreshToken refreshToken, String email) {
+        if (!refreshToken.getEmail().equals(email)) {
+            log.error("email이 일치하지 않음: email = {}", email);
             throw new CustomException(ErrorCode.USERNAME_MISMATCH);
         }
     }
