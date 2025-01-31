@@ -1,16 +1,14 @@
 package com.tico.pomorodo.data.remote.datasource
 
 import com.tico.pomorodo.data.remote.models.request.TodoRequest
+import com.tico.pomorodo.data.remote.models.response.BaseResponse
+import com.tico.pomorodo.data.remote.models.response.CategoryWithTodoItemResponse
 import com.tico.pomorodo.data.remote.models.response.TodoResponse
 import com.tico.pomorodo.data.remote.service.TodoApiService
 import javax.inject.Inject
 
 class TodoRemoteDataSourceImpl @Inject constructor(private val todoApiService: TodoApiService) :
     TodoRemoteDataSource {
-    override suspend fun getAllTodo(): List<TodoResponse> = todoApiService.getAllTodo()
-
-    override suspend fun getTodo(id: Int): TodoResponse = todoApiService.getTodo(id)
-
     override suspend fun insertTodo(todoRequest: TodoRequest): TodoResponse =
         todoApiService.insertTodo(todoRequest)
 
@@ -21,4 +19,7 @@ class TodoRemoteDataSourceImpl @Inject constructor(private val todoApiService: T
         todoApiService.updateTodo(todoRequest)
 
     override suspend fun deleteTodo(id: Int): TodoResponse = todoApiService.deleteTodo(id)
+
+    override suspend fun getCategoryWithTodoItems(): BaseResponse<List<CategoryWithTodoItemResponse>> =
+        todoApiService.getCategoryWithTodoItems()
 }
