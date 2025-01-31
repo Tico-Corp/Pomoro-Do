@@ -22,15 +22,14 @@ public class RefreshToken {
     @Column(name = "email", nullable = false) // username → email
     private String email;
 
-    @Column(name = "refresh_token")
+    @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
 
-    @Column(name = "device_id")
+    @Column(name = "device_id", nullable = false)
     private String deviceId;
 
     @Column(name = "expires_at", nullable = false)
     private LocalDateTime expiresAt;
-    // 생성자
 
     @Builder
     public RefreshToken(String email, String refreshToken, String deviceId, LocalDateTime expiresAt) {
