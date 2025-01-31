@@ -1,7 +1,10 @@
 package com.tico.pomorodo.di
 
+import com.tico.pomorodo.data.local.dao.CalendarDao
 import com.tico.pomorodo.data.local.dao.CategoryDao
 import com.tico.pomorodo.data.local.dao.TodoDao
+import com.tico.pomorodo.data.local.datasource.calendar.CalendarLocalDataSource
+import com.tico.pomorodo.data.local.datasource.calendar.CalendarLocalDataSourceImpl
 import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSource
 import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSourceImpl
 import com.tico.pomorodo.data.local.datasource.todo.TodoLocalDataSource
@@ -52,4 +55,9 @@ object DataSourceModule {
     @Provides
     fun provideCategoryLocalDataSource(categoryDao: CategoryDao): CategoryLocalDataSource =
         CategoryLocalDataSourceImpl(categoryDao)
+
+    @Singleton
+    @Provides
+    fun provideCalendarLocalDataSource(calendarDao: CalendarDao): CalendarLocalDataSource =
+        CalendarLocalDataSourceImpl(calendarDao)
 }
