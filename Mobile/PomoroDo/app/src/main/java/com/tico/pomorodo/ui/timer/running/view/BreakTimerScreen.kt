@@ -10,22 +10,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
 import com.tico.pomorodo.R
+import com.tico.pomorodo.ui.common.view.BREAK_TIME
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.timer.running.viewmodel.TimerRunningViewModel
+import com.tico.pomorodo.ui.timer.running.viewmodel.BreakTimeViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun BreakTimerScreen(navBackStackEntry: NavBackStackEntry, navigate: () -> Unit) {
-    val timerRunningViewModel: TimerRunningViewModel = hiltViewModel(navBackStackEntry)
+fun BreakTimerScreen(navigateToTimerHome: () -> Unit, getState: (String) -> Int?) {
+    val breakTimeViewModel: BreakTimeViewModel = hiltViewModel()
 
     LaunchedEffect(key1 = Unit) {
-        timerRunningViewModel.initialBreakTime()
+        breakTimeViewModel.initialBreakTime(getState(BREAK_TIME) ?: 0)
     }
 
-    val breakTime by timerRunningViewModel.breakTime.collectAsState()
-    val maxValue by timerRunningViewModel.timerMaxValue.collectAsState()
+    val breakTime by breakTimeViewModel.breakTime.collectAsState()
+    val maxValue by breakTimeViewModel.timerMaxValue.collectAsState()
     val (isFinished, setFinish) = remember { mutableStateOf(false) }
     val (isPaused, setPause) = remember { mutableStateOf(false) }
     val (finishTimerDialogVisible, setFinishTimerDialogVisible) = remember {
@@ -40,12 +40,12 @@ fun BreakTimerScreen(navBackStackEntry: NavBackStackEntry, navigate: () -> Unit)
             second = updateTimer(
                 time = breakTime.copy(),
                 onFinishedChange = { setFinish(true) },
-                onTimeChanged = timerRunningViewModel::setBreakTime
+                onTimeChanged = breakTimeViewModel::setBreakTime
             )
         }
 
         if (isFinished) {
-            navigate()
+            navigateToTimerHome()
         }
     }
 

@@ -11,6 +11,7 @@ fun AppNavHost(
     modifier: Modifier = Modifier,
     startDestination: String = BottomNavigationDestination.TIMER.name,
     navigateToConcentrationMode: () -> Unit,
+    navigateToBreakMode: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
@@ -25,7 +26,11 @@ fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        timerScreen(setState = setTimerState, navigate = navigateToConcentrationMode)
+        timerScreen(
+            setState = setTimerState,
+            navigateToConcentrationMode = navigateToConcentrationMode,
+            navigateToBreakMode = navigateToBreakMode
+        )
         todoScreen(
             navigateToCategory = navigateToCategory,
             navigateToAddCategory = navigateToAddCategory,
