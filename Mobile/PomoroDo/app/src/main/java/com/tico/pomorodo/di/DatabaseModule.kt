@@ -4,9 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase.Callback
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.tico.pomorodo.data.local.dao.CalendarDao
 import com.tico.pomorodo.data.local.dao.CategoryDao
 import com.tico.pomorodo.data.local.dao.TodoDao
+import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_CALENDAR_DATA
 import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_CATEGORY_DATA
+import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_TODO_DATA
 import com.tico.pomorodo.data.local.datasource.PomorodoDatabase
 import com.tico.pomorodo.data.local.datasource.PomorodoDatabase.Companion.DATABASE_NAME
 import dagger.Module
@@ -37,6 +40,8 @@ object DatabaseModule {
                     val database = provideAppDatabase(context)
                     // 초기 데이터 설정
                     database.categoryDao().insertAll(INITIAL_CATEGORY_DATA)
+                    database.todoDao().insertAll(INITIAL_TODO_DATA)
+                    database.calendarDao().insert(INITIAL_CALENDAR_DATA)
                 }
             }
         }
@@ -50,4 +55,9 @@ object DatabaseModule {
     @Provides
     fun provideCategoryDao(pomorodoDatabase: PomorodoDatabase): CategoryDao =
         pomorodoDatabase.categoryDao()
+
+    @Singleton
+    @Provides
+    fun provideCalendarDao(pomorodoDatabase: PomorodoDatabase): CalendarDao =
+        pomorodoDatabase.calendarDao()
 }

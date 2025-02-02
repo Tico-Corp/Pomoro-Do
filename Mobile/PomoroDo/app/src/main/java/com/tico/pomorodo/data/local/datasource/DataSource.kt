@@ -1,12 +1,17 @@
 package com.tico.pomorodo.data.local.datasource
 
+import com.tico.pomorodo.data.local.entity.CalendarDateEntity
 import com.tico.pomorodo.data.local.entity.CategoryEntity
+import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.local.entity.UserEntity
+import com.tico.pomorodo.data.model.CalendarFocusState
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.model.Follow
+import kotlinx.datetime.LocalDate
 
 object DataSource {
     val userList = listOf<User>(
@@ -53,6 +58,94 @@ object DataSource {
         Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
         Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
         Follow(followId = 0, name = "모카커피짱귀엽", isFollowing = true),
+    )
+
+    val INITIAL_TODO_DATA = listOf(
+        TodoEntity(
+            id = 1,
+            title = "Todo 1",
+            categoryId = 1,
+            status = TodoState.UNCHECKED,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2,
+        ),
+        TodoEntity(
+            id = 2,
+            title = "Todo 2",
+            categoryId = 1,
+            status = TodoState.GOING,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2
+        ),
+        TodoEntity(
+            id = 3,
+            title = "Todo 3",
+            categoryId = 2,
+            status = TodoState.UNCHECKED,
+            targetDate = LocalDate(2024, 12, 5)
+        ),
+        TodoEntity(
+            id = 4,
+            title = "Todo 4",
+            categoryId = 3,
+            status = TodoState.CHECKED,
+            targetDate = LocalDate(2024, 12, 5)
+        ),
+        TodoEntity(
+            id = 5,
+            title = "Todo 5",
+            categoryId = 4,
+            status = TodoState.CHECKED,
+            targetDate = LocalDate(2024, 12, 5)
+        ),
+        TodoEntity(
+            id = 6,
+            title = "Todo 6",
+            categoryId = 4,
+            status = TodoState.GOING,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2
+        ),
+        TodoEntity(
+            id = 7,
+            title = "Todo 7",
+            categoryId = 4,
+            status = TodoState.GOING,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2
+        ),
+        TodoEntity(
+            id = 8,
+            title = "Todo 8",
+            categoryId = 4,
+            status = TodoState.GOING,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2
+        ),
+        TodoEntity(
+            id = 9,
+            title = "Todo 9",
+            categoryId = 4,
+            status = TodoState.GOING,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2
+        ),
+        TodoEntity(
+            id = 10,
+            title = "Todo 10",
+            categoryId = 4,
+            status = TodoState.GOING,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2
+        ),
+        TodoEntity(
+            id = 11,
+            title = "Todo 11",
+            categoryId = 4,
+            status = TodoState.GOING,
+            targetDate = LocalDate(2024, 12, 5),
+            likes = 2
+        )
     )
 
     val INITIAL_CATEGORY_DATA = listOf(
@@ -102,5 +195,12 @@ object DataSource {
             groupReader = "사용자 1",
             groupMember = null
         ),
+    )
+
+    val INITIAL_CALENDAR_DATA = CalendarDateEntity(
+        date = LocalDate(2024, 12, 5),
+        focusState = CalendarFocusState.WHITE,
+        totalCount = 6,
+        remainedTodoCount = 4
     )
 }

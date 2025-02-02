@@ -8,10 +8,15 @@ import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.calendar.GetCalendarDateForMonthUseCase
+import com.tico.pomorodo.domain.usecase.calendar.InsertCalendarDateForMonthUseCase
+import com.tico.pomorodo.domain.usecase.calendar.UpdateCalendarDateForMonthUseCase
 import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.UpdateTodoUseCase
+import com.tico.pomorodo.ui.common.view.atEndOfMonth
+import com.tico.pomorodo.ui.common.view.atStartOfMonth
 import com.tico.pomorodo.ui.common.view.toTimeZoneOf5AM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,7 +36,10 @@ class TodoViewModel @Inject constructor(
     private val deleteTodoUseCase: DeleteTodoUseCase,
     private val insertTodoUseCase: InsertTodoUseCase,
     private val getCategoryWithTodoItemsUseCase: GetCategoryWithTodoItemsUseCase,
-    private val updateTodoUseCase: UpdateTodoUseCase
+    private val updateTodoUseCase: UpdateTodoUseCase,
+    private val getCalendarDateForMonthUseCase: GetCalendarDateForMonthUseCase,
+    private val insertCalendarDateForMonthUseCase: InsertCalendarDateForMonthUseCase,
+    private val updateCalendarDateForMonthUseCase: UpdateCalendarDateForMonthUseCase,
 ) : ViewModel() {
 
     private var _categoryWithTodoItemList =
@@ -71,8 +79,35 @@ class TodoViewModel @Inject constructor(
         getCalendarDates()
     }
 
-    private fun getCalendarDates() {
-        // TODO: get calendar dates
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCalendarDates() = viewModelScope.launch {
+        _selectedDate.flatMapLatest { date ->
+            val startEpochDays = date.atStartOfMonth().toEpochDays()
+            val endEpochDays = date.atEndOfMonth().toEpochDays()
+            getCalendarDateForMonthUseCase(startEpochDays, endEpochDays)
+        }.collect { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    _isLoading.value = true
+                }
+
+                is Resource.Success -> {
+                    _isLoading.value = false
+                    _calendarDates.value = result.data
+                }
+
+                is Resource.Failure.Exception -> {
+                    Log.e("TodoViewModel", "refreshCalendarDates: ${result.message}")
+                }
+
+                is Resource.Failure.Error -> {
+                    Log.e(
+                        "TodoViewModel",
+                        "refreshCalendarDates: ${result.code} ${result.message}"
+                    )
+                }
+            }
+        }
     }
 
     fun setSelectedDate(date: LocalDate) {
@@ -136,7 +171,25 @@ class TodoViewModel @Inject constructor(
     }
 
     private suspend fun updateCalendarData(categoryWithTodos: List<CategoryWithTodoItem>) {
-        // TODO: update calendarDate
+        val totalTodos = categoryWithTodos.sumOf { it.todoList.size }
+        val uncheckedTodos =
+            categoryWithTodos.sumOf { it.todoList.count { todo -> todo.status != TodoState.CHECKED } }
+
+        val currentDate = calendarDates.value.find { it.date == selectedDate.value }
+        currentDate?.let {
+            updateCalendarDateForMonthUseCase(
+                it.copy(
+                    remainedTodoCount = uncheckedTodos,
+                    totalCount = totalTodos
+                )
+            )
+        } ?: insertCalendarDateForMonthUseCase(
+            CalendarDate(
+                date = selectedDate.value,
+                remainedTodoCount = uncheckedTodos,
+                totalCount = totalTodos
+            )
+        )
     }
 
     private fun validateTodoInput(inputText: String): Boolean = inputText.isNotBlank()

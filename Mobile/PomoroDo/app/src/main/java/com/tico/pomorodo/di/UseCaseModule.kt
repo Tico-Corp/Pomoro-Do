@@ -1,6 +1,7 @@
 package com.tico.pomorodo.di
 
 import com.tico.pomorodo.domain.repository.AuthRepository
+import com.tico.pomorodo.domain.repository.CalendarRepository
 import com.tico.pomorodo.domain.repository.CategoryRepository
 import com.tico.pomorodo.domain.repository.TodoRepository
 import com.tico.pomorodo.domain.repository.TokenRepository
@@ -16,6 +17,9 @@ import com.tico.pomorodo.domain.usecase.auth.SaveAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.SaveIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.SaveRefreshTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.ValidateTokenUseCase
+import com.tico.pomorodo.domain.usecase.calendar.GetCalendarDateForMonthUseCase
+import com.tico.pomorodo.domain.usecase.calendar.InsertCalendarDateForMonthUseCase
+import com.tico.pomorodo.domain.usecase.calendar.UpdateCalendarDateForMonthUseCase
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
@@ -118,6 +122,18 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun provideGetCategoryInfoUseCase(categoryRepository: CategoryRepository): GetCategoryInfoUseCase {
+        return GetCategoryInfoUseCase(categoryRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideInsertCategoryUseCase(categoryRepository: CategoryRepository): InsertCategoryUseCase {
+        return InsertCategoryUseCase(categoryRepository)
+    }
+
+    @Singleton
+    @Provides
     fun provideGetCategoryWithTodoItemsUseCase(todoRepository: TodoRepository): GetCategoryWithTodoItemsUseCase {
         return GetCategoryWithTodoItemsUseCase(todoRepository)
     }
@@ -136,13 +152,19 @@ object UseCaseModule {
 
     @Singleton
     @Provides
-    fun provideGetCategoryInfoUseCase(categoryRepository: CategoryRepository): GetCategoryInfoUseCase {
-        return GetCategoryInfoUseCase(categoryRepository)
+    fun provideGetCalendarDateForMonthUseCase(calendarRepository: CalendarRepository): GetCalendarDateForMonthUseCase {
+        return GetCalendarDateForMonthUseCase(calendarRepository)
     }
 
     @Singleton
     @Provides
-    fun provideInsertCategoryUseCase(categoryRepository: CategoryRepository): InsertCategoryUseCase {
-        return InsertCategoryUseCase(categoryRepository)
+    fun provideUpdateCalendarDateForMonthUseCase(calendarRepository: CalendarRepository): UpdateCalendarDateForMonthUseCase {
+        return UpdateCalendarDateForMonthUseCase(calendarRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideInsertCalendarDateForMonthUseCase(calendarRepository: CalendarRepository): InsertCalendarDateForMonthUseCase {
+        return InsertCalendarDateForMonthUseCase(calendarRepository)
     }
 }
