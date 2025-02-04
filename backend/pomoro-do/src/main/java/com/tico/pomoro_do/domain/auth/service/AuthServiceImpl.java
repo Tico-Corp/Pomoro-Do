@@ -8,7 +8,7 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
-import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
+import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
 import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
 
     // 구글 ID 토큰 무결성 검사
     @Override
-    public GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException {
+    public GoogleUserInfo verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException {
         NetHttpTransport transport = new NetHttpTransport();
         JsonFactory jsonFactory = new GsonFactory();
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
         GoogleIdToken googleIdToken = verifier.verify(idToken); // 검증 실패시 IllegalArgumentException를 던짐
         if (googleIdToken != null) {
             GoogleIdToken.Payload payload = googleIdToken.getPayload();
-            return GoogleUserInfoDTO.builder()
+            return GoogleUserInfo.builder()
                     .userId(payload.getSubject())
                     .email(payload.getEmail())
                     .name((String) payload.get("name"))
@@ -84,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
         // 토큰 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 토큰 유효성 검증
-        GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
+        GoogleUserInfo userInfo = verifyGoogleIdToken(idToken);
         // 회원 가입 여부 판단 -> 회원 가입 x -> 에러 발생
         validateUserExists(userInfo.getEmail());
         // 회원 가입되어 있으면 토큰 발급
@@ -102,7 +102,7 @@ public class AuthServiceImpl implements AuthService {
         // 구글 idToken 유효성 검사 및 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 id 토큰 검증
-        GoogleUserInfoDTO userInfo = verifyGoogleIdToken(idToken);
+        GoogleUserInfo userInfo = verifyGoogleIdToken(idToken);
         // 사용자의 이메일 중복 체크
         checkIfUserAlreadyRegistered(userInfo.getEmail());
 
@@ -172,7 +172,7 @@ public class AuthServiceImpl implements AuthService {
      *         GOOGLE 유형인 경우 구글 프로필 이미지 URL을 반환하며,
      *         DEFAULT 유형인 경우 null을 반환합니다.
      */
-    private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfoDTO userInfo) {
+    private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfo userInfo) {
         return switch (imageType) {
             case FILE -> imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
             case GOOGLE -> userInfo.getPictureUrl();

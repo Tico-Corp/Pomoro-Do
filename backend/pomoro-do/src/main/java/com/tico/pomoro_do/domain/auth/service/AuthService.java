@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.auth.service;
 
 
-import com.tico.pomoro_do.domain.user.dto.GoogleUserInfoDTO;
+import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.enums.ProfileImageType;
@@ -23,7 +23,7 @@ public interface AuthService {
      * @throws IOException IO 예외
      * @throws CustomException 구글 ID 토큰이 유효하지 않은 경우 예외
      */
-    GoogleUserInfoDTO verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException;
+    GoogleUserInfo verifyGoogleIdToken(String idToken) throws GeneralSecurityException, IOException, IllegalArgumentException;
 
     /**
      * 구글 ID 토큰으로 로그인 처리

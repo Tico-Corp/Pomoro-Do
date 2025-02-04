@@ -1,10 +1,10 @@
-package com.tico.pomoro_do.domain.user.dto;
+package com.tico.pomoro_do.domain.auth.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class GoogleUserInfoDTO {
+public class GoogleUserInfo {
 
     private String userId;
     private String email;
@@ -12,7 +12,7 @@ public class GoogleUserInfoDTO {
     private String pictureUrl;
 
     @Builder
-    public GoogleUserInfoDTO(String userId, String email, String name, String pictureUrl) {
+    public GoogleUserInfo(String userId, String email, String name, String pictureUrl) {
         this.userId = userId;
         this.email = email;
         this.name = name;
