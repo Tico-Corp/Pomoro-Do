@@ -96,6 +96,7 @@ fun MainScreen() {
                         mainNavController.setState(BREAK_TIME, breakTime)
                     },
                     navigateToConcentrationMode = mainNavController::navigateToConcentrationMode,
+                    navigateToBreakMode = mainNavController::navigateToBreakMode,
                     navigateToCategory = mainNavController::navigateToCategory,
                     navigateToAddCategory = mainNavController::navigateToAddCategory,
                     navigateToHistory = mainNavController::navigateToHistory,
@@ -105,10 +106,14 @@ fun MainScreen() {
                 )
 
                 concentrationModeScreen(
+                    popBackStack = mainNavController::popBackStack,
                     getState = mainNavController::getState,
-                    mainNavController::navigateToBreakMode
+                    navigateToBreakMode = mainNavController::navigateToBreakMode
                 )
-                breakModeScreen(navController = mainNavController)
+                breakModeScreen(
+                    mainNavController = mainNavController,
+                    getState = mainNavController::getState
+                )
 
                 categoryScreen(
                     navigateToAddCategory = mainNavController::navigateToAddCategory,

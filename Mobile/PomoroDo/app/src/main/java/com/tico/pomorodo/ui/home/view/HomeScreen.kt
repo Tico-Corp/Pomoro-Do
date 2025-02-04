@@ -13,6 +13,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun HomeScreen(
     navigateToConcentrationMode: () -> Unit,
+    navigateToBreakMode: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
@@ -33,6 +34,7 @@ fun HomeScreen(
             Modifier.padding(innerPadding),
             startDestination = BottomNavigationDestination.TIMER.name,
             navigateToConcentrationMode = navigateToConcentrationMode,
+            navigateToBreakMode = navigateToBreakMode,
             navigateToCategory = navigateToCategory,
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,

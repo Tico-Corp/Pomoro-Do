@@ -86,10 +86,15 @@ fun NavController.navigateToAddFollowerScreen() =
 // home navigation - composable route
 fun NavGraphBuilder.timerScreen(
     setState: (concentrationTime: Int, breakTime: Int) -> Unit,
-    navigate: () -> Unit
+    navigateToConcentrationMode: () -> Unit,
+    navigateToBreakMode: () -> Unit,
 ) {
     composable(route = BottomNavigationDestination.TIMER.name) {
-        TimerRootScreen(setState = setState, navigate = navigate)
+        TimerRootScreen(
+            setState = setState,
+            navigateToConcentrationMode = navigateToConcentrationMode,
+            navigateToBreakMode = navigateToBreakMode
+        )
     }
 }
 
@@ -164,6 +169,7 @@ fun NavGraphBuilder.signUpScreen(
 fun NavGraphBuilder.homeScreen(
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
     navigateToConcentrationMode: () -> Unit,
+    navigateToBreakMode: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
@@ -175,6 +181,7 @@ fun NavGraphBuilder.homeScreen(
         HomeScreen(
             setTimerState = setTimerState,
             navigateToConcentrationMode = navigateToConcentrationMode,
+            navigateToBreakMode = navigateToBreakMode,
             navigateToCategory = navigateToCategory,
             navigateToAddCategory = navigateToAddCategory,
             navigateToHistory = navigateToHistory,
@@ -186,27 +193,31 @@ fun NavGraphBuilder.homeScreen(
 }
 
 fun NavGraphBuilder.concentrationModeScreen(
+    popBackStack: (destinationId: String, inclusive: Boolean) -> Unit,
     getState: (String) -> Int?,
-    navigateToBreakMode: () -> Unit
+    navigateToBreakMode: () -> Unit,
 ) {
     composable(route = MainNavigationDestination.CONCENTRATION_MODE.name) {
-        ConcentrationTimerScreen(getState = getState, navigate = navigateToBreakMode)
+        ConcentrationTimerScreen(
+            getState = getState,
+            navigateToBreakMode = navigateToBreakMode,
+            navigateToTimerHome = {
+                popBackStack(MainNavigationDestination.HOME.name, false)
+            }
+        )
     }
 }
 
-fun NavGraphBuilder.breakModeScreen(navController: NavController) {
-    composable(route = MainNavigationDestination.BREAK_MODE.name) { backStackEntry ->
-        val navBackStackEntry = remember(backStackEntry) {
-            navController.getBackStackEntry(MainNavigationDestination.CONCENTRATION_MODE.name)
-        }
+fun NavGraphBuilder.breakModeScreen(mainNavController: NavController, getState: (String) -> Int?) {
+    composable(route = MainNavigationDestination.BREAK_MODE.name) {
         BreakTimerScreen(
-            navBackStackEntry = navBackStackEntry,
-            navigate = {
-                navController.popBackStack(
+            navigateToTimerHome = {
+                mainNavController.popBackStack(
                     MainNavigationDestination.HOME.name,
                     inclusive = false
                 )
-            }
+            },
+            getState = getState
         )
     }
 }

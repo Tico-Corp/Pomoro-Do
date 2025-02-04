@@ -222,4 +222,5 @@
     <string name="content_unfollow">언팔로우</string>
     <string name="title_following">팔로잉</string>
     <string name="title_follower">팔로워</string>
+    <string name="toast_set_timer">타이머를 설정해주세요</string>
 </resources>

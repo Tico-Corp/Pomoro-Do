@@ -34,32 +34,35 @@ import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.common.view.TodoListDialog
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.timer.running.viewmodel.TimerRunningViewModel
+import com.tico.pomorodo.ui.timer.running.viewmodel.ConcentrationTimeViewModel
 import com.tico.pomorodo.ui.timer.setup.view.CustomCircularTimer
 import kotlinx.coroutines.delay
 
 @Composable
 fun ConcentrationTimerScreen(
-    timerRunningViewModel: TimerRunningViewModel = hiltViewModel(),
+    concentrationTimeViewModel: ConcentrationTimeViewModel = hiltViewModel(),
     getState: (String) -> Int?,
-    navigate: () -> Unit
+    navigateToBreakMode: () -> Unit,
+    navigateToTimerHome: () -> Unit,
 ) {
     LaunchedEffect(key1 = Unit) {
-        timerRunningViewModel.initialConcentrationTime(
-            concentrationTime = getState(CONCENTRATION_TIME) ?: 0,
-            breakTime = getState(BREAK_TIME) ?: 0
+        concentrationTimeViewModel.initialConcentrationTime(
+            concentrationTime = getState(
+                CONCENTRATION_TIME
+            ) ?: 0
         )
     }
 
-    val concentrationTime by timerRunningViewModel.concentrationTime.collectAsState()
-    val maxValue by timerRunningViewModel.timerMaxValue.collectAsState()
+    val concentrationTime by concentrationTimeViewModel.concentrationTime.collectAsState()
+    val breakTime = getState(BREAK_TIME) ?: 0
+    val maxValue by concentrationTimeViewModel.timerMaxValue.collectAsState()
     val (isFinished, setFinish) = remember { mutableStateOf(false) }
     val (isPaused, setPause) = remember { mutableStateOf(false) }
     val (finishTimerDialogVisible, setFinishTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
     var second by remember { mutableIntStateOf(0) }
-    val todoList by timerRunningViewModel.todoList.collectAsState()
+    val todoList by concentrationTimeViewModel.todoList.collectAsState()
 
     LaunchedEffect(key1 = second, key2 = isPaused) {
         if (!isPaused) {
@@ -68,7 +71,7 @@ fun ConcentrationTimerScreen(
             second = updateTimer(
                 time = concentrationTime.copy(),
                 onFinishedChange = { setFinish(true) },
-                onTimeChanged = timerRunningViewModel::setConcentrationTime
+                onTimeChanged = concentrationTimeViewModel::setConcentrationTime
             )
         }
     }
@@ -105,9 +108,12 @@ fun ConcentrationTimerScreen(
             todoList = todoList,
             confirmTextId = R.string.content_ok,
             onConfirmation = {
-                timerRunningViewModel.setInitializedFlag()
-                timerRunningViewModel.setTodoList(it)
-                navigate()
+                concentrationTimeViewModel.setTodoList(it)
+                if (breakTime != 0) {
+                    navigateToBreakMode()
+                } else {
+                    navigateToTimerHome()
+                }
             },
             onDismissRequest = {
                 setFinish(false)
