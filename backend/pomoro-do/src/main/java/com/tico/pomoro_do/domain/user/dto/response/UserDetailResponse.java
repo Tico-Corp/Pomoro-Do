@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class UserDetailDTO {
+public class UserDetailResponse {
 
     private final Long userId;
 
     @Schema(description = "이메일 주소", example = "example@example.com")
-    private final String username;
+    private final String email;
 
     private final String nickname;
 
@@ -23,10 +23,10 @@ public class UserDetailDTO {
     private final int followerCount;
 
     @Builder
-    public UserDetailDTO(Long userId, String username, String nickname, String profileImageUrl,
-                         int followingCount, int followerCount) {
+    public UserDetailResponse(Long userId, String email, String nickname, String profileImageUrl,
+                              int followingCount, int followerCount) {
         this.userId = userId;
-        this.username = username;
+        this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.followingCount = followingCount;

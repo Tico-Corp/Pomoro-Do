@@ -28,22 +28,22 @@ public class FollowServiceImpl implements FollowService {
     // 특정 사용자를 팔로우
     @Override
     @Transactional
-    public void follow(String followerUsername, Long followingId) {
+    public void follow(String followerUserEmail, Long followingId) {
         // 유효성 검사 (null 또는 음수 체크)
         ValidationUtils.validateUserId(followingId);
 
-        User follower = userService.findByUsername(followerUsername);
+        User follower = userService.findByEmail(followerUserEmail);
         User following = userService.findByUserId(followingId);
 
         // 본인을 팔로우 하는 지 확인
         if (follower.equals(following)) {
-            log.warn("사용자 '{}'가 본인을 팔로우하려고 시도했습니다.", followerUsername);
+            log.warn("사용자 '{}'가 본인을 팔로우하려고 시도했습니다.", followerUserEmail);
             throw new CustomException(ErrorCode.SELF_FOLLOW_NOT_ALLOWED);
         }
 
         // 이미 팔로우 중인지 확인
         if (isFollowing(follower.getId(), followingId)) {
-            log.warn("사용자 '{}'가 이미 사용자 ID '{}'를 팔로우했습니다.", followerUsername, followingId);
+            log.warn("사용자 '{}'가 이미 사용자 ID '{}'를 팔로우했습니다.", followerUserEmail, followingId);
             throw new CustomException(ErrorCode.ALREADY_FOLLOWED);
         }
 
@@ -58,12 +58,12 @@ public class FollowServiceImpl implements FollowService {
     // 언팔로우
     @Override
     @Transactional
-    public void unfollow(String followerUsername, Long followingId) {
+    public void unfollow(String followerUserEmail, Long followingId) {
         // 유효성 검사 (null 또는 음수 체크)
         ValidationUtils.validateUserId(followingId);
 
         // 팔로워 유저 조회
-        User follower = userService.findByUsername(followerUsername);
+        User follower = userService.findByEmail(followerUserEmail);
         // 팔로이 유저 조회
         User following = userService.findByUserId(followingId);
 
@@ -76,28 +76,28 @@ public class FollowServiceImpl implements FollowService {
 
     // 나를 팔로우하고 있는 사용자 목록을 조회
     @Override
-    public List<FollowResponse> getFollowers(String username) {
+    public List<FollowResponse> getFollowers(String email) {
         // 사용자를 팔로우하는 사용자 목록을 조회
-        return getFollowList(username, false);
+        return getFollowList(email, false);
     }
 
     // 내가 팔로우하고 있는 사용자 목록을 조회
     @Override
-    public List<FollowResponse> getFollowings(String username) {
+    public List<FollowResponse> getFollowings(String email) {
         // 팔로우 중인 사용자 목록을 조회
-        return getFollowList(username, true);
+        return getFollowList(email, true);
     }
 
     /**
-     * 팔로우 목록 또는 팔로워 목록을 조회하고 DTO 리스트로 변환하는 메서드
+     * 팔로우 목록 또는 팔로워 목록을 조회하고 FollowResponse 리스트로 변환하는 메서드
      *
-     * @param username 현재 인증된 사용자의 사용자 이름
+     * @param email 현재 인증된 사용자 이메일
      * @param isFollowings 팔로잉 목록인지 여부 (true: 팔로잉 목록, false: 팔로워 목록)
-     * @return FollowUserDTO 객체 리스트 반환
+     * @return FollowResponse 객체 리스트 반환
      */
-    private List<FollowResponse> getFollowList(String username, boolean isFollowings) {
+    private List<FollowResponse> getFollowList(String email, boolean isFollowings) {
         // 사용자 정보 조회
-        User user = userService.findByUsername(username);
+        User user = userService.findByEmail(email);
 
         // 팔로우 목록 또는 팔로워 목록을 조회
         List<Follow> followList = isFollowings
@@ -112,12 +112,12 @@ public class FollowServiceImpl implements FollowService {
     }
 
     /**
-     * Follow 엔티티를 FollowUserDTO로 변환하는 메서드
+     * Follow 엔티티를 FollowResponse로 변환하는 메서드
      *
      * @param follow Follow 엔티티
      * @param isFollowings 팔로우 목록인지 여부
-     * @param currentUserId 현재 인증된 사용자의 ID
-     * @return FollowUserDTO 객체 반환
+     * @param currentUserId 현재 인증된 사용자 ID
+     * @return FollowResponse 객체 반환
      */
     private FollowResponse convertToFollowResponse(Follow follow, boolean isFollowings, Long currentUserId) {
         // 타겟 유저를 결정: 팔로우 목록일 경우 수신자, 팔로워 목록일 경우 발신자
@@ -144,8 +144,8 @@ public class FollowServiceImpl implements FollowService {
     /**
      * 팔로우 관계를 조회하고 없을 경우 예외를 발생시킵니다.
      *
-     * @param followerId 팔로우 요청자의 ID
-     * @param followingId 팔로우 대상자의 ID
+     * @param followerId 팔로우 요청자 ID
+     * @param followingId 팔로우 대상자 ID
      * @return Follow 객체
      */
     private Follow getFollowRelationship(Long followerId, Long followingId) {

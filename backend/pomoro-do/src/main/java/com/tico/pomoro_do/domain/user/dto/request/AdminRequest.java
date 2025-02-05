@@ -8,12 +8,12 @@ import lombok.Getter;
 
 @Getter
 @Schema(description = "Admin Info")
-public class AdminDTO {
+public class AdminRequest {
 
     @Email
     @NotBlank(message = "이메일을 입력해주세요.")
-    @Schema(description = "아이디", example = "chadoll@pomorodo.shop")
-    private String username;
+    @Schema(description = "이메일", example = "chadoll@pomorodo.shop")
+    private String email;
 
     @Size(max = 10, message = "닉네임은 최대 10자까지 가능합니다.")
     @NotBlank(message = "닉네임을 입력해주세요.")

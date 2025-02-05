@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.user.controller;
 
 import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
-import com.tico.pomoro_do.domain.user.dto.response.UserDetailDTO;
+import com.tico.pomoro_do.domain.user.dto.response.UserDetailResponse;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
@@ -31,12 +31,12 @@ public class UserController {
      */
     @Operation(summary = "현재 사용자 정보 조회", description = "인증된 사용자의 상세 정보를 조회합니다.")
     @GetMapping("/me")
-    public ResponseEntity<SuccessResponseDTO<UserDetailDTO>> getMyDetail(
+    public ResponseEntity<SuccessResponseDTO<UserDetailResponse>> getMyDetail(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
 
-        UserDetailDTO userDetailResponse = userService.getMyDetail(customUserDetails.getUsername());
-        SuccessResponseDTO<UserDetailDTO> successResponse = SuccessResponseDTO.<UserDetailDTO>builder()
+        UserDetailResponse userDetailResponse = userService.getMyDetail(customUserDetails.getUsername());
+        SuccessResponseDTO<UserDetailResponse> successResponse = SuccessResponseDTO.<UserDetailResponse>builder()
                 .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())
                 .data(userDetailResponse)
@@ -58,8 +58,8 @@ public class UserController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ) {
-        String username = customUserDetails.getUsername();
-        FollowResponse response = userService.getUserDetail(username, userId);
+        String email = customUserDetails.getUsername();
+        FollowResponse response = userService.getUserDetail(email, userId);
         SuccessResponseDTO<FollowResponse> successResponse = SuccessResponseDTO.<FollowResponse>builder()
                 .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())

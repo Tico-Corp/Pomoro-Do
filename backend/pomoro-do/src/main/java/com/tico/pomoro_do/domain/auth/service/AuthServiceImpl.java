@@ -144,7 +144,7 @@ public class AuthServiceImpl implements AuthService {
      * @param email 사용자 이메일
      */
     private void validateUserExists(String email) {
-        if (!userRepository.existsByUsername(email)) {
+        if (!userRepository.existsByEmail(email)) {
             log.error("사용자 등록되지 않음: 이메일 = {}", email);
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
@@ -156,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
      * @param email 사용자의 이메일
      */
     private void checkIfUserAlreadyRegistered(String email) {
-        if (userRepository.existsByUsername(email)) {
+        if (userRepository.existsByEmail(email)) {
             log.error("이미 등록된 사용자: 이메일 = {}", email);
             throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
         }
@@ -183,17 +183,17 @@ public class AuthServiceImpl implements AuthService {
 
     // User 생성
     @Override
-    public User createUser(String username, String nickname, String profileImageUrl, UserRole role) {
+    public User createUser(String email, String nickname, String profileImageUrl, UserRole role) {
 
         User user = User.builder()
-                .username(username)
+                .email(email)
                 .nickname(nickname)
                 .profileImageUrl(profileImageUrl)
                 .role(role)
                 .build();
         userRepository.save(user);
 
-        log.info("사용자 저장 성공: 이메일 = {}", username);
+        log.info("사용자 저장 성공: 이메일 = {}", email);
         return user;
     }
 
