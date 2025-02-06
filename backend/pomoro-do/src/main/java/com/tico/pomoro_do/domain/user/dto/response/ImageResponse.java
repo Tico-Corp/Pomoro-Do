@@ -7,13 +7,13 @@ import lombok.Getter;
 
 @Getter
 @Schema(description = "Image Response")
-public class ImageDTO {
+public class ImageResponse {
 
     @Schema(description = "이미지 URL", example = "https://s3.amazonaws.com/foldername/bucketname/uuid.jpg")
     private final String imageUrl;
 
     @Builder
-    public ImageDTO(String imageUrl){
+    public ImageResponse(String imageUrl){
         this.imageUrl = imageUrl;
     }
 }
