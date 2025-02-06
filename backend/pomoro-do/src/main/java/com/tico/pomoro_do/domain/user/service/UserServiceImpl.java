@@ -24,6 +24,24 @@ public class UserServiceImpl implements UserService{
     final private TokenService tokenService;
 
     @Override
+    public User findByUserId(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("사용자를 찾을 수 없음: {}", userId);
+                    return new CustomException(ErrorCode.USER_NOT_FOUND);
+                });
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.error("사용자를 찾을 수 없음: {}", email);
+                    return new CustomException(ErrorCode.USER_NOT_FOUND);
+                });
+    }
+
+    @Override
     public UserDetailResponse getMyDetail(String email) {
         User user = findByEmail(email);
 
@@ -73,22 +91,21 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteByEmail(email);
     }
 
+    // 이메일이 등록되어 있는 지 검증
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> {
-                    log.error("사용자를 찾을 수 없음: {}", email);
-                    return new CustomException(ErrorCode.USER_NOT_FOUND);
-                });
+    public void isEmailRegistered(String email) {
+        if (userRepository.existsByEmail(email)) {
+            log.error("이미 등록된 사용자: {}", email);
+            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
+        }
     }
 
+    // 이메일이 사용 가능한 지 검증
     @Override
-    public User findByUserId(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> {
-                    log.error("사용자를 찾을 수 없음: {}", userId);
-                    return new CustomException(ErrorCode.USER_NOT_FOUND);
-                });
+    public void validateEmailExists(String email) {
+        if (!userRepository.existsByEmail(email)) {
+            log.error("등록되지 않은 사용자: 이메일 = {}", email);
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
     }
-
 }

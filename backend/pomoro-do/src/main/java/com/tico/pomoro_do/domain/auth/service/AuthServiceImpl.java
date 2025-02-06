@@ -14,6 +14,7 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.domain.user.service.ImageService;
+import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.common.constants.CategoryConstants;
@@ -46,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
     private final JWTUtil jwtUtil;
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
+    private final UserService userService;
     private final TokenService tokenService;
     private final ImageService imageService;
     private final CategoryService categoryService;
@@ -86,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
         // 구글 토큰 유효성 검증
         GoogleUserInfo userInfo = verifyGoogleIdToken(idToken);
         // 회원 가입 여부 판단 -> 회원 가입 x -> 에러 발생
-        validateUserExists(userInfo.getEmail());
+        userService.validateEmailExists(userInfo.getEmail());
         // 회원 가입되어 있으면 토큰 발급
         return tokenService.createAuthTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
@@ -104,7 +106,7 @@ public class AuthServiceImpl implements AuthService {
         // 구글 id 토큰 검증
         GoogleUserInfo userInfo = verifyGoogleIdToken(idToken);
         // 사용자의 이메일 중복 체크
-        checkIfUserAlreadyRegistered(userInfo.getEmail());
+        userService.isEmailRegistered(userInfo.getEmail());
 
         // 알맞는 profileImage url 가져오기 (null 가능)
         String profileImageUrl = determineProfileImageUrl(imageType, profileImage, userInfo);
@@ -136,30 +138,6 @@ public class AuthServiceImpl implements AuthService {
     private void joinValidateInputs(String deviceId, String nickname) {
         ValidationUtils.validateDeviceId(deviceId);
         ValidationUtils.validateNickname(nickname);
-    }
-
-    /**
-     * 사용자 등록 여부 확인 메서드
-     *
-     * @param email 사용자 이메일
-     */
-    private void validateUserExists(String email) {
-        if (!userRepository.existsByEmail(email)) {
-            log.error("사용자 등록되지 않음: 이메일 = {}", email);
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
-    }
-
-    /**
-     * 사용자가 이미 등록되어 있는지 확인합니다.
-     *
-     * @param email 사용자의 이메일
-     */
-    private void checkIfUserAlreadyRegistered(String email) {
-        if (userRepository.existsByEmail(email)) {
-            log.error("이미 등록된 사용자: 이메일 = {}", email);
-            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
-        }
     }
 
     /**

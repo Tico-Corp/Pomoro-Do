@@ -25,21 +25,14 @@ import java.util.UUID;
 @Slf4j
 public class AdminServiceImpl implements AdminService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final AuthService authService;
     private final TokenService tokenService;
     private final ImageService imageService;
 
     private static final String ADMIN_EMAIL_DOMAIN = "pomorodo.shop";
 
-    /**
-     * 관리자 회원가입 처리
-     *
-     * @param adminRequest AdminRequest 객체
-     * @param profileImage 프로필 이미지
-     * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
-     * @throws CustomException 이메일 도메인이 유효하지 않거나 이미 등록된 사용자인 경우 예외를 던집니다.
-     */
+    // 관리자 회원가입
     @Override
     @Transactional
     public TokenResponse adminJoin(AdminRequest adminRequest, MultipartFile profileImage) {
@@ -51,7 +44,7 @@ public class AdminServiceImpl implements AdminService {
         // 관리자 회원가입 이메일 도메인 검증
         validateAdminEmailDomain(domain);
         // 관리자 이메일 가입 여부 검증
-        checkUserExistence(email);
+        userService.isEmailRegistered(email);
 
         // profileImage URL 가져오기
         String profileImageUrl;
@@ -72,13 +65,7 @@ public class AdminServiceImpl implements AdminService {
         return tokenService.createAuthTokens(email, String.valueOf(UserRole.ADMIN), deviceId);
     }
 
-    /**
-     * 관리자 로그인 처리
-     *
-     * @param adminRequest AdminRequest 객체
-     * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
-     * @throws CustomException 이메일 도메인이 유효하지 않거나 관리자가 아닌 경우 예외를 던집니다.
-     */
+    // 관리자 로그인
     @Override
     @Transactional
     public TokenResponse adminLogin(AdminRequest adminRequest){
@@ -122,19 +109,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * 사용자가 이미 존재하는지 확인
-     *
-     * @param email 사용자 이메일
-     * @throws CustomException 이미 등록된 사용자인 경우 예외 발생
-     */
-    private void checkUserExistence(String email) {
-        if (userRepository.existsByEmail(email)) {
-            log.error("이미 등록된 사용자: {}", email);
-            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
-        }
-    }
-
-    /**
      * 관리자 검증
      *
      * @param email 사용자 이메일
@@ -142,12 +116,8 @@ public class AdminServiceImpl implements AdminService {
      * @throws CustomException 사용자가 존재하지 않거나 관리자가 아닌 경우 예외 발생
      */
     private void validateAdminUser(String email, String nickname) {
-        Optional<User> userData = userRepository.findByEmail(email);
-        if (userData.isEmpty()) {
-            log.error("사용자를 찾을 수 없음: {}", email);
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
-        User admin = userData.get();
+        User admin = userService.findByEmail(email);
+
         if (!admin.getRole().equals(UserRole.ADMIN)) {
             log.error("관리자 권한 없음: {}", email);
             throw new CustomException(ErrorCode.NOT_AN_ADMIN);

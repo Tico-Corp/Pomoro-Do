@@ -21,7 +21,7 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String email; // 소셜 로그인 제공자의 이메일
 
     @Column(nullable = false, length = 10)
     private String nickname;
