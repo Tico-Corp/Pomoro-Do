@@ -34,11 +34,11 @@ public class TokenServiceImpl implements TokenService {
 
     // 토큰 생성 및 저장
     @Override
-    public TokenResponse createAuthTokens(String email, String role, String deviceId) {
+    public TokenResponse createAuthTokens(Long userId, String email, String role, String deviceId) {
         // 액세스 토큰 생성
-        String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), email, role, accessExpiration); // 60분
+        String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), userId, email, role, accessExpiration); // 60분
         // 리프레시 토큰 생성
-        String refreshToken = jwtUtil.createJwt(TokenType.REFRESH.name(), email, role, refreshExpiration); // 24시간
+        String refreshToken = jwtUtil.createJwt(TokenType.REFRESH.name(), userId, email, role, refreshExpiration); // 24시간
 
         // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제
         deleteRefreshTokenByDeviceId(deviceId);

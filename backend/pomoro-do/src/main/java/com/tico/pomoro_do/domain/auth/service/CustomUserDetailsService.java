@@ -34,6 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (userData.isPresent()) {
             User user = userData.get();
             AuthUser authUser = AuthUser.builder()
+                    .userId(user.getId())
                     .email(user.getEmail())
                     .role(String.valueOf(user.getRole()))
                     .build();

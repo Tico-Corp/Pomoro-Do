@@ -5,7 +5,6 @@ import com.tico.pomoro_do.domain.auth.service.AuthService;
 import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.domain.user.dto.request.AdminRequest;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.global.enums.UserRole;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -62,7 +60,7 @@ public class AdminServiceImpl implements AdminService {
         // 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(email.getBytes()).toString() + "_" + role;
 
-        return tokenService.createAuthTokens(email, String.valueOf(UserRole.ADMIN), deviceId);
+        return tokenService.createAuthTokens(admin.getId(), email, String.valueOf(UserRole.ADMIN), deviceId);
     }
 
     // 관리자 로그인
@@ -77,12 +75,12 @@ public class AdminServiceImpl implements AdminService {
         // 로그인 이메일 검증 (관리자 도메인)
         validateAdminEmailDomain(domain);
         // 관리자 로그인 검증
-        validateAdminUser(email, nickname);
+        User admin = validateAdminUser(email, nickname);
         // 역할
         String role = String.valueOf(UserRole.ADMIN);
         // 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(email.getBytes()).toString() + "_" + role;
-        return tokenService.createAuthTokens(email, role, deviceId);
+        return tokenService.createAuthTokens(admin.getId(), email, role, deviceId);
     }
 
     /**
@@ -115,7 +113,7 @@ public class AdminServiceImpl implements AdminService {
      * @param nickname 사용자 닉네임
      * @throws CustomException 사용자가 존재하지 않거나 관리자가 아닌 경우 예외 발생
      */
-    private void validateAdminUser(String email, String nickname) {
+    private User validateAdminUser(String email, String nickname) {
         User admin = userService.findByEmail(email);
 
         if (!admin.getRole().equals(UserRole.ADMIN)) {
@@ -126,5 +124,6 @@ public class AdminServiceImpl implements AdminService {
             log.error("닉네임 불일치: {}", email);
             throw new CustomException(ErrorCode.ADMIN_LOGIN_FAILED);
         }
+        return admin;
     }
 }

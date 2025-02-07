@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService{
     public User findByUserId(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    log.error("사용자를 찾을 수 없음: {}", userId);
+                    log.error("등록되지 않은 사용자: 사용자ID = {}", userId);
                     return new CustomException(ErrorCode.USER_NOT_FOUND);
                 });
     }
@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService{
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("사용자를 찾을 수 없음: {}", email);
+                    log.error("등록되지 않은 사용자: 이메일 = {}", email);
                     return new CustomException(ErrorCode.USER_NOT_FOUND);
                 });
     }

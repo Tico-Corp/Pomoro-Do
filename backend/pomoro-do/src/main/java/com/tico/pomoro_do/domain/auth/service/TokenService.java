@@ -12,12 +12,13 @@ public interface TokenService {
     /**
      * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
      *
+     * @param userId 사용자 ID
      * @param email 사용자 이메일
      * @param role 사용자 역할
      * @param deviceId 기기 고유 번호
      * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
      */
-    TokenResponse createAuthTokens(String email, String role, String deviceId);
+    TokenResponse createAuthTokens(Long userId, String email, String role, String deviceId);
 
     /**
      * 새로운 리프레시 토큰을 저장합니다.
