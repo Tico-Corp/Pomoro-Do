@@ -59,8 +59,8 @@ public class CategoryController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody CategoryCreationDTO request
     ){
-        String username = customUserDetails.getUsername();
-        categoryService.createCategory(username, request);
+        String email = customUserDetails.getUsername();
+        categoryService.createCategory(email, request);
 
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.CATEGORY_CREATION_SUCCESS.getHttpStatus().value())
@@ -82,8 +82,8 @@ public class CategoryController {
     public ResponseEntity<SuccessResponseDTO<CategoryDTO>> getCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        String username = customUserDetails.getUsername();
-        CategoryDTO categoryDTO = categoryService.getCategories(username);
+        String email = customUserDetails.getUsername();
+        CategoryDTO categoryDTO = categoryService.getCategories(email);
 
         SuccessResponseDTO<CategoryDTO> successResponse = SuccessResponseDTO.<CategoryDTO>builder()
                 .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
@@ -102,8 +102,8 @@ public class CategoryController {
     public ResponseEntity<SuccessResponseDTO<List<GeneralCategoryDTO>>> getGeneralCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        String username = customUserDetails.getUsername();
-        User user = userService.findByUsername(username);
+        String email = customUserDetails.getUsername();
+        User user = userService.findByEmail(email);
         List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user);
 
         SuccessResponseDTO<List<GeneralCategoryDTO>> successResponse = SuccessResponseDTO.<List<GeneralCategoryDTO>>builder()
@@ -123,8 +123,8 @@ public class CategoryController {
     public ResponseEntity<SuccessResponseDTO<List<GroupCategoryDTO>>> getGroupCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        String username = customUserDetails.getUsername();
-        User user = userService.findByUsername(username);
+        String email = customUserDetails.getUsername();
+        User user = userService.findByEmail(email);
         List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user);
 
         SuccessResponseDTO<List<GroupCategoryDTO>> successResponse = SuccessResponseDTO.<List<GroupCategoryDTO>>builder()
@@ -144,8 +144,8 @@ public class CategoryController {
     public ResponseEntity<SuccessResponseDTO<List<InvitedGroupDTO>>> getInvitedGroupCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        String username = customUserDetails.getUsername();
-        User user = userService.findByUsername(username);
+        String email = customUserDetails.getUsername();
+        User user = userService.findByEmail(email);
         List<InvitedGroupDTO> groupCategories = categoryService.getInvitedGroupCategories(user);
 
         SuccessResponseDTO<List<InvitedGroupDTO>> successResponse = SuccessResponseDTO.<List<InvitedGroupDTO>>builder()
@@ -166,8 +166,8 @@ public class CategoryController {
             @PathVariable Long categoryId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        String username = customUserDetails.getUsername();
-        CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId, username);
+        String email = customUserDetails.getUsername();
+        CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId, email);
 
         SuccessResponseDTO<CategoryDetailDTO> successResponse = SuccessResponseDTO.<CategoryDetailDTO>builder()
                 .status(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getHttpStatus().value())

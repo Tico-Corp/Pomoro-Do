@@ -40,14 +40,14 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 카테고리 생성
      *
-     * @param hostName 카테고리를 생성하는 호스트 유저의 이름
+     * @param hostEmail 카테고리를 생성하는 호스트 유저의 이메일
      * @param categoryCreationDTO 생성할 카테고리의 정보가 담긴 DTO
      */
     @Override
     @Transactional
-    public void createCategory(String hostName, CategoryCreationDTO categoryCreationDTO){
+    public void createCategory(String hostEmail, CategoryCreationDTO categoryCreationDTO){
 
-        User host = userService.findByUsername(hostName);
+        User host = userService.findByEmail(hostEmail);
 
         // 일반/그룹 카테고리 생성
         Category category = createNewCategory(
@@ -139,13 +139,13 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 주어진 사용자 이름을 기반으로 사용자의 일반, 그룹, 초대받은 카테고리를 조회
      *
-     * @param username 사용자의 이름
+     * @param email 사용자의 이메일
      * @return 사용자에 해당하는 일반 카테고리, 그룹 카테고리, 초대받은 그룹 카테고리를 포함하는 CategoryDTO 객체
      */
     @Override
-    public CategoryDTO getCategories(String username) {
+    public CategoryDTO getCategories(String email) {
         // 사용자 조회
-        User user = userService.findByUsername(username);
+        User user = userService.findByEmail(email);
 
         // 일반 카테고리
         List<GeneralCategoryDTO> generalCategories = getGeneralCategories(user);
@@ -250,11 +250,11 @@ public class CategoryServiceImpl implements CategoryService {
      * 카테고리 상세 조회
      *
      * @param categoryId 카테고리 ID
-     * @param username 조회한 유저 이메일
+     * @param email 조회한 유저 이메일
      * @return CategoryDetailDTO 객체
      */
     @Override
-    public CategoryDetailDTO getCategoryDetail(Long categoryId, String username){
+    public CategoryDetailDTO getCategoryDetail(Long categoryId, String email){
         Category category = findByCategoryId(categoryId);
         List<GroupMemberDTO> groupMemberDTOList = new ArrayList<>();
         // 그룹 멤버 조회
@@ -277,7 +277,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryId(categoryId)
                 .title(category.getTitle())
                 .hostNickname(category.getHost().getNickname())
-                .hostStatus(category.getHost().getUsername().equals(username))
+                .hostStatus(category.getHost().getEmail().equals(email))
                 .type(category.getType())
                 .visibility(category.getVisibility())
                 .members(groupMemberDTOList)

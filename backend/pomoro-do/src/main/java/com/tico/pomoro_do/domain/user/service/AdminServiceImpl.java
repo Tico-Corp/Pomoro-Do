@@ -3,7 +3,7 @@ package com.tico.pomoro_do.domain.user.service;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.auth.service.AuthService;
 import com.tico.pomoro_do.domain.auth.service.TokenService;
-import com.tico.pomoro_do.domain.user.dto.request.AdminDTO;
+import com.tico.pomoro_do.domain.user.dto.request.AdminRequest;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.global.code.ErrorCode;
@@ -25,33 +25,26 @@ import java.util.UUID;
 @Slf4j
 public class AdminServiceImpl implements AdminService {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final AuthService authService;
     private final TokenService tokenService;
     private final ImageService imageService;
 
     private static final String ADMIN_EMAIL_DOMAIN = "pomorodo.shop";
 
-    /**
-     * 관리자 회원가입 처리
-     *
-     * @param adminDTO AdminDTO 객체
-     * @param profileImage 프로필 이미지
-     * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
-     * @throws CustomException 이메일 도메인이 유효하지 않거나 이미 등록된 사용자인 경우 예외를 던집니다.
-     */
+    // 관리자 회원가입
     @Override
     @Transactional
-    public TokenResponse adminJoin(AdminDTO adminDTO, MultipartFile profileImage) {
-        String username = adminDTO.getUsername();
-        String nickname = adminDTO.getNickname();
+    public TokenResponse adminJoin(AdminRequest adminRequest, MultipartFile profileImage) {
+        String email = adminRequest.getEmail();
+        String nickname = adminRequest.getNickname();
 
         // 관리자 회원가입 도메인 가져오기
-        String domain = getEmailDomain(username);
+        String domain = getEmailDomain(email);
         // 관리자 회원가입 이메일 도메인 검증
         validateAdminEmailDomain(domain);
         // 관리자 이메일 가입 여부 검증
-        checkUserExistence(username);
+        userService.isEmailRegistered(email);
 
         // profileImage URL 가져오기
         String profileImageUrl;
@@ -62,40 +55,34 @@ public class AdminServiceImpl implements AdminService {
         }
 
         // 관리자 생성하기
-        User admin = authService.createUser(username, nickname, profileImageUrl, UserRole.ADMIN);
+        User admin = authService.createUser(email, nickname, profileImageUrl, UserRole.ADMIN);
 
         // 역할
         String role = String.valueOf(UserRole.ADMIN);
         // 관리자 고유 번호: UUID 기반 + 역할명
-        String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
+        String deviceId = UUID.nameUUIDFromBytes(email.getBytes()).toString() + "_" + role;
 
-        return tokenService.createAuthTokens(username, String.valueOf(UserRole.ADMIN), deviceId);
+        return tokenService.createAuthTokens(email, String.valueOf(UserRole.ADMIN), deviceId);
     }
 
-    /**
-     * 관리자 로그인 처리
-     *
-     * @param adminDTO AdminDTO 객체
-     * @return 성공 시 새 Access, Refresh 토큰을 포함하는 TokenDTO
-     * @throws CustomException 이메일 도메인이 유효하지 않거나 관리자가 아닌 경우 예외를 던집니다.
-     */
+    // 관리자 로그인
     @Override
     @Transactional
-    public TokenResponse adminLogin(AdminDTO adminDTO){
-        String username = adminDTO.getUsername();
-        String nickname = adminDTO.getNickname();
+    public TokenResponse adminLogin(AdminRequest adminRequest){
+        String email = adminRequest.getEmail();
+        String nickname = adminRequest.getNickname();
 
         // 로그인 도메인 가져오기
-        String domain = getEmailDomain(username);
+        String domain = getEmailDomain(email);
         // 로그인 이메일 검증 (관리자 도메인)
         validateAdminEmailDomain(domain);
         // 관리자 로그인 검증
-        validateAdminUser(username, nickname);
+        validateAdminUser(email, nickname);
         // 역할
         String role = String.valueOf(UserRole.ADMIN);
         // 관리자 고유 번호: UUID 기반 + 역할명
-        String deviceId = UUID.nameUUIDFromBytes(username.getBytes()).toString() + "_" + role;
-        return tokenService.createAuthTokens(username, role, deviceId);
+        String deviceId = UUID.nameUUIDFromBytes(email.getBytes()).toString() + "_" + role;
+        return tokenService.createAuthTokens(email, role, deviceId);
     }
 
     /**
@@ -122,38 +109,21 @@ public class AdminServiceImpl implements AdminService {
     }
 
     /**
-     * 사용자가 이미 존재하는지 확인
-     *
-     * @param username 사용자 이름
-     * @throws CustomException 이미 등록된 사용자인 경우 예외 발생
-     */
-    private void checkUserExistence(String username) {
-        if (userRepository.existsByUsername(username)) {
-            log.error("이미 등록된 사용자: {}", username);
-            throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
-        }
-    }
-
-    /**
      * 관리자 검증
      *
-     * @param username 사용자 이름
+     * @param email 사용자 이메일
      * @param nickname 사용자 닉네임
      * @throws CustomException 사용자가 존재하지 않거나 관리자가 아닌 경우 예외 발생
      */
-    private void validateAdminUser(String username, String nickname) {
-        Optional<User> userData = userRepository.findByUsername(username);
-        if (userData.isEmpty()) {
-            log.error("사용자를 찾을 수 없음: {}", username);
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
-        User admin = userData.get();
+    private void validateAdminUser(String email, String nickname) {
+        User admin = userService.findByEmail(email);
+
         if (!admin.getRole().equals(UserRole.ADMIN)) {
-            log.error("관리자 권한 없음: {}", username);
+            log.error("관리자 권한 없음: {}", email);
             throw new CustomException(ErrorCode.NOT_AN_ADMIN);
         }
         if (!admin.getNickname().equals(nickname)) {
-            log.error("닉네임 불일치: {}", username);
+            log.error("닉네임 불일치: {}", email);
             throw new CustomException(ErrorCode.ADMIN_LOGIN_FAILED);
         }
     }

@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.domain.user.controller;
 
-import com.tico.pomoro_do.domain.user.dto.response.ImageDTO;
+import com.tico.pomoro_do.domain.user.dto.response.ImageResponse;
 import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
@@ -45,20 +45,20 @@ public class ImageController {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 이미지 파일"),
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponseDTO<ImageDTO>> imageUpload(
+    public ResponseEntity<SuccessResponseDTO<ImageResponse>> imageUpload(
             @RequestParam("image") MultipartFile image
     ) {
 
         String imageUrl = imageService.imageUpload(image, S3Folder.IMAGES.getFolderName());
 
-        ImageDTO imageDTO = ImageDTO.builder()
+        ImageResponse imageResponse = ImageResponse.builder()
                 .imageUrl(imageUrl)
                 .build();
 
-        SuccessResponseDTO<ImageDTO> response = SuccessResponseDTO.<ImageDTO>builder()
+        SuccessResponseDTO<ImageResponse> response = SuccessResponseDTO.<ImageResponse>builder()
                 .status(SuccessCode.IMAGE_UPLOAD_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.IMAGE_UPLOAD_SUCCESS.getMessage())
-                .data(imageDTO)
+                .data(imageResponse)
                 .build();
 
         return ResponseEntity.ok(response);

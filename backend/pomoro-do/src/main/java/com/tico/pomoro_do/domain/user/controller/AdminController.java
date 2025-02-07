@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.user.controller;
 
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
-import com.tico.pomoro_do.domain.user.dto.request.AdminDTO;
+import com.tico.pomoro_do.domain.user.dto.request.AdminRequest;
 import com.tico.pomoro_do.domain.user.service.AdminService;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponseDTO;
@@ -33,7 +33,7 @@ public class AdminController {
     /**
      * 관리자 회원가입 API
      *
-     * @param adminDTO AdminDTO 객체
+     * @param adminRequest AdminDTO 객체
      * @param profileImage 관리자 프로필 이미지 파일
      * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
      */
@@ -50,17 +50,17 @@ public class AdminController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<TokenResponse>> adminJoin(
-            @Valid @RequestPart AdminDTO adminDTO,
+            @Valid @RequestPart AdminRequest adminRequest,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
 
-        TokenResponse jwtResponse = adminService.adminJoin(adminDTO, profileImage);
+        TokenResponse jwtResponse = adminService.adminJoin(adminRequest, profileImage);
         SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
-        log.info("관리자 회원가입 성공: {}", adminDTO.getUsername());
+        log.info("관리자 회원가입 성공: {}", adminRequest.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
     }
 
@@ -83,16 +83,16 @@ public class AdminController {
     })
     @PostMapping("/login")
     public ResponseEntity<SuccessResponseDTO<TokenResponse>> adminLogin(
-            @Valid @RequestBody AdminDTO request
+            @Valid @RequestBody AdminRequest request
     ) {
-        log.info("관리자 로그인 요청: {}", request.getUsername());
+        log.info("관리자 로그인 요청: {}", request.getEmail());
         TokenResponse jwtResponse = adminService.adminLogin(request);
         SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                 .status(SuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
-        log.info("관리자 로그인 성공: {}", request.getUsername());
+        log.info("관리자 로그인 성공: {}", request.getEmail());
         return ResponseEntity.ok(successResponse);
     }
 }

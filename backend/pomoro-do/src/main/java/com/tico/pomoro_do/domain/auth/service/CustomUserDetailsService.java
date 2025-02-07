@@ -28,13 +28,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         // DB에서 조회
-        Optional<User> userData = userRepository.findByUsername(username);
+        Optional<User> userData = userRepository.findByEmail(username);
 
         // 데이터가 있으면 검증 진행
         if (userData.isPresent()) {
             User user = userData.get();
             AuthUser authUser = AuthUser.builder()
-                    .email(user.getUsername())
+                    .email(user.getEmail())
                     .role(String.valueOf(user.getRole()))
                     .build();
 

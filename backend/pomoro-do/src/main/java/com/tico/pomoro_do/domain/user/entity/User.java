@@ -21,7 +21,7 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username; // email
+    private String email; // 소셜 로그인 제공자의 이메일
 
     @Column(nullable = false, length = 10)
     private String nickname;
@@ -39,8 +39,8 @@ public class User extends BaseTimeEntity {
     private UserStatus status = UserStatus.ACTIVE;
 
     @Builder
-    public User(String username, String nickname, String profileImageUrl, UserRole role) {
-        this.username = username;
+    public User(String email, String nickname, String profileImageUrl, UserRole role) {
+        this.email = email;
         this.nickname = nickname;
         this.profileImageUrl = profileImageUrl;
         this.role = role;
@@ -53,13 +53,16 @@ public class User extends BaseTimeEntity {
     public void updateProfileImageUrl(String profileImageUrl) {
         this.profileImageUrl = profileImageUrl;
     }
+//
+//    public void updateRole(UserRole role) {
+//        this.role = role;
+//    }
 
-    public void updateRole(UserRole role) {
-        this.role = role;
+//    public void updateStatus(UserStatus status) {
+//        this.status = status;
+//    }
+
+    public void deactivate() {
+        this.status = UserStatus.DEACTIVATED;
     }
-
-    public void updateStatus(UserStatus status) {
-        this.status = status;
-    }
-
 }
