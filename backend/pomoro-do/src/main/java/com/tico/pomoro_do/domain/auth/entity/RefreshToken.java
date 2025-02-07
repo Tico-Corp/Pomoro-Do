@@ -19,8 +19,8 @@ public class RefreshToken {
     @Column(name = "token_id")
     private Long id;
 
-    @Column(name = "email", nullable = false) // username → email
-    private String email;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @Column(name = "refresh_token", nullable = false)
     private String refreshToken;
@@ -32,8 +32,8 @@ public class RefreshToken {
     private LocalDateTime expiresAt;
 
     @Builder
-    public RefreshToken(String email, String refreshToken, String deviceId, LocalDateTime expiresAt) {
-        this.email = email;
+    public RefreshToken(Long userId, String refreshToken, String deviceId, LocalDateTime expiresAt) {
+        this.userId = userId;
         this.refreshToken = refreshToken;
         this.deviceId = deviceId;
         this.expiresAt = expiresAt;

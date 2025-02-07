@@ -82,13 +82,13 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void deleteUser(String email, String deviceId, String refreshHeader) {
+    public void deleteUser(Long userId, String deviceId, String refreshHeader) {
         // 회원 토큰 검증
-        tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, email);
+        tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, userId);
         // 해당 회원의 모든 리프레시 토큰 삭제
-        tokenService.deleteAllRefreshTokensByEmail(email);
+        tokenService.deleteAllRefreshTokensByUserId(userId);
         // 해당 유저 삭제
-        userRepository.deleteByEmail(email);
+        userRepository.deleteById(userId);
     }
 
     // 이메일이 등록되어 있는 지 검증

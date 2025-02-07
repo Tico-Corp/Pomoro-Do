@@ -146,15 +146,15 @@ public class AuthServiceImpl implements AuthService {
      *
      * @param imageType 프로필 이미지의 유형 (FILE, GOOGLE, 또는 DEFAULT)
      * @param profileImage 사용자가 업로드한 프로필 이미지 파일 (FILE 유형일 때 사용)
-     * @param userInfo 구글 사용자 정보 DTO (GOOGLE 유형일 때 사용)
+     * @param googleUserInfo 구글 사용자 정보 DTO (GOOGLE 유형일 때 사용)
      * @return 프로필 이미지의 URL. FILE 유형인 경우 업로드된 이미지의 URL을,
      *         GOOGLE 유형인 경우 구글 프로필 이미지 URL을 반환하며,
      *         DEFAULT 유형인 경우 null을 반환합니다.
      */
-    private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfo userInfo) {
+    private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfo googleUserInfo) {
         return switch (imageType) {
             case FILE -> imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
-            case GOOGLE -> userInfo.getPictureUrl();
+            case GOOGLE -> googleUserInfo.getPictureUrl();
             // DEFAULT 타입일 때 default로 통합하여 처리
             default -> null;
         };

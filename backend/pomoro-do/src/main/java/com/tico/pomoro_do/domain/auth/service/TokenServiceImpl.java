@@ -43,26 +43,26 @@ public class TokenServiceImpl implements TokenService {
         // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제
         deleteRefreshTokenByDeviceId(deviceId);
         // 리프레시 토큰을 DB에 저장
-        createRefreshToken(email, refreshToken, refreshExpiration, deviceId);
+        createRefreshToken(userId, refreshToken, refreshExpiration, deviceId);
 
         return new TokenResponse(accessToken, refreshToken);
     }
 
     @Override
-    public void createRefreshToken(String email, String refresh, Long expiredMs, String deviceId) {
+    public void createRefreshToken(Long userId, String refresh, Long expiredMs, String deviceId) {
 
         // 현재 시간에 만료 시간(밀리초)을 더해서 만료 날짜 계산
         LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(expiredMs));
 
         RefreshToken refreshTokenEntity = RefreshToken.builder()
-                .email(email)
+                .userId(userId)
                 .refreshToken(refresh)
                 .deviceId(deviceId)
                 .expiresAt(expiresAt)
                 .build();
 
         refreshTokenRepository.save(refreshTokenEntity);
-        log.info("리프레시 토큰 저장 성공: 사용자 = {}, 토큰 = {}, 기기 고유번호 = {}", email, refresh, deviceId);
+        log.info("리프레시 토큰 저장 성공: 사용자ID = {}, 토큰 = {}, 기기 고유번호 = {}", userId, refresh, deviceId);
 
     }
 
@@ -92,19 +92,22 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void deleteAllRefreshTokensByEmail(String email) {
-        // DB에서 email에 해당하는 모든 엔티티를 제거합니다.
-        refreshTokenRepository.deleteByEmail(email);
+    public void deleteAllRefreshTokensByUserId(Long userId) {
+        // DB에서 사용자Id에 해당하는 모든 엔티티를 제거합니다.
+        refreshTokenRepository.deleteByUserId(userId);
     }
 
     @Override
-    public void validateRefreshTokenDetails(String refreshHeader, String deviceId, String email) {
+    public void validateRefreshTokenDetails(String refreshHeader, String deviceId, Long userId) {
         // 1. 토큰 검증
         String refresh = extractAndValidateToken(refreshHeader, TokenType.REFRESH);
         // 2. DB에서 토큰 조회
         RefreshToken refreshToken = getRefreshByRefreshToken(refresh);
         // 3. DB 데이터 검증
-        validateRefreshTokenWithEmail(refreshToken, deviceId, email);
+        // Device ID 검증
+        validateDeviceIdMatch(refreshToken, deviceId);
+        // userId 검증
+        validateUserIdMatch(refreshToken, userId);
     }
 
     @Override
@@ -114,7 +117,9 @@ public class TokenServiceImpl implements TokenService {
         // 2. DB에서 토큰 조회
         RefreshToken refreshToken = getRefreshByRefreshToken(refresh);
         // 3. DB 데이터 검증
-        validateRefreshTokenWithoutEmail(refreshToken, deviceId);
+        // Device ID 검증
+        validateDeviceIdMatch(refreshToken, deviceId);
+
         return refresh;
     }
 
@@ -128,17 +133,6 @@ public class TokenServiceImpl implements TokenService {
         return token;
     }
 
-    // email 포함 검증
-    private void validateRefreshTokenWithEmail(RefreshToken refreshToken, String deviceId, String email) {
-        validateDeviceIdMatch(refreshToken, deviceId);
-        validateEmailMatch(refreshToken, email);
-    }
-
-    // email 제외 검증
-    private void validateRefreshTokenWithoutEmail(RefreshToken refreshToken, String deviceId) {
-        validateDeviceIdMatch(refreshToken, deviceId);
-    }
-
     // Device ID 검증
     private void validateDeviceIdMatch(RefreshToken refreshToken, String deviceId) {
         if (!refreshToken.getDeviceId().equals(deviceId)) {
@@ -147,10 +141,10 @@ public class TokenServiceImpl implements TokenService {
         }
     }
 
-    // email 검증
-    private void validateEmailMatch(RefreshToken refreshToken, String email) {
-        if (!refreshToken.getEmail().equals(email)) {
-            log.error("email이 일치하지 않음: email = {}", email);
+    // JWT userId 검증
+    private void validateUserIdMatch(RefreshToken refreshToken, Long userId) {
+        if (!refreshToken.getUserId().equals(userId)) {
+            log.error("userId가 일치하지 않음: userId = {}", userId);
             throw new CustomException(ErrorCode.USERNAME_MISMATCH);
         }
     }

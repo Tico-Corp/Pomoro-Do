@@ -82,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         //Refresh 토큰 저장
         String deviceId = request.getHeader("Device-ID");
-        tokenService.createRefreshToken(username, refresh, refreshExpiration, deviceId);
+        tokenService.createRefreshToken(userId, refresh, refreshExpiration, deviceId);
 
         //응답 설정
         //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)

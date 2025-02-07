@@ -20,7 +20,7 @@ public interface UserService {
     FollowResponse getUserDetail(String email, Long userId);
 
     // 유저 삭제
-    void deleteUser(String email, String deviceId, String refreshHeader);
+    void deleteUser(Long userId, String deviceId, String refreshHeader);
 
     /**
      * 이메일을 통해 사용자가 이미 등록되어 있는지 확인

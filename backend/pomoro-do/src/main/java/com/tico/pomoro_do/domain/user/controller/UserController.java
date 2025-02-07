@@ -84,7 +84,7 @@ public class UserController {
             @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshToken
     ) {
-        userService.deleteUser(customUserDetails.getUsername(), deviceId, refreshToken);
+        userService.deleteUser(customUserDetails.getUserId(), deviceId, refreshToken);
 
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.USER_DELETION_SUCCESS.getHttpStatus().value())

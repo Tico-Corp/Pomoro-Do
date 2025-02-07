@@ -18,7 +18,7 @@ public interface AuthService {
      * 구글 ID 토큰으로 무결성 검증
      *
      * @param idToken 구글 ID 토큰
-     * @return 검증된 GoogleUserInfoDTO
+     * @return 검증된 GoogleUserInfo
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
      * @throws CustomException 구글 ID 토큰이 유효하지 않은 경우 예외
@@ -30,7 +30,7 @@ public interface AuthService {
      *
      * @param idTokenHeader Google-ID-Token 헤더에 포함된 구글 ID 토큰
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
-     * @return TokenDTO를 포함하는 객체
+     * @return TokenResponse를 포함하는 객체
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
      * @throws CustomException 구글 ID 토큰이 유효하지 않거나 등록되지 않은 사용자인 경우 예외
@@ -45,7 +45,7 @@ public interface AuthService {
      * @param nickname 닉네임
      * @param profileImage 프로필 이미지
      * @param imageType 프로필 이미지 타입
-     * @return TokenDTO를 포함하는 객체
+     * @return TokenResponse를 포함하는 객체
      * @throws GeneralSecurityException 구글 ID 토큰 검증 중 발생하는 보안 예외
      * @throws IOException IO 예외
      * @throws CustomException 구글 ID 토큰이 유효하지 않거나 이미 등록된 사용자인 경우 예외
@@ -55,20 +55,20 @@ public interface AuthService {
     /**
      * 새 사용자 생성
      *
-     * @param username 사용자 이메일
+     * @param email 사용자 이메일
      * @param nickname 사용자 닉네임
      * @param profileImageUrl 사용자 프로필 이미지 URL
      * @param role 사용자 역할
      * @return 생성된 User 객체
      */
-    User createUser(String username, String nickname, String profileImageUrl, UserRole role);
+    User createUser(String email, String nickname, String profileImageUrl, UserRole role);
 
     /**
      * Refresh 토큰을 사용하여 Access 토큰 재발급
      *
      * @param deviceId 기기 고유 번호
      * @param refreshHeader 리프레시 토큰
-     * @return 새 Access 토큰을 포함하는 TokenDTO
+     * @return 새 Access 토큰을 포함하는 TokenResponse
      */
     TokenResponse reissueToken(String deviceId, String refreshHeader);
 

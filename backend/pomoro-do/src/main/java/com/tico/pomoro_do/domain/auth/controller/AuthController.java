@@ -48,7 +48,7 @@ public class AuthController {
      *
      * @param googleIdToken Google-ID-Token 헤더에 포함된 구글 ID 토큰
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
-     * @return 성공 시 JWT 토큰 정보가 담긴 SuccessResponseDTO 반환
+     * @return 성공 시 JWT 토큰 정보가 담긴 SuccessResponse 반환
      * @throws CustomException 구글 ID 토큰 검증 실패 시 CustomException 발생
      */
     @Operation(
@@ -106,7 +106,7 @@ public class AuthController {
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
      * @param nickname 닉네임
      * @param profileImage 프로필 이미지
-     * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
+     * @return 성공 시 TokenResponse를 포함하는 SuccessResponse
      * @throws CustomException 구글 ID 토큰 검증에 실패한 경우 예외를 던집니다.
      */
     @Operation(
@@ -176,7 +176,7 @@ public class AuthController {
      *
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
      * @param refreshToken Refresh-Token 헤더에 포함된 리프레시 토큰
-     * @return 재발급된 JWT 토큰 정보가 담긴 SuccessResponseDTO 반환
+     * @return 재발급된 JWT 토큰 정보가 담긴 SuccessResponse 반환
      * @throws CustomException 리프레시 토큰 검증 실패 시 CustomException 발생
      */
     @Operation(
@@ -223,12 +223,11 @@ public class AuthController {
 
     /**
      * 로그아웃 API
-     *
      * 사용자가 로그아웃 시, 서버의 리프레시 토큰을 삭제합니다.
      *
      * @param deviceId Device-ID 헤더에 포함된 기기 고유 번호
      * @param refreshHeader Refresh-Token 헤더에 포함된 리프레시 토큰
-     * @return 로그아웃 성공 메시지를 담은 SuccessResponseDTO 반환
+     * @return 로그아웃 성공 메시지를 담은 SuccessResponse 반환
      * @throws CustomException 리프레시 토큰 삭제 실패 시 CustomException 발생
      */
     @Operation(
@@ -260,7 +259,7 @@ public class AuthController {
             @RequestHeader("Refresh-Token") String refreshHeader
     ) {
         // 토큰 검증
-        tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, customUserDetails.getUsername());
+        tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, customUserDetails.getUserId());
         // 토큰 삭제 (액세스 토큰으로 현재 Redis 정보 삭제)
         tokenService.deleteRefreshTokenByDeviceId(deviceId);
 
