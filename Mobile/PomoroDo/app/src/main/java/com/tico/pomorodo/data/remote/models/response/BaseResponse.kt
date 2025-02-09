@@ -12,4 +12,4 @@ data class BaseResponse<T>(
 )
 
 fun <T, R> BaseResponse<T>.toBase(mapper: (T) -> R): Base<R> =
-    Base(status = status, message = message, data = mapper(data))
+    Base(message = message, data = mapper(data))

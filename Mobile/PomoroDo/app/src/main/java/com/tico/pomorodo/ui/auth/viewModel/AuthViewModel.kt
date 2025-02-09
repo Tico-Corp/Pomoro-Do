@@ -96,11 +96,9 @@ class AuthViewModel @Inject constructor(
         loginUseCase().collect { result ->
             when (result) {
                 is Resource.Success -> {
-                    if (result.data.status == NetworkConstants.SUCCESS_CODE) {
-                        saveRefreshToken(result.data.data.refreshToken)
-                        saveAccessToken(result.data.data.accessToken)
-                        _authState.value = AuthState.SUCCESS_LOGIN
-                    }
+                    saveRefreshToken(result.data.data.refreshToken)
+                    saveAccessToken(result.data.data.accessToken)
+                    _authState.value = AuthState.SUCCESS_LOGIN
                 }
 
                 is Resource.Loading -> {}
@@ -124,11 +122,9 @@ class AuthViewModel @Inject constructor(
         joinUseCase(name.value, profile.value, profileImageType).collect { result ->
             when (result) {
                 is Resource.Success -> {
-                    if (result.data.status == NetworkConstants.SUCCESS_JOIN_CODE) {
-                        saveRefreshToken(result.data.data.refreshToken)
-                        saveAccessToken(result.data.data.accessToken)
-                        _authState.value = AuthState.SUCCESS_JOIN
-                    }
+                    saveRefreshToken(result.data.data.refreshToken)
+                    saveAccessToken(result.data.data.accessToken)
+                    _authState.value = AuthState.SUCCESS_JOIN
                 }
 
                 is Resource.Loading -> {}
