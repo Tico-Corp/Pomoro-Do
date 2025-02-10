@@ -35,7 +35,7 @@ public class UserController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
 
-        UserDetailResponse userDetailResponse = userService.getMyDetail(customUserDetails.getUsername());
+        UserDetailResponse userDetailResponse = userService.getMyProfile(customUserDetails.getUserId());
         SuccessResponseDTO<UserDetailResponse> successResponse = SuccessResponseDTO.<UserDetailResponse>builder()
                 .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())
@@ -58,8 +58,7 @@ public class UserController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ) {
-        String email = customUserDetails.getUsername();
-        FollowResponse response = userService.getUserDetail(email, userId);
+        FollowResponse response = userService.getUserProfile(customUserDetails.getUserId(), userId);
         SuccessResponseDTO<FollowResponse> successResponse = SuccessResponseDTO.<FollowResponse>builder()
                 .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())

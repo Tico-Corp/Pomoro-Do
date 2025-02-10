@@ -47,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public void createCategory(String hostEmail, CategoryCreationDTO categoryCreationDTO){
 
-        User host = userService.findByEmail(hostEmail);
+        User host = userService.findUserByEmail(hostEmail);
 
         // 일반/그룹 카테고리 생성
         Category category = createNewCategory(
@@ -111,7 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
                 throw new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_FOLLOWED);
             }
 
-            User member = userService.findByUserId(memberId);
+            User member = userService.findUserById(memberId);
             createGroupMember(category, member, GroupInvitationStatus.INVITED, GroupRole.MEMBER);
         }
     }
@@ -145,7 +145,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO getCategories(String email) {
         // 사용자 조회
-        User user = userService.findByEmail(email);
+        User user = userService.findUserByEmail(email);
 
         // 일반 카테고리
         List<GeneralCategoryDTO> generalCategories = getGeneralCategories(user);

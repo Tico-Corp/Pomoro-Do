@@ -42,7 +42,7 @@ public class AdminServiceImpl implements AdminService {
         // 관리자 회원가입 이메일 도메인 검증
         validateAdminEmailDomain(domain);
         // 관리자 이메일 가입 여부 검증
-        userService.isEmailRegistered(email);
+        userService.verifyEmailNotRegistered(email);
 
         // profileImage URL 가져오기
         String profileImageUrl;
@@ -114,7 +114,7 @@ public class AdminServiceImpl implements AdminService {
      * @throws CustomException 사용자가 존재하지 않거나 관리자가 아닌 경우 예외 발생
      */
     private User validateAdminUser(String email, String nickname) {
-        User admin = userService.findByEmail(email);
+        User admin = userService.findUserByEmail(email);
 
         if (!admin.getRole().equals(UserRole.ADMIN)) {
             log.error("관리자 권한 없음: {}", email);

@@ -33,15 +33,15 @@ public class AdminController {
     /**
      * 관리자 회원가입 API
      *
-     * @param adminRequest AdminDTO 객체
+     * @param request AdminRequest 객체
      * @param profileImage 관리자 프로필 이미지 파일
-     * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
+     * @return 성공 시 TokenResponse를 포함하는 SuccessResponse
      */
     @Operation(
             summary = "관리자 회원가입",
             description = "관리자 회원가입을 수행합니다. <br>"
                     + "관리자의 이메일은 @pomorodo.shop 도메인으로 제한됩니다. <br>"
-                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다."
+                    + "성공 시에는 TokenResponse를 포함하는 SuccessResponse를 반환합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입 성공"),
@@ -50,30 +50,30 @@ public class AdminController {
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<SuccessResponseDTO<TokenResponse>> adminJoin(
-            @Valid @RequestPart AdminRequest adminRequest,
+            @Valid @RequestPart AdminRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
 
-        TokenResponse jwtResponse = adminService.adminJoin(adminRequest, profileImage);
+        TokenResponse jwtResponse = adminService.adminJoin(request, profileImage);
         SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
-        log.info("관리자 회원가입 성공: {}", adminRequest.getEmail());
+        log.info("관리자 회원가입 성공: {}", request.getEmail());
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
     }
 
     /**
      * 관리자 로그인 API
      *
-     * @param request AdminDTO 객체
-     * @return 성공 시 TokenDTO를 포함하는 SuccessResponseDTO
+     * @param request AdminRequest 객체
+     * @return 성공 시 TokenResponse를 포함하는 SuccessResponse
      */
     @Operation(
             summary = "관리자 로그인",
             description = "관리자 로그인을 수행합니다. <br>"
-                    + "성공 시에는 TokenDTO를 포함하는 SuccessResponseDTO를 반환합니다."
+                    + "성공 시에는 TokenResponse를 포함하는 SuccessResponse를 반환합니다."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),

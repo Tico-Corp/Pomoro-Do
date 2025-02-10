@@ -24,31 +24,32 @@ public class UserServiceImpl implements UserService{
     final private TokenService tokenService;
 
     @Override
-    public User findByUserId(Long userId) {
+    public User findUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    log.error("등록되지 않은 사용자: 사용자ID = {}", userId);
+                    log.error("[User] 사용자 조회 실패: userId={}", userId);
                     return new CustomException(ErrorCode.USER_NOT_FOUND);
                 });
     }
 
     @Override
-    public User findByEmail(String email) {
+    public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> {
-                    log.error("등록되지 않은 사용자: 이메일 = {}", email);
+                    log.error("[User] 사용자 조회 실패: email={}", email);
                     return new CustomException(ErrorCode.USER_NOT_FOUND);
                 });
     }
 
     @Override
-    public UserDetailResponse getMyDetail(String email) {
-        User user = findByEmail(email);
-
+    public UserDetailResponse getMyProfile(Long userId) {
+        User user = findUserById(userId);
         // 내가 팔로우하는 사람의 수 계산
         int followingCount = followRepository.countByFollower(user);
         // 나를 팔로우하는 사람의 수 계산
         int followerCount = followRepository.countByFollowing(user);
+
+        log.info("[User] 내 프로필 조회 성공: userId={}", userId);
 
         return UserDetailResponse.builder()
                 .userId(user.getId())
@@ -61,21 +62,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public FollowResponse getUserDetail(String email, Long userId) {
+    public FollowResponse getUserProfile(Long currentUserId, Long targetUserId) {
 
-        // 주어진 email에 해당하는 현재 사용자 ID 조회
-        Long myUserId = findByEmail(email).getId();
         // 주어진 userId에 해당하는 특정 사용자 정보 조회
-        User user = findByUserId(userId);
-
+        User targetUser = findUserById(targetUserId);
         // 현재 사용자가 해당 특정 사용자를 팔로우하고 있는지 여부 확인
-        boolean isFollowing = followRepository.existsByFollowerIdAndFollowingId(myUserId, userId);
+        boolean isFollowing = followRepository.existsByFollowerIdAndFollowingId(currentUserId, targetUserId);
+
+        log.info("[User] 특정 사용자 프로필 조회: currentUserId={}, targetUserId={}", currentUserId, targetUserId);
 
         // 사용자 정보 및 팔로우 상태를 포함한 DTO 반환
         return FollowResponse.builder()
-                .userId(user.getId())
-                .nickname(user.getNickname())
-                .profileImageUrl(user.getProfileImageUrl())
+                .userId(targetUser.getId())
+                .nickname(targetUser.getNickname())
+                .profileImageUrl(targetUser.getProfileImageUrl())
                 .following(isFollowing)
                 .build();
     }
@@ -83,29 +83,45 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void deleteUser(Long userId, String deviceId, String refreshHeader) {
+        log.info("[User] 사용자 삭제 요청: userId={}, deviceId={}", userId, deviceId);
+
         // 회원 토큰 검증
         tokenService.validateRefreshTokenDetails(refreshHeader, deviceId, userId);
         // 해당 회원의 모든 리프레시 토큰 삭제
         tokenService.deleteAllRefreshTokensByUserId(userId);
         // 해당 유저 삭제
         userRepository.deleteById(userId);
+        log.info("[User] 사용자 삭제 완료: userId={}", userId);
+
     }
 
-    // 이메일이 등록되어 있는 지 검증
+    // 이메일 중복 검증
     @Override
-    public void isEmailRegistered(String email) {
+    public void verifyEmailNotRegistered(String email) {
         if (userRepository.existsByEmail(email)) {
-            log.error("이미 등록된 사용자: {}", email);
+            log.warn("[User] 이메일 중복됨: email={}", email);
             throw new CustomException(ErrorCode.USER_ALREADY_REGISTERED);
         }
+        log.info("[User] 이메일 사용 가능: email={}", email);
+    }
+
+    // 이메일 존재 여부 검증
+    @Override
+    public void verifyEmailExists(String email) {
+        if (!userRepository.existsByEmail(email)) {
+            log.error("[User] 존재하지 않는 이메일: email={}", email);
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+        log.info("[User] 이메일 존재 확인 완료: email={}", email);
     }
 
     // 이메일이 사용 가능한 지 검증
     @Override
-    public void validateEmailExists(String email) {
-        if (!userRepository.existsByEmail(email)) {
-            log.error("등록되지 않은 사용자: 이메일 = {}", email);
+    public void verifyUserExists(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            log.error("[User] 존재하지 않는 사용자: userId={}", userId);
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
+        log.info("[User] 사용자 존재 확인 완료: userId={}", userId);
     }
 }

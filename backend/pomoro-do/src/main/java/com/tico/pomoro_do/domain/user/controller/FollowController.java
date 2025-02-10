@@ -30,8 +30,8 @@ public class FollowController {
      * 현재 인증된 사용자가 다른 사용자를 팔로우하는 API
      *
      * @param customUserDetails 현재 인증된 사용자의 정보
-     * @param userId 팔로우할 사용자의 ID
-     * @return 성공 시 성공 메시지를 포함한 SuccessResponseDTO 반환
+     * @param userId 팔로우 당하는 사용자 ID
+     * @return 성공 시 성공 메시지를 포함한 SuccessResponse 반환
      */
     @Operation(
             summary = "현재 사용자가 특정 사용자를 팔로우",
@@ -50,8 +50,9 @@ public class FollowController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ) {
-        String username = customUserDetails.getUsername();
-        followService.follow(username, userId);
+        // 현재 로그인한 사용자 ID
+        Long currentUserId = customUserDetails.getUserId();
+        followService.followUser(currentUserId, userId);
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.FOLLOW_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.FOLLOW_SUCCESS.getMessage())
@@ -76,8 +77,8 @@ public class FollowController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ){
-        String username = customUserDetails.getUsername();
-        followService.unfollow(username, userId);
+        Long currentUserId = customUserDetails.getUserId();
+        followService.unfollowUser(currentUserId, userId);
         SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
                 .status(SuccessCode.UNFOLLOW_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.UNFOLLOW_SUCCESS.getMessage())
@@ -106,8 +107,8 @@ public class FollowController {
     public ResponseEntity<SuccessResponseDTO<List<FollowResponse>>> getFollowers(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){
-        String username = customUserDetails.getUsername();
-        List<FollowResponse> followersList = followService.getFollowers(username);
+        Long currentUserId = customUserDetails.getUserId();
+        List<FollowResponse> followersList = followService.getFollowers(currentUserId);
 
         SuccessResponseDTO<List<FollowResponse>> successResponse = SuccessResponseDTO.<List<FollowResponse>>builder()
                 .status(SuccessCode.FOLLOWERS_LIST_FETCH_SUCCESS.getHttpStatus().value())
@@ -137,8 +138,8 @@ public class FollowController {
     public ResponseEntity<SuccessResponseDTO<List<FollowResponse>>> getFollowings(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        String username = customUserDetails.getUsername();
-        List<FollowResponse> followingList = followService.getFollowings(username);
+        Long currentUserId = customUserDetails.getUserId();
+        List<FollowResponse> followingList = followService.getFollowings(currentUserId);
 
         SuccessResponseDTO<List<FollowResponse>> successResponse = SuccessResponseDTO.<List<FollowResponse>>builder()
                 .status(SuccessCode.FOLLOWING_LIST_FETCH_SUCCESS.getHttpStatus().value())

@@ -89,7 +89,7 @@ public class AuthServiceImpl implements AuthService {
         GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 회원 가입 여부 판단 -> 회원 가입 x -> 에러 발생
 //        userService.validateEmailExists(userInfo.getEmail());
-        User user = userService.findByEmail(googleUserInfo.getEmail());
+        User user = userService.findUserByEmail(googleUserInfo.getEmail());
         // 회원 가입되어 있으면 토큰 발급
         return tokenService.createAuthTokens(user.getId(), user.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
@@ -107,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
         // 구글 id 토큰 검증
         GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 사용자의 이메일 중복 체크
-        userService.isEmailRegistered(googleUserInfo.getEmail());
+        userService.verifyEmailNotRegistered(googleUserInfo.getEmail());
 
         // 알맞는 profileImage url 가져오기 (null 가능)
         String profileImageUrl = determineProfileImageUrl(imageType, profileImage, googleUserInfo);

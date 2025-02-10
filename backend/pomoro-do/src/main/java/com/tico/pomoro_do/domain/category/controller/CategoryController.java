@@ -103,7 +103,7 @@ public class CategoryController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
-        User user = userService.findByEmail(email);
+        User user = userService.findUserByEmail(email);
         List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user);
 
         SuccessResponseDTO<List<GeneralCategoryDTO>> successResponse = SuccessResponseDTO.<List<GeneralCategoryDTO>>builder()
@@ -124,7 +124,7 @@ public class CategoryController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
-        User user = userService.findByEmail(email);
+        User user = userService.findUserByEmail(email);
         List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user);
 
         SuccessResponseDTO<List<GroupCategoryDTO>> successResponse = SuccessResponseDTO.<List<GroupCategoryDTO>>builder()
@@ -145,7 +145,7 @@ public class CategoryController {
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
-        User user = userService.findByEmail(email);
+        User user = userService.findUserByEmail(email);
         List<InvitedGroupDTO> groupCategories = categoryService.getInvitedGroupCategories(user);
 
         SuccessResponseDTO<List<InvitedGroupDTO>> successResponse = SuccessResponseDTO.<List<InvitedGroupDTO>>builder()
