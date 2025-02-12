@@ -52,10 +52,8 @@ class SplashViewModel @Inject constructor(
         validateTokenUseCase(ACCESS).collect { result ->
             when (result) {
                 is Resource.Success -> {
-                    if (result.data.status == NetworkConstants.SUCCESS_CODE) {
-                        _authState.value = AuthState.SUCCESS_LOGIN
-                        _isLoading.value = false
-                    }
+                    _authState.value = AuthState.SUCCESS_LOGIN
+                    _isLoading.value = false
                 }
 
                 is Resource.Loading -> {
@@ -80,12 +78,10 @@ class SplashViewModel @Inject constructor(
         reissueTokenUseCase().collect { result ->
             when (result) {
                 is Resource.Success -> {
-                    if (result.data.status == NetworkConstants.SUCCESS_CODE) {
-                        saveRefreshToken(result.data.data.refreshToken)
-                        saveAccessToken(result.data.data.accessToken)
-                        _authState.value = AuthState.SUCCESS_LOGIN
-                        _isLoading.value = false
-                    }
+                    saveRefreshToken(result.data.data.refreshToken)
+                    saveAccessToken(result.data.data.accessToken)
+                    _authState.value = AuthState.SUCCESS_LOGIN
+                    _isLoading.value = false
                 }
 
                 is Resource.Loading -> {
