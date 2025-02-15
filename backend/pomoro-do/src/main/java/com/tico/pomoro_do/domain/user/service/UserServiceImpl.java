@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.user.service;
 
 import com.tico.pomoro_do.domain.auth.service.TokenService;
-import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
+import com.tico.pomoro_do.domain.user.dto.response.UserProfileResponse;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailResponse;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.FollowRepository;
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserDetailResponse getMyProfile(Long userId) {
+    public UserDetailResponse getUserDetail(Long userId) {
         User user = findUserById(userId);
         // 내가 팔로우하는 사람의 수 계산
         int followingCount = followRepository.countByFollower(user);
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public FollowResponse getUserProfile(Long currentUserId, Long targetUserId) {
+    public UserProfileResponse getUserProfile(Long currentUserId, Long targetUserId) {
 
         // 주어진 userId에 해당하는 특정 사용자 정보 조회
         User targetUser = findUserById(targetUserId);
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService{
         log.info("[User] 특정 사용자 프로필 조회: currentUserId={}, targetUserId={}", currentUserId, targetUserId);
 
         // 사용자 정보 및 팔로우 상태를 포함한 DTO 반환
-        return FollowResponse.builder()
+        return UserProfileResponse.builder()
                 .userId(targetUser.getId())
                 .nickname(targetUser.getNickname())
                 .profileImageUrl(targetUser.getProfileImageUrl())

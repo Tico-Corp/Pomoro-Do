@@ -9,7 +9,7 @@ import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.enums.ProfileImageType;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
-import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import com.tico.pomoro_do.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -78,7 +78,7 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "등록되지 않은 사용자 (code: U-104)")
     })
     @PostMapping("/google/login")
-    public ResponseEntity<SuccessResponseDTO<TokenResponse>> googleLogin(
+    public ResponseEntity<SuccessResponse<TokenResponse>> googleLogin(
             @RequestHeader("Google-ID-Token") String googleIdToken,
             @RequestHeader("Device-ID") String deviceId
     ) {
@@ -87,7 +87,7 @@ public class AuthController {
             TokenResponse jwtResponse = authService.googleLogin(googleIdToken, deviceId);
 
             // 성공 응답 생성
-            SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
+            SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
                     .status(SuccessCode.GOOGLE_LOGIN_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_LOGIN_SUCCESS.getMessage())
                     .data(jwtResponse)
@@ -150,7 +150,7 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자 (code: U-105)")
     })
     @PostMapping(value = "/google/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponseDTO<TokenResponse>> googleJoin(
+    public ResponseEntity<SuccessResponse<TokenResponse>> googleJoin(
             @RequestHeader("Google-ID-Token") String googleIdTokenHeader,
             @RequestHeader("Device-ID") String deviceId,
             @RequestParam("nickname") String nickname,
@@ -159,7 +159,7 @@ public class AuthController {
     ) {
         try {
             TokenResponse jwtResponse = authService.googleJoin(googleIdTokenHeader, deviceId, nickname, profileImage, imageType);
-            SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
+            SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
                     .status(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())
                     .data(jwtResponse)
@@ -204,14 +204,14 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "기기 ID 또는 리프레시 토큰이 DB에 존재하지 않음"),
     })
     @PostMapping("/tokens/reissue")
-    public ResponseEntity<SuccessResponseDTO<TokenResponse>> reissueToken(
+    public ResponseEntity<SuccessResponse<TokenResponse>> reissueToken(
             @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshToken
     ) {
         // AuthService의 reissueToken 메서드 호출하여 결과 받기
         TokenResponse tokenResponse = authService.reissueToken(deviceId, refreshToken);
 
-        SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
+        SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
                 .status(SuccessCode.ACCESS_TOKEN_REISSUED.getHttpStatus().value())
                 .message(SuccessCode.ACCESS_TOKEN_REISSUED.getMessage())
                 .data(tokenResponse)
@@ -253,7 +253,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청")
     })
     @DeleteMapping("/logout")
-    public ResponseEntity<SuccessResponseDTO<String>> removeToken(
+    public ResponseEntity<SuccessResponse<String>> removeToken(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestHeader("Device-ID") String deviceId,
             @RequestHeader("Refresh-Token") String refreshHeader
@@ -263,7 +263,7 @@ public class AuthController {
         // 토큰 삭제 (액세스 토큰으로 현재 Redis 정보 삭제)
         tokenService.deleteRefreshTokenByDeviceId(deviceId);
 
-        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
                 .status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.LOGOUT_SUCCESS.getMessage())
                 .data(SuccessCode.LOGOUT_SUCCESS.name()) // data가 없을 때는 null로 설정
@@ -295,12 +295,12 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "토큰이 유효하지 않음")
     })
     @PostMapping("/tokens/validation")
-    public ResponseEntity<SuccessResponseDTO<String>> validateToken(HttpServletRequest request, @RequestParam("tokenType") TokenType tokenType) {
+    public ResponseEntity<SuccessResponse<String>> validateToken(HttpServletRequest request, @RequestParam("tokenType") TokenType tokenType) {
 
         String tokenHeader = request.getHeader("Authorization");
         // 토큰 검증 후 SuccessCode 반환
         SuccessCode successCode = tokenService.validateTokenAndGetSuccessCode(tokenHeader, tokenType);;
-        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
                 .status(successCode.getHttpStatus().value())
                 .message(successCode.getMessage())
                 .data(successCode.name()) // data가 없을 때는 null로 설정

@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
-import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
+import com.tico.pomoro_do.domain.user.dto.response.UserProfileResponse;
 import com.tico.pomoro_do.domain.user.entity.Follow;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.FollowRepository;
@@ -80,14 +80,14 @@ public class FollowServiceImpl implements FollowService {
 
     // 나를 팔로우하고 있는 사용자 목록을 조회
     @Override
-    public List<FollowResponse> getFollowers(Long userId) {
+    public List<UserProfileResponse> getFollowers(Long userId) {
         // 사용자를 팔로우하는 사용자 목록을 조회
         return getFollowList(userId, false);
     }
 
     // 내가 팔로우하고 있는 사용자 목록을 조회
     @Override
-    public List<FollowResponse> getFollowings(Long userId) {
+    public List<UserProfileResponse> getFollowings(Long userId) {
         // 팔로우 중인 사용자 목록을 조회
         return getFollowList(userId, true);
     }
@@ -97,9 +97,9 @@ public class FollowServiceImpl implements FollowService {
      *
      * @param userId 현재 사용자 ID
      * @param isFollowings true: 팔로잉 목록, false: 팔로워 목록
-     * @return FollowResponse 리스트 반환
+     * @return UserProfileResponse 리스트 반환
      */
-    private List<FollowResponse> getFollowList(Long userId, boolean isFollowings) {
+    private List<UserProfileResponse> getFollowList(Long userId, boolean isFollowings) {
         // 사용자 정보 조회
         User user = userService.findUserById(userId);
 
@@ -111,19 +111,19 @@ public class FollowServiceImpl implements FollowService {
         // Follow 엔티티 리스트를 FollowResponse 리스트로 변환하여 반환
         return followList.stream()
                 .map(follow -> convertToFollowResponse(follow, isFollowings, userId)) // DTO 변환
-                .sorted(Comparator.comparing(FollowResponse::getNickname)) // 닉네임 기준으로 정렬
+                .sorted(Comparator.comparing(UserProfileResponse::getNickname)) // 닉네임 기준으로 정렬
                 .collect(Collectors.toList()); // 리스트로 수집하여 반환
     }
 
     /**
-     * Follow 엔티티를 FollowResponse DTO로 변환
+     * Follow 엔티티를 UserProfileResponse DTO로 변환
      *
      * @param follow Follow 엔티티
      * @param isFollowings 팔로우 목록 여부
      * @param currentUserId 현재 사용자 ID
-     * @return FollowResponse DTO
+     * @return UserProfileResponse DTO
      */
-    private FollowResponse convertToFollowResponse(Follow follow, boolean isFollowings, Long currentUserId) {
+    private UserProfileResponse convertToFollowResponse(Follow follow, boolean isFollowings, Long currentUserId) {
         // 타겟 유저를 결정: 팔로우 목록일 경우 수신자, 팔로워 목록일 경우 발신자
         User targetUser = isFollowings ? follow.getFollowing() : follow.getFollower();
 
@@ -131,7 +131,7 @@ public class FollowServiceImpl implements FollowService {
         boolean isFollowing = isFollowings || isFollowing(currentUserId, targetUser.getId());
 
         // FollowUserDTO 객체 생성 및 반환
-        return FollowResponse.builder()
+        return UserProfileResponse.builder()
                 .userId(targetUser.getId()) // 타겟 유저의 ID 설정
                 .nickname(targetUser.getNickname()) // 타겟 유저의 닉네임 설정
                 .profileImageUrl(targetUser.getProfileImageUrl()) // 타겟 유저의 프로필 이미지 URL 설정

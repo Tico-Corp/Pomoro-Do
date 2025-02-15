@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
-import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
+import com.tico.pomoro_do.domain.user.dto.response.UserProfileResponse;
 import com.tico.pomoro_do.domain.user.dto.response.UserDetailResponse;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.exception.CustomException;
@@ -14,10 +14,10 @@ public interface UserService {
     User findUserByEmail(String email);
 
     // 내 프로필 조회
-    UserDetailResponse getMyProfile(Long userId);
+    UserDetailResponse getUserDetail(Long userId);
 
     // 특정 사용자 프로필 조회 (팔로우 상태 포함)
-    FollowResponse getUserProfile(Long currentUserId, Long targetUserId);
+    UserProfileResponse getUserProfile(Long currentUserId, Long targetUserId);
 
     // 사용자 삭제
     void deleteUser(Long userId, String deviceId, String refreshHeader);

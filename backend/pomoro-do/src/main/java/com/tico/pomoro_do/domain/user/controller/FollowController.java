@@ -1,10 +1,10 @@
 package com.tico.pomoro_do.domain.user.controller;
 
-import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
+import com.tico.pomoro_do.domain.user.dto.response.UserProfileResponse;
 import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
-import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import com.tico.pomoro_do.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -46,14 +46,14 @@ public class FollowController {
             @ApiResponse(responseCode = "409", description = "이미 팔로우 중인 사용자")
     })
     @PostMapping("/{userId}/follow")
-    public ResponseEntity<SuccessResponseDTO<String>> follow(
+    public ResponseEntity<SuccessResponse<String>> follow(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ) {
         // 현재 로그인한 사용자 ID
         Long currentUserId = customUserDetails.getUserId();
         followService.followUser(currentUserId, userId);
-        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
                 .status(SuccessCode.FOLLOW_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.FOLLOW_SUCCESS.getMessage())
                 .data(SuccessCode.FOLLOW_SUCCESS.name())
@@ -66,20 +66,20 @@ public class FollowController {
      *
      * @param customUserDetails 현재 인증된 사용자의 정보
      * @param userId 팔로우 취소할 사용자의 ID
-     * @return 성공 시 성공 메시지를 포함한 SuccessResponseDTO 반환
+     * @return 성공 시 성공 메시지를 포함한 SuccessResponse 반환
      */
     @Operation(
             summary = "현재 사용자가 특정 사용자를 팔로우 취소",
             description = "현재 인증된 사용자가 팔로우하는 특정 사용자를 팔로우 취소합니다."
     )
     @DeleteMapping("/{userId}/follow")
-    public ResponseEntity<SuccessResponseDTO<String>> unfollow(
+    public ResponseEntity<SuccessResponse<String>> unfollow(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ){
         Long currentUserId = customUserDetails.getUserId();
         followService.unfollowUser(currentUserId, userId);
-        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
                 .status(SuccessCode.UNFOLLOW_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.UNFOLLOW_SUCCESS.getMessage())
                 .data(SuccessCode.UNFOLLOW_SUCCESS.name())
@@ -92,7 +92,7 @@ public class FollowController {
      * 현재 사용자를 팔로우 중인 사용자 목록을 조회하는 API
      *
      * @param customUserDetails 현재 인증된 사용자의 정보
-     * @return 사용자를 팔로우 중인 사용자 목록을 포함한 List<FollowResponse> 반환
+     * @return 사용자를 팔로우 중인 사용자 목록을 포함한 List<UserProfileResponse> 반환
      */
     @Operation(
             summary = "현재 사용자의 팔로워 목록 조회 (내 팔로워 조회)",
@@ -104,13 +104,13 @@ public class FollowController {
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
     @GetMapping("/me/followers")
-    public ResponseEntity<SuccessResponseDTO<List<FollowResponse>>> getFollowers(
+    public ResponseEntity<SuccessResponse<List<UserProfileResponse>>> getFollowers(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ){
         Long currentUserId = customUserDetails.getUserId();
-        List<FollowResponse> followersList = followService.getFollowers(currentUserId);
+        List<UserProfileResponse> followersList = followService.getFollowers(currentUserId);
 
-        SuccessResponseDTO<List<FollowResponse>> successResponse = SuccessResponseDTO.<List<FollowResponse>>builder()
+        SuccessResponse<List<UserProfileResponse>> successResponse = SuccessResponse.<List<UserProfileResponse>>builder()
                 .status(SuccessCode.FOLLOWERS_LIST_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.FOLLOWERS_LIST_FETCH_SUCCESS.getMessage())
                 .data(followersList)
@@ -123,7 +123,7 @@ public class FollowController {
      * 사용자가 팔로우 중인 사용자 목록을 조회하는 API
      *
      * @param customUserDetails 현재 인증된 사용자의 정보
-     * @return 사용자가 팔로우 중인 사용자 목록을 포함한 List<FollowResponse> 반환
+     * @return 사용자가 팔로우 중인 사용자 목록을 포함한 List<UserProfileResponse> 반환
      */
     @Operation(
             summary = "현재 사용자의 팔로우 목록 조회 (내 팔로잉 조회)",
@@ -135,13 +135,13 @@ public class FollowController {
             @ApiResponse(responseCode = "404", description = "사용자를 찾을 수 없음")
     })
     @GetMapping("/me/followings")
-    public ResponseEntity<SuccessResponseDTO<List<FollowResponse>>> getFollowings(
+    public ResponseEntity<SuccessResponse<List<UserProfileResponse>>> getFollowings(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         Long currentUserId = customUserDetails.getUserId();
-        List<FollowResponse> followingList = followService.getFollowings(currentUserId);
+        List<UserProfileResponse> followingList = followService.getFollowings(currentUserId);
 
-        SuccessResponseDTO<List<FollowResponse>> successResponse = SuccessResponseDTO.<List<FollowResponse>>builder()
+        SuccessResponse<List<UserProfileResponse>> successResponse = SuccessResponse.<List<UserProfileResponse>>builder()
                 .status(SuccessCode.FOLLOWING_LIST_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.FOLLOWING_LIST_FETCH_SUCCESS.getMessage())
                 .data(followingList)

@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.domain.user.service;
 
-import com.tico.pomoro_do.domain.user.dto.response.FollowResponse;
+import com.tico.pomoro_do.domain.user.dto.response.UserProfileResponse;
 
 import java.util.List;
 
@@ -26,17 +26,17 @@ public interface FollowService {
      * 사용자를 팔로우하는 사용자 목록 조회 (팔로워 조회)
      *
      * @param userId 현재 사용자 ID
-     * @return 사용자를 팔로우하는 사용자 목록 (FollowResponse 리스트)
+     * @return 사용자를 팔로우하는 사용자 목록 (UserProfileResponse 리스트)
      */
-    List<FollowResponse> getFollowers(Long userId);
+    List<UserProfileResponse> getFollowers(Long userId);
 
     /**
      * 사용자가 팔로우하는 사용자 목록 조회 (팔로잉 조회)
      *
      * @param userId 현재 사용자 ID
-     * @return 사용자가 팔로우하는 사용자 목록 (FollowResponse 리스트)
+     * @return 사용자가 팔로우하는 사용자 목록 (UserProfileResponse 리스트)
      */
-    List<FollowResponse> getFollowings(Long userId);
+    List<UserProfileResponse> getFollowings(Long userId);
 
     /**
      * 특정 사용자가 타겟 사용자를 팔로우하고 있는지 여부

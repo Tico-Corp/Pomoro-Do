@@ -4,7 +4,7 @@ import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.user.dto.request.AdminRequest;
 import com.tico.pomoro_do.domain.user.service.AdminService;
 import com.tico.pomoro_do.global.code.SuccessCode;
-import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import com.tico.pomoro_do.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,7 +35,7 @@ public class AdminController {
      *
      * @param request AdminRequest 객체
      * @param profileImage 관리자 프로필 이미지 파일
-     * @return 성공 시 TokenResponse를 포함하는 SuccessResponse
+     * @return 성공 시 TokenResponse를 포함하는 SuccessResponse 반환
      */
     @Operation(
             summary = "관리자 회원가입",
@@ -49,13 +49,13 @@ public class AdminController {
             @ApiResponse(responseCode = "409", description = "이미 등록된 사용자")
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponseDTO<TokenResponse>> adminJoin(
+    public ResponseEntity<SuccessResponse<TokenResponse>> adminJoin(
             @Valid @RequestPart AdminRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
     ) {
 
         TokenResponse jwtResponse = adminService.adminJoin(request, profileImage);
-        SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
+        SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
                 .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
@@ -68,7 +68,7 @@ public class AdminController {
      * 관리자 로그인 API
      *
      * @param request AdminRequest 객체
-     * @return 성공 시 TokenResponse를 포함하는 SuccessResponse
+     * @return 성공 시 TokenResponse를 포함하는 SuccessResponse 반환
      */
     @Operation(
             summary = "관리자 로그인",
@@ -82,12 +82,12 @@ public class AdminController {
             @ApiResponse(responseCode = "403", description = "관리자 권한이 없음")
     })
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponseDTO<TokenResponse>> adminLogin(
+    public ResponseEntity<SuccessResponse<TokenResponse>> adminLogin(
             @Valid @RequestBody AdminRequest request
     ) {
         log.info("관리자 로그인 요청: {}", request.getEmail());
         TokenResponse jwtResponse = adminService.adminLogin(request);
-        SuccessResponseDTO<TokenResponse> successResponse = SuccessResponseDTO.<TokenResponse>builder()
+        SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
                 .status(SuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())
                 .data(jwtResponse)

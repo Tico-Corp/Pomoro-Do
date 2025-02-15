@@ -7,7 +7,7 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.global.code.SuccessCode;
-import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import com.tico.pomoro_do.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -55,14 +55,14 @@ public class CategoryController {
             @ApiResponse(responseCode = "500", description = "서버 오류 - 서버에서 예기치 않은 오류 발생")
     })
     @PostMapping
-    public ResponseEntity<SuccessResponseDTO<String>> createCategory(
+    public ResponseEntity<SuccessResponse<String>> createCategory(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody CategoryCreationDTO request
     ){
         String email = customUserDetails.getUsername();
         categoryService.createCategory(email, request);
 
-        SuccessResponseDTO<String> successResponse = SuccessResponseDTO.<String>builder()
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
                 .status(SuccessCode.CATEGORY_CREATION_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_CREATION_SUCCESS.getMessage())
                 .data(SuccessCode.CATEGORY_CREATION_SUCCESS.name())
@@ -79,13 +79,13 @@ public class CategoryController {
                     "일반 / 그룹 / 초대받은 그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping
-    public ResponseEntity<SuccessResponseDTO<CategoryDTO>> getCategories(
+    public ResponseEntity<SuccessResponse<CategoryDTO>> getCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
         CategoryDTO categoryDTO = categoryService.getCategories(email);
 
-        SuccessResponseDTO<CategoryDTO> successResponse = SuccessResponseDTO.<CategoryDTO>builder()
+        SuccessResponse<CategoryDTO> successResponse = SuccessResponse.<CategoryDTO>builder()
                 .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(categoryDTO)
@@ -99,14 +99,14 @@ public class CategoryController {
                     "일반 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping("/general")
-    public ResponseEntity<SuccessResponseDTO<List<GeneralCategoryDTO>>> getGeneralCategories(
+    public ResponseEntity<SuccessResponse<List<GeneralCategoryDTO>>> getGeneralCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
         User user = userService.findUserByEmail(email);
         List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user);
 
-        SuccessResponseDTO<List<GeneralCategoryDTO>> successResponse = SuccessResponseDTO.<List<GeneralCategoryDTO>>builder()
+        SuccessResponse<List<GeneralCategoryDTO>> successResponse = SuccessResponse.<List<GeneralCategoryDTO>>builder()
                 .status(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(categories)
@@ -120,14 +120,14 @@ public class CategoryController {
                     "그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping("/groups")
-    public ResponseEntity<SuccessResponseDTO<List<GroupCategoryDTO>>> getGroupCategories(
+    public ResponseEntity<SuccessResponse<List<GroupCategoryDTO>>> getGroupCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
         User user = userService.findUserByEmail(email);
         List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user);
 
-        SuccessResponseDTO<List<GroupCategoryDTO>> successResponse = SuccessResponseDTO.<List<GroupCategoryDTO>>builder()
+        SuccessResponse<List<GroupCategoryDTO>> successResponse = SuccessResponse.<List<GroupCategoryDTO>>builder()
                 .status(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(categories)
@@ -141,14 +141,14 @@ public class CategoryController {
                     "응답하지 않은 초대 그룹 카테고리가 없는 경우 빈 배열([])을 반환합니다."
     )
     @GetMapping("/groups/invitations")
-    public ResponseEntity<SuccessResponseDTO<List<InvitedGroupDTO>>> getInvitedGroupCategories(
+    public ResponseEntity<SuccessResponse<List<InvitedGroupDTO>>> getInvitedGroupCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
         User user = userService.findUserByEmail(email);
         List<InvitedGroupDTO> groupCategories = categoryService.getInvitedGroupCategories(user);
 
-        SuccessResponseDTO<List<InvitedGroupDTO>> successResponse = SuccessResponseDTO.<List<InvitedGroupDTO>>builder()
+        SuccessResponse<List<InvitedGroupDTO>> successResponse = SuccessResponse.<List<InvitedGroupDTO>>builder()
                 .status(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(groupCategories)
@@ -162,14 +162,14 @@ public class CategoryController {
                     "일반 카테고리는 멤버에 빈 배열([])을 반환합니다."
     )
     @GetMapping("/{categoryId}")
-    public ResponseEntity<SuccessResponseDTO<CategoryDetailDTO>> getCategoryDetail(
+    public ResponseEntity<SuccessResponse<CategoryDetailDTO>> getCategoryDetail(
             @PathVariable Long categoryId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         String email = customUserDetails.getUsername();
         CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId, email);
 
-        SuccessResponseDTO<CategoryDetailDTO> successResponse = SuccessResponseDTO.<CategoryDetailDTO>builder()
+        SuccessResponse<CategoryDetailDTO> successResponse = SuccessResponse.<CategoryDetailDTO>builder()
                 .status(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getMessage())
                 .data(categoryDetailDTO)
