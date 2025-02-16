@@ -12,22 +12,23 @@ public interface TokenService {
     /**
      * 사용자 인증을 위한 액세스 토큰과 리프레시 토큰을 생성하고 저장
      *
+     * @param userId 사용자 ID
      * @param email 사용자 이메일
      * @param role 사용자 역할
      * @param deviceId 기기 고유 번호
      * @return TokenDTO 객체, 생성된 액세스 토큰을 포함
      */
-    TokenResponse createAuthTokens(String email, String role, String deviceId);
+    TokenResponse createAuthTokens(Long userId, String email, String role, String deviceId);
 
     /**
      * 새로운 리프레시 토큰을 저장합니다.
      *
-     * @param email 사용자 이메일
+     * @param userId 사용자 ID
      * @param refresh 새로운 리프레시 토큰
      * @param expiredMs 토큰 만료 시간 (밀리초 단위)
      * @param deviceId 기기 고유 번호
      */
-    void createRefreshToken(String email, String refresh, Long expiredMs, String deviceId);
+    void createRefreshToken(Long userId, String refresh, Long expiredMs, String deviceId);
 
     // 토큰 엔티티 가져오기
     /**
@@ -52,9 +53,15 @@ public interface TokenService {
      *
      * @param refreshHeader 리프레시 토큰 헤더
      * @param deviceId 기기 고유 번호
-     * @param email 사용자 이메일
+     * @param userId 사용자 ID
      */
-    void validateRefreshTokenDetails(String refreshHeader, String deviceId, String email);
+    void validateRefreshTokenDetails(String refreshHeader, String deviceId, Long userId);
+    /**
+     * 리프레시 토큰을 검증하고, 토큰을 반환합니다.
+     *
+     * @param refreshHeader 리프레시 토큰 헤더
+     * @param deviceId 기기 고유 번호
+     */
     String validateAndGetRefreshToken(String refreshHeader, String deviceId);
 
 
@@ -69,9 +76,9 @@ public interface TokenService {
     /**
      * 회원탈퇴 시 회원의 모든 리프레시 토큰 삭제
      *
-     * @param email 사용자 이메일
+     * @param userId 사용자 ID
      */
-    void deleteAllRefreshTokensByEmail(String email);
+    void deleteAllRefreshTokensByUserId(Long userId);
 
     /**
      * 주어진 토큰을 검증하고 토큰 타입에 대한 SuccessCode 반환

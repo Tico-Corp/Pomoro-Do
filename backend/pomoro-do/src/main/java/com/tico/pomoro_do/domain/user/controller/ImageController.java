@@ -4,7 +4,7 @@ import com.tico.pomoro_do.domain.user.dto.response.ImageResponse;
 import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.global.code.SuccessCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
-import com.tico.pomoro_do.global.response.SuccessResponseDTO;
+import com.tico.pomoro_do.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -33,7 +33,7 @@ public class ImageController {
      * 이미지 업로드 엔드포인트
      *
      * @param image MultipartRequest로 받은 파일 업로드 요청
-     * @return ResponseEntity 성공 응답 DTO를 포함한 ResponseEntity 객체
+     * @return 성공 시 ImageResponse를 포함하는 SuccessResponse 반환
      */
     @Operation(
             summary = "이미지 업로드",
@@ -45,7 +45,7 @@ public class ImageController {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 이미지 파일"),
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponseDTO<ImageResponse>> imageUpload(
+    public ResponseEntity<SuccessResponse<ImageResponse>> imageUpload(
             @RequestParam("image") MultipartFile image
     ) {
 
@@ -55,7 +55,7 @@ public class ImageController {
                 .imageUrl(imageUrl)
                 .build();
 
-        SuccessResponseDTO<ImageResponse> response = SuccessResponseDTO.<ImageResponse>builder()
+        SuccessResponse<ImageResponse> response = SuccessResponse.<ImageResponse>builder()
                 .status(SuccessCode.IMAGE_UPLOAD_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.IMAGE_UPLOAD_SUCCESS.getMessage())
                 .data(imageResponse)

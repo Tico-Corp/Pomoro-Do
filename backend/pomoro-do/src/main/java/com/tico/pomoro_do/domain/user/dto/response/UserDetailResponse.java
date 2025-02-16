@@ -4,6 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
+/**
+ * 현재 로그인한 사용자의 상세 정보를 담는 응답 클래스
+ * 이메일과 팔로우 카운트 등 개인화된 상세 정보를 포함합니다.
+ */
 @Getter
 public class UserDetailResponse {
 
@@ -32,5 +36,4 @@ public class UserDetailResponse {
         this.followingCount = followingCount;
         this.followerCount = followerCount;
     }
-
 }

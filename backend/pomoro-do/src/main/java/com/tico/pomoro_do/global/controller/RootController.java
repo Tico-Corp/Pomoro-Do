@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.global.controller;
 
-import com.tico.pomoro_do.global.response.AppInfoDTO;
+import com.tico.pomoro_do.global.response.AppInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ public class RootController {
 
     @Operation(summary = "애플리케이션 기본 정보", description = "애플리케이션의 기본 정보를 제공합니다.")
     @GetMapping
-    public ResponseEntity<AppInfoDTO> getInfo() {
-        AppInfoDTO response = new AppInfoDTO(
+    public ResponseEntity<AppInfoResponse> getInfo() {
+        AppInfoResponse response = new AppInfoResponse(
                 "Pomoro-Do!",
                 "1.0.0",
                 "Pomoro-Do! 서비스에 오신 것을 환영합니다.",

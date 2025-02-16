@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Schema(description = "Success Response")
-public class SuccessResponseDTO<T> {
+public class SuccessResponse<T> {
 
     @Schema(description = "상태 코드", nullable = false, example = "200")
     private final int status;       // 응답 코드 200번대
@@ -18,7 +18,7 @@ public class SuccessResponseDTO<T> {
     private final T data;           // 응답 데이터
 
     @Builder
-    public SuccessResponseDTO(int status, String message, T data) {
+    public SuccessResponse(int status, String message, T data) {
         this.status = status;
         this.message = message;
         this.data = data;

@@ -86,11 +86,12 @@ public class AuthServiceImpl implements AuthService {
         // 토큰 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 토큰 유효성 검증
-        GoogleUserInfo userInfo = verifyGoogleIdToken(idToken);
+        GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 회원 가입 여부 판단 -> 회원 가입 x -> 에러 발생
-        userService.validateEmailExists(userInfo.getEmail());
+//        userService.validateEmailExists(userInfo.getEmail());
+        User user = userService.findUserByEmail(googleUserInfo.getEmail());
         // 회원 가입되어 있으면 토큰 발급
-        return tokenService.createAuthTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
+        return tokenService.createAuthTokens(user.getId(), user.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
 
     // 구글 회원가입
@@ -104,16 +105,16 @@ public class AuthServiceImpl implements AuthService {
         // 구글 idToken 유효성 검사 및 추출
         String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 id 토큰 검증
-        GoogleUserInfo userInfo = verifyGoogleIdToken(idToken);
+        GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 사용자의 이메일 중복 체크
-        userService.isEmailRegistered(userInfo.getEmail());
+        userService.verifyEmailNotRegistered(googleUserInfo.getEmail());
 
         // 알맞는 profileImage url 가져오기 (null 가능)
-        String profileImageUrl = determineProfileImageUrl(imageType, profileImage, userInfo);
+        String profileImageUrl = determineProfileImageUrl(imageType, profileImage, googleUserInfo);
         // 사용자 정보 저장
-        User user = createUser(userInfo.getEmail(), nickname, profileImageUrl, UserRole.USER);
+        User user = createUser(googleUserInfo.getEmail(), nickname, profileImageUrl, UserRole.USER);
         // 소셜 로그인 정보 저장
-        createSocialLogin(user, userInfo.getUserId());
+        createSocialLogin(user, googleUserInfo.getUserId());
 
         // 기본 카테고리 생성
         Category category = categoryService.createNewCategory(
@@ -125,8 +126,8 @@ public class AuthServiceImpl implements AuthService {
                 CategoryConstants.DEFAULT_CATEGORY_TYPE
         );
 
-        log.info("구글 회원가입 성공: 이메일 = {}", userInfo.getEmail());
-        return tokenService.createAuthTokens(userInfo.getEmail(), String.valueOf(UserRole.USER), deviceId);
+        log.info("구글 회원가입 성공: 이메일 = {}", googleUserInfo.getEmail());
+        return tokenService.createAuthTokens(user.getId(), user.getEmail(), String.valueOf(UserRole.USER), deviceId);
     }
 
     /**
@@ -145,15 +146,15 @@ public class AuthServiceImpl implements AuthService {
      *
      * @param imageType 프로필 이미지의 유형 (FILE, GOOGLE, 또는 DEFAULT)
      * @param profileImage 사용자가 업로드한 프로필 이미지 파일 (FILE 유형일 때 사용)
-     * @param userInfo 구글 사용자 정보 DTO (GOOGLE 유형일 때 사용)
+     * @param googleUserInfo 구글 사용자 정보 DTO (GOOGLE 유형일 때 사용)
      * @return 프로필 이미지의 URL. FILE 유형인 경우 업로드된 이미지의 URL을,
      *         GOOGLE 유형인 경우 구글 프로필 이미지 URL을 반환하며,
      *         DEFAULT 유형인 경우 null을 반환합니다.
      */
-    private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfo userInfo) {
+    private String determineProfileImageUrl(ProfileImageType imageType, MultipartFile profileImage, GoogleUserInfo googleUserInfo) {
         return switch (imageType) {
             case FILE -> imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
-            case GOOGLE -> userInfo.getPictureUrl();
+            case GOOGLE -> googleUserInfo.getPictureUrl();
             // DEFAULT 타입일 때 default로 통합하여 처리
             default -> null;
         };
@@ -203,10 +204,11 @@ public class AuthServiceImpl implements AuthService {
 
         // 생성 로직
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
+        Long userId = jwtUtil.getUserId(refresh);
         String email = jwtUtil.getEmail(refresh);
         String role = jwtUtil.getRole(refresh);
         // 토큰 재발행
-        return tokenService.createAuthTokens(email, role, deviceId);
+        return tokenService.createAuthTokens(userId, email, role, deviceId);
 
     }
 }

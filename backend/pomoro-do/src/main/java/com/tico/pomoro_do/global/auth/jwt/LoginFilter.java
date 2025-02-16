@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.global.auth.jwt;
 
+import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.global.enums.TokenType;
 import com.tico.pomoro_do.global.util.CookieUtil;
@@ -60,8 +61,14 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         log.info("Login success");
 
         //유저 정보
+
+        // CustomUserDetails로 캐스팅하여 userId 가져오기
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
         //username 가져오기
         String username = authentication.getName();
+
         //role 가져오기 (동작)
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -70,12 +77,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
-        String access = jwtUtil.createJwt(TokenType.ACCESS.name(), username, role, accessExpiration); //60분
-        String refresh = jwtUtil.createJwt(TokenType.REFRESH.name(), username, role, refreshExpiration); //24시간
+        String access = jwtUtil.createJwt(TokenType.ACCESS.name(), userId, username, role, accessExpiration); //60분
+        String refresh = jwtUtil.createJwt(TokenType.REFRESH.name(), userId, username, role, refreshExpiration); //24시간
 
         //Refresh 토큰 저장
         String deviceId = request.getHeader("Device-ID");
-        tokenService.createRefreshToken(username, refresh, refreshExpiration, deviceId);
+        tokenService.createRefreshToken(userId, refresh, refreshExpiration, deviceId);
 
         //응답 설정
         //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)

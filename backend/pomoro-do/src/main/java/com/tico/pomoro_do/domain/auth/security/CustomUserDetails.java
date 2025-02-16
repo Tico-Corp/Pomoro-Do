@@ -18,6 +18,18 @@ public class CustomUserDetails implements UserDetails {
 
     private final AuthUser authUser;
 
+    // Spring Security가 내부적으로 사용하는 사용자 식별자
+    @Override
+    public String getUsername() {
+//        return String.valueOf(authUser.getUserId());
+        return authUser.getEmail();     // username은 email로 대체
+    }
+
+    // 실제 비즈니스 로직에서 사용할 userId 반환
+    public Long getUserId() {
+        return authUser.getUserId();
+    }
+
     // 사용자 권한 반환 -> role 가져오기
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -37,7 +49,7 @@ public class CustomUserDetails implements UserDetails {
         return collection;
     }
 
-    // 비밀번호는 JWT 인증 방식에서는 사용되지 않으므로 null 반환
+    // 소셜 로그인이므로 패스워드 사용하지 않음
     @Override
     public String getPassword() {
 
@@ -45,35 +57,28 @@ public class CustomUserDetails implements UserDetails {
         return null;
     }
 
-    // 사용자 고유 식별자(username)로 email을 반환
-    @Override
-    public String getUsername() {
-
-        return authUser.getEmail();     // username은 email로 대체됨
-    }
-
-    // 계정이 만료되지 않았는지 확인 (항상 true)
+    // 계정 만료 여부
     @Override
     public boolean isAccountNonExpired() {
 
         return true;
     }
 
-    // 계정이 잠겨있지 않은지 확인 (항상 true)
+    // 계정 잠금 여부
     @Override
     public boolean isAccountNonLocked() {
 
         return true;
     }
 
-    // 비밀번호가 만료되지 않았는지 확인 (항상 true)
+    // 자격 증명 만료 여부
     @Override
     public boolean isCredentialsNonExpired() {
 
         return true;
     }
 
-    // 계정이 활성화되어 있는지 확인 (항상 true)
+    // 계정 활성화 여부
     @Override
     public boolean isEnabled() {
 

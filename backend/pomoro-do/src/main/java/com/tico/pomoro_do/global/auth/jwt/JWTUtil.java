@@ -40,6 +40,10 @@ public class JWTUtil {
 //        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
 //    }
 
+    public Long getUserId(String token) {
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("userId", Long.class);
+    }
+
     // 유저 이메일 확인 메서드 -> JWT에서 사용자 이메일 추출
     public String getEmail(String token) {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
@@ -64,10 +68,11 @@ public class JWTUtil {
     }
 
     // 토큰 생성 메서드 (카테고리, 유저 이메일, 역할, 만료시간)
-    public String createJwt(String category, String email, String role, Long expiredMs) {
+    public String createJwt(String category, Long userId, String email, String role, Long expiredMs) {
 
         return Jwts.builder()
                 .claim("category", category) //access인지? refesh인지?
+                .claim("userId", userId)
                 .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis())) // 생성 시각

@@ -134,6 +134,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 일시적인 세션 만들기
         // 토큰에서 사용자 정보 획득
+        Long userId = jwtUtil.getUserId(accessToken);
         String email = jwtUtil.getEmail(accessToken);
         String role = jwtUtil.getRole(accessToken);
 
@@ -154,6 +155,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // DTO로 사용자 정보 저장
         AuthUser authUser = AuthUser.builder()
+                .userId(userId)
                 .email(email)
                 .role(role)
                 .build();
