@@ -46,7 +46,7 @@ public class FollowController {
             @ApiResponse(responseCode = "409", description = "이미 팔로우 중인 사용자")
     })
     @PostMapping("/{userId}/follow")
-    public ResponseEntity<SuccessResponse<String>> follow(
+    public ResponseEntity<SuccessResponse<String>> followUser(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ) {
@@ -73,7 +73,7 @@ public class FollowController {
             description = "현재 인증된 사용자가 팔로우하는 특정 사용자를 팔로우 취소합니다."
     )
     @DeleteMapping("/{userId}/follow")
-    public ResponseEntity<SuccessResponse<String>> unfollow(
+    public ResponseEntity<SuccessResponse<String>> unfollowUser(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long userId
     ){
