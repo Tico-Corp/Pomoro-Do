@@ -9,14 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,6 +28,7 @@ import com.tico.pomorodo.ui.common.view.CustomTimeText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.timer.setup.viewmodel.TimerSetupViewModel
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.LocalTime
 
 @Composable
 fun TimerRootScreen(
@@ -147,12 +145,16 @@ fun TimerRootScreen(
     if (editConcentrationGoalDialogVisible) {
         EditTimerDialog(
             title = stringResource(R.string.title_concentration_goal_dialog),
-            initialValue = concentrationGoal,
+            initialValue = Time(
+                concentrationGoal.hour,
+                concentrationGoal.minute,
+                concentrationGoal.second
+            ),
             onDismissRequest = {
                 setEditConcentrationGoalDialogVisible(false)
             },
             onConfirmation = { hour, minute, second ->
-                timerSetupViewModel.setConcentrationGoal(hour, minute, second!!)
+                timerSetupViewModel.updateConcentrationGoal(hour, minute, second ?: 0)
                 setEditConcentrationGoalDialogVisible(false)
             }
         )
@@ -164,7 +166,7 @@ fun TimerRootScreen(
 fun PomodoroTimerScreen(
     concentrationTime: Time,
     breakTime: Time,
-    concentrationGoal: Time,
+    concentrationGoal: LocalTime,
     totalConcentrationTime: Time,
     totalBreakTime: Time,
     onConcentrationTimeChange: (Int) -> Unit,
@@ -201,7 +203,7 @@ fun PomodoroTimerScreen(
 
 @Composable
 fun TodayConcentrationInformation(
-    concentrationGoal: Time,
+    concentrationGoal: LocalTime,
     totalConcentrationTime: Time,
     totalBreakTime: Time,
     onConcentrationGoalClick: () -> Unit
@@ -214,7 +216,7 @@ fun TodayConcentrationInformation(
             title = stringResource(R.string.title_taget_concentration),
             hour = concentrationGoal.hour,
             minute = concentrationGoal.minute,
-            second = concentrationGoal.second!!,
+            second = concentrationGoal.second,
             textColor = PomoroDoTheme.colorScheme.onBackground,
             spaceDp = 4.dp,
             titleTextStyle = PomoroDoTheme.typography.laundryGothicRegular18,

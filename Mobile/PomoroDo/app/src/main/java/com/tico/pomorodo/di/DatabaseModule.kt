@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase.Callback
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tico.pomorodo.data.local.dao.CalendarDao
 import com.tico.pomorodo.data.local.dao.CategoryDao
+import com.tico.pomorodo.data.local.dao.TimerDao
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_CALENDAR_DATA
 import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_CATEGORY_DATA
@@ -60,4 +61,9 @@ object DatabaseModule {
     @Provides
     fun provideCalendarDao(pomorodoDatabase: PomorodoDatabase): CalendarDao =
         pomorodoDatabase.calendarDao()
+
+    @Singleton
+    @Provides
+    fun provideTimerDao(pomorodoDatabase: PomorodoDatabase): TimerDao =
+        pomorodoDatabase.timerDao()
 }
