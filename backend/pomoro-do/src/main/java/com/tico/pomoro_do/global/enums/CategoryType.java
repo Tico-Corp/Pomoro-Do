@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.global.enums;
 
 public enum CategoryType {
-    GENERAL,
-    GROUP
+    PERSONAL, // 개인
+    GROUP; // 그룹
 }
