@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.global.common.constants;
 
-import com.tico.pomoro_do.global.enums.CategoryType;
-import com.tico.pomoro_do.global.enums.CategoryVisibility;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 
 public class CategoryConstants {
     public static final String DEFAULT_CATEGORY_TITLE = "미등록";

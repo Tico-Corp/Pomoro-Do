@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.category.dto.request;
 
-import com.tico.pomoro_do.global.enums.CategoryType;
-import com.tico.pomoro_do.global.enums.CategoryVisibility;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

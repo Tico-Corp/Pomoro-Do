@@ -2,8 +2,8 @@ package com.tico.pomoro_do.domain.category.entity;
 
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.entity.BaseTimeEntity;
-import com.tico.pomoro_do.global.enums.CategoryDeletionOption;
-import com.tico.pomoro_do.global.enums.CategoryMemberRole;
+import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

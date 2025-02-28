@@ -2,7 +2,7 @@ package com.tico.pomoro_do.domain.category.entity;
 
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.entity.BaseTimeEntity;
-import com.tico.pomoro_do.global.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -6,7 +6,7 @@ import com.tico.pomoro_do.domain.auth.repository.RefreshTokenRepository;
 import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.code.SuccessCode;
-import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

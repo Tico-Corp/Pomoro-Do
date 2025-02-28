@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.category.dto.response;
 
-import com.tico.pomoro_do.global.enums.CategoryType;
-import com.tico.pomoro_do.global.enums.CategoryVisibility;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import lombok.Builder;
 import lombok.Getter;
 

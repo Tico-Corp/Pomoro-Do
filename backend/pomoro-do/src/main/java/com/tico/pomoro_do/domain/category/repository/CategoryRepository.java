@@ -2,7 +2,7 @@ package com.tico.pomoro_do.domain.category.repository;
 
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;

@@ -2,7 +2,7 @@ package com.tico.pomoro_do.global.auth.jwt;
 
 import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.domain.auth.service.TokenService;
-import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.util.CookieUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;

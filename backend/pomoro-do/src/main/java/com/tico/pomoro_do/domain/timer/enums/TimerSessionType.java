@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.enums;
+package com.tico.pomoro_do.domain.timer.enums;
 
 public enum TimerSessionType {
     FOCUS,

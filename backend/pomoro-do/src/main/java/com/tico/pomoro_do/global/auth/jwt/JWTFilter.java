@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.tico.pomoro_do.domain.auth.dto.AuthUser;
 import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.global.code.ErrorCode;
-import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

@@ -3,12 +3,12 @@ package com.tico.pomoro_do.domain.category.service;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.entity.GroupMember;
+import com.tico.pomoro_do.domain.category.entity.CategoryMember;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.enums.CategoryType;
-import com.tico.pomoro_do.global.enums.CategoryVisibility;
-import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
-import com.tico.pomoro_do.global.enums.GroupRole;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
+import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,7 +37,7 @@ public interface CategoryService {
     List<Category> findByDate(LocalDate targetDate);
 
     // 그룹멤버 생성
-    void createGroupMember(Category category, User member, GroupInvitationStatus status, GroupRole role);
+    void createGroupMember(Category category, User member, CategoryInvitationStatus status, CategoryMemberRole role);
     // 그룹멤버 조회
-    List<GroupMember> findAcceptedMembersByCategory(Category category);
+    List<CategoryMember> findAcceptedMembersByCategory(Category category);
 }

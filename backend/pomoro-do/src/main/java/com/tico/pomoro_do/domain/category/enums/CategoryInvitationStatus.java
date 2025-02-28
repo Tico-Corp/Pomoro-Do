@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.enums;
+package com.tico.pomoro_do.domain.category.enums;
 
 public enum CategoryInvitationStatus {
     PENDING, // 대기: 초대 대기 중

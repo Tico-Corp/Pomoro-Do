@@ -7,7 +7,7 @@ import com.tico.pomoro_do.domain.user.dto.request.AdminRequest;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.code.ErrorCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
-import com.tico.pomoro_do.global.enums.UserRole;
+import com.tico.pomoro_do.domain.user.enums.UserRole;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

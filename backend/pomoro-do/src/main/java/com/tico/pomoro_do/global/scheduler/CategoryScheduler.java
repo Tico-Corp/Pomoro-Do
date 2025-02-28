@@ -1,9 +1,9 @@
 package com.tico.pomoro_do.global.scheduler;
 
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.entity.GroupMember;
+import com.tico.pomoro_do.domain.category.entity.CategoryMember;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
-import com.tico.pomoro_do.global.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -49,15 +49,15 @@ public class CategoryScheduler {
             // 그룹 카테고리면 그룹 멤버도 복사하여 생성
             if (category.getType() == CategoryType.GROUP){
                 // 승낙한 멤버만 생성
-                List<GroupMember> groupMembers= categoryService.findAcceptedMembersByCategory(category);
+                List<CategoryMember> categoryMembers = categoryService.findAcceptedMembersByCategory(category);
 
-                for (GroupMember groupMember : groupMembers) {
+                for (CategoryMember categoryMember : categoryMembers) {
 
                     categoryService.createGroupMember(
                             newCategory,
-                            groupMember.getUser(),
-                            groupMember.getStatus(),
-                            groupMember.getRole()
+                            categoryMember.getUser(),
+                            categoryMember.getStatus(),
+                            categoryMember.getRole()
                     );
                 }
             }

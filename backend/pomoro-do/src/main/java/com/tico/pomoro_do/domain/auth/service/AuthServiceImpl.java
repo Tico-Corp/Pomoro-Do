@@ -6,12 +6,16 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
+import com.tico.pomoro_do.domain.auth.enums.OAuthProvider;
+import com.tico.pomoro_do.domain.auth.enums.ProfileImageType;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
-import com.tico.pomoro_do.domain.user.entity.SocialLogin;
+import com.tico.pomoro_do.domain.auth.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
+import com.tico.pomoro_do.domain.user.enums.UserRole;
+import com.tico.pomoro_do.domain.auth.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.domain.user.service.UserService;
@@ -186,7 +190,7 @@ public class AuthServiceImpl implements AuthService {
         // 추후에 소셜 로그인이 추가된다면, provider을 변수로 받는다.
         SocialLogin socialLogin = SocialLogin.builder()
                 .user(user)
-                .provider(SocialProvider.GOOGLE)
+                .provider(OAuthProvider.GOOGLE)
                 .providerId(providerId)
                 .build();
 

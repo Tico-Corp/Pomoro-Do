@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.global.auth.jwt;
 
 import com.tico.pomoro_do.global.code.ErrorCode;
-import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;

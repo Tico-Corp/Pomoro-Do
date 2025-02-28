@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.enums;
+package com.tico.pomoro_do.domain.category.enums;
 
 public enum CategoryMemberRole {
     OWNER, // 그룹 관리자

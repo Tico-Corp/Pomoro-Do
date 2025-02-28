@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.global.util;
 
-import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

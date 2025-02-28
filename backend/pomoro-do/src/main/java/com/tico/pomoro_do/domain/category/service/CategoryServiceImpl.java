@@ -3,17 +3,17 @@ package com.tico.pomoro_do.domain.category.service;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.entity.GroupMember;
+import com.tico.pomoro_do.domain.category.entity.CategoryMember;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
 import com.tico.pomoro_do.domain.category.repository.GroupMemberRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.code.ErrorCode;
-import com.tico.pomoro_do.global.enums.CategoryType;
-import com.tico.pomoro_do.global.enums.CategoryVisibility;
-import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
-import com.tico.pomoro_do.global.enums.GroupRole;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
+import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.util.DateUtils;
 import com.tico.pomoro_do.global.util.ValidationUtils;
@@ -101,7 +101,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     private void createGroupMembers(Category category, User host, Set<Long> memberIds) {
         // 호스트 멤버 생성
-        createGroupMember(category, host, GroupInvitationStatus.ACCEPTED, GroupRole.HOST);
+        createGroupMember(category, host, CategoryInvitationStatus.ACCEPTED, CategoryMemberRole.HOST);
 
         // 팔로우한 멤버만 그룹에 추가 가능
         for (Long memberId : memberIds) {
@@ -112,7 +112,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             User member = userService.findUserById(memberId);
-            createGroupMember(category, member, GroupInvitationStatus.INVITED, GroupRole.MEMBER);
+            createGroupMember(category, member, CategoryInvitationStatus.INVITED, CategoryMemberRole.MEMBER);
         }
     }
 
@@ -125,15 +125,15 @@ public class CategoryServiceImpl implements CategoryService {
      * @param role 그룹 내 유저의 역할 (HOST, MEMBER 등)
      */
     @Override
-    public void createGroupMember(Category category, User member, GroupInvitationStatus status, GroupRole role){
-        GroupMember groupMember = GroupMember.builder()
+    public void createGroupMember(Category category, User member, CategoryInvitationStatus status, CategoryMemberRole role){
+        CategoryMember categoryMember = CategoryMember.builder()
                 .category(category)
                 .user(member)
                 .status(status)
                 .role(role)
                 .build();
 
-        groupMemberRepository.save(groupMember);
+        groupMemberRepository.save(categoryMember);
     }
 
     /**
@@ -209,7 +209,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<InvitedGroupDTO> getInvitedGroupCategories(User user) {
         // 초대받은 그룹 카테고리를 최신순으로 가져옴
-        List<GroupMember> invitedGroups = groupMemberRepository.findByUserAndStatusOrderByCreatedAtDesc(user, GroupInvitationStatus.INVITED);
+        List<CategoryMember> invitedGroups = groupMemberRepository.findByUserAndStatusOrderByCreatedAtDesc(user, CategoryInvitationStatus.INVITED);
 
         return invitedGroups.stream()
                 .map(this::convertToInvitedGroup)
@@ -224,9 +224,9 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 사용자가 속한 그룹 카테고리 리스트
      */
     private List<Category> findUserGroupCategoriesByDate(User user, LocalDate targetDate) {
-        List<GroupMember> userAcceptedGroups = groupMemberRepository.findAllByUserAndStatusAndCategory_Date(user, GroupInvitationStatus.ACCEPTED, targetDate);
+        List<CategoryMember> userAcceptedGroups = groupMemberRepository.findAllByUserAndStatusAndCategory_Date(user, CategoryInvitationStatus.ACCEPTED, targetDate);
         return userAcceptedGroups.stream()
-                .map(GroupMember::getCategory)
+                .map(CategoryMember::getCategory)
                 .collect(Collectors.toList());
     }
 
@@ -238,10 +238,10 @@ public class CategoryServiceImpl implements CategoryService {
      */
     private Map<Category, Long> calculateMemberCounts(List<Category> groupCategories) {
         // 모든 카테고리의 멤버 수를 한 번에 가져와서 Map으로 변환
-        List<GroupMember> acceptedMembers = groupMemberRepository.findByCategoryInAndStatus(groupCategories, GroupInvitationStatus.ACCEPTED);
+        List<CategoryMember> acceptedMembers = groupMemberRepository.findByCategoryInAndStatus(groupCategories, CategoryInvitationStatus.ACCEPTED);
         return acceptedMembers.stream()
                 .collect(Collectors.groupingBy(
-                        GroupMember::getCategory,  // 카테고리별로 그룹화
+                        CategoryMember::getCategory,  // 카테고리별로 그룹화
                         Collectors.counting()      // 각 카테고리의 멤버 수 계산
                 ));
     }
@@ -259,13 +259,13 @@ public class CategoryServiceImpl implements CategoryService {
         List<GroupMemberDTO> groupMemberDTOList = new ArrayList<>();
         // 그룹 멤버 조회
         if (category.getType().equals(CategoryType.GROUP)) {
-            List<GroupMember> groupMembers = groupMemberRepository.findAllByCategoryAndStatus(category, GroupInvitationStatus.ACCEPTED);
-            groupMemberDTOList = groupMembers.stream()
-                    .sorted(Comparator.comparing(groupMember -> groupMember.getUser().getNickname())) // 닉네임으로 정렬
-                    .map(groupMember -> GroupMemberDTO.builder()
-                            .groupMemberId(groupMember.getId())
-                            .nickname(groupMember.getUser().getNickname())
-                            .profileImageUrl(groupMember.getUser().getProfileImageUrl())
+            List<CategoryMember> categoryMembers = groupMemberRepository.findAllByCategoryAndStatus(category, CategoryInvitationStatus.ACCEPTED);
+            groupMemberDTOList = categoryMembers.stream()
+                    .sorted(Comparator.comparing(categoryMember -> categoryMember.getUser().getNickname())) // 닉네임으로 정렬
+                    .map(categoryMember -> GroupMemberDTO.builder()
+                            .groupMemberId(categoryMember.getId())
+                            .nickname(categoryMember.getUser().getNickname())
+                            .profileImageUrl(categoryMember.getUser().getProfileImageUrl())
                             .build())
                     .collect(Collectors.toList());
         }
@@ -330,13 +330,13 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 초대받은 그룹 정보를 InvitedGroupDTO로 변환
      *
-     * @param groupMember 그룹 멤버 엔티티
+     * @param categoryMember 그룹 멤버 엔티티
      * @return InvitedGroupDTO 객체
      */
-    private InvitedGroupDTO convertToInvitedGroup(GroupMember groupMember) {
-        Category category = groupMember.getCategory();
+    private InvitedGroupDTO convertToInvitedGroup(CategoryMember categoryMember) {
+        Category category = categoryMember.getCategory();
         return InvitedGroupDTO.builder()
-                .groupMemberId(groupMember.getId())
+                .groupMemberId(categoryMember.getId())
                 .hostNickname(category.getHost().getNickname())
                 .title(category.getTitle())
                 .build();
@@ -361,8 +361,8 @@ public class CategoryServiceImpl implements CategoryService {
      * @return 해당 카테고리에 속하는 모든 승인된 그룹 멤버 리스트
      */
     @Override
-    public List<GroupMember> findAcceptedMembersByCategory(Category category) {
-        return groupMemberRepository.findAllByCategoryAndStatus(category, GroupInvitationStatus.ACCEPTED);
+    public List<CategoryMember> findAcceptedMembersByCategory(Category category) {
+        return groupMemberRepository.findAllByCategoryAndStatus(category, CategoryInvitationStatus.ACCEPTED);
     }
 
 }

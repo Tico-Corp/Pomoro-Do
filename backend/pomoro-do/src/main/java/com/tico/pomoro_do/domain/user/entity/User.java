@@ -1,8 +1,8 @@
 package com.tico.pomoro_do.domain.user.entity;
 
 import com.tico.pomoro_do.global.entity.BaseTimeEntity;
-import com.tico.pomoro_do.global.enums.UserRole;
-import com.tico.pomoro_do.global.enums.UserStatus;
+import com.tico.pomoro_do.domain.user.enums.UserRole;
+import com.tico.pomoro_do.domain.user.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

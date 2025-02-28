@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.enums;
+package com.tico.pomoro_do.domain.user.enums;
 
 public enum UserStatus {
     ACTIVE,           // 정상 사용자
