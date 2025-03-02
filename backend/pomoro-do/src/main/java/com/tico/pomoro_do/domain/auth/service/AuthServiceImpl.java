@@ -19,13 +19,13 @@ import com.tico.pomoro_do.domain.auth.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.domain.user.service.UserService;
-import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
-import com.tico.pomoro_do.global.code.ErrorCode;
-import com.tico.pomoro_do.global.common.constants.CategoryConstants;
+import com.tico.pomoro_do.global.security.JwtTokenProvider;
+import com.tico.pomoro_do.global.exception.ErrorCode;
+import com.tico.pomoro_do.domain.category.constants.CategoryConstants;
 import com.tico.pomoro_do.global.enums.*;
 import com.tico.pomoro_do.global.exception.CustomException;
-import com.tico.pomoro_do.global.util.DateUtils;
-import com.tico.pomoro_do.global.util.ValidationUtils;
+import com.tico.pomoro_do.global.common.util.DateUtils;
+import com.tico.pomoro_do.global.common.util.ValidationUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
     private String clientId;
 
     //jwt관리 및 검증 utill
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
     private final UserService userService;
@@ -88,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
         // deviceId 유효성 검사
         ValidationUtils.validateDeviceId(deviceId);
         // 토큰 추출
-        String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
+        String idToken = jwtTokenProvider.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 토큰 유효성 검증
         GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 회원 가입 여부 판단 -> 회원 가입 x -> 에러 발생
@@ -107,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
         joinValidateInputs(deviceId, nickname);
 
         // 구글 idToken 유효성 검사 및 추출
-        String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
+        String idToken = jwtTokenProvider.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 id 토큰 검증
         GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 사용자의 이메일 중복 체크
@@ -208,9 +208,9 @@ public class AuthServiceImpl implements AuthService {
 
         // 생성 로직
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
-        Long userId = jwtUtil.getUserId(refresh);
-        String email = jwtUtil.getEmail(refresh);
-        String role = jwtUtil.getRole(refresh);
+        Long userId = jwtTokenProvider.getUserId(refresh);
+        String email = jwtTokenProvider.getEmail(refresh);
+        String role = jwtTokenProvider.getRole(refresh);
         // 토큰 재발행
         return tokenService.createAuthTokens(userId, email, role, deviceId);
 

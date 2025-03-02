@@ -6,7 +6,7 @@ import com.tico.pomoro_do.domain.user.dto.response.UserDetailResponse;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.FollowRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
-import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

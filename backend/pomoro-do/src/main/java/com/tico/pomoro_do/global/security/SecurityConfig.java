@@ -1,8 +1,6 @@
-package com.tico.pomoro_do.global.config;
+package com.tico.pomoro_do.global.security;
 
-import com.tico.pomoro_do.global.auth.jwt.LoginFilter;
-import com.tico.pomoro_do.global.auth.jwt.JWTFilter;
-import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
+import com.tico.pomoro_do.global.security.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +23,7 @@ public class SecurityConfig {
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
     private final AuthenticationConfiguration authenticationConfiguration;
     //JWTUtil 주입
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // 허용 주소
     private static final String[] WHITE_LIST = {
@@ -84,7 +82,7 @@ public class SecurityConfig {
         //JWTFilter를 먼저 실행하도록 설정
         //(UsernamePasswordAuthenticationFilter 앞에 배치하여, 모든 요청에서 JWT 검증이 먼저 이루어지도록 설정)
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         /* 서버 자체 로그인 삭제 - START */
         //LoginFilter 앞에 넣어준다. (서버 자체 로그인 삭제)

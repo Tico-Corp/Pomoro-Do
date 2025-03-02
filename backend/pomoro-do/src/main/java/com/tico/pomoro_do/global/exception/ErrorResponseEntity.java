@@ -1,6 +1,5 @@
 package com.tico.pomoro_do.global.exception;
 
-import com.tico.pomoro_do.global.code.ErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;

@@ -5,7 +5,7 @@ import com.tico.pomoro_do.domain.auth.service.AuthService;
 import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.domain.user.dto.request.AdminRequest;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.domain.user.enums.UserRole;
 import com.tico.pomoro_do.global.exception.CustomException;

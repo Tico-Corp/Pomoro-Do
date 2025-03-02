@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.util;
+package com.tico.pomoro_do.global.common.util;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

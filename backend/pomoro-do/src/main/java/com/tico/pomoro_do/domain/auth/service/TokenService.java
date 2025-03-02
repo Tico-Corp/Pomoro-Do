@@ -2,7 +2,7 @@ package com.tico.pomoro_do.domain.auth.service;
 
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.auth.entity.RefreshToken;
-import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.response.SuccessCode;
 import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
 

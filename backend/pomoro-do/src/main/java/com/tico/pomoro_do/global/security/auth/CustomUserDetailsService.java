@@ -1,9 +1,9 @@
-package com.tico.pomoro_do.domain.auth.service;
+package com.tico.pomoro_do.global.security.auth;
 
-import com.tico.pomoro_do.domain.auth.dto.AuthUser;
+import com.tico.pomoro_do.global.security.auth.AuthUser;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
-import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
+import com.tico.pomoro_do.global.security.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.util;
+package com.tico.pomoro_do.global.common.util;
 
 import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import jakarta.servlet.http.Cookie;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Base64;
 
 @Slf4j
-public class CookieUtil {
+public class CookieUtils {
 
     @Value("${jwt.refresh-expiration}")
     private static int refreshExpiration; // (24*60*60 = 24시간)

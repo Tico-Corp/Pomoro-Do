@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.entity;
+package com.tico.pomoro_do.global.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

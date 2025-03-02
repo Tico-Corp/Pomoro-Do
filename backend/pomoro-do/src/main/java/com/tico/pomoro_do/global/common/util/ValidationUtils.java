@@ -1,6 +1,6 @@
-package com.tico.pomoro_do.global.util;
+package com.tico.pomoro_do.global.common.util;
 
-import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.extern.slf4j.Slf4j;
 

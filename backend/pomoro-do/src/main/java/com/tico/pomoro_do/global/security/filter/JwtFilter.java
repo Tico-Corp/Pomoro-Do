@@ -1,11 +1,12 @@
-package com.tico.pomoro_do.global.auth.jwt;
+package com.tico.pomoro_do.global.security.filter;
 
 import com.google.gson.Gson;
-import com.tico.pomoro_do.domain.auth.dto.AuthUser;
-import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
-import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.exception.ErrorResponseEntity;
+import com.tico.pomoro_do.global.security.auth.AuthUser;
+import com.tico.pomoro_do.global.security.auth.CustomUserDetails;
+import com.tico.pomoro_do.global.security.JwtTokenProvider;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,12 +23,12 @@ import java.io.PrintWriter;
 
 // OncePerRequestFilter: 요청에 대해 한번만 동작
 @Slf4j
-public class JWTFilter extends OncePerRequestFilter {
+public class JwtFilter extends OncePerRequestFilter {
 
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public JWTFilter(JWTUtil jwtUtil) {
-        this.jwtUtil = jwtUtil;
+    public JwtFilter(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     // 토큰 검증
@@ -100,7 +101,7 @@ public class JWTFilter extends OncePerRequestFilter {
         // 토큰 만료 여부 확인, 만료시 다음 필터로 넘기지 않음
         try {
             // 토큰이 만료되었는 지 확인
-            jwtUtil.isExpired(accessToken);
+            jwtTokenProvider.isExpired(accessToken);
         } catch (ExpiredJwtException e) {
             // Access 토큰이 만료된 경우
             log.info("Access 토큰이 만료되었습니다.");
@@ -118,7 +119,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 카테고리 확인
         // 토큰이 access인지 확인 (발급시 페이로드에 명시)
-        String category = jwtUtil.getCategory(accessToken);
+        String category = jwtTokenProvider.getCategory(accessToken);
 
         if (!category.equals(TokenType.ACCESS.name())) {
             // access 토큰이 아니면 응답 메시지와 상태코드 반환
@@ -134,9 +135,9 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // 일시적인 세션 만들기
         // 토큰에서 사용자 정보 획득
-        Long userId = jwtUtil.getUserId(accessToken);
-        String email = jwtUtil.getEmail(accessToken);
-        String role = jwtUtil.getRole(accessToken);
+        Long userId = jwtTokenProvider.getUserId(accessToken);
+        String email = jwtTokenProvider.getEmail(accessToken);
+        String role = jwtTokenProvider.getRole(accessToken);
 
         /* 서버 자체 로그인 삭제 - START */
         // account를 생성하여 값 저장 (추후 DTO를 만들어 값 저장)

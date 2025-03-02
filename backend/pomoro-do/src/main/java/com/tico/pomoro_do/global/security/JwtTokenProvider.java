@@ -1,6 +1,6 @@
-package com.tico.pomoro_do.global.auth.jwt;
+package com.tico.pomoro_do.global.security;
 
-import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,13 +20,13 @@ import java.util.Date;
 //JWT 토큰 발급 및 검증 (로그인-인증 과정)
 @Component
 @Slf4j
-public class JWTUtil {
+public class JwtTokenProvider {
 
     // 객체키
     private SecretKey secretKey;
 
     // 객체변수로 암호화
-    public JWTUtil(@Value("${jwt.secret-key}")String secret) {
+    public JwtTokenProvider(@Value("${jwt.secret-key}")String secret) {
 
         secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }

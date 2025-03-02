@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.domain.auth.dto;
+package com.tico.pomoro_do.global.security.auth;
 
 import lombok.Builder;
 import lombok.Getter;

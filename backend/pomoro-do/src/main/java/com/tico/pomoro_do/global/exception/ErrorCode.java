@@ -1,4 +1,4 @@
-package com.tico.pomoro_do.global.code;
+package com.tico.pomoro_do.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

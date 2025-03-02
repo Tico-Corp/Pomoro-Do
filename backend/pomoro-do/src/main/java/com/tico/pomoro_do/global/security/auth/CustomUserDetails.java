@@ -1,6 +1,6 @@
-package com.tico.pomoro_do.domain.auth.security;
+package com.tico.pomoro_do.global.security.auth;
 
-import com.tico.pomoro_do.domain.auth.dto.AuthUser;
+import com.tico.pomoro_do.global.security.auth.AuthUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

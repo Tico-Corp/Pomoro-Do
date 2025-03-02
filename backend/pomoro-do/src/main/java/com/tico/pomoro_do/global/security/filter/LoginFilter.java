@@ -1,9 +1,10 @@
-package com.tico.pomoro_do.global.auth.jwt;
+package com.tico.pomoro_do.global.security.filter;
 
-import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
 import com.tico.pomoro_do.domain.auth.service.TokenService;
 import com.tico.pomoro_do.domain.auth.enums.TokenType;
-import com.tico.pomoro_do.global.util.CookieUtil;
+import com.tico.pomoro_do.global.common.util.CookieUtils;
+import com.tico.pomoro_do.global.security.auth.CustomUserDetails;
+import com.tico.pomoro_do.global.security.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,7 +30,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
     //JWTUtil 주입
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
 
     private final TokenService tokenService;
 
@@ -77,8 +78,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = auth.getAuthority();
 
         //토큰 생성 (카테고리, 유저이름, 역할, 만료시간)
-        String access = jwtUtil.createJwt(TokenType.ACCESS.name(), userId, username, role, accessExpiration); //60분
-        String refresh = jwtUtil.createJwt(TokenType.REFRESH.name(), userId, username, role, refreshExpiration); //24시간
+        String access = jwtTokenProvider.createJwt(TokenType.ACCESS.name(), userId, username, role, accessExpiration); //60분
+        String refresh = jwtTokenProvider.createJwt(TokenType.REFRESH.name(), userId, username, role, refreshExpiration); //24시간
 
         //Refresh 토큰 저장
         String deviceId = request.getHeader("Device-ID");
@@ -88,7 +89,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //access 토큰 헤더에 넣어서 응답 (key: value 형태) -> 예시) access: 인증토큰(string)
         response.setHeader(TokenType.ACCESS.name(), access);
         //refresh 토큰 쿠키에 넣어서 응답
-        response.addCookie(CookieUtil.createCookie(TokenType.REFRESH.name(), refresh));
+        response.addCookie(CookieUtils.createCookie(TokenType.REFRESH.name(), refresh));
         response.setStatus(HttpStatus.OK.value());
     }
 

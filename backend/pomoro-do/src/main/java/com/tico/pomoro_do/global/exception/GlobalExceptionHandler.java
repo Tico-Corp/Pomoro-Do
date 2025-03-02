@@ -3,7 +3,6 @@ package com.tico.pomoro_do.global.exception;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.JsonParseException;
-import com.tico.pomoro_do.global.code.ErrorCode;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.persistence.EntityNotFoundException;

@@ -2,7 +2,7 @@ package com.tico.pomoro_do.domain.user.controller;
 
 import com.tico.pomoro_do.domain.user.dto.response.ImageResponse;
 import com.tico.pomoro_do.domain.user.service.ImageService;
-import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.response.SuccessCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.global.response.SuccessResponse;
 import io.swagger.v3.oas.annotations.Operation;
