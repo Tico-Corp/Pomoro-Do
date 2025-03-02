@@ -54,7 +54,7 @@ public class Category extends BaseTimeEntity {
     private String color = "#FFC090";
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = false;  // 카테고리 삭제 여부 (논리 삭제)
+    private boolean deleted = false;    // 카테고리 삭제 여부 (논리 삭제)
 
     @Builder
     public Category(User owner, String name, CategoryType type, LocalDate startDate, CategoryVisibility visibility) {

@@ -8,7 +8,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class CategoryDetailDTO {
+public class CategoryDetailResponse {
 
     private Long categoryId;
     private String title;
@@ -16,14 +16,14 @@ public class CategoryDetailDTO {
     private String hostNickname;
     private boolean hostStatus;
     private CategoryVisibility visibility;
-    private List<GroupMemberDTO> members;
+    private List<CategoryMemberResponse> members;
     private int memberCount; // 그룹 인원 수
     private String color;
 
     @Builder
-    public CategoryDetailDTO(Long categoryId, String title, CategoryType type,
-                             String hostNickname, boolean hostStatus, CategoryVisibility visibility,
-                             List<GroupMemberDTO> members, int memberCount, String color
+    public CategoryDetailResponse(Long categoryId, String title, CategoryType type,
+                                  String hostNickname, boolean hostStatus, CategoryVisibility visibility,
+                                  List<CategoryMemberResponse> members, int memberCount, String color
     ) {
         this.categoryId = categoryId;
         this.title = title;

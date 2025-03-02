@@ -1,22 +1,23 @@
 package com.tico.pomoro_do.domain.category.service;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
+import com.tico.pomoro_do.domain.category.entity.CategoryInvitation;
 import com.tico.pomoro_do.domain.category.entity.CategoryMember;
+import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
+import com.tico.pomoro_do.domain.category.repository.CategoryInvitationRepository;
+import com.tico.pomoro_do.domain.category.repository.CategoryMemberRepository;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
-import com.tico.pomoro_do.domain.category.repository.GroupMemberRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.domain.user.service.UserService;
-import com.tico.pomoro_do.global.exception.ErrorCode;
-import com.tico.pomoro_do.domain.category.enums.CategoryType;
-import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
-import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
-import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
-import com.tico.pomoro_do.global.exception.CustomException;
-import com.tico.pomoro_do.global.common.util.DateUtils;
 import com.tico.pomoro_do.global.common.util.ValidationUtils;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,61 +33,46 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CategoryServiceImpl implements CategoryService {
 
-    private final CategoryRepository categoryRepository;
-    private final GroupMemberRepository groupMemberRepository;
     private final UserService userService;
     private final FollowService followService;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMemberRepository categoryMemberRepository;
+    private final CategoryInvitationRepository categoryInvitationRepository;
 
-    /**
-     * 카테고리 생성
-     *
-     * @param hostEmail 카테고리를 생성하는 호스트 유저의 이메일
-     * @param categoryCreationDTO 생성할 카테고리의 정보가 담긴 DTO
-     */
+    // 개인/그룹 생성할 때 그룹 멤버까지 생성
     @Override
     @Transactional
-    public void createCategory(String hostEmail, CategoryCreationDTO categoryCreationDTO){
+    public void createCategory(Long userId, CategoryCreateRequest categoryCreateRequest){
 
-        User host = userService.findUserByEmail(hostEmail);
+        User owner = userService.findUserById(userId);
 
-        // 일반/그룹 카테고리 생성
+        // 개인/그룹 카테고리 생성
         Category category = createNewCategory(
-                host,
-                categoryCreationDTO.getDate(),
-                categoryCreationDTO.getTitle(),
-                categoryCreationDTO.getColor(),
-                categoryCreationDTO.getVisibility(),
-                categoryCreationDTO.getType()
+                owner,
+                categoryCreateRequest.getStartDate(),
+                categoryCreateRequest.getCategoryName(),
+                categoryCreateRequest.getCategoryType(),
+                categoryCreateRequest.getCategoryVisibility()
         );
 
-        // 그룹 카테고리면 그룹 멤버 생성 로직
-        if (categoryCreationDTO.getType() == CategoryType.GROUP) {
+        // 그룹 카테고리면 그룹 멤버 생성
+        if (categoryCreateRequest.getCategoryType() == CategoryType.GROUP) {
             // 그룹 멤버를 받아왔는 지 검사
-            ValidationUtils.validateGroupMembers(categoryCreationDTO.getMembers());
+            ValidationUtils.validateGroupMembers(categoryCreateRequest.getGroupMemberIds());
             // GroupMember 생성
-            createGroupMembers(category, host, categoryCreationDTO.getMembers());
+            createCategoryMembers(category, owner, categoryCreateRequest.getGroupMemberIds(), categoryCreateRequest.getStartDate());
         }
     }
 
-    /**
-     * 새로운 카테고리 객체를 생성하고 저장
-     *
-     * @param host 카테고리를 생성하는 호스트 유저 객체
-     * @param title 카테고리의 제목
-     * @param color 카테고리의 색상
-     * @param visibility 카테고리의 공개 설정
-     * @param type 카테고리의 유형 (일반/그룹)
-     * @return 저장된 카테고리 객체
-     */
+    // 새로운 카테고리 생성
     @Override
-    public Category createNewCategory(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type) {
+    public Category createNewCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility) {
         Category category = Category.builder()
-                .host(host)
-                .date(date)
-                .title(title)
-                .color(color)
-                .visibility(visibility)
+                .owner(owner)
+                .name(name)
                 .type(type)
+                .startDate(startDate)
+                .visibility(visibility)
                 .build();
         return categoryRepository.save(category);
     }
@@ -95,124 +81,118 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 그룹 카테고리의 멤버들을 생성하여 저장
      *
-     * @param category 생성된 카테고리 객체
-     * @param host 카테고리를 생성한 호스트 유저 객체
-     * @param memberIds 그룹에 포함될 멤버들의 ID Set
+     * @param category 초대한 카테고리 객체
+     * @param owner 카테고리 관리자 유저 객체
+     * @param memberIds 그룹 카테고리에 포함될 멤버들의 ID Set
      */
-    private void createGroupMembers(Category category, User host, Set<Long> memberIds) {
-        // 호스트 멤버 생성
-        createGroupMember(category, host, CategoryInvitationStatus.ACCEPTED, CategoryMemberRole.HOST);
+    private void createCategoryMembers(Category category, User owner, Set<Long> memberIds, LocalDate joinedDate) {
 
+        // 카테고리 멤버 초대
         // 팔로우한 멤버만 그룹에 추가 가능
         for (Long memberId : memberIds) {
-            // 호스트가 팔로우하지 않은 사용자일 경우 예외 발생
-            if (!followService.isFollowing(host.getId(), memberId)) {
+            // 관리자가 팔로우하지 않은 사용자일 경우 예외 발생
+            if (!followService.isFollowing(owner.getId(), memberId)) {
                 log.warn("팔로우하지 않은 사용자 [{}] 추가 시도", memberId);
                 throw new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_FOLLOWED);
             }
-
-            User member = userService.findUserById(memberId);
-            createGroupMember(category, member, CategoryInvitationStatus.INVITED, CategoryMemberRole.MEMBER);
+            // 초대할 멤버
+            User invitee = userService.findUserById(memberId);
+            // 초대장 보내기
+            createCategoryInvitation(category, owner, invitee);
         }
+
+        // 카테고리 관리자 생성
+        createCategoryMember(category, owner, CategoryMemberRole.OWNER, joinedDate);
     }
 
-    /**
-     * 단일 그룹 멤버를 생성하여 저장
-     *
-     * @param category 생성된 카테고리 객체
-     * @param member 그룹에 포함될 유저 객체
-     * @param status 그룹 초대 상태 (ACCEPTED, INVITED 등)
-     * @param role 그룹 내 유저의 역할 (HOST, MEMBER 등)
-     */
+    // 그룹 카테고리 멤버 생성
     @Override
-    public void createGroupMember(Category category, User member, CategoryInvitationStatus status, CategoryMemberRole role){
+    public void createCategoryMember(Category category, User member, CategoryMemberRole role, LocalDate joinedDate){
         CategoryMember categoryMember = CategoryMember.builder()
                 .category(category)
                 .user(member)
-                .status(status)
                 .role(role)
+                .joinedDate(joinedDate)
                 .build();
 
-        groupMemberRepository.save(categoryMember);
+        categoryMemberRepository.save(categoryMember);
     }
 
     /**
-     * 주어진 사용자 이름을 기반으로 사용자의 일반, 그룹, 초대받은 카테고리를 조회
+     * 그룹 카테고리 초대장 생성 (보내기)
      *
-     * @param email 사용자의 이메일
-     * @return 사용자에 해당하는 일반 카테고리, 그룹 카테고리, 초대받은 그룹 카테고리를 포함하는 CategoryDTO 객체
+     * @param category 초대한 카테고리
+     * @param inviter 초대한 유저
+     * @param invitee 초대받은 유저
      */
+    private void createCategoryInvitation(Category category, User inviter, User invitee) {
+        CategoryInvitation categoryInvitation = CategoryInvitation.builder()
+                .category(category)
+                .inviter(inviter)
+                .invitee(invitee)
+                .build();
+
+        categoryInvitationRepository.save(categoryInvitation);
+    }
+
+    // 일반/그룹/초대받은 카테고리 조회
     @Override
-    public CategoryDTO getCategories(String email) {
+    public CategoryResponse getCategories(Long userId) {
+
         // 사용자 조회
-        User user = userService.findUserByEmail(email);
+        User user = userService.findUserById(userId);
 
-        // 일반 카테고리
-        List<GeneralCategoryDTO> generalCategories = getGeneralCategories(user);
-        // ACCEPTED 상태인 그룹 카테고리
-        List<GroupCategoryDTO> groupCategories = getGroupCategories(user);
-        // INVITED 상태인 그룹 카테고리
-        List<InvitedGroupDTO> invitedGroupCategories = getInvitedGroupCategories(user);
+        // 개인 카테고리
+        List<PersonalCategoryResponse> personalCategories = getPersonalCategories(user);
+        // 그룹 카테고리
+        List<GroupCategoryResponse> groupCategories = getGroupCategories(user);
+        // 대기중인 초대장
+        List<CategoryInvitationResponse> pendingInvitations = getCategoryInvitations(user, CategoryInvitationStatus.PENDING);
 
-        return CategoryDTO.builder()
-                .generalCategories(generalCategories)
+        return CategoryResponse.builder()
+                .personalCategories(personalCategories)
                 .groupCategories(groupCategories)
-                .invitedGroupCategories(invitedGroupCategories)
+                .categoryInvitations(pendingInvitations)
                 .build();
     }
 
-    /**
-     * 주어진 사용자를 호스트로 하는 일반 카테고리 조회
-     *
-     * @param host 사용자
-     * @return 사용자의 일반 카테고리를 포함하는 GeneralCategoryDTO 리스트
-     */
+    // 사용자의 일반 카테고리 가나다 순으로 조회
     @Override
-    public List<GeneralCategoryDTO> getGeneralCategories(User host) {
-        // DB에서 한번에 해당 날짜의 일반 카테고리를 조회
-        List<Category> generalCategories = categoryRepository.findAllByHostAndTypeAndDate(host, CategoryType.GENERAL, DateUtils.getCurrentDate());
+    public List<PersonalCategoryResponse> getPersonalCategories(User user) {
+        // 활성화되어있는 개인 카테고리 조회 (owner=user, type=PERSONAL, isDeleted=false)
+        List<Category> personalCategories = categoryRepository.findByOwnerAndTypeAndDeletedIsFalse(user, CategoryType.PERSONAL);
 
-        // 일반 카테고리를 가나다 순으로 정렬 후 DTO로 변환
-        return generalCategories.stream()
-                .sorted(Comparator.comparing(Category::getTitle)) // 제목(title) 기준으로 가나다 순 정렬
-                .map(this::convertToGeneralCategory)
+        // 개인 카테고리를 가나다 순으로 정렬 후 DTO로 변환
+        return personalCategories.stream()
+                .sorted(Comparator.comparing(Category::getName)) // 이름(name) 기준으로 가나다 순 정렬
+                .map(this::convertToPersonalCategory)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 주어진 사용자를 기반으로 사용자가 속한 그룹 카테고리 조회
-     *
-     * @param user 사용자
-     * @return 사용자가 속한 그룹 카테고리를 포함하는 GroupCategoryDTO 리스트
-     */
+    // 사용가 속한 그룹 카테고리 가나다 순으로 조회
     @Override
-    public List<GroupCategoryDTO> getGroupCategories(User user) {
-        // 해당 날짜의 사용자가 속한 그룹 카테고리들 가져오기
-        List<Category> groupCategories = findUserGroupCategoriesByDate(user, DateUtils.getCurrentDate());
+    public List<GroupCategoryResponse> getGroupCategories(User user) {
+        // 활성화되어있는 그룹 카테고리 조회
+        List<Category> groupCategories = findUserGroupCategories(user);
 
         // 멤버 수 정보를 미리 조회
         Map<Category, Long> categoryMemberCountMap = calculateMemberCounts(groupCategories);
 
-        // 카테고리와 멤버 수 정보를 GroupCategoryDTO로 변환하여 반환 (가나다 순 정렬)
+        // 카테고리와 멤버 수 정보를 GroupCategoryResponse로 변환하여 반환 (가나다 순 정렬)
         return groupCategories.stream()
-                .sorted(Comparator.comparing(Category::getTitle)) // 가나다 순 정렬
-                .map(category -> convertToGroupCategory(category, categoryMemberCountMap.get(category)))
+                .sorted(Comparator.comparing(Category::getName)) // 가나다 순 정렬
+                .map(category -> convertToGroupCategory(user, category, categoryMemberCountMap.get(category)))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * 사용자가 초대받은 그룹 카테고리 조회
-     *
-     * @param user 사용자
-     * @return 사용자가 초대받은 그룹 카테고리를 포함하는 InvitedGroupDTO 리스트
-     */
+    // 사용자가 받은 카테고리 초대장 조회
     @Override
-    public List<InvitedGroupDTO> getInvitedGroupCategories(User user) {
-        // 초대받은 그룹 카테고리를 최신순으로 가져옴
-        List<CategoryMember> invitedGroups = groupMemberRepository.findByUserAndStatusOrderByCreatedAtDesc(user, CategoryInvitationStatus.INVITED);
+    public List<CategoryInvitationResponse> getCategoryInvitations(User user, CategoryInvitationStatus status) {
+        // 초대 상태에 따른 초대장 최신순으로 조회 (invitee=user, CategoryInvitationStatus=PENDING)
+        List<CategoryInvitation> CategoryInvitations = categoryInvitationRepository.findAllByInviteeAndStatusOrderByCreatedAtDesc(user, status);
 
-        return invitedGroups.stream()
-                .map(this::convertToInvitedGroup)
+        return CategoryInvitations.stream()
+                .map(this::convertToCategoryInvitation)
                 .collect(Collectors.toList());
     }
 
@@ -220,26 +200,26 @@ public class CategoryServiceImpl implements CategoryService {
      * 사용자가 속한 그룹 카테고리 조회
      *
      * @param user 사용자
-     * @param targetDate 조회할 날짜
      * @return 사용자가 속한 그룹 카테고리 리스트
      */
-    private List<Category> findUserGroupCategoriesByDate(User user, LocalDate targetDate) {
-        List<CategoryMember> userAcceptedGroups = groupMemberRepository.findAllByUserAndStatusAndCategory_Date(user, CategoryInvitationStatus.ACCEPTED, targetDate);
-        return userAcceptedGroups.stream()
+    private List<Category> findUserGroupCategories(User user) {
+        // 카테고리 멤버로 활성회되어있는 그룹 카테고리 조회 (user=user, leftDate=null)
+        List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByUserAndLeftDateIsNull(user);
+        return categoryMembers.stream()
                 .map(CategoryMember::getCategory)
                 .collect(Collectors.toList());
     }
 
     /**
-     * 주어진 그룹 카테고리들의 멤버 수를 조회
+     * 그룹 카테고리들 멤버 수 조회
      *
      * @param groupCategories 그룹 카테고리 리스트
      * @return 각 카테고리별 멤버 수가 포함된 맵
      */
     private Map<Category, Long> calculateMemberCounts(List<Category> groupCategories) {
-        // 모든 카테고리의 멤버 수를 한 번에 가져와서 Map으로 변환
-        List<CategoryMember> acceptedMembers = groupMemberRepository.findByCategoryInAndStatus(groupCategories, CategoryInvitationStatus.ACCEPTED);
-        return acceptedMembers.stream()
+        // 모든 카테고리의 멤버 수를 한 번에 가져와서 Map으로 변환 (List<Category>=groupCategories, leftDate=null)
+        List<CategoryMember> activeCategoryMembers = categoryMemberRepository.findAllByCategoryInAndLeftDateIsNull(groupCategories);
+        return activeCategoryMembers.stream()
                 .collect(Collectors.groupingBy(
                         CategoryMember::getCategory,  // 카테고리별로 그룹화
                         Collectors.counting()      // 각 카테고리의 멤버 수 계산
@@ -254,15 +234,15 @@ public class CategoryServiceImpl implements CategoryService {
      * @return CategoryDetailDTO 객체
      */
     @Override
-    public CategoryDetailDTO getCategoryDetail(Long categoryId, String email){
+    public CategoryDetailResponse getCategoryDetail(Long categoryId, String email){
         Category category = findByCategoryId(categoryId);
-        List<GroupMemberDTO> groupMemberDTOList = new ArrayList<>();
+        List<CategoryMemberResponse> categoryMemberResponseList = new ArrayList<>();
         // 그룹 멤버 조회
         if (category.getType().equals(CategoryType.GROUP)) {
-            List<CategoryMember> categoryMembers = groupMemberRepository.findAllByCategoryAndStatus(category, CategoryInvitationStatus.ACCEPTED);
-            groupMemberDTOList = categoryMembers.stream()
+            List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByCategoryAndStatus(category, CategoryInvitationStatus.ACCEPTED);
+            categoryMemberResponseList = categoryMembers.stream()
                     .sorted(Comparator.comparing(categoryMember -> categoryMember.getUser().getNickname())) // 닉네임으로 정렬
-                    .map(categoryMember -> GroupMemberDTO.builder()
+                    .map(categoryMember -> CategoryMemberResponse.builder()
                             .groupMemberId(categoryMember.getId())
                             .nickname(categoryMember.getUser().getNickname())
                             .profileImageUrl(categoryMember.getUser().getProfileImageUrl())
@@ -271,16 +251,16 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         // memberCount 계산
-        int memberCount = groupMemberDTOList.size();
+        int memberCount = categoryMemberResponseList.size();
 
-        return CategoryDetailDTO.builder()
+        return CategoryDetailResponse.builder()
                 .categoryId(categoryId)
-                .title(category.getTitle())
-                .hostNickname(category.getHost().getNickname())
-                .hostStatus(category.getHost().getEmail().equals(email))
+                .name(category.getTitle())
+                .ownerNickname(category.getHost().getNickname())
+                .ownerStatus(category.getHost().getEmail().equals(email))
                 .type(category.getType())
                 .visibility(category.getVisibility())
-                .members(groupMemberDTOList)
+                .members(categoryMemberResponseList)
                 .memberCount(memberCount)
                 .color(category.getColor())
                 .build();
@@ -295,74 +275,51 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     // 응답 생성
-
     /**
-     * 주어진 카테고리를 GeneralCategoryDTO로 변환
+     * 주어진 카테고리를 PersonalCategoryResponse로 변환
      *
      * @param category 카테고리 엔티티
-     * @return GeneralCategoryDTO 객체
+     * @return PersonalCategoryResponse 객체
      */
-    private GeneralCategoryDTO convertToGeneralCategory(Category category) {
-        return GeneralCategoryDTO.builder()
+    private PersonalCategoryResponse convertToPersonalCategory(Category category) {
+        return PersonalCategoryResponse.builder()
                 .categoryId(category.getId())
-                .title(category.getTitle())
-                .color(category.getColor())
+                .categoryName(category.getName())
                 .build();
     }
 
     /**
-     * 주어진 카테고리를 GroupCategoryDTO로 변환
+     * 주어진 카테고리를 GroupCategoryResponse로 변환
      *
+     * @param user 현재 사용자
      * @param category 카테고리 엔티티
-     * @param memberCount 해당 카테고리의 멤버 수
-     * @return GroupCategoryDTO 객체
+     * @param totalMembers 해당 카테고리의 멤버 수
+     * @return GroupCategoryResponse 객체
      */
-    private GroupCategoryDTO convertToGroupCategory(Category category, Long memberCount) {
+    private GroupCategoryResponse convertToGroupCategory(User user, Category category, Long totalMembers) {
+        // 현재 사용자가 owner인지 확인
+        boolean ownerStatus = user.equals(category.getOwner());
 
-        return GroupCategoryDTO.builder()
+        return GroupCategoryResponse.builder()
                 .categoryId(category.getId())
-                .title(category.getTitle())
-                .color(category.getColor())
-                .memberCount(Math.toIntExact(memberCount))
+                .categoryName(category.getName())
+                .totalMembers(Math.toIntExact(totalMembers))
+                .ownerStatus(ownerStatus)
                 .build();
     }
 
     /**
-     * 초대받은 그룹 정보를 InvitedGroupDTO로 변환
+     * 초대장 정보를 CategoryInvitationResponse로 변환
      *
-     * @param categoryMember 그룹 멤버 엔티티
-     * @return InvitedGroupDTO 객체
+     * @param categoryInvitation 카테고리 초대장
+     * @return CategoryInvitationResponse 객체
      */
-    private InvitedGroupDTO convertToInvitedGroup(CategoryMember categoryMember) {
-        Category category = categoryMember.getCategory();
-        return InvitedGroupDTO.builder()
-                .groupMemberId(categoryMember.getId())
-                .hostNickname(category.getHost().getNickname())
-                .title(category.getTitle())
+    private CategoryInvitationResponse convertToCategoryInvitation(CategoryInvitation categoryInvitation) {
+
+        return CategoryInvitationResponse.builder()
+                .categoryInvitationId(categoryInvitation.getId())
+                .categoryName(categoryInvitation.getCategory().getName())
+                .ownerNickname(categoryInvitation.getInviter().getNickname())
                 .build();
     }
-
-    /**
-     * 해당 날짜에 속하는 모든 카테고리 조회
-     *
-     * @param targetDate 조회할 날짜
-     * @return 해당 날짜에 속하는 모든 카테고리 리스트
-     */
-    @Override
-    public List<Category> findByDate(LocalDate targetDate) {
-        // DB에서 한번에 해당 날짜의 일반 카테고리를 조회
-        return categoryRepository.findByDate(targetDate);
-    }
-
-    /**
-     * 해당 카테고리에 속하는 모든 승인된 그룹 멤버 조회
-     *
-     * @param category 조회할 카테고리
-     * @return 해당 카테고리에 속하는 모든 승인된 그룹 멤버 리스트
-     */
-    @Override
-    public List<CategoryMember> findAcceptedMembersByCategory(Category category) {
-        return groupMemberRepository.findAllByCategoryAndStatus(category, CategoryInvitationStatus.ACCEPTED);
-    }
-
 }

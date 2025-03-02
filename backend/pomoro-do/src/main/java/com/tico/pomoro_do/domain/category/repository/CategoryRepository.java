@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    List<Category> findAllByHostAndTypeAndDate(User host, CategoryType type, LocalDate date);
+    List<Category> findByOwnerAndTypeAndDeletedIsFalse(User owner, CategoryType type);
 
     Optional<Category> findById(Long categoryId);
 

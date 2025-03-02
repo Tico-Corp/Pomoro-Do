@@ -10,6 +10,8 @@ import com.tico.pomoro_do.domain.auth.enums.OAuthProvider;
 import com.tico.pomoro_do.domain.auth.enums.ProfileImageType;
 import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.domain.category.entity.Category;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
 import com.tico.pomoro_do.domain.auth.entity.SocialLogin;
@@ -35,6 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
 import java.util.Collections;
 
 
@@ -124,10 +127,9 @@ public class AuthServiceImpl implements AuthService {
         Category category = categoryService.createNewCategory(
                 user,
                 DateUtils.getCurrentDate(),
-                CategoryConstants.DEFAULT_CATEGORY_TITLE,
-                CategoryConstants.DEFAULT_CATEGORY_COLOR,
-                CategoryConstants.DEFAULT_CATEGORY_VISIBILITY,
-                CategoryConstants.DEFAULT_CATEGORY_TYPE
+                CategoryConstants.DEFAULT_CATEGORY_NAME,
+                CategoryConstants.DEFAULT_CATEGORY_TYPE,
+                CategoryConstants.DEFAULT_CATEGORY_VISIBILITY
         );
 
         log.info("구글 회원가입 성공: 이메일 = {}", googleUserInfo.getEmail());
