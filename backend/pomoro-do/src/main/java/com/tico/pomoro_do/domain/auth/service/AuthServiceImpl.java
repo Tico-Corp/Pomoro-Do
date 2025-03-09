@@ -5,29 +5,27 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
+import com.tico.pomoro_do.domain.auth.entity.SocialLogin;
 import com.tico.pomoro_do.domain.auth.enums.OAuthProvider;
 import com.tico.pomoro_do.domain.auth.enums.ProfileImageType;
 import com.tico.pomoro_do.domain.auth.enums.TokenType;
+import com.tico.pomoro_do.domain.auth.repository.SocialLoginRepository;
+import com.tico.pomoro_do.domain.category.constants.CategoryConstants;
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.enums.CategoryType;
-import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
-import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
-import com.tico.pomoro_do.domain.auth.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.enums.UserRole;
-import com.tico.pomoro_do.domain.auth.repository.SocialLoginRepository;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.domain.user.service.UserService;
-import com.tico.pomoro_do.global.security.JwtTokenProvider;
-import com.tico.pomoro_do.global.exception.ErrorCode;
-import com.tico.pomoro_do.domain.category.constants.CategoryConstants;
-import com.tico.pomoro_do.global.enums.*;
-import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.common.util.DateUtils;
 import com.tico.pomoro_do.global.common.util.ValidationUtils;
+import com.tico.pomoro_do.global.enums.S3Folder;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
+import com.tico.pomoro_do.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.time.LocalDate;
 import java.util.Collections;
 
 
@@ -124,9 +121,9 @@ public class AuthServiceImpl implements AuthService {
         createSocialLogin(user, googleUserInfo.getUserId());
 
         // 기본 카테고리 생성
-        Category category = categoryService.createNewCategory(
+        Category category = categoryService.createCategory(
                 user,
-                DateUtils.getCurrentDate(),
+                DateUtils.getBusinessDate(),
                 CategoryConstants.DEFAULT_CATEGORY_NAME,
                 CategoryConstants.DEFAULT_CATEGORY_TYPE,
                 CategoryConstants.DEFAULT_CATEGORY_VISIBILITY

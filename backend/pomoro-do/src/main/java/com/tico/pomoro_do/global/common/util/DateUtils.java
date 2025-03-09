@@ -12,7 +12,7 @@ public class DateUtils {
 
 
     // 한국 시간(KST)을 기준으로 현재 날짜를 결정하는 메서드
-    public static LocalDate getCurrentDate() {
+    public static LocalDate getBusinessDate() {
         // 현재 한국 시간 가져오기
         LocalTime currentTimeInKorea = LocalTime.now(KOREA_ZONE_ID);
         // 현재 날짜 가져오기
@@ -30,6 +30,6 @@ public class DateUtils {
      * @return 유효한 LocalDate 객체
      */
     public static LocalDate getValidDate(LocalDate targetDate) {
-        return targetDate != null ? targetDate : getCurrentDate();
+        return targetDate != null ? targetDate : getBusinessDate();
     }
 }

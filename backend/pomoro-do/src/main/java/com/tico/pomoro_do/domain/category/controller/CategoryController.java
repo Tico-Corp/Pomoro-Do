@@ -6,9 +6,9 @@ import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.UserService;
-import com.tico.pomoro_do.global.security.auth.CustomUserDetails;
 import com.tico.pomoro_do.global.response.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponse;
+import com.tico.pomoro_do.global.security.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -37,7 +37,7 @@ public class CategoryController {
      * 카테고리 생성 API
      *
      * @param customUserDetails 현재 인증된 사용자의 세부 정보
-     * @param request 카테고리 생성 요청 DTO (이름, 유형, 공개 설정, 색상, 그룹 멤버 등 포함)
+     * @param request 카테고리 생성 요청 DTO (이름, 유형, 공개 설정, 그룹 멤버 등 포함)
      * @return 카테고리 생성 성공 메시지 및 상태 코드
      *
      */
@@ -56,21 +56,20 @@ public class CategoryController {
             @ApiResponse(responseCode = "500", description = "서버 오류 - 서버에서 예기치 않은 오류 발생")
     })
     @PostMapping
-    public ResponseEntity<SuccessResponse<String>> createCategory(
+    public ResponseEntity<SuccessResponse<Long>> createCategory(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody CategoryCreateRequest request
     ){
         Long userId = customUserDetails.getUserId();
-        categoryService.createCategory(userId, request);
+        Long categoryId = categoryService.processCategoryCreation(userId, request);
 
-        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+        SuccessResponse<Long> successResponse = SuccessResponse.<Long>builder()
                 .status(SuccessCode.CATEGORY_CREATION_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_CREATION_SUCCESS.getMessage())
-                .data(SuccessCode.CATEGORY_CREATION_SUCCESS.name())
+                .data(categoryId)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
-
     }
 
     @Operation(
@@ -80,16 +79,16 @@ public class CategoryController {
                     "개인 / 그룹 / 초대받은 그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
     )
     @GetMapping
-    public ResponseEntity<SuccessResponse<CategoryResponse>> getCategories(
+    public ResponseEntity<SuccessResponse<UserCategoryResponse>> getCategories(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         Long userId = customUserDetails.getUserId();
-        CategoryResponse categoryResponse = categoryService.getCategories(userId);
+        UserCategoryResponse userCategoryResponse = categoryService.getCategories(userId);
 
-        SuccessResponse<CategoryResponse> successResponse = SuccessResponse.<CategoryResponse>builder()
+        SuccessResponse<UserCategoryResponse> successResponse = SuccessResponse.<UserCategoryResponse>builder()
                 .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_FETCH_SUCCESS.getMessage())
-                .data(categoryResponse)
+                .data(userCategoryResponse)
                 .build();
         return ResponseEntity.ok(successResponse);
     }

@@ -4,6 +4,7 @@ import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
 import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
 import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
+import com.tico.pomoro_do.global.common.util.DateUtils;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -45,10 +46,20 @@ public class CategoryMember extends BaseTimeEntity {
     private LocalDate leftDate; // 그룹 탈퇴일 (NULL이면 현재 활동 중)
 
     @Builder
-    public CategoryMember(Category category, User user, CategoryMemberRole role, LocalDate joinedDate) {
+    public CategoryMember(Category category, User user, CategoryMemberRole role) {
         this.category = category;
         this.user = user;
         this.role = role;
-        this.joinedDate = joinedDate;
+        this.joinedDate = DateUtils.getBusinessDate();
+    }
+
+    /**
+     * 탈퇴 처리 메소드
+     *
+     * @param deletionOption 데이터 삭제 옵션
+     */
+    public void leave(CategoryDeletionOption deletionOption) {
+        this.deletionOption = deletionOption;
+        this.leftDate = DateUtils.getBusinessDate();
     }
 }

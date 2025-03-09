@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class CategoryResponse {
+public class UserCategoryResponse {
 
     private List<PersonalCategoryResponse> personalCategories;    // 일반 카테고리
     private List<GroupCategoryResponse> groupCategories;        // 그룹 카테고리
@@ -14,7 +14,7 @@ public class CategoryResponse {
 
 
     @Builder
-    public CategoryResponse(List<PersonalCategoryResponse> personalCategories, List<GroupCategoryResponse> groupCategories, List<CategoryInvitationResponse> categoryInvitations){
+    public UserCategoryResponse(List<PersonalCategoryResponse> personalCategories, List<GroupCategoryResponse> groupCategories, List<CategoryInvitationResponse> categoryInvitations){
         this.personalCategories = personalCategories;
         this.groupCategories = groupCategories;
         this.categoryInvitations = categoryInvitations;

@@ -3,12 +3,11 @@ package com.tico.pomoro_do.domain.category.service;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.entity.CategoryMember;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
-import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
-import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
+import com.tico.pomoro_do.domain.user.entity.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,24 +15,25 @@ import java.util.List;
 public interface CategoryService {
 
     /**
-     * 그룹/일반 카테고리 생성
+     * 개인/그룹 카테고리 생성
      *
-     * @param userId 카테고리 생성 유저 ID
-     * @param categoryCreateRequest 생성할 카테고리의 정보가 담긴 DTO
+     * @param userId 현재 인증된 사용자의 ID
+     * @param request 카테고리 생성 요청 DTO
+     * @return 생성된 카테고리의 ID
      */
-    void createCategory(Long userId, CategoryCreateRequest categoryCreateRequest);
+    Long processCategoryCreation(Long userId, CategoryCreateRequest request);
 
     /**
-     * 새로운 카테고리 객체를 생성하고 반환
+     * 새로운 카테고리 객체를 생성하고 저장
      *
-     * @param owner 카테고리 생성 유저
+     * @param owner 카테고리 소유자
      * @param startDate 카테고리 생성 날짜
      * @param name 카테고리 이름
      * @param type 카테고리 유형 (개인/그룹)
      * @param visibility 카테고리 공개 설정
-     * @return 생성된 카테고리 객체
+     * @return 저장된 카테고리 객체
      */
-    Category createNewCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility);
+    Category createCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility);
 
     /**
      * 인증된 사용자를 기반으로 사용자의 개인, 그룹, 초대받은 카테고리를 조회
@@ -41,7 +41,7 @@ public interface CategoryService {
      * @param userId 사용자 ID
      * @return 사용자에 해당하는 개인 카테고리, 그룹 카테고리, 초대받은 그룹 카테고리를 포함하는 CategoryDTO 객체
      */
-    CategoryResponse getCategories(Long userId);
+    UserCategoryResponse getCategories(Long userId);
 
     /**
      * 인증된 사용자의 활성화 개인 카테고리 가나다 순으로 조회
@@ -72,12 +72,11 @@ public interface CategoryService {
     CategoryDetailResponse getCategoryDetail(Long categoryId, String username);
 
     /**
-     * 그룹 카테고리 멤버 생성
+     * 카테고리 멤버를 생성하고 저장
      *
-     * @param category 생성된 카테고리 객체
-     * @param member 그룹에 포함될 유저 객체
-     * @param role 그룹 내 유저의 역할 (OWNER, MEMBER 등)
-     * @param joinedDate 그룹 가입 날짜
+     * @param category 생성된 카테고리
+     * @param member 그룹 멤버 사용자
+     * @param role 그룹 내 멤버 역할 (OWNER, MEMBER)
      */
-    void createCategoryMember(Category category, User member, CategoryMemberRole role, LocalDate joinedDate);
+    void createCategoryMember(Category category, User member, CategoryMemberRole role);
 }

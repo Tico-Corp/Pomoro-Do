@@ -1,7 +1,8 @@
 package com.tico.pomoro_do.global.common.util;
 
-import com.tico.pomoro_do.global.exception.ErrorCode;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Set;
@@ -52,14 +53,40 @@ public class ValidationUtils {
     }
 
     /**
-     * 그룹 멤버 등록 검증 메서드
+     * 카테고리 멤버 등록 검증
      *
      * @param members 지정한 그룹 멤버들 ID
+     * @throws CustomException 멤버가 비어있거나 null인 경우
      */
-    public static void validateGroupMembers(Set<Long> members) {
+    public static void validateGroupCategoryMembers(Set<Long> members) {
         if (members == null || members.isEmpty()) {
             log.error("그룹 멤버가 지정되지 않음");
             throw new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_FOUND);
+        }
+    }
+
+    /**
+     * 카테고리 생성 요청 검증
+     *
+     * @param request 카테고리 생성 요청 객체
+     * @throws CustomException 유효성 검사 실패 시
+     */
+    public static void validateCategoryCreateRequest(CategoryCreateRequest request) {
+        // 필수 필드 검증
+        if (request.getCategoryName() == null || request.getCategoryName().trim().isEmpty()) {
+            throw new CustomException(ErrorCode.INVALID_CATEGORY_NAME);
+        }
+
+        if (request.getCategoryType() == null) {
+            throw new CustomException(ErrorCode.INVALID_CATEGORY_TYPE);
+        }
+
+        if (request.getStartDate() == null) {
+            throw new CustomException(ErrorCode.INVALID_START_DATE);
+        }
+
+        if (request.getCategoryVisibility() == null) {
+            throw new CustomException(ErrorCode.INVALID_CATEGORY_VISIBILITY);
         }
     }
 

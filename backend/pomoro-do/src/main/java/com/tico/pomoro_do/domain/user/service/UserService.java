@@ -5,10 +5,16 @@ import com.tico.pomoro_do.domain.user.dto.response.UserDetailResponse;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.exception.CustomException;
 
+import java.util.Map;
+import java.util.Set;
+
 public interface UserService {
 
     // 사용자 ID로 사용자 조회
     User findUserById(Long userId);
+
+    // 여러 사용자 ID에 해당하는 사용자 정보를 한 번에 조회
+    Map<Long, User> findUsersByIds(Set<Long> userIds);
 
     // 사용자 이메일로 사용자 조회
     User findUserByEmail(String email);

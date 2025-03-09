@@ -13,6 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -30,6 +35,14 @@ public class UserServiceImpl implements UserService{
                     log.error("[User] 사용자 조회 실패: userId={}", userId);
                     return new CustomException(ErrorCode.USER_NOT_FOUND);
                 });
+    }
+
+    // 여러 사용자 ID에 해당하는 사용자 정보를 한 번에 조회
+    @Override
+    public Map<Long, User> findUsersByIds(Set<Long> userIds) {
+        List<User> users = userRepository.findAllById(userIds);
+        return users.stream()
+                .collect(Collectors.toMap(User::getId, user -> user));
     }
 
     @Override

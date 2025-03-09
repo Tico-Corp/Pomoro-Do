@@ -43,11 +43,12 @@ public class CategoryInvitation extends BaseTimeEntity {
         this.invitee = invitee;
     }
 
-    public void accept() {
-        this.status = CategoryInvitationStatus.ACCEPTED;
-    }
-
-    public void reject() {
-        this.status = CategoryInvitationStatus.REJECTED;
+    /**
+     * 초대 상태 업데이트 메소드
+     *
+     * @param status 변경할 상태
+     */
+    public void updateStatus(CategoryInvitationStatus status) {
+        this.status = status;
     }
 }

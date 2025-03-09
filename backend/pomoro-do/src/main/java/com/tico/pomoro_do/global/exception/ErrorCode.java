@@ -141,10 +141,10 @@ public enum ErrorCode {
     DEVICE_ID_INVALID(HttpStatus.BAD_REQUEST, "D-303", "DEVICE ID가 비어있거나 유효하지 않습니다"),
 
     // 관리자 관련 에러: -400번대
-    NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "A-400", "관리자 권한이 없습니다."),
-    INVALID_ADMIN_EMAIL(HttpStatus.BAD_REQUEST, "A-401", "허용되지 않은 관리자 이메일입니다."),
-    ADMIN_EMAIL_ONLY(HttpStatus.FORBIDDEN, "A-402", "관리자 이메일만 접근할 수 있습니다."),
-    ADMIN_LOGIN_FAILED(HttpStatus.BAD_REQUEST, "A-403", "관리자 정보가 일치하지 않습니다. 관리자 로그인에 실패했습니다."),
+    NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "P-400", "관리자 권한이 없습니다."),
+    INVALID_ADMIN_EMAIL(HttpStatus.BAD_REQUEST, "P-401", "허용되지 않은 관리자 이메일입니다."),
+    ADMIN_EMAIL_ONLY(HttpStatus.FORBIDDEN, "P-402", "관리자 이메일만 접근할 수 있습니다."),
+    ADMIN_LOGIN_FAILED(HttpStatus.BAD_REQUEST, "P-403", "관리자 정보가 일치하지 않습니다. 관리자 로그인에 실패했습니다."),
 
     // 파일 업로드 관련 에러: -500번대
     FILE_MISSING(HttpStatus.BAD_REQUEST, "F-500", "파일이 요청에 포함되어 있지 않습니다."),
@@ -164,14 +164,26 @@ public enum ErrorCode {
     CATEGORY_VISIBILITY_INVALID(HttpStatus.BAD_REQUEST, "C-601", "카테고리 공개 설정이 유효하지 않습니다."),
     CATEGORY_COLOR_MISSING(HttpStatus.BAD_REQUEST, "C-602", "카테고리 색상이 누락되었습니다."),
     CATEGORY_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-603", "카테고리 생성 중 오류가 발생했습니다."),
-    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "C-604", "해당 카테고리를 찾을 수 없습니다."),
+    CATEGORY_NOT_FOUND(HttpStatus.NOT_FOUND, "C-604", "카테고리를 찾을 수 없습니다."),
     CATEGORY_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-605", "카테고리 삭제 중 오류가 발생했습니다."),
     CATEGORY_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-606", "카테고리 업데이트 중 오류가 발생했습니다."),
     CATEGORY_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "C-607", "그룹 카테고리의 멤버를 찾을 수 없습니다."),
     CATEGORY_MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "C-608", "해당 멤버는 이미 그룹에 포함되어 있습니다."),
     CATEGORY_MEMBER_ADDITION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-609", "그룹 카테고리에 멤버 추가 중 오류가 발생했습니다."),
     CATEGORY_MEMBER_REMOVAL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-610", "그룹 카테고리에서 멤버 삭제 중 오류가 발생했습니다."),
-    CATEGORY_MEMBER_NOT_FOLLOWED(HttpStatus.BAD_REQUEST, "C-611", "해당 멤버는 호스트가 팔로우한 사용자가 아닙니다."),
+    CATEGORY_MEMBER_NOT_FOLLOWED(HttpStatus.BAD_REQUEST, "C-611", "팔로우하지 않은 사용자는 그룹에 초대할 수 없습니다."),
+
+    INVALID_CATEGORY_NAME(HttpStatus.BAD_REQUEST, "C-620", "유효하지 않은 카테고리 이름입니다."),
+    INVALID_CATEGORY_TYPE(HttpStatus.BAD_REQUEST, "C-621", "유효하지 않은 카테고리 유형입니다."),
+    INVALID_START_DATE(HttpStatus.BAD_REQUEST, "C-622", "유효하지 않은 시작일입니다."),
+    INVALID_CATEGORY_VISIBILITY(HttpStatus.BAD_REQUEST, "C-623", "유효하지 않은 카테고리 공개 범위입니다."),
+//    OWNER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "C-618", "카테고리 관리자는 탈퇴할 수 없습니다."),
+
+    // 초대 관련 에러: -650번대
+    INVITATION_NOT_FOUND(HttpStatus.NOT_FOUND, "C-651", "초대장을 찾을 수 없습니다."),
+    DUPLICATE_INVITATION(HttpStatus.BAD_REQUEST, "C-652", "이미 초대된 사용자입니다."),
+    INVALID_INVITATION_STATUS(HttpStatus.BAD_REQUEST, "C-653", "유효하지 않은 초대 상태입니다."),
+    ALREADY_CATEGORY_MEMBER(HttpStatus.BAD_REQUEST, "C-654", "이미 카테고리 멤버인 사용자입니다."),
 
     ;
 

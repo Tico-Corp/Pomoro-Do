@@ -4,9 +4,9 @@ import com.tico.pomoro_do.domain.user.dto.response.UserProfileResponse;
 import com.tico.pomoro_do.domain.user.entity.Follow;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.repository.FollowRepository;
-import com.tico.pomoro_do.global.exception.ErrorCode;
-import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.common.util.ValidationUtils;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -144,6 +145,13 @@ public class FollowServiceImpl implements FollowService {
     public boolean isFollowing(Long followerId, Long followingId) {
         return followRepository.existsByFollowerIdAndFollowingId(followerId, followingId);
     }
+
+    // 특정 사용자가 팔로우하는 모든 사용자 ID를 한 번에 조회
+    @Override
+    public Set<Long> getFollowingIdsByUser(Long userId) {
+        return followRepository.findFollowingIdsByFollowerId(userId);
+    }
+
 
     /**
      * 팔로우 관계를 조회
