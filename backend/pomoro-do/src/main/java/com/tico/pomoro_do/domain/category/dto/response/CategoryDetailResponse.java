@@ -13,26 +13,26 @@ public class CategoryDetailResponse {
     private Long categoryId;
     private String title;
     private CategoryType type;
-    private String hostNickname;
-    private boolean hostStatus;
+    private boolean ownerStatus; // 관리자인지 여부
+    private String ownerNickname;
     private CategoryVisibility visibility;
     private List<CategoryMemberResponse> members;
-    private int memberCount; // 그룹 인원 수
+    private int totalMembers; // 그룹 전체 멤버 수
     private String color;
 
     @Builder
     public CategoryDetailResponse(Long categoryId, String title, CategoryType type,
-                                  String hostNickname, boolean hostStatus, CategoryVisibility visibility,
-                                  List<CategoryMemberResponse> members, int memberCount, String color
+                                  String ownerNickname, boolean ownerStatus, CategoryVisibility visibility,
+                                  List<CategoryMemberResponse> members, int totalMembers, String color
     ) {
         this.categoryId = categoryId;
         this.title = title;
         this.type = type;
-        this.hostNickname = hostNickname;
-        this.hostStatus = hostStatus;
+        this.ownerNickname = ownerNickname;
+        this.ownerStatus = ownerStatus;
         this.visibility = visibility;
         this.members = members;
-        this.memberCount = memberCount;
+        this.totalMembers = totalMembers;
         this.color = color;
     }
 }

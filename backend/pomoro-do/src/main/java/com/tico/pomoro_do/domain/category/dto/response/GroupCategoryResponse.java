@@ -9,13 +9,11 @@ public class GroupCategoryResponse {
     private Long categoryId;
     private String categoryName;
     private int totalMembers; // 그룹 전체 멤버 수
-    private boolean ownerStatus; // 관리자인지 여부
 
     @Builder
-    public GroupCategoryResponse(Long categoryId, String categoryName, int totalMembers, boolean ownerStatus) {
+    public GroupCategoryResponse(Long categoryId, String categoryName, int totalMembers) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.totalMembers = totalMembers;
-        this.ownerStatus = ownerStatus;
     }
 }

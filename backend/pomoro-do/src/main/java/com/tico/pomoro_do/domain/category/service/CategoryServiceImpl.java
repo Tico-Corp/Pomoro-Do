@@ -249,7 +249,7 @@ public class CategoryServiceImpl implements CategoryService {
         // 카테고리와 멤버 수 정보를 GroupCategoryResponse로 변환하여 반환 (가나다 순 정렬)
         return groupCategories.stream()
                 .sorted(Comparator.comparing(Category::getName)) // 가나다 순 정렬
-                .map(category -> convertToGroupCategory(user, category, categoryMemberCountMap.get(category)))
+                .map(category -> convertToGroupCategory(category, categoryMemberCountMap.get(category)))
                 .collect(Collectors.toList());
     }
 
@@ -359,20 +359,16 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 주어진 카테고리를 GroupCategoryResponse로 변환
      *
-     * @param user 현재 사용자
      * @param category 카테고리 엔티티
      * @param totalMembers 해당 카테고리의 멤버 수
      * @return GroupCategoryResponse 객체
      */
-    private GroupCategoryResponse convertToGroupCategory(User user, Category category, Long totalMembers) {
-        // 현재 사용자가 owner인지 확인
-        boolean ownerStatus = user.equals(category.getOwner());
+    private GroupCategoryResponse convertToGroupCategory(Category category, Long totalMembers) {
 
         return GroupCategoryResponse.builder()
                 .categoryId(category.getId())
                 .categoryName(category.getName())
                 .totalMembers(Math.toIntExact(totalMembers))
-                .ownerStatus(ownerStatus)
                 .build();
     }
 
