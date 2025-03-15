@@ -13,8 +13,10 @@ public interface CategoryMemberRepository extends JpaRepository<CategoryMember, 
     // 활성회되어있는 카테고리 멤버 조회 (user=user, leftDate=null)
     List<CategoryMember> findAllByUserAndLeftDateIsNull(User user);
 
-    // 카테고리 멤버 조회 (category=category, leftDate=null)
+    // 카테고리들의 활성화 되어있는 멤버 조회 (category=category, leftDate=null)
     List<CategoryMember> findAllByCategoryInAndLeftDateIsNull(List<Category> categories);
+
+    List<CategoryMember> findAllByCategoryAndLeftDateIsNull(Category category);
 
     /**
      * 카테고리와 사용자로 멤버십 존재 여부 확인

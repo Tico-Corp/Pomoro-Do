@@ -3,6 +3,8 @@ package com.tico.pomoro_do.domain.user.repository;
 import com.tico.pomoro_do.domain.user.entity.Follow;
 import com.tico.pomoro_do.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,8 +38,9 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     boolean existsByFollowerIdAndFollowingId(Long followerId, Long followeeId);
 
     // 특정 사용자가 팔로우하는 모든 사용자 ID를 한 번에 조회
-    Set<Long> findFollowingIdsByFollowerId(Long followerId);
-
+    // 팔로우한 사용자의 ID (following.id) 만 선택적으로 조회
+    @Query("SELECT f.following.id FROM Follow f WHERE f.follower.id = :followerId")
+    Set<Long> findFollowingIdsByFollowerId(@Param("followerId") Long followerId);
     /**
      * 팔로워와 여러 팔로우 대상으로 팔로우 관계 목록 조회
      *

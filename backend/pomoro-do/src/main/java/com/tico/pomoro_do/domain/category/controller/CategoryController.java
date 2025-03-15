@@ -170,8 +170,8 @@ public class CategoryController {
             @PathVariable Long categoryId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        String email = customUserDetails.getUsername();
-        CategoryDetailResponse categoryDetailResponse = categoryService.getCategoryDetail(categoryId, email);
+        Long userId = customUserDetails.getUserId();
+        CategoryDetailResponse categoryDetailResponse = categoryService.getCategoryDetail(categoryId, userId);
 
         SuccessResponse<CategoryDetailResponse> successResponse = SuccessResponse.<CategoryDetailResponse>builder()
                 .status(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getHttpStatus().value())

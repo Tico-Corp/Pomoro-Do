@@ -14,6 +14,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<Category> findByOwnerAndTypeAndDeletedIsFalse(User owner, CategoryType type);
 
     Optional<Category> findById(Long categoryId);
-
-    List<Category> findByDate(LocalDate date);
 }

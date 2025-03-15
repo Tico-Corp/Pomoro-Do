@@ -11,28 +11,28 @@ import java.util.List;
 public class CategoryDetailResponse {
 
     private Long categoryId;
-    private String title;
+    private String name;
     private CategoryType type;
-    private boolean ownerStatus; // 관리자인지 여부
     private String ownerNickname;
+    private boolean ownerFlag;
+//    private boolean ownershipStatus; // 관리자인지 여부
     private CategoryVisibility visibility;
     private List<CategoryMemberResponse> members;
     private int totalMembers; // 그룹 전체 멤버 수
-    private String color;
+//    private String color;
 
     @Builder
-    public CategoryDetailResponse(Long categoryId, String title, CategoryType type,
-                                  String ownerNickname, boolean ownerStatus, CategoryVisibility visibility,
-                                  List<CategoryMemberResponse> members, int totalMembers, String color
+    public CategoryDetailResponse(Long categoryId, String name, CategoryType type,
+                                  String ownerNickname, boolean ownerFlag, CategoryVisibility visibility,
+                                  List<CategoryMemberResponse> members, int totalMembers
     ) {
         this.categoryId = categoryId;
-        this.title = title;
+        this.name = name;
         this.type = type;
         this.ownerNickname = ownerNickname;
-        this.ownerStatus = ownerStatus;
+        this.ownerFlag = ownerFlag;
         this.visibility = visibility;
         this.members = members;
         this.totalMembers = totalMembers;
-        this.color = color;
     }
 }

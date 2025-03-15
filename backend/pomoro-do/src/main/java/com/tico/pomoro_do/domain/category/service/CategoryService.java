@@ -68,8 +68,14 @@ public interface CategoryService {
      */
     List<CategoryInvitationResponse> getCategoryInvitations(User user, CategoryInvitationStatus status);
 
-    // 카테고리 상세 조회
-    CategoryDetailResponse getCategoryDetail(Long categoryId, String username);
+    /**
+     * 카테고리 상세 조회
+     *
+     * @param categoryId 카테고리 ID
+     * @param userId 조회한 유저 ID
+     * @return CategoryDetailResponse 객체
+     */
+    CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId);
 
     /**
      * 카테고리 멤버를 생성하고 저장

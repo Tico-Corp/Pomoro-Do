@@ -73,11 +73,11 @@ public class ValidationUtils {
      */
     public static void validateCategoryCreateRequest(CategoryCreateRequest request) {
         // 필수 필드 검증
-        if (request.getCategoryName() == null || request.getCategoryName().trim().isEmpty()) {
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
             throw new CustomException(ErrorCode.INVALID_CATEGORY_NAME);
         }
 
-        if (request.getCategoryType() == null) {
+        if (request.getType() == null) {
             throw new CustomException(ErrorCode.INVALID_CATEGORY_TYPE);
         }
 
@@ -85,7 +85,7 @@ public class ValidationUtils {
             throw new CustomException(ErrorCode.INVALID_START_DATE);
         }
 
-        if (request.getCategoryVisibility() == null) {
+        if (request.getVisibility() == null) {
             throw new CustomException(ErrorCode.INVALID_CATEGORY_VISIBILITY);
         }
     }

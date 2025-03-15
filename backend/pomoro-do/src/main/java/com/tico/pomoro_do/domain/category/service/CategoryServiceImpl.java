@@ -108,6 +108,7 @@ public class CategoryServiceImpl implements CategoryService {
             log.debug("초대할 멤버가 없음: 카테고리={}", category.getId());
             return;
         }
+
         // 소유자는 멤버에서 제외 (중복 방지)
         memberIds.remove(owner.getId());
         if (memberIds.isEmpty()) {
@@ -307,50 +308,48 @@ public class CategoryServiceImpl implements CategoryService {
                 ));
     }
 
-    /**
-     * 카테고리 상세 조회
-     *
-     * @param categoryId 카테고리 ID
-     * @param email 조회한 유저 이메일
-     * @return CategoryDetailDTO 객체
-     */
+    // 카테고리 상세 조회
     @Override
-    public CategoryDetailResponse getCategoryDetail(Long categoryId, String email){
+    public CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId){
+        // 카테고리 조회
         Category category = findByCategoryId(categoryId);
+
         List<CategoryMemberResponse> categoryMemberResponseList = new ArrayList<>();
-        // 그룹 멤버 조회
+        int totalMembers = 0;
+
+        // 그룹 카테고리면 멤버 조회
         if (category.getType().equals(CategoryType.GROUP)) {
-            List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByCategoryAndStatus(category, CategoryInvitationStatus.ACCEPTED);
+            // 해당 그룹의 활성화 되어있는 멤버들 가져오기
+            List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByCategoryAndLeftDateIsNull(category);
+            // 카테고리 전체 멤버 수
+            totalMembers = categoryMembers.size();
+
             categoryMemberResponseList = categoryMembers.stream()
-                    .sorted(Comparator.comparing(categoryMember -> categoryMember.getUser().getNickname())) // 닉네임으로 정렬
                     .map(categoryMember -> CategoryMemberResponse.builder()
                             .groupMemberId(categoryMember.getId())
                             .nickname(categoryMember.getUser().getNickname())
                             .profileImageUrl(categoryMember.getUser().getProfileImageUrl())
                             .build())
+                    .sorted(Comparator.comparing(CategoryMemberResponse::getNickname))
                     .collect(Collectors.toList());
         }
 
-        // memberCount 계산
-        int memberCount = categoryMemberResponseList.size();
-
         return CategoryDetailResponse.builder()
                 .categoryId(categoryId)
-                .name(category.getTitle())
-                .ownerNickname(category.getHost().getNickname())
-                .ownerStatus(category.getHost().getEmail().equals(email))
+                .name(category.getName())
+                .ownerNickname(category.getOwner().getNickname())
+                .ownerFlag(category.getOwner().getId().equals(userId))
                 .type(category.getType())
                 .visibility(category.getVisibility())
                 .members(categoryMemberResponseList)
-                .memberCount(memberCount)
-                .color(category.getColor())
+                .totalMembers(totalMembers)
                 .build();
     }
 
     private Category findByCategoryId(Long categoryId) {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(() -> {
-                    log.error("카테고리를 찾을 수 없음: {}", categoryId);
+                    log.error("카테고리를 찾을 수 없습니다. ID: " + categoryId);
                     return new CustomException(ErrorCode.CATEGORY_NOT_FOUND);
                 });
     }
