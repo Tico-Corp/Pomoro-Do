@@ -38,34 +38,39 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMemberRepository categoryMemberRepository;
     private final CategoryInvitationRepository categoryInvitationRepository;
 
-    // 개인/그룹 카테고리 생성 -> 그룹 카테고리이면, 생성자는 관리자 멤버로 생성하고, 초대장 발송
+    /**
+     * 카테고리 생성 및 그룹 카테고리 관련 처리를 수행합니다.
+     * 그룹 카테고리면,
+     * 1.생성자는 관리자 멤버로 생성
+     * 2.초대 멤버들에게 초대장 발송
+     */
+
     @Override
     @Transactional
     public Long processCategoryCreation(Long userId, CategoryCreateRequest request) {
         // 1. 사용자 조회
         User owner = userService.findUserById(userId);
+
         // 2. 개인/그룹 카테고리 생성
         Category category = createCategory(
-                owner,
-                request.getStartDate(),
-                request.getCategoryName(),
-                request.getCategoryType(),
-                request.getCategoryVisibility()
+                owner, request.getStartDate(), request.getName(), request.getType(), request.getVisibility()
         );
 
-        // 그룹 카테고리 유형에 따른 추가 로직 처리
-        if (CategoryType.GROUP.equals(request.getCategoryType())) {
+        // 그룹 카테고리인 경우 멤버 처리
+        if (CategoryType.GROUP.equals(request.getType())) {
             // 그룹 멤버 및 초대장 처리 - N+1 문제 개선 버전
-            processGroupCategoryMembers(category, owner, request.getGroupMemberIds());
+            processGroupCategoryMembers(category, owner, request.getMemberIds());
         }
 
-        log.info("카테고리 생성 완료: id={}, type={}, name={}, owner={}",
+        log.info("카테고리 생성 완료: id={}, 유형={}, 이름={}, 소유자={}",
                 category.getId(), category.getType(), category.getName(), owner.getId());
 
         return category.getId();
     }
 
-    // 새로운 카테고리 생성
+    /**
+     * 카테고리 엔티티를 생성하고 저장합니다.
+     */
     @Override
     public Category createCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility) {
         // 카테고리 빌더로 객체 생성
@@ -82,97 +87,105 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     /**
-     * 그룹 카테고리의 멤버들을 처리하는 최적화된 메서드
-     * 1. 소유자(생성자)를 그룹 멤버로 추가
+     * 그룹 카테고리 멤버 처리 및 초대장 발송
+     * 1. 소유자(생성자)를 그룹 관리자 멤버로 추가
      * 2. 유효한 멤버 ID 필터링을 위해 팔로우 관계를 한 번에 조회
      * 3. 초대할 사용자 정보를 한 번에 조회
      * 4. 초대장 일괄 생성 및 저장
      *
-     * @param category 생성된 카테고리 객체
+     * @param category 생성된 카테고리
      * @param owner 카테고리 소유자
-     * @param memberIds 그룹 카테고리에 초대할 멤버들의 ID 집합
+     * @param memberIds 초대할 멤버 ID 집합
      */
     private void processGroupCategoryMembers(Category category, User owner, Set<Long> memberIds) {
-        // 1. 소유자(그룹장)를 그룹 멤버로 추가
+        // 1. 소유자를 카테고리 멤버로 추가
         createCategoryMember(category, owner, CategoryMemberRole.OWNER);
-        log.info("그룹 소유자 등록 완료: categoryId={}, ownerId={}", category.getId(), owner.getId());
+        log.debug("그룹 소유자 등록: 카테고리={}, 소유자={}", category.getId(), owner.getId());
 
-        // 2. 초대 멤버 리스트에서 소유자 ID 제거 (중복 방지)
-        memberIds.remove(owner.getId());
-
+        // 2. 멤버가 없으면 처리 종료
         // 그룹 카테고리를 생성할 때 추가 안 할 수 도 있음
+        if (memberIds == null || memberIds.isEmpty()) {
+            log.debug("초대할 멤버가 없음: 카테고리={}", category.getId());
+            return;
+        }
+        // 소유자는 멤버에서 제외 (중복 방지)
+        memberIds.remove(owner.getId());
         if (memberIds.isEmpty()) {
-            log.info("초대할 멤버가 없습니다.");
             return;
         }
 
-        // 3. 팔로우 관계를 한 번에 조회 (N+1 문제 해결)
+        // 3. 팔로우 관계 일괄 조회 (N+1 문제 방지)
         Set<Long> followingIds = followService.getFollowingIdsByUser(owner.getId());
 
         // 4. 팔로우 중인 사용자만 필터링
-        Set<Long> validMemberIds = memberIds.stream()
+        Set<Long> followedMemberIds = memberIds.stream()
                 .filter(followingIds::contains)
                 .collect(Collectors.toSet());
 
-        if (validMemberIds.isEmpty()) {
-            log.warn("팔로우 중인 사용자가 없어 초대할 수 없습니다.");
+        // 팔로우 중인 사용자 없으면 처리 종료
+        if (followedMemberIds.isEmpty()) {
+            log.warn("초대 가능한 팔로우 사용자 없음: 카테고리={}", category.getId());
             return;
         }
 
-        // 5. 유효한 사용자 정보를 한 번에 조회 (N+1 문제 해결)
-        Map<Long, User> userMap = userService.findUsersByIds(validMemberIds);
+        // 5. 유효한 사용자 정보 일괄 조회 (N+1 문제 방지)
+        Map<Long, User> inviteeMap = userService.findUsersByIds(followedMemberIds);
 
         // 6. 초대장 일괄 생성
-        List<CategoryInvitation> invitations = new ArrayList<>();
-        for (Long memberId : validMemberIds) {
-            User invitee = userMap.get(memberId);
-            if (invitee == null) {
-                log.warn("사용자 정보를 찾을 수 없음: memberId={}", memberId);
-                continue;
-            }
-
-            // 초대장 생성
-            CategoryInvitation invitation = CategoryInvitation.builder()
-                    .category(category)
-                    .inviter(owner)
-                    .invitee(invitee)
-                    .build();
-
-            invitations.add(invitation);
-        }
+        List<CategoryInvitation> invitations = createCategoryInvitations(category, owner, followedMemberIds, inviteeMap);
 
         // 7. 초대장 일괄 저장 (단일 쿼리로 처리)
         if (!invitations.isEmpty()) {
             categoryInvitationRepository.saveAll(invitations);
-            log.info("그룹 멤버 초대 완료: categoryId={}, invitationCount={}",
+            log.info("그룹 멤버 초대 완료: 카테고리={}, 초대 수={}",
                     category.getId(), invitations.size());
         }
     }
 
-    // 카테고리 멤버를 생성하고 저장
+    /**
+     * 카테고리 멤버를 추가합니다
+     */
     @Override
-    public void createCategoryMember(Category category, User member, CategoryMemberRole role) {
-        // 이미 등록된 멤버인지 확인 (중복 등록 방지)
-        if (categoryMemberRepository.existsByCategoryAndUser(category, member)) {
-            log.warn("이미 카테고리에 등록된 멤버: categoryId={}, userId={}", category.getId(), member.getId());
+    public void createCategoryMember(Category category, User user, CategoryMemberRole role) {
+        // 중복 멤버 확인
+        if (categoryMemberRepository.existsByCategoryAndUser(category, user)) {
+            log.warn("이미 등록된 카테고리 멤버: 카테고리={}, 사용자={}", category.getId(), user.getId());
             return;
         }
 
-        // 카테고리 멤버 객체 생성
-        CategoryMember categoryMember = CategoryMember.builder()
+        // 카테고리 멤버 생성 및 저장
+        CategoryMember member = CategoryMember.builder()
                 .category(category)
-                .user(member)
+                .user(user)
                 .role(role)
                 .build();
 
         // 저장
-        categoryMemberRepository.save(categoryMember);
+        categoryMemberRepository.save(member);
+
         log.debug("카테고리 멤버 등록 완료: categoryId={}, userId={}, role={}",
                 category.getId(), member.getId(), role);
     }
 
     /**
-     * 그룹 카테고리 초대장을 생성하고 저장하는 메서드
+     * 초대장 목록을 생성합니다
+     */
+    private List<CategoryInvitation> createCategoryInvitations(
+            Category category, User owner, Set<Long> memberIds, Map<Long, User> userMap) {
+
+        return memberIds.stream()
+                .map(userMap::get)
+                .filter(Objects::nonNull)
+                .map(invitee -> CategoryInvitation.builder()
+                        .category(category)
+                        .inviter(owner)
+                        .invitee(invitee)
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 초대장을 생성합니다.
      *
      * @param category 초대하는 카테고리
      * @param inviter 초대하는 사용자

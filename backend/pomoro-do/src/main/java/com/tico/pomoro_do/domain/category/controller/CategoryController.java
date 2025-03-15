@@ -36,32 +36,37 @@ public class CategoryController {
     /**
      * 카테고리 생성 API
      *
-     * @param customUserDetails 현재 인증된 사용자의 세부 정보
-     * @param request 카테고리 생성 요청 DTO (이름, 유형, 공개 설정, 그룹 멤버 등 포함)
-     * @return 카테고리 생성 성공 메시지 및 상태 코드
+     * @param userDetails 현재 인증된 사용자의 세부 정보
+     * @param request 카테고리 생성 요청 DTO
+     * @return 생성된 카테고리 ID
      *
      */
     @Operation(
             summary = "카테고리 생성",
-            description = "현재 인증된 사용자가 카테고리를 생성합니다. <br>" +
-                    "카테고리는 개인 카테고리 또는 그룹 카테고리일 수 있습니다. 카테고리 유형은 `PERSONAL` (개인) 또는 `GROUP` (그룹)입니다. <br>" +
-                    "그룹 카테고리를 생성하는 경우, 요청 본문에 그룹 멤버를 지정할 수 있습니다. <br>" +
-                    "카테고리의 공개 설정은 `PUBLIC` (전체 공개), `FOLLOWERS` (팔로워만 공개), `PRIVATE` (비공개), `GROUP` (그룹 공개) 중 하나로 설정할 수 있습니다. <br>" +
-                    "성공적으로 카테고리가 생성되면 HTTP 상태 코드 201(Created)과 함께 성공 메시지가 반환됩니다."
+            description = "현재 인증된 사용자의 카테고리를 생성합니다. <br><br>" +
+                    "<b>카테고리 유형</b>: <br>" +
+                    "- `PERSONAL`: 개인 카테고리 <br>" +
+                    "- `GROUP`: 그룹 카테고리 (멤버 초대 가능) <br><br>" +
+                    "<b>공개 설정</b>: <br>" +
+                    "- `PUBLIC`: 전체 공개 <br>" +
+                    "- `FOLLOWERS`: 팔로워에게만 공개 <br>" +
+                    "- `PRIVATE`: 비공개 <br>" +
+                    "- `GROUP`: 그룹 멤버에게만 공개 <br><br>" +
+                    "그룹 카테고리 생성 시, 요청자는 자동으로 소유자(OWNER) 권한으로 등록되며 " +
+                    "요청에 포함된 멤버 ID 목록으로 초대장이 발송됩니다."
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "카테고리가 성공적으로 생성됨"),
+            @ApiResponse(responseCode = "201", description = "카테고리 생성 성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 - 요청 데이터가 유효하지 않거나 필수 필드가 누락됨"),
             @ApiResponse(responseCode = "401", description = "인증 실패 - 인증된 사용자가 없음"),
             @ApiResponse(responseCode = "500", description = "서버 오류 - 서버에서 예기치 않은 오류 발생")
     })
     @PostMapping
     public ResponseEntity<SuccessResponse<Long>> createCategory(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody CategoryCreateRequest request
     ){
-        Long userId = customUserDetails.getUserId();
-        Long categoryId = categoryService.processCategoryCreation(userId, request);
+        Long categoryId = categoryService.processCategoryCreation(userDetails.getUserId(), request);
 
         SuccessResponse<Long> successResponse = SuccessResponse.<Long>builder()
                 .status(SuccessCode.CATEGORY_CREATION_SUCCESS.getHttpStatus().value())
