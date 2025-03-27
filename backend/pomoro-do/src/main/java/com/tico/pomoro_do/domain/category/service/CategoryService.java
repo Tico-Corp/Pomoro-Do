@@ -36,37 +36,21 @@ public interface CategoryService {
     Category createCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility);
 
     /**
-     * 인증된 사용자를 기반으로 사용자의 개인, 그룹, 초대받은 카테고리를 조회
-     *
+     * 유형별 카테고리 조회
      * @param userId 사용자 ID
-     * @return 사용자에 해당하는 개인 카테고리, 그룹 카테고리, 초대받은 그룹 카테고리를 포함하는 CategoryDTO 객체
+     * @param type 카테고리 유형 (personal, group, null/기타값은 모든 카테고리)
+     * @return 필터링된 카테고리 정보
      */
-    UserCategoryResponse getCategories(Long userId);
-
-    /**
-     * 인증된 사용자의 활성화 개인 카테고리 가나다 순으로 조회
-     *
-     * @param user 사용자
-     * @return 사용자의 개인 카테고리를 포함하는 PersonalCategoryResponse 리스트
-     */
-    List<PersonalCategoryResponse> getPersonalCategories(User user);
-
-    /**
-     * 인증된 사용가 속한 그룹 카테고리 가나다 순으로 조회
-     *
-     * @param user 사용자
-     * @return 사용자가 속한 그룹 카테고리를 포함하는 GroupCategoryResponse 리스트
-     */
-    List<GroupCategoryResponse> getGroupCategories(User user);
+    UserCategoryResponse getCategories(Long userId, CategoryType type);
 
     /**
      * 사용자의 카테고리 초대장을 최신순으로 조회
      *
-     * @param user 사용자
+     * @param userId 사용자 ID
      * @param status 초대 상태
      * @return 사용자가 초대받은 그룹 카테고리를 포함하는 CategoryInvitationResponse 리스트
      */
-    List<CategoryInvitationResponse> getCategoryInvitations(User user, CategoryInvitationStatus status);
+    List<CategoryInvitationResponse> getCategoryInvitationsByStatus(Long userId, CategoryInvitationStatus status);
 
     /**
      * 카테고리 상세 조회

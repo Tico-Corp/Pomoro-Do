@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryInvitationRepository categoryInvitationRepository;
 
     /**
-     * 카테고리 생성 및 그룹 카테고리 관련 처리를 수행합니다.
+     * 카테고리 생성 및 그룹 카테고리 관련 멤버 처리 - 공개 API
      * 그룹 카테고리면,
      * 1.생성자는 관리자 멤버로 생성
      * 2.초대 멤버들에게 초대장 발송
@@ -220,10 +220,16 @@ public class CategoryServiceImpl implements CategoryService {
 
     // 일반/그룹/초대받은 카테고리 조회
     @Override
-    public UserCategoryResponse getCategories(Long userId) {
+    public UserCategoryResponse getCategories(Long userId, CategoryType type) {
         // 사용자 조회
         User user = userService.findUserById(userId);
 
+        // 타입 파라미터에 따라 적절한 카테고리 조회
+        return type == null ? getAllCategories(user) : getCategoriesByType(user, type);
+    }
+
+    // 모든 종류의 카테고리 목록 조회 (개인/그룹/초대받은 카테고리)
+    private UserCategoryResponse getAllCategories(User user) {
         // 개인 카테고리
         List<PersonalCategoryResponse> personalCategories = getPersonalCategories(user);
         // 그룹 카테고리
@@ -238,43 +244,67 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
-    // 사용자의 일반 카테고리 가나다 순으로 조회
-    @Override
-    public List<PersonalCategoryResponse> getPersonalCategories(User user) {
+    // 유형별 카테고리 목록 조회 (개인/그룹 카테고리)
+    private UserCategoryResponse getCategoriesByType(User user, CategoryType type) {
+
+        List<PersonalCategoryResponse> personalCategories = Collections.emptyList();
+        List<GroupCategoryResponse> groupCategories = Collections.emptyList();
+
+        // 명시적으로 타입 체크
+        if (type == CategoryType.PERSONAL) {
+            personalCategories = getPersonalCategories(user);
+        } else if (type == CategoryType.GROUP) {
+            groupCategories = getGroupCategories(user);
+        } else {
+            throw new CustomException(ErrorCode.INVALID_CATEGORY_TYPE);
+        }
+
+        // 특정 타입만 조회할 때는 초대장 정보는 포함하지 않음
+        List<CategoryInvitationResponse> emptyInvitations = Collections.emptyList();
+
+        return UserCategoryResponse.builder()
+                .personalCategories(personalCategories)
+                .groupCategories(groupCategories)
+                .categoryInvitations(emptyInvitations)
+                .build();
+    }
+
+
+    /**
+     *  사용자의 개인 카테고리 가나다 순으로 조회
+     *
+     * @param user 사용자
+     * @return 사용자의 개인 카테고리를 포함하는 PersonalCategoryResponse 리스트
+     */
+    private List<PersonalCategoryResponse> getPersonalCategories(User user) {
         // 활성화되어있는 개인 카테고리 조회 (owner=user, type=PERSONAL, isDeleted=false)
         List<Category> personalCategories = categoryRepository.findByOwnerAndTypeAndDeletedIsFalse(user, CategoryType.PERSONAL);
 
-        // 개인 카테고리를 가나다 순으로 정렬 후 DTO로 변환
+        // 가나다 순으로 정렬 후 DTO로 변환
         return personalCategories.stream()
                 .sorted(Comparator.comparing(Category::getName)) // 이름(name) 기준으로 가나다 순 정렬
                 .map(this::convertToPersonalCategory)
                 .collect(Collectors.toList());
     }
 
-    // 사용가 속한 그룹 카테고리 가나다 순으로 조회
-    @Override
-    public List<GroupCategoryResponse> getGroupCategories(User user) {
-        // 활성화되어있는 그룹 카테고리 조회
+    /**
+     * 사용자의 그룹 카테고리 가나다 순으로 조회
+     *
+     * @param user 사용자 ID
+     * @return 사용자가 속한 그룹 카테고리를 포함하는 GroupCategoryResponse 리스트
+     */
+    private List<GroupCategoryResponse> getGroupCategories(User user) {
+        // 사용자가 속한 그룹 카테고리 조회
         List<Category> groupCategories = findUserGroupCategories(user);
 
         // 멤버 수 정보를 미리 조회
+        // 카테고리별 멤버 수 조회 (한 번의 쿼리로 처리)
         Map<Category, Long> categoryMemberCountMap = calculateMemberCounts(groupCategories);
 
         // 카테고리와 멤버 수 정보를 GroupCategoryResponse로 변환하여 반환 (가나다 순 정렬)
         return groupCategories.stream()
                 .sorted(Comparator.comparing(Category::getName)) // 가나다 순 정렬
                 .map(category -> convertToGroupCategory(category, categoryMemberCountMap.get(category)))
-                .collect(Collectors.toList());
-    }
-
-    // 사용자가 받은 카테고리 초대장 조회
-    @Override
-    public List<CategoryInvitationResponse> getCategoryInvitations(User user, CategoryInvitationStatus status) {
-        // 초대 상태에 따른 초대장 최신순으로 조회 (invitee=user, CategoryInvitationStatus=PENDING)
-        List<CategoryInvitation> CategoryInvitations = categoryInvitationRepository.findAllByInviteeAndStatusOrderByCreatedAtDesc(user, status);
-
-        return CategoryInvitations.stream()
-                .map(this::convertToCategoryInvitation)
                 .collect(Collectors.toList());
     }
 
@@ -306,6 +336,24 @@ public class CategoryServiceImpl implements CategoryService {
                         CategoryMember::getCategory,  // 카테고리별로 그룹화
                         Collectors.counting()      // 각 카테고리의 멤버 수 계산
                 ));
+    }
+
+    @Override
+    public List<CategoryInvitationResponse> getCategoryInvitationsByStatus(Long userId, CategoryInvitationStatus status) {
+        // 사용자 조회
+        User user = userService.findUserById(userId);
+
+        return getCategoryInvitations(user, status);
+    }
+
+    // 초대장 조회 - 상태별, 최신순
+    private List<CategoryInvitationResponse> getCategoryInvitations(User user, CategoryInvitationStatus status) {
+        // 초대 상태에 따른 초대장 최신순으로 조회 (ex, invitee=user, CategoryInvitationStatus=PENDING)
+        List<CategoryInvitation> categoryInvitations = categoryInvitationRepository.findAllByInviteeAndStatusOrderByCreatedAtDesc(user, status);
+
+        return categoryInvitations.stream()
+                .map(this::convertToCategoryInvitation)
+                .collect(Collectors.toList());
     }
 
     // 카테고리 상세 조회
