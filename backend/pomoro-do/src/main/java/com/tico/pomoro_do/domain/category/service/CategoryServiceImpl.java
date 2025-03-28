@@ -291,20 +291,23 @@ public class CategoryServiceImpl implements CategoryService {
      * 사용자의 그룹 카테고리 가나다 순으로 조회
      *
      * @param user 사용자 ID
-     * @return 사용자가 속한 그룹 카테고리를 포함하는 GroupCategoryResponse 리스트
+     * @return 그룹 카테고리 응답 리스트
      */
     private List<GroupCategoryResponse> getGroupCategories(User user) {
         // 사용자가 속한 그룹 카테고리 조회
         List<Category> groupCategories = findUserGroupCategories(user);
 
         // 멤버 수 정보를 미리 조회
-        // 카테고리별 멤버 수 조회 (한 번의 쿼리로 처리)
-        Map<Category, Long> categoryMemberCountMap = calculateMemberCounts(groupCategories);
+        // 카테고리 ID 기반 멤버 수 맵 조회 (한 번의 쿼리로 처리)
+        Map<Long, Long> categoryMemberCountMap = calculateMemberCounts(groupCategories);
 
         // 카테고리와 멤버 수 정보를 GroupCategoryResponse로 변환하여 반환 (가나다 순 정렬)
         return groupCategories.stream()
                 .sorted(Comparator.comparing(Category::getName)) // 가나다 순 정렬
-                .map(category -> convertToGroupCategory(category, categoryMemberCountMap.get(category)))
+                .map(category -> convertToGroupCategory(
+                        category,
+                        categoryMemberCountMap.getOrDefault(category.getId(), 0L))
+                )
                 .collect(Collectors.toList());
     }
 
@@ -312,7 +315,7 @@ public class CategoryServiceImpl implements CategoryService {
      * 사용자가 속한 그룹 카테고리 조회
      *
      * @param user 사용자
-     * @return 사용자가 속한 그룹 카테고리 리스트
+     * @return 그룹 카테고리 목록
      */
     private List<Category> findUserGroupCategories(User user) {
         // 카테고리 멤버로 활성회되어있는 그룹 카테고리 조회 (user=user, leftDate=null)
@@ -325,15 +328,16 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 그룹 카테고리들 멤버 수 조회
      *
-     * @param groupCategories 그룹 카테고리 리스트
-     * @return 각 카테고리별 멤버 수가 포함된 맵
+     * @param groupCategories 그룹 카테고리 목록
+     * @return 카테고리 ID별 멤버 수 맵
      */
-    private Map<Category, Long> calculateMemberCounts(List<Category> groupCategories) {
+    private Map<Long, Long> calculateMemberCounts(List<Category> groupCategories) {
         // 모든 카테고리의 멤버 수를 한 번에 가져와서 Map으로 변환 (List<Category>=groupCategories, leftDate=null)
-        List<CategoryMember> activeCategoryMembers = categoryMemberRepository.findAllByCategoryInAndLeftDateIsNull(groupCategories);
+        List<CategoryMember> activeCategoryMembers =
+                categoryMemberRepository.findAllByCategoryInAndLeftDateIsNull(groupCategories);
         return activeCategoryMembers.stream()
                 .collect(Collectors.groupingBy(
-                        CategoryMember::getCategory,  // 카테고리별로 그룹화
+                        categoryMember -> categoryMember.getCategory().getId(),  // 카테고리 ID 기준 그룹화
                         Collectors.counting()      // 각 카테고리의 멤버 수 계산
                 ));
     }
