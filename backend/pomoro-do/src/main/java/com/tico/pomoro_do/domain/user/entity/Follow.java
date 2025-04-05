@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.domain.user.entity;
 
-import com.tico.pomoro_do.global.entity.BaseTimeEntity;
+import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

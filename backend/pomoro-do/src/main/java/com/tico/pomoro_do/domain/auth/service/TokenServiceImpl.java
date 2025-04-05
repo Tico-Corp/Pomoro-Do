@@ -3,10 +3,10 @@ package com.tico.pomoro_do.domain.auth.service;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.auth.entity.RefreshToken;
 import com.tico.pomoro_do.domain.auth.repository.RefreshTokenRepository;
-import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
-import com.tico.pomoro_do.global.code.ErrorCode;
-import com.tico.pomoro_do.global.code.SuccessCode;
-import com.tico.pomoro_do.global.enums.TokenType;
+import com.tico.pomoro_do.global.security.JwtTokenProvider;
+import com.tico.pomoro_do.global.exception.ErrorCode;
+import com.tico.pomoro_do.global.response.SuccessCode;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class TokenServiceImpl implements TokenService {
 
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Value("${jwt.access-expiration}")
@@ -36,9 +36,9 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public TokenResponse createAuthTokens(Long userId, String email, String role, String deviceId) {
         // 액세스 토큰 생성
-        String accessToken = jwtUtil.createJwt(TokenType.ACCESS.name(), userId, email, role, accessExpiration); // 60분
+        String accessToken = jwtTokenProvider.createJwt(TokenType.ACCESS.name(), userId, email, role, accessExpiration); // 60분
         // 리프레시 토큰 생성
-        String refreshToken = jwtUtil.createJwt(TokenType.REFRESH.name(), userId, email, role, refreshExpiration); // 24시간
+        String refreshToken = jwtTokenProvider.createJwt(TokenType.REFRESH.name(), userId, email, role, refreshExpiration); // 24시간
 
         // DB에서 deviceId에 해당하는 기존 리프레시 토큰을 삭제
         deleteRefreshTokenByDeviceId(deviceId);
@@ -126,9 +126,9 @@ public class TokenServiceImpl implements TokenService {
     // 토큰 검증만 수행
     private String extractAndValidateToken(String tokenHeader, TokenType tokenType) {
         // 토큰 추출
-        String token = jwtUtil.extractToken(tokenHeader, tokenType);
+        String token = jwtTokenProvider.extractToken(tokenHeader, tokenType);
         // 토큰 유효성 검증
-        jwtUtil.validateToken(token, tokenType);
+        jwtTokenProvider.validateToken(token, tokenType);
         // 유효한 토큰 반환
         return token;
     }

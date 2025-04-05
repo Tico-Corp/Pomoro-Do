@@ -1,43 +1,72 @@
 package com.tico.pomoro_do.domain.category.service;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.entity.GroupMember;
+import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
+import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.enums.CategoryType;
-import com.tico.pomoro_do.global.enums.CategoryVisibility;
-import com.tico.pomoro_do.global.enums.GroupInvitationStatus;
-import com.tico.pomoro_do.global.enums.GroupRole;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface CategoryService {
 
-    // 일반/그룹 생성할 때 그룹 멤버까지 생성
-    void createCategory(String hostName, CategoryCreationDTO categoryCreationDTO);
+    /**
+     * 개인/그룹 카테고리 생성
+     *
+     * @param userId 현재 인증된 사용자의 ID
+     * @param request 카테고리 생성 요청 DTO
+     * @return 생성된 카테고리의 ID
+     */
+    Long processCategoryCreation(Long userId, CategoryCreateRequest request);
 
-    // 카테고리만 생성
-    Category createNewCategory(User host, LocalDate date, String title, String color, CategoryVisibility visibility, CategoryType type);
+    /**
+     * 새로운 카테고리 객체를 생성하고 저장
+     *
+     * @param owner 카테고리 소유자
+     * @param startDate 카테고리 생성 날짜
+     * @param name 카테고리 이름
+     * @param type 카테고리 유형 (개인/그룹)
+     * @param visibility 카테고리 공개 설정
+     * @return 저장된 카테고리 객체
+     */
+    Category createCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility);
 
-    // 일반/그룹/초대받은 카테고리 조회
-    CategoryDTO getCategories(String username);
-    // 사용자가 호스트로 있는 일반 카테고리 조회
-    List<GeneralCategoryDTO> getGeneralCategories(User host);
-    // 사용자가 이미 승낙한 그룹 카테고리 조회
-    List<GroupCategoryDTO> getGroupCategories(User user);
-    // 초대받은 그룹 카테고리를 최신순으로 가져옴
-    List<InvitedGroupDTO> getInvitedGroupCategories(User user);
+    /**
+     * 유형별 카테고리 조회
+     * @param userId 사용자 ID
+     * @param type 카테고리 유형 (personal, group, null/기타값은 모든 카테고리)
+     * @return 필터링된 카테고리 정보
+     */
+    UserCategoryResponse getCategories(Long userId, CategoryType type);
 
-    // 카테고리 상세 조회
-    CategoryDetailDTO getCategoryDetail(Long categoryId, String username);
+    /**
+     * 사용자의 카테고리 초대장을 최신순으로 조회
+     *
+     * @param userId 사용자 ID
+     * @param status 초대 상태
+     * @return 사용자가 초대받은 그룹 카테고리를 포함하는 CategoryInvitationResponse 리스트
+     */
+    List<CategoryInvitationResponse> getCategoryInvitationsByStatus(Long userId, CategoryInvitationStatus status);
 
-    // 해당 날짜에 속한 모든 카테고리 조회
-    List<Category> findByDate(LocalDate targetDate);
+    /**
+     * 카테고리 상세 조회
+     *
+     * @param categoryId 카테고리 ID
+     * @param userId 조회한 유저 ID
+     * @return CategoryDetailResponse 객체
+     */
+    CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId);
 
-    // 그룹멤버 생성
-    void createGroupMember(Category category, User member, GroupInvitationStatus status, GroupRole role);
-    // 그룹멤버 조회
-    List<GroupMember> findAcceptedMembersByCategory(Category category);
+    /**
+     * 카테고리 멤버를 생성하고 저장
+     *
+     * @param category 생성된 카테고리
+     * @param member 그룹 멤버 사용자
+     * @param role 그룹 내 멤버 역할 (OWNER, MEMBER)
+     */
+    void createCategoryMember(Category category, User member, CategoryMemberRole role);
 }

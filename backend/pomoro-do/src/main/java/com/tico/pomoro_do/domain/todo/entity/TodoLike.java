@@ -1,6 +1,6 @@
 package com.tico.pomoro_do.domain.todo.entity;
 
-import com.tico.pomoro_do.global.entity.BaseTimeEntity;
+import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 
 @Entity

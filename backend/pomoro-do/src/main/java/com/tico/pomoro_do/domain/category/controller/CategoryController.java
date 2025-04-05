@@ -1,13 +1,15 @@
 package com.tico.pomoro_do.domain.category.controller;
 
-import com.tico.pomoro_do.domain.category.dto.request.CategoryCreationDTO;
-import com.tico.pomoro_do.domain.category.dto.response.*;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
+import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
+import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
-import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.domain.user.service.UserService;
-import com.tico.pomoro_do.domain.auth.security.CustomUserDetails;
-import com.tico.pomoro_do.global.code.SuccessCode;
+import com.tico.pomoro_do.global.response.SuccessCode;
 import com.tico.pomoro_do.global.response.SuccessResponse;
+import com.tico.pomoro_do.global.security.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "Category: 카테고리", description = "투두리스트의 카테고리 관련 API")
+@Tag(name = "Category: 카테고리", description = "카테고리 관련 API")
 @RestController
 @RequestMapping("/api/v1/categories")
 @RequiredArgsConstructor
@@ -30,151 +32,178 @@ import java.util.List;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final UserService userService;
 
     /**
      * 카테고리 생성 API
      *
-     * @param customUserDetails 현재 인증된 사용자의 세부 정보
-     * @param request 카테고리 생성 요청 DTO (제목, 유형, 공개 설정, 색상, 그룹 멤버 등 포함)
-     * @return 카테고리 생성 성공 메시지 및 상태 코드
-     *
+     * @param userDetails 인증된 사용자 정보 (CustomUserDetails)
+     * @param request 카테고리 생성 요청 DTO
+     * @return 생성된 카테고리 ID
      */
     @Operation(
             summary = "카테고리 생성",
-            description = "현재 인증된 사용자가 카테고리를 생성합니다. <br>" +
-                    "카테고리는 일반 카테고리 또는 그룹 카테고리일 수 있습니다. 카테고리 유형은 `GENERAL` (일반) 또는 `GROUP` (그룹)입니다. <br>" +
-                    "그룹 카테고리를 생성하는 경우, 요청 본문에 그룹 멤버를 지정할 수 있습니다. <br>" +
-                    "카테고리의 공개 설정은 `PUBLIC` (전체 공개), `FOLLOWERS` (팔로워만 공개), `PRIVATE` (비공개), `GROUP` (그룹 공개) 중 하나로 설정할 수 있습니다. <br>" +
-                    "성공적으로 카테고리가 생성되면 HTTP 상태 코드 201(Created)과 함께 성공 메시지가 반환됩니다."
+            description = """
+                    사용자의 카테고리를 생성합니다.
+            
+                    ## 카테고리 유형
+                    - `PERSONAL`: 개인 카테고리
+                    - `GROUP`: 그룹 카테고리
+            
+                    ## 공개 범위
+                    - `PUBLIC`: 전체 공개
+                    - `FOLLOWERS`: 팔로워에게만 공개
+                    - `PRIVATE`: 비공개
+                    - `GROUP`: 그룹 멤버에게만 공개
+            
+                    ### 그룹 카테고리 특이사항
+                    - 요청자는 자동으로 `OWNER` 권한 부여
+                    - 지정된 멤버에게 초대장 발송
+                    """
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "카테고리가 성공적으로 생성됨"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청 - 요청 데이터가 유효하지 않거나 필수 필드가 누락됨"),
-            @ApiResponse(responseCode = "401", description = "인증 실패 - 인증된 사용자가 없음"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 - 서버에서 예기치 않은 오류 발생")
+            @ApiResponse(responseCode = "201", description = "카테고리 생성 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 - 입력 데이터 유효성 검증 실패"),
+            @ApiResponse(responseCode = "401", description = "인증 오류 - 로그인 필요"),
+            @ApiResponse(responseCode = "403", description = "권한 없음 - 카테고리 생성 권한 부족"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @PostMapping
-    public ResponseEntity<SuccessResponse<String>> createCategory(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @Valid @RequestBody CategoryCreationDTO request
+    public ResponseEntity<SuccessResponse<Long>> createCategory(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody CategoryCreateRequest request
     ){
-        String email = customUserDetails.getUsername();
-        categoryService.createCategory(email, request);
+        Long categoryId = categoryService.processCategoryCreation(userDetails.getUserId(), request);
 
-        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+        SuccessResponse<Long> successResponse = SuccessResponse.<Long>builder()
                 .status(SuccessCode.CATEGORY_CREATION_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_CREATION_SUCCESS.getMessage())
-                .data(SuccessCode.CATEGORY_CREATION_SUCCESS.name())
+                .data(categoryId)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
-
     }
 
-    @Operation(
-            summary = "일반 / 그룹 / 초대받은 그룹 카테고리 조회",
-            description = "현재 인증된 사용자의 오늘 날짜에 해당하는 일반 카테고리와 그룹 카테고리를 제목순으로 정렬하여 조회하고," +
-                    " 아직 응답하지 않은 초대받은 그룹 카테고리를 최신순으로 조회합니다. <br>" +
-                    "일반 / 그룹 / 초대받은 그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
-    )
-    @GetMapping
-    public ResponseEntity<SuccessResponse<CategoryDTO>> getCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-    ) {
-        String email = customUserDetails.getUsername();
-        CategoryDTO categoryDTO = categoryService.getCategories(email);
 
-        SuccessResponse<CategoryDTO> successResponse = SuccessResponse.<CategoryDTO>builder()
+    /**
+     * 카테고리 목록 조회 API
+     *
+     * @param userDetails 인증된 사용자 정보 (CustomUserDetails)
+     * @param type 조회할 카테고리 유형 (선택)
+     * @return 사용자 카테고리 목록
+     */
+    @Operation(
+            summary = "카테고리 목록 조회",
+            description = """
+                    사용자의 카테고리 목록을 조회합니다.
+            
+                    ## 조회 유형
+                    - 미입력(생략): 전체 카테고리 조회 (기본값)
+                    - `PERSONAL`: 개인 카테고리만 조회
+                    - `GROUP`: 그룹 카테고리만 조회
+            
+                    ## 정렬 기준
+                    - 개인/그룹 카테고리: 이름순 정렬
+                    - 초대받은 카테고리: 최근 초대순 정렬
+                    """
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "카테고리 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 오류 - 로그인 필요"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @GetMapping
+    public ResponseEntity<SuccessResponse<UserCategoryResponse>> getCategories(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(value = "type", required = false) CategoryType type
+    ) {
+        UserCategoryResponse response = categoryService.getCategories(userDetails.getUserId(), type);
+
+        SuccessResponse<UserCategoryResponse> successResponse = SuccessResponse.<UserCategoryResponse>builder()
                 .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_FETCH_SUCCESS.getMessage())
-                .data(categoryDTO)
+                .data(response)
                 .build();
         return ResponseEntity.ok(successResponse);
     }
 
+    /**
+     * 카테고리 초대장 조회 API
+     *
+     * @param userDetails 인증된 사용자 정보 (CustomUserDetails)
+     * @param status 초대장 상태 (기본값: PENDING)
+     * @return 초대장 목록
+     */
     @Operation(
-            summary = "오늘의 일반 카테고리 조회",
-            description = "현재 인증된 사용자의 오늘 날짜에 해당하는 일반 카테고리를 제목순으로 정렬하여 조회합니다. <br>" +
-                    "일반 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
+            summary = "카테고리 초대장 조회",
+            description = """
+                    사용자가 받은 그룹 카테고리 초대장을 상태별로 조회합니다.
+                            
+                    ## 초대장 상태
+                    - `PENDING`: 대기 중인 초대장
+                    - `ACCEPTED`: 수락된 초대장
+                    - `REJECTED`: 거절된 초대장
+            
+                    ### 조회 특이사항
+                    - 기본값: 대기 중인 초대장 (`PENDING`)
+                    - 최신 순서로 정렬
+                    """
     )
-    @GetMapping("/general")
-    public ResponseEntity<SuccessResponse<List<GeneralCategoryDTO>>> getGeneralCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "초대장 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 오류 - 로그인 필요"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
+    @GetMapping("/invitations")
+    public ResponseEntity<SuccessResponse<List<CategoryInvitationResponse>>> getCategoryInvitations(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam(value = "status", defaultValue = "PENDING") CategoryInvitationStatus status
     ) {
-        String email = customUserDetails.getUsername();
-        User user = userService.findUserByEmail(email);
-        List<GeneralCategoryDTO> categories = categoryService.getGeneralCategories(user);
+        List<CategoryInvitationResponse> response = categoryService.getCategoryInvitationsByStatus(userDetails.getUserId(), status);
 
-        SuccessResponse<List<GeneralCategoryDTO>> successResponse = SuccessResponse.<List<GeneralCategoryDTO>>builder()
-                .status(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
-                .message(SuccessCode.GENERAL_CATEGORY_FETCH_SUCCESS.getMessage())
-                .data(categories)
-                .build();
-        return ResponseEntity.ok(successResponse);
-    }
-
-    @Operation(
-            summary = "오늘의 그룹 카테고리 조회",
-            description = "현재 인증된 사용자의 오늘 날짜에 해당하는 그룹 카테고리를 제목순으로 정렬하여 조회합니다. <br>" +
-                    "그룹 카테고리가 없는 경우 각각 빈 배열([])을 반환합니다."
-    )
-    @GetMapping("/groups")
-    public ResponseEntity<SuccessResponse<List<GroupCategoryDTO>>> getGroupCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-    ) {
-        String email = customUserDetails.getUsername();
-        User user = userService.findUserByEmail(email);
-        List<GroupCategoryDTO> categories = categoryService.getGroupCategories(user);
-
-        SuccessResponse<List<GroupCategoryDTO>> successResponse = SuccessResponse.<List<GroupCategoryDTO>>builder()
-                .status(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
-                .message(SuccessCode.GROUP_CATEGORY_FETCH_SUCCESS.getMessage())
-                .data(categories)
-                .build();
-        return ResponseEntity.ok(successResponse);
-    }
-
-    @Operation(
-            summary = "응답하지 않은 초대받은 그룹 카테고리 조회",
-            description = "현재 인증된 사용자가 아직 응답하지 않은 초대받은 그룹 카테고리를 최신순으로 조회합니다. <br>" +
-                    "응답하지 않은 초대 그룹 카테고리가 없는 경우 빈 배열([])을 반환합니다."
-    )
-    @GetMapping("/groups/invitations")
-    public ResponseEntity<SuccessResponse<List<InvitedGroupDTO>>> getInvitedGroupCategories(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
-    ) {
-        String email = customUserDetails.getUsername();
-        User user = userService.findUserByEmail(email);
-        List<InvitedGroupDTO> groupCategories = categoryService.getInvitedGroupCategories(user);
-
-        SuccessResponse<List<InvitedGroupDTO>> successResponse = SuccessResponse.<List<InvitedGroupDTO>>builder()
+        SuccessResponse<List<CategoryInvitationResponse>> successResponse = SuccessResponse.<List<CategoryInvitationResponse>>builder()
                 .status(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getMessage())
-                .data(groupCategories)
+                .data(response)
                 .build();
         return ResponseEntity.ok(successResponse);
     }
 
+    /**
+     * 카테고리 상세 조회 API
+     *
+     * @param categoryId 조회할 카테고리 ID
+     * @param userDetails 인증된 사용자 정보 (CustomUserDetails)
+     * @return 카테고리 상세 정보
+     */
     @Operation(
             summary = "카테고리 상세 정보 조회",
-            description = "카테고리 상세 정보를 조회합니다. <br>" +
-                    "일반 카테고리는 멤버에 빈 배열([])을 반환합니다."
+            description = """
+                    특정 카테고리의 상세 정보를 조회합니다.
+            
+                    ## 카테고리 유형별 차이점
+                    - 개인 카테고리: 멤버 목록 미포함 (빈 배열)
+                    - 그룹 카테고리: 멤버 목록 포함
+                    """
     )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "카테고리 상세 정보 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 오류 - 로그인 필요"),
+            @ApiResponse(responseCode = "403", description = "권한 없음 - 카테고리 접근 권한 부족"),
+            @ApiResponse(responseCode = "404", description = "카테고리 정보 없음"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
     @GetMapping("/{categoryId}")
-    public ResponseEntity<SuccessResponse<CategoryDetailDTO>> getCategoryDetail(
+    public ResponseEntity<SuccessResponse<CategoryDetailResponse>> getCategoryDetail(
             @PathVariable Long categoryId,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        String email = customUserDetails.getUsername();
-        CategoryDetailDTO categoryDetailDTO = categoryService.getCategoryDetail(categoryId, email);
+        CategoryDetailResponse response = categoryService.getCategoryDetail(categoryId, userDetails.getUserId());
 
-        SuccessResponse<CategoryDetailDTO> successResponse = SuccessResponse.<CategoryDetailDTO>builder()
+        SuccessResponse<CategoryDetailResponse> successResponse = SuccessResponse.<CategoryDetailResponse>builder()
                 .status(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getMessage())
-                .data(categoryDetailDTO)
+                .data(response)
                 .build();
         return ResponseEntity.ok(successResponse);
     }
-
 }

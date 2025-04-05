@@ -1,8 +1,8 @@
 package com.tico.pomoro_do.domain.todo.entity;
 
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.entity.BaseTimeEntity;
-import com.tico.pomoro_do.global.enums.TodoStatus;
+import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
+import com.tico.pomoro_do.domain.todo.enums.TodoStatus;
 import jakarta.persistence.*;
 
 @Entity

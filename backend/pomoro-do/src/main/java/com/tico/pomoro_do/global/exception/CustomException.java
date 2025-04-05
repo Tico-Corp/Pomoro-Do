@@ -1,7 +1,6 @@
 package com.tico.pomoro_do.global.exception;
 
 
-import com.tico.pomoro_do.global.code.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

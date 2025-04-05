@@ -1,7 +1,7 @@
 package com.tico.pomoro_do.domain.todo.entity;
 
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.global.entity.BaseTimeEntity;
+import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;

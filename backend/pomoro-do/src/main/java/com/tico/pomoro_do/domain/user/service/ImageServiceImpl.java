@@ -3,7 +3,7 @@ package com.tico.pomoro_do.domain.user.service;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.tico.pomoro_do.global.code.ErrorCode;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import com.tico.pomoro_do.global.config.S3Config;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;

@@ -5,23 +5,27 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
+import com.tico.pomoro_do.domain.auth.entity.SocialLogin;
+import com.tico.pomoro_do.domain.auth.enums.OAuthProvider;
+import com.tico.pomoro_do.domain.auth.enums.ProfileImageType;
+import com.tico.pomoro_do.domain.auth.enums.TokenType;
+import com.tico.pomoro_do.domain.auth.repository.SocialLoginRepository;
+import com.tico.pomoro_do.domain.category.constants.CategoryConstants;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
-import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
-import com.tico.pomoro_do.domain.user.entity.SocialLogin;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.domain.user.repository.SocialLoginRepository;
+import com.tico.pomoro_do.domain.user.enums.UserRole;
 import com.tico.pomoro_do.domain.user.repository.UserRepository;
 import com.tico.pomoro_do.domain.user.service.ImageService;
 import com.tico.pomoro_do.domain.user.service.UserService;
-import com.tico.pomoro_do.global.auth.jwt.JWTUtil;
-import com.tico.pomoro_do.global.code.ErrorCode;
-import com.tico.pomoro_do.global.common.constants.CategoryConstants;
-import com.tico.pomoro_do.global.enums.*;
+import com.tico.pomoro_do.global.common.util.DateUtils;
+import com.tico.pomoro_do.global.common.util.ValidationUtils;
+import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.global.exception.CustomException;
-import com.tico.pomoro_do.global.util.DateUtils;
-import com.tico.pomoro_do.global.util.ValidationUtils;
+import com.tico.pomoro_do.global.exception.ErrorCode;
+import com.tico.pomoro_do.global.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
     private String clientId;
 
     //jwt관리 및 검증 utill
-    private final JWTUtil jwtUtil;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final SocialLoginRepository socialLoginRepository;
     private final UserService userService;
@@ -84,7 +88,7 @@ public class AuthServiceImpl implements AuthService {
         // deviceId 유효성 검사
         ValidationUtils.validateDeviceId(deviceId);
         // 토큰 추출
-        String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
+        String idToken = jwtTokenProvider.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 토큰 유효성 검증
         GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 회원 가입 여부 판단 -> 회원 가입 x -> 에러 발생
@@ -103,7 +107,7 @@ public class AuthServiceImpl implements AuthService {
         joinValidateInputs(deviceId, nickname);
 
         // 구글 idToken 유효성 검사 및 추출
-        String idToken = jwtUtil.extractToken(idTokenHeader, TokenType.GOOGLE);
+        String idToken = jwtTokenProvider.extractToken(idTokenHeader, TokenType.GOOGLE);
         // 구글 id 토큰 검증
         GoogleUserInfo googleUserInfo = verifyGoogleIdToken(idToken);
         // 사용자의 이메일 중복 체크
@@ -117,13 +121,12 @@ public class AuthServiceImpl implements AuthService {
         createSocialLogin(user, googleUserInfo.getUserId());
 
         // 기본 카테고리 생성
-        Category category = categoryService.createNewCategory(
+        Category category = categoryService.createCategory(
                 user,
-                DateUtils.getCurrentDate(),
-                CategoryConstants.DEFAULT_CATEGORY_TITLE,
-                CategoryConstants.DEFAULT_CATEGORY_COLOR,
-                CategoryConstants.DEFAULT_CATEGORY_VISIBILITY,
-                CategoryConstants.DEFAULT_CATEGORY_TYPE
+                DateUtils.getBusinessDate(),
+                CategoryConstants.DEFAULT_CATEGORY_NAME,
+                CategoryConstants.DEFAULT_CATEGORY_TYPE,
+                CategoryConstants.DEFAULT_CATEGORY_VISIBILITY
         );
 
         log.info("구글 회원가입 성공: 이메일 = {}", googleUserInfo.getEmail());
@@ -186,7 +189,7 @@ public class AuthServiceImpl implements AuthService {
         // 추후에 소셜 로그인이 추가된다면, provider을 변수로 받는다.
         SocialLogin socialLogin = SocialLogin.builder()
                 .user(user)
-                .provider(SocialProvider.GOOGLE)
+                .provider(OAuthProvider.GOOGLE)
                 .providerId(providerId)
                 .build();
 
@@ -204,9 +207,9 @@ public class AuthServiceImpl implements AuthService {
 
         // 생성 로직
         // 리프레시 토큰에서 사용자 정보를 추출합니다.
-        Long userId = jwtUtil.getUserId(refresh);
-        String email = jwtUtil.getEmail(refresh);
-        String role = jwtUtil.getRole(refresh);
+        Long userId = jwtTokenProvider.getUserId(refresh);
+        String email = jwtTokenProvider.getEmail(refresh);
+        String role = jwtTokenProvider.getRole(refresh);
         // 토큰 재발행
         return tokenService.createAuthTokens(userId, email, role, deviceId);
 

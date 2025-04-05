@@ -4,8 +4,8 @@ package com.tico.pomoro_do.domain.auth.service;
 import com.tico.pomoro_do.domain.auth.dto.GoogleUserInfo;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.global.enums.ProfileImageType;
-import com.tico.pomoro_do.global.enums.UserRole;
+import com.tico.pomoro_do.domain.auth.enums.ProfileImageType;
+import com.tico.pomoro_do.domain.user.enums.UserRole;
 import com.tico.pomoro_do.global.exception.CustomException;
 import org.springframework.web.multipart.MultipartFile;
 

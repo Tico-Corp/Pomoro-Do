@@ -3,6 +3,7 @@ package com.tico.pomoro_do.domain.user.service;
 import com.tico.pomoro_do.domain.user.dto.response.UserProfileResponse;
 
 import java.util.List;
+import java.util.Set;
 
 public interface FollowService {
 
@@ -41,9 +42,16 @@ public interface FollowService {
     /**
      * 특정 사용자가 타겟 사용자를 팔로우하고 있는지 여부
      *
-     * @param currentUserId 현재 인증된 사용자 ID
-     * @param targetUserId 팔로우 여부를 확인할 대상의 사용자 ID
+     * @param followerId 팔로워 ID
+     * @param followingId 팔로우 대상 ID
      * @return 팔로우 여부 반환 (true: 팔로우 중, false: 팔로우 안 함)
      */
-    boolean isFollowing(Long currentUserId, Long targetUserId);
-}
+    boolean isFollowing(Long followerId, Long followingId);
+
+    /**
+     * 특정 사용자가 팔로우하는 모든 사용자 ID를 한 번에 조회
+     *
+     * @param userId 팔로워 ID
+     * @return 팔로우 대상 ID 반환
+     */
+    Set<Long> getFollowingIdsByUser(Long userId);}
