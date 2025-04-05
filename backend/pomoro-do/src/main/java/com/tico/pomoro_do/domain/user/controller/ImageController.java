@@ -56,7 +56,6 @@ public class ImageController {
                 .build();
 
         SuccessResponse<ImageResponse> response = SuccessResponse.<ImageResponse>builder()
-                .status(SuccessCode.IMAGE_UPLOAD_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.IMAGE_UPLOAD_SUCCESS.getMessage())
                 .data(imageResponse)
                 .build();

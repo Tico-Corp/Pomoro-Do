@@ -75,7 +75,7 @@ public class GlobalExceptionHandler {
         }
 
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.VALIDATION_FAILED.getCode())
                 .message("Validation failed for fields: " + errors.toString())
                 .build();
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
         log.error("MissingRequestHeaderException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.MISSING_REQUEST_HEADER.getCode())
                 .message("Required request header is missing: " + ex.getHeaderName())
                 .build();
@@ -114,7 +114,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex) {
         log.error("HttpMessageNotReadableException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.MISSING_REQUEST_BODY.getCode())
                 .message("Required request body is missing or unreadable.")
                 .build();
@@ -133,7 +133,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         log.error("MissingServletRequestParameterException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.MISSING_REQUEST_PARAMETER.getCode())
                 .message("Required request parameter is missing: " + ex.getParameterName())
                 .build();
@@ -152,7 +152,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleBadRequestException(HttpClientErrorException e) {
         log.error("HttpClientErrorException.BadRequest: ", e);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.BAD_REQUEST.getCode())
                 .message("Required request is missing. Bad request: " + e.getMessage())
                 .build();
@@ -177,7 +177,7 @@ public class GlobalExceptionHandler {
         String message = String.format("Parameter '%s' should be of type '%s'.", parameterName, parameterType);
 
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.INVALID_PARAMETER_TYPE.getCode())
                 .message(message)
                 .build();
@@ -196,7 +196,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleIllegalArgumentException(IllegalArgumentException ex) {
         log.error("IllegalArgumentException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.INVALID_TYPE_VALUE.getCode())
                 .message("Invalid argument: " + ex.getMessage())
                 .build();
@@ -215,7 +215,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleIOException(IOException ex) {
         log.error("IOException occurred: {}", ex.getMessage(), ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.IO_ERROR.getCode())
                 .message("I/O error occurred: " + ex.getMessage())
                 .build();
@@ -234,7 +234,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleJsonParseException(JsonParseException ex) {
         log.error("JsonParseException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.JSON_PARSE_ERROR.getCode())
                 .message("Failed to parse JSON: " + ex.getMessage())
                 .build();
@@ -253,7 +253,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleJsonProcessingException(JsonProcessingException ex) {
         log.error("JsonProcessingException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.JSON_PROCESSING_ERROR.getCode())
                 .message("Failed to process JSON: " + ex.getMessage())
                 .build();
@@ -272,7 +272,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleJsonMappingException(JsonMappingException ex) {
         log.error("JsonMappingException occurred: {}", ex.getMessage(), ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.JSON_MAPPING_ERROR.getCode())
                 .message("Failed to map JSON: " + ex.getMessage())
                 .build();
@@ -291,7 +291,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleMultipartException(MultipartException ex) {
         log.error("MultipartException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.INVALID_MULTIPART_DATA.getCode())
                 .message("Failed to process multipart request: " + ex.getMessage())
                 .build();
@@ -310,7 +310,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         log.error("MaxUploadSizeExceededException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.MAX_UPLOAD_SIZE_EXCEEDED.getCode())
                 .message("The uploaded file exceeds the allowed maximum size. Please upload a file within the allowed size.")                .build();
 
@@ -329,7 +329,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleMissingRequestCookieException(MissingRequestCookieException ex) {
         log.error("MissingRequestCookieException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.BAD_REQUEST.value())
+//                .status(HttpStatus.BAD_REQUEST.value())
                 .code(ErrorCode.INVALID_COOKIE.getCode())
                 .message("Required cookie is missing.")
                 .build();
@@ -348,7 +348,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleForbiddenException(HttpClientErrorException.Forbidden ex) {
         log.error("HttpClientErrorException.Forbidden: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.FORBIDDEN.value())
+//                .status(HttpStatus.FORBIDDEN.value())
                 .code(ErrorCode.FORBIDDEN.getCode())
                 .message("Forbidden: " + ex.getMessage())
                 .build();
@@ -367,7 +367,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleAccessDeniedException(AccessDeniedException ex) {
         log.error("AccessDeniedException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.FORBIDDEN.value())
+//                .status(HttpStatus.FORBIDDEN.value())
                 .code(ErrorCode.ACCESS_DENIED.getCode())
                 .message("Access Denied: " + ex.getMessage())
                 .build();
@@ -386,7 +386,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleEntityNotFoundException(EntityNotFoundException ex) {
         log.error("EntityNotFoundException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
+//                .status(HttpStatus.NOT_FOUND.value())
                 .code(ErrorCode.ENTITY_NOT_FOUND.getCode())
                 .message("Entity Not Found: " + ex.getMessage())
                 .build();
@@ -406,7 +406,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleNoHandlerFoundException(NoHandlerFoundException ex) {
         log.error("NoHandlerFoundException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
+//                .status(HttpStatus.NOT_FOUND.value())
                 .code(ErrorCode.NO_HANDLER_FOUND.getCode())
                 .message("No handler found for the requested URL [" + ex.getRequestURL() + "]. Please ensure the URL is correct.")
                 .build();
@@ -426,7 +426,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleNoResourceFoundException(NoResourceFoundException ex) {
         log.error("NoResourceFoundException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
+//                .status(HttpStatus.NOT_FOUND.value())
                 .code(ErrorCode.NO_RESOURCE_FOUND.getCode())
                 .message(ex.getMessage())
                 .build();
@@ -445,7 +445,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleNoSuchElementException(NoSuchElementException ex) {
         log.error("NoSuchElementException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.NOT_FOUND.value())
+//                .status(HttpStatus.NOT_FOUND.value())
                 .code(ErrorCode.NOT_FOUND.getCode())
                 .message("The requested resource was not found.")
                 .build();
@@ -465,7 +465,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleAuthenticationException(AuthenticationException ex) {
         log.error("AuthenticationException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
+//                .status(HttpStatus.UNAUTHORIZED.value())
                 .code(ErrorCode.UNAUTHORIZED.getCode())
                 .message(ex.getMessage())
                 .build();
@@ -484,7 +484,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleSignatureException(SignatureException ex) {
         log.error("SignatureException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
+//                .status(HttpStatus.UNAUTHORIZED.value())
                 .code(ErrorCode.INVALID_JWT_SIGNATURE.getCode())
                 .message("JWT signature verification failed.")
                 .build();
@@ -503,7 +503,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleMalformedJwtException(MalformedJwtException ex) {
         log.error("MalformedJwtException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.UNAUTHORIZED.value())
+//                .status(HttpStatus.UNAUTHORIZED.value())
                 .code(ErrorCode.INVALID_MALFORMED_JWT.getCode())
                 .message("Malformed JWT token.")
                 .build();
@@ -522,7 +522,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
         log.error("HttpRequestMethodNotSupportedException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.METHOD_NOT_ALLOWED.value())
+//                .status(HttpStatus.METHOD_NOT_ALLOWED.value())
                 .code(ErrorCode.METHOD_NOT_ALLOWED.getCode())
                 .message("Method Not Allowed: " + ex.getMethod())
                 .build();
@@ -542,7 +542,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleNullPointerException(NullPointerException ex) {
         log.error("NullPointerException: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .code(ErrorCode.NULL_POINTER.getCode())
                 .message("A null pointer exception occurred.")
                 .build();
@@ -562,7 +562,7 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponseEntity> handleException(Exception ex) {
         log.error("Exception: ", ex);
         ErrorResponseEntity errorResponse = ErrorResponseEntity.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .code(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                 .message("An unexpected error occurred: " + ex.getMessage())
                 .build();

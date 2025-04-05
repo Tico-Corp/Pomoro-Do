@@ -88,7 +88,6 @@ public class AuthController {
 
             // 성공 응답 생성
             SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
-                    .status(SuccessCode.GOOGLE_LOGIN_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_LOGIN_SUCCESS.getMessage())
                     .data(jwtResponse)
                     .build();
@@ -160,7 +159,6 @@ public class AuthController {
         try {
             TokenResponse jwtResponse = authService.googleJoin(googleIdTokenHeader, deviceId, nickname, profileImage, imageType);
             SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
-                    .status(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getHttpStatus().value())
                     .message(SuccessCode.GOOGLE_SIGNUP_SUCCESS.getMessage())
                     .data(jwtResponse)
                     .build();
@@ -212,7 +210,6 @@ public class AuthController {
         TokenResponse tokenResponse = authService.reissueToken(deviceId, refreshToken);
 
         SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
-                .status(SuccessCode.ACCESS_TOKEN_REISSUED.getHttpStatus().value())
                 .message(SuccessCode.ACCESS_TOKEN_REISSUED.getMessage())
                 .data(tokenResponse)
                 .build();
@@ -264,7 +261,6 @@ public class AuthController {
         tokenService.deleteRefreshTokenByDeviceId(deviceId);
 
         SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
-                .status(SuccessCode.LOGOUT_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.LOGOUT_SUCCESS.getMessage())
                 .data(SuccessCode.LOGOUT_SUCCESS.name()) // data가 없을 때는 null로 설정
                 .build();
@@ -301,7 +297,6 @@ public class AuthController {
         // 토큰 검증 후 SuccessCode 반환
         SuccessCode successCode = tokenService.validateTokenAndGetSuccessCode(tokenHeader, tokenType);;
         SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
-                .status(successCode.getHttpStatus().value())
                 .message(successCode.getMessage())
                 .data(successCode.name()) // data가 없을 때는 null로 설정
                 .build();

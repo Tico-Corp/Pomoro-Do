@@ -54,7 +54,6 @@ public class FollowController {
         Long currentUserId = customUserDetails.getUserId();
         followService.followUser(currentUserId, userId);
         SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
-                .status(SuccessCode.FOLLOW_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.FOLLOW_SUCCESS.getMessage())
                 .data(SuccessCode.FOLLOW_SUCCESS.name())
                 .build();
@@ -80,7 +79,6 @@ public class FollowController {
         Long currentUserId = customUserDetails.getUserId();
         followService.unfollowUser(currentUserId, userId);
         SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
-                .status(SuccessCode.UNFOLLOW_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.UNFOLLOW_SUCCESS.getMessage())
                 .data(SuccessCode.UNFOLLOW_SUCCESS.name())
                 .build();
@@ -111,7 +109,6 @@ public class FollowController {
         List<UserProfileResponse> followersList = followService.getFollowers(currentUserId);
 
         SuccessResponse<List<UserProfileResponse>> successResponse = SuccessResponse.<List<UserProfileResponse>>builder()
-                .status(SuccessCode.FOLLOWERS_LIST_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.FOLLOWERS_LIST_FETCH_SUCCESS.getMessage())
                 .data(followersList)
                 .build();
@@ -142,7 +139,6 @@ public class FollowController {
         List<UserProfileResponse> followingList = followService.getFollowings(currentUserId);
 
         SuccessResponse<List<UserProfileResponse>> successResponse = SuccessResponse.<List<UserProfileResponse>>builder()
-                .status(SuccessCode.FOLLOWING_LIST_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.FOLLOWING_LIST_FETCH_SUCCESS.getMessage())
                 .data(followingList)
                 .build();

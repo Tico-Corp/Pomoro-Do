@@ -16,13 +16,13 @@ import org.springframework.http.ResponseEntity;
 public class ErrorResponseEntity {
     //Custom Error 내용을 담을 Response Entity를 생성한다.
 
-    @Schema(description = "HTTP 상태 코드")
-    private int status;
+//    @Schema(description = "HTTP 상태 코드")
+//    private int status;
 //    @Schema(description = "에러 이름")
 //    private String name;
-    @Schema(description = "커스텀 에러 코드")
+    @Schema(description = "커스텀 에러 코드", example = "U-100")
     private String code;
-    @Schema(description = "에러 메시지")
+    @Schema(description = "에러 메시지", example = "이미 사용 중인 이메일입니다.")
     private String message;
 
 
@@ -30,7 +30,7 @@ public class ErrorResponseEntity {
         return ResponseEntity
                 .status(e.getHttpStatus())
                 .body(ErrorResponseEntity.builder()
-                        .status(e.getHttpStatus().value())
+//                        .status(e.getHttpStatus().value())
 //                        .name(e.name())
                         .code(e.getCode())
                         .message(e.getMessage())
