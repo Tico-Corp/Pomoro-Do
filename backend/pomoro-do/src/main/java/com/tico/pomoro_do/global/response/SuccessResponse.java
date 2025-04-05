@@ -8,18 +8,18 @@ import lombok.Getter;
 @Schema(description = "Success Response")
 public class SuccessResponse<T> {
 
-    @Schema(description = "상태 코드", nullable = false, example = "200")
-    private final int status;       // 응답 코드 200번대
+//    @Schema(description = "상태 코드", nullable = false, example = "200")
+//    private final int status;       // 응답 코드 200번대
     @Schema(description = "성공 코드", nullable = false, example = "SUCCESS")
     private final String code = "SUCCESS";
     @Schema(description = "상태 메세지", nullable = false, example = "요청이 성공적으로 처리되었습니다.")
     private final String message;   // 메시지
-    @Schema(description = "해당 API의 응답 데이터", nullable = true)
+    @Schema(description = "응답 데이터", nullable = true)
     private final T data;           // 응답 데이터
 
     @Builder
-    public SuccessResponse(int status, String message, T data) {
-        this.status = status;
+    public SuccessResponse(String message, T data) {
+//        this.status = status;
         this.message = message;
         this.data = data;
     }

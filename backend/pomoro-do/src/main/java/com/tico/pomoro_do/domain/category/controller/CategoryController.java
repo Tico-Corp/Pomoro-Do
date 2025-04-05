@@ -75,7 +75,6 @@ public class CategoryController {
         Long categoryId = categoryService.processCategoryCreation(userDetails.getUserId(), request);
 
         SuccessResponse<Long> successResponse = SuccessResponse.<Long>builder()
-                .status(SuccessCode.CATEGORY_CREATION_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_CREATION_SUCCESS.getMessage())
                 .data(categoryId)
                 .build();
@@ -119,7 +118,6 @@ public class CategoryController {
         UserCategoryResponse response = categoryService.getCategories(userDetails.getUserId(), type);
 
         SuccessResponse<UserCategoryResponse> successResponse = SuccessResponse.<UserCategoryResponse>builder()
-                .status(SuccessCode.CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(response)
                 .build();
@@ -161,7 +159,6 @@ public class CategoryController {
         List<CategoryInvitationResponse> response = categoryService.getCategoryInvitationsByStatus(userDetails.getUserId(), status);
 
         SuccessResponse<List<CategoryInvitationResponse>> successResponse = SuccessResponse.<List<CategoryInvitationResponse>>builder()
-                .status(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.INVITED_CATEGORY_FETCH_SUCCESS.getMessage())
                 .data(response)
                 .build();
@@ -200,7 +197,6 @@ public class CategoryController {
         CategoryDetailResponse response = categoryService.getCategoryDetail(categoryId, userDetails.getUserId());
 
         SuccessResponse<CategoryDetailResponse> successResponse = SuccessResponse.<CategoryDetailResponse>builder()
-                .status(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.CATEGORY_DETAIL_FETCH_SUCCESS.getMessage())
                 .data(response)
                 .build();

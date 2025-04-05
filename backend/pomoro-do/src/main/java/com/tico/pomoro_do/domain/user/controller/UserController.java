@@ -41,7 +41,6 @@ public class UserController {
 
         UserDetailResponse userDetailResponse = userService.getUserDetail(customUserDetails.getUserId());
         SuccessResponse<UserDetailResponse> successResponse = SuccessResponse.<UserDetailResponse>builder()
-                .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())
                 .data(userDetailResponse)
                 .build();
@@ -69,7 +68,6 @@ public class UserController {
     ) {
         UserProfileResponse response = userService.getUserProfile(customUserDetails.getUserId(), userId);
         SuccessResponse<UserProfileResponse> successResponse = SuccessResponse.<UserProfileResponse>builder()
-                .status(SuccessCode.USER_FETCH_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_FETCH_SUCCESS.getMessage())
                 .data(response)
                 .build();
@@ -95,7 +93,6 @@ public class UserController {
         userService.deleteUser(customUserDetails.getUserId(), deviceId, refreshToken);
 
         SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
-                .status(SuccessCode.USER_DELETION_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.USER_DELETION_SUCCESS.getMessage())
                 .data(SuccessCode.USER_DELETION_SUCCESS.name())
                 .build();

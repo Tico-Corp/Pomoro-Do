@@ -56,7 +56,6 @@ public class AdminController {
 
         TokenResponse jwtResponse = adminService.adminJoin(request, profileImage);
         SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
-                .status(SuccessCode.ADMIN_SIGNUP_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_SIGNUP_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
@@ -88,7 +87,6 @@ public class AdminController {
         log.info("관리자 로그인 요청: {}", request.getEmail());
         TokenResponse jwtResponse = adminService.adminLogin(request);
         SuccessResponse<TokenResponse> successResponse = SuccessResponse.<TokenResponse>builder()
-                .status(SuccessCode.ADMIN_LOGIN_SUCCESS.getHttpStatus().value())
                 .message(SuccessCode.ADMIN_LOGIN_SUCCESS.getMessage())
                 .data(jwtResponse)
                 .build();
