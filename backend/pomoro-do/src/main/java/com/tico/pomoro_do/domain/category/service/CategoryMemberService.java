@@ -25,7 +25,7 @@ public interface CategoryMemberService {
      * @param user 사용자
      * @return 그룹 카테고리 목록
      */
-    List<Category> findUserGroupCategories(User user);
+    List<Category> getActiveCategoriesByUser(User user);
 
     /**
      * 여러 그룹 카테고리에 대해 활성 멤버 수 계산
@@ -33,12 +33,19 @@ public interface CategoryMemberService {
      * @param groupCategories 그룹 카테고리 목록
      * @return 카테고리 ID별 멤버 수 맵
      */
-    Map<Long, Long> calculateMemberCounts(List<Category> groupCategories);
+    Map<Long, Long> getActiveMemberCounts(List<Category> groupCategories);
 
     /**
      * 그룹 카테고리의 멤버 목록을 정렬된 응답 DTO로 반환
      */
     List<CategoryMemberResponse> getMemberResponses(Category category);
 
+    /**
+     * 사용자가 해당 카테고리의 멤버인지 여부를 확인
+     *
+     * @param category 확인할 그룹 카테고리
+     * @param user 대상 사용자
+     * @return 이미 멤버로 등록되어 있다면 true, 그렇지 않으면 false
+     */
     boolean isMember(Category category, User user);
 }

@@ -50,7 +50,7 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
 
     // 사용자 기준으로 현재 참여 중인 그룹 카테고리 리스트 조회
     @Override
-    public List<Category> findUserGroupCategories(User user) {
+    public List<Category> getActiveCategoriesByUser(User user) {
         // 카테고리 멤버로 활성회되어있는 그룹 카테고리 조회 (user=user, leftDate=null)
         List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByUserAndLeftDateIsNull(user);
         return categoryMembers.stream()
@@ -60,7 +60,7 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
 
     // 여러 그룹 카테고리에 대해 활성 멤버 수 계산
     @Override
-    public Map<Long, Long> calculateMemberCounts(List<Category> groupCategories) {
+    public Map<Long, Long> getActiveMemberCounts(List<Category> groupCategories) {
         // 모든 카테고리의 멤버 수를 한 번에 가져와서 Map으로 변환 (List<Category>=groupCategories, leftDate=null)
         List<CategoryMember> activeMembers =
                 categoryMemberRepository.findAllByCategoryInAndLeftDateIsNull(groupCategories);

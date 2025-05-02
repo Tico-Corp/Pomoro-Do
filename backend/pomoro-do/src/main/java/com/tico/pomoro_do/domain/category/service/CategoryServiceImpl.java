@@ -263,11 +263,11 @@ public class CategoryServiceImpl implements CategoryService {
      */
     private List<GroupCategoryResponse> getGroupCategories(User user) {
         // 사용자가 속한 그룹 카테고리 조회
-        List<Category> groupCategories = categoryMemberService.findUserGroupCategories(user);
+        List<Category> groupCategories = categoryMemberService.getActiveCategoriesByUser(user);
 
         // 멤버 수 정보를 미리 조회
         // 카테고리 ID 기반 멤버 수 맵 조회 (한 번의 쿼리로 처리)
-        Map<Long, Long> categoryMemberCountMap = categoryMemberService.calculateMemberCounts(groupCategories);
+        Map<Long, Long> categoryMemberCountMap = categoryMemberService.getActiveMemberCounts(groupCategories);
 
         // 카테고리와 멤버 수 정보를 GroupCategoryResponse로 변환하여 반환 (가나다 순 정렬)
         return groupCategories.stream()
