@@ -4,13 +4,11 @@ import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.CategoryInvitation;
-import com.tico.pomoro_do.domain.category.entity.CategoryMember;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
 import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import com.tico.pomoro_do.domain.category.repository.CategoryInvitationRepository;
-import com.tico.pomoro_do.domain.category.repository.CategoryMemberRepository;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.FollowService;
@@ -35,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final UserService userService;
     private final FollowService followService;
     private final CategoryRepository categoryRepository;
-    private final CategoryMemberRepository categoryMemberRepository;
+    private final CategoryMemberService categoryMemberService;
     private final CategoryInvitationRepository categoryInvitationRepository;
 
     /**
@@ -44,7 +42,6 @@ public class CategoryServiceImpl implements CategoryService {
      * 1.생성자는 관리자 멤버로 생성
      * 2.초대 멤버들에게 초대장 발송
      */
-
     @Override
     @Transactional
     public Long processCategoryCreation(Long userId, CategoryCreateRequest request) {
@@ -68,9 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
         return category.getId();
     }
 
-    /**
-     * 카테고리 엔티티를 생성하고 저장합니다.
-     */
+    // 카테고리 엔티티를 생성하고 저장
     @Override
     public Category createCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility) {
         // 카테고리 빌더로 객체 생성
@@ -99,7 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     private void processGroupCategoryMembers(Category category, User owner, Set<Long> memberIds) {
         // 1. 소유자를 카테고리 멤버로 추가
-        createCategoryMember(category, owner, CategoryMemberRole.OWNER);
+        categoryMemberService.createCategoryMember(category, owner, CategoryMemberRole.OWNER);
         log.debug("그룹 소유자 등록: 카테고리={}, 소유자={}", category.getId(), owner.getId());
 
         // 2. 멤버가 없으면 처리 종료
@@ -143,34 +138,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    /**
-     * 카테고리 멤버를 추가합니다
-     */
-    @Override
-    public void createCategoryMember(Category category, User user, CategoryMemberRole role) {
-        // 중복 멤버 확인
-        if (categoryMemberRepository.existsByCategoryAndUser(category, user)) {
-            log.warn("이미 등록된 카테고리 멤버: 카테고리={}, 사용자={}", category.getId(), user.getId());
-            return;
-        }
-
-        // 카테고리 멤버 생성 및 저장
-        CategoryMember member = CategoryMember.builder()
-                .category(category)
-                .user(user)
-                .role(role)
-                .build();
-
-        // 저장
-        categoryMemberRepository.save(member);
-
-        log.debug("카테고리 멤버 등록 완료: categoryId={}, userId={}, role={}",
-                category.getId(), member.getId(), role);
-    }
-
-    /**
-     * 초대장 목록을 생성합니다
-     */
+    // 초대장 목록을 생성
     private List<CategoryInvitation> createCategoryInvitations(
             Category category, User owner, Set<Long> memberIds, Map<Long, User> userMap) {
 
@@ -199,8 +167,8 @@ public class CategoryServiceImpl implements CategoryService {
             return;
         }
 
-        // 이미 카테고리 멤버인지 확인
-        if (categoryMemberRepository.existsByCategoryAndUser(category, invitee)) {
+        // 이미 멤버인지 확인
+        if (categoryMemberService.isMember(category, invitee)) {
             log.warn("이미 카테고리 멤버인 사용자: categoryId={}, inviteeId={}", category.getId(), invitee.getId());
             return;
         }
@@ -295,11 +263,11 @@ public class CategoryServiceImpl implements CategoryService {
      */
     private List<GroupCategoryResponse> getGroupCategories(User user) {
         // 사용자가 속한 그룹 카테고리 조회
-        List<Category> groupCategories = findUserGroupCategories(user);
+        List<Category> groupCategories = categoryMemberService.getActiveCategoriesByUser(user);
 
         // 멤버 수 정보를 미리 조회
         // 카테고리 ID 기반 멤버 수 맵 조회 (한 번의 쿼리로 처리)
-        Map<Long, Long> categoryMemberCountMap = calculateMemberCounts(groupCategories);
+        Map<Long, Long> categoryMemberCountMap = categoryMemberService.getActiveMemberCounts(groupCategories);
 
         // 카테고리와 멤버 수 정보를 GroupCategoryResponse로 변환하여 반환 (가나다 순 정렬)
         return groupCategories.stream()
@@ -309,37 +277,6 @@ public class CategoryServiceImpl implements CategoryService {
                         categoryMemberCountMap.getOrDefault(category.getId(), 0L))
                 )
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * 사용자가 속한 그룹 카테고리 조회
-     *
-     * @param user 사용자
-     * @return 그룹 카테고리 목록
-     */
-    private List<Category> findUserGroupCategories(User user) {
-        // 카테고리 멤버로 활성회되어있는 그룹 카테고리 조회 (user=user, leftDate=null)
-        List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByUserAndLeftDateIsNull(user);
-        return categoryMembers.stream()
-                .map(CategoryMember::getCategory)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * 그룹 카테고리들 멤버 수 조회
-     *
-     * @param groupCategories 그룹 카테고리 목록
-     * @return 카테고리 ID별 멤버 수 맵
-     */
-    private Map<Long, Long> calculateMemberCounts(List<Category> groupCategories) {
-        // 모든 카테고리의 멤버 수를 한 번에 가져와서 Map으로 변환 (List<Category>=groupCategories, leftDate=null)
-        List<CategoryMember> activeCategoryMembers =
-                categoryMemberRepository.findAllByCategoryInAndLeftDateIsNull(groupCategories);
-        return activeCategoryMembers.stream()
-                .collect(Collectors.groupingBy(
-                        categoryMember -> categoryMember.getCategory().getId(),  // 카테고리 ID 기준 그룹화
-                        Collectors.counting()      // 각 카테고리의 멤버 수 계산
-                ));
     }
 
     @Override
@@ -362,30 +299,23 @@ public class CategoryServiceImpl implements CategoryService {
 
     // 카테고리 상세 조회
     @Override
-    public CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId){
-        // 카테고리 조회
+    public CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId) {
+        // 1. 카테고리 조회
         Category category = findByCategoryId(categoryId);
 
+        // 2. 멤버 응답 DTO 리스트 및 멤버 수 초기화
         List<CategoryMemberResponse> categoryMemberResponseList = new ArrayList<>();
         int totalMembers = 0;
 
-        // 그룹 카테고리면 멤버 조회
+        // 3. 그룹 카테고리인 경우 멤버 정보 조회
         if (category.getType().equals(CategoryType.GROUP)) {
-            // 해당 그룹의 활성화 되어있는 멤버들 가져오기
-            List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByCategoryAndLeftDateIsNull(category);
+            // 카테고리 멤버 정보 목록
+            categoryMemberResponseList = categoryMemberService.getMemberResponses(category);
             // 카테고리 전체 멤버 수
-            totalMembers = categoryMembers.size();
-
-            categoryMemberResponseList = categoryMembers.stream()
-                    .map(categoryMember -> CategoryMemberResponse.builder()
-                            .groupMemberId(categoryMember.getId())
-                            .nickname(categoryMember.getUser().getNickname())
-                            .profileImageUrl(categoryMember.getUser().getProfileImageUrl())
-                            .build())
-                    .sorted(Comparator.comparing(CategoryMemberResponse::getNickname))
-                    .collect(Collectors.toList());
+            totalMembers = categoryMemberResponseList.size();
         }
 
+        // 4. 카테고리 상세 응답 생성
         return CategoryDetailResponse.builder()
                 .categoryId(categoryId)
                 .name(category.getName())

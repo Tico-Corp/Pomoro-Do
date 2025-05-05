@@ -1,10 +1,11 @@
 package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
-import com.tico.pomoro_do.domain.category.dto.response.*;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
+import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
-import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import com.tico.pomoro_do.domain.user.entity.User;
@@ -60,13 +61,4 @@ public interface CategoryService {
      * @return CategoryDetailResponse 객체
      */
     CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId);
-
-    /**
-     * 카테고리 멤버를 생성하고 저장
-     *
-     * @param category 생성된 카테고리
-     * @param member 그룹 멤버 사용자
-     * @param role 그룹 내 멤버 역할 (OWNER, MEMBER)
-     */
-    void createCategoryMember(Category category, User member, CategoryMemberRole role);
 }
