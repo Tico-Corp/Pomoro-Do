@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.data.model.TimerSettingData
+import com.tico.pomorodo.domain.usecase.timer.GetConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.timer.UpdateTargetTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TimerSetupViewModel @Inject constructor(
+    private val getConcentrationGoalUseCase: GetConcentrationGoalUseCase,
     private val updateTargetTimeUseCase: UpdateTargetTimeUseCase,
 ) : ViewModel() {
     private val _concentrationTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0))
@@ -41,8 +43,8 @@ class TimerSetupViewModel @Inject constructor(
         _breakTime.value = Time(hour, minute)
     }
 
-    fun getConcentrationGoal(hour: Int, minute: Int, second: Int) = viewModelScope.launch {
-        getConcentrationGoalUseCase()
+    fun getConcentrationGoal(userId: Int) = viewModelScope.launch {
+        getConcentrationGoalUseCase(userId)
     }
 
     fun updateConcentrationGoal(hour: Int, minute: Int, second: Int) = viewModelScope.launch {
