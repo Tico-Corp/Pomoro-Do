@@ -38,7 +38,7 @@ public class CategoryInvitationController {
      * @return 초대장 목록
      */
     @Operation(
-            summary = "카테고리 초대장 조회",
+            summary = "카테고리 초대장 상태별 조회",
             description = """
                     사용자가 받은 그룹 카테고리 초대장을 상태별로 조회합니다.
                             

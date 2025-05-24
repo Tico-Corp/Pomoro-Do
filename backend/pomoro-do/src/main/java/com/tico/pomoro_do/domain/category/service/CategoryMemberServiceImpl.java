@@ -24,7 +24,14 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
 
     private final CategoryMemberRepository categoryMemberRepository;
 
-    // 카테고리 멤버 등록
+    /**
+     * 카테고리에 멤버 등록
+     * 이미 활동 중인 멤버인 경우 등록하지 않습니다.
+     *
+     * @param category 대상 카테고리
+     * @param user 추가할 사용자
+     * @param role 사용자 역할 (OWNER 또는 MEMBER)
+     */
     @Override
     public void createCategoryMember(Category category, User user, CategoryMemberRole role) {
         // 중복 멤버 확인
@@ -48,7 +55,12 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
     }
 
 
-    // 사용자 기준으로 현재 참여 중인 그룹 카테고리 리스트 조회
+    /**
+     * 사용자가 현재 참여 중인 그룹 카테고리 목록을 조회
+     *
+     * @param user 대상 사용자
+     * @return 사용자가 참여 중인 그룹 카테고리 목록 (leftDate가 null인 멤버 기준)
+     */
     @Override
     public List<Category> getActiveCategoriesByUser(User user) {
         // 카테고리 멤버로 활성회되어있는 그룹 카테고리 조회 (user=user, leftDate=null)
@@ -58,7 +70,12 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
                 .collect(Collectors.toList());
     }
 
-    // 여러 그룹 카테고리에 대해 활성 멤버 수 계산
+    /**
+     * 여러 그룹 카테고리에 대해 현재 참여 중인 멤버 수 조회
+     *
+     * @param groupCategories 대상 그룹 카테고리 목록
+     * @return 카테고리 ID → 멤버 수 Map
+     */
     @Override
     public Map<Long, Long> getActiveMemberCounts(List<Category> groupCategories) {
         // 모든 카테고리의 멤버 수를 한 번에 가져와서 Map으로 변환 (List<Category>=groupCategories, leftDate=null)
@@ -71,7 +88,12 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
                 ));
     }
 
-    // 그룹 카테고리의 멤버 목록을 정렬된 응답 DTO로 반환
+    /**
+     * 그룹 카테고리의 활동 중인 멤버 목록을 닉네임 기준으로 정렬하여 반환
+     *
+     * @param category 대상 카테고리
+     * @return 멤버 응답 DTO 목록 (닉네임 가나다 순 정렬)
+     */
     @Override
     public List<CategoryMemberResponse> getMemberResponses(Category category) {
         List<CategoryMember> categoryMembers = categoryMemberRepository.findAllByCategoryAndLeftDateIsNull(category);
@@ -86,7 +108,13 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
                 .collect(Collectors.toList());
     }
 
-    // 활동중인 카테고리 멤버인지 확인 (탈퇴 여부도 확인해야함)
+    /**
+     * 해당 사용자가 해당 카테고리의 활동 중인 멤버인지 확인
+     *
+     * @param category 카테고리
+     * @param user 사용자
+     * @return true: 현재 멤버이며 탈퇴하지 않음, false: 아니거나 탈퇴함
+     */
     @Override
     public boolean isActiveMember(Category category, User user) {
         return categoryMemberRepository.existsByCategoryAndUserAndLeftDateIsNull(category, user);

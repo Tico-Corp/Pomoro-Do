@@ -31,10 +31,14 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
     private final CategoryInvitationRepository categoryInvitationRepository;
 
     /**
-     * 그룹 생성 시 일괄 초대 처리 로직
-     * - 소유자 제외
-     * - 팔로우 중인 사용자만 초대
-     * - 이미 초대되었거나 멤버인 경우 제외
+     * 그룹 생성 시 일괄 초대장을 생성
+     * - 소유자 자신은 제외
+     * - 초대자가 팔로우 중인 사용자만 초대 가능
+     * - 이미 멤버이거나 초대된 대상은 제외
+     *
+     * @param category 대상 그룹 카테고리
+     * @param inviter 초대자 (카테고리 생성자)
+     * @param memberIds 초대 대상 사용자 ID 목록
      */
     public void inviteMembers(Category category, User inviter, Set<Long> memberIds) {
         // 1. 멤버가 없으면 처리 종료
@@ -46,7 +50,7 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
         // 소유자 자신은 초대 목록에서 제거 (중복 방지)
         memberIds.remove(inviter.getId());
         if (memberIds.isEmpty()) {
-            log.debug("초대 대상에서 소유자 제외 후 초대할 멤버 없음: categoryId={}", category.getId());
+            log.debug("소유자 제외 후 초대할 멤버 없음: categoryId={}", category.getId());
             return;
         }
 
@@ -77,7 +81,14 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
     }
 
     /**
-     * 다건 초대장 생성 (다수의 초대 받은 사람들에게 초대장을 한꺼번에 생성)
+     * 조건을 만족하는 사용자에 대해 초대장 생성
+     * - 이미 멤버이거나 초대된 사용자는 제외
+     *
+     * @param category 그룹 카테고리
+     * @param inviter 초대한 사용자
+     * @param inviteeIds 초대 대상 ID 목록
+     * @param userMap 사용자 ID → User 객체 맵
+     * @return 초대장 엔티티 리스트
      */
     private List<CategoryInvitation> createCategoryInvitations(
             Category category, User inviter, Set<Long> inviteeIds, Map<Long, User> userMap) {
@@ -95,7 +106,12 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
     }
 
     /**
-     * 단건 초대장 생성
+     * 단일 사용자에 대한 초대장 생성
+     * 이미 초대되었거나 멤버인 경우에는 생성하지 않습니다.
+     *
+     * @param category 그룹 카테고리
+     * @param inviter 초대한 사용자
+     * @param invitee 초대 대상 사용자
      */
     @Override
     @Transactional
@@ -126,7 +142,12 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
     }
 
     /**
-     * userId 기반 초대장 상태별 조회
+     * 사용자 ID를 기반으로 초대장 상태별 조회
+     * 내부적으로 사용자 객체를 조회한 후 필터링된 결과를 반환합니다.
+     *
+     * @param userId 사용자 ID
+     * @param status 초대 상태 (PENDING, ACCEPTED 등)
+     * @return 초대장 응답 리스트 (최신순)
      */
     @Override
     public List<CategoryInvitationResponse> getInvitationsByStatus(Long userId, CategoryInvitationStatus status) {
@@ -136,7 +157,11 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
     }
 
     /**
-     * 사용자 + 상태 기반 초대장 조회 (최신순)
+     * 사용자 객체를 기반으로 상태별 초대장 조회 (최신순)
+     *
+     * @param user 사용자
+     * @param status 초대 상태
+     * @return 초대장 응답 리스트
      */
     @Override
     public List<CategoryInvitationResponse> findInvitationsByStatus(User user, CategoryInvitationStatus status) {
@@ -150,10 +175,10 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
 
 
     /**
-     * 초대장 정보를 CategoryInvitationResponse로 변환
+     * CategoryInvitation 엔티티를 CategoryInvitationResponse DTO로 변환
      *
-     * @param categoryInvitation 카테고리 초대장
-     * @return CategoryInvitationResponse 객체
+     * @param categoryInvitation 초대장
+     * @return 초대장 응답 DTO
      */
     private CategoryInvitationResponse toResponse(CategoryInvitation categoryInvitation) {
         return CategoryInvitationResponse.builder()

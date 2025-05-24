@@ -25,7 +25,7 @@ public interface CategoryService {
      * 새로운 카테고리 객체를 생성하고 저장
      *
      * @param owner 카테고리 소유자
-     * @param startDate 카테고리 생성 날짜
+     * @param startDate 카테고리 시작일 (기록 시작 기준일)
      * @param name 카테고리 이름
      * @param type 카테고리 유형 (개인/그룹)
      * @param visibility 카테고리 공개 설정
@@ -35,8 +35,9 @@ public interface CategoryService {
 
     /**
      * 유형별 카테고리 조회
+     *
      * @param userId 사용자 ID
-     * @param type 카테고리 유형 (personal, group, null/기타값은 모든 카테고리)
+     * @param type 조회할 카테고리 유형 (PERSONAL, GROUP, null이면 전체 조회)
      * @return 필터링된 카테고리 정보
      */
     UserCategoryResponse getCategories(Long userId, CategoryType type);

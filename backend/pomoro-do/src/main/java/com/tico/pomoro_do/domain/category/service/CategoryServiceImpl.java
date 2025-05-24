@@ -35,8 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 카테고리 생성 및 그룹 카테고리 관련 멤버 처리 - 공개 API
      * 그룹 카테고리면,
-     * 1.생성자는 관리자 멤버로 생성
-     * 2.초대 멤버들에게 초대장 발송
+     * 1. 생성자는 그룹의 OWNER 멤버로 등록
+     * 2. 초대 대상자에게 초대장 발송
      */
     @Override
     @Transactional
@@ -52,16 +52,18 @@ public class CategoryServiceImpl implements CategoryService {
         // 3. 그룹 카테고리일 경우 멤버 및 초대 처리
         if (CategoryType.GROUP.equals(request.getType())) {
             // 그룹 멤버 및 초대장 처리 - N+1 문제 개선 버전
-            processGroupCategoryMembers(category, owner, request.getMemberIds());
+            initializeGroupMembers(category, owner, request.getMemberIds());
         }
 
-        log.info("카테고리 생성 완료: id={}, 유형={}, 이름={}, 소유자={}",
+        log.info("카테고리 생성 완료: categoryId={}, 유형={}, 이름={}, 소유자={}",
                 category.getId(), category.getType(), category.getName(), owner.getId());
 
         return category.getId();
     }
 
-    // 카테고리 엔티티를 생성하고 저장
+    /**
+     * 카테고리 생성
+     */
     @Override
     public Category createCategory(User owner, LocalDate startDate, String name, CategoryType type, CategoryVisibility visibility) {
         // 카테고리 빌더로 객체 생성
@@ -76,20 +78,20 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(category);
     }
 
-
     /**
-     * 그룹 카테고리 멤버 처리 및 초대장 발송
-     * 1. 소유자(생성자)를 그룹 관리자 멤버로 추가
-     * 2. 초대 멤버에 초대장 발송
+     * 그룹 카테고리 초기 멤버를 설정합니다.
+     * 1. 소유자를 그룹 OWNER 멤버로 등록합니다.
+     * 2. 소유자를 제외한 memberIds 중 팔로우 관계 + 중복 멤버 제외 후 초대장을 발송합니다.
      *
-     * @param category 생성된 카테고리
-     * @param owner 카테고리 소유자
-     * @param memberIds 초대할 멤버 ID 집합
+     * @param category 그룹 카테고리
+     * @param owner 그룹 생성자 (OWNER)
+     * @param memberIds 초대할 멤버 ID 목록 (팔로우 관계 전제)
      */
-    private void processGroupCategoryMembers(Category category, User owner, Set<Long> memberIds) {
+    private void initializeGroupMembers(Category category, User owner, Set<Long> memberIds) {
         // 1. 소유자를 그룹 관리자 멤버로 등록
         categoryMemberService.createCategoryMember(category, owner, CategoryMemberRole.OWNER);
         log.debug("그룹 소유자 등록 완료: categoryId={}, ownerId={}", category.getId(), owner.getId());
+
         // 2. 초대할 멤버가 존재하면 초대 처리
         if (memberIds != null && !memberIds.isEmpty()) {
             categoryInvitationService.inviteMembers(category, owner, memberIds);
@@ -97,7 +99,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     }
 
-    // 일반/그룹/초대받은 카테고리 조회
+    /**
+     * 사용자의 카테고리 조회
+     * - 개인 / 그룹 / 초대 받은 카테고리 포함 여부는 type 파라미터로 제어됩니다.
+     */
     @Override
     public UserCategoryResponse getCategories(Long userId, CategoryType type) {
         // 사용자 조회
@@ -107,7 +112,9 @@ public class CategoryServiceImpl implements CategoryService {
         return type == null ? getAllCategories(user) : getCategoriesByType(user, type);
     }
 
-    // 모든 종류의 카테고리 목록 조회 (개인/그룹/초대받은 카테고리)
+    /**
+     * 전체 카테고리(개인/그룹/초대받은) 조회
+     */
     private UserCategoryResponse getAllCategories(User user) {
         // 개인 카테고리
         List<PersonalCategoryResponse> personalCategories = getPersonalCategories(user);
@@ -123,7 +130,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
-    // 유형별 카테고리 목록 조회 (개인/그룹 카테고리)
+    /**
+     * 유형별 카테고리 조회 (개인/그룹 카테고리)
+     */
     private UserCategoryResponse getCategoriesByType(User user, CategoryType type) {
 
         List<PersonalCategoryResponse> personalCategories = Collections.emptyList();
@@ -150,10 +159,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     /**
-     *  사용자의 개인 카테고리 가나다 순으로 조회
+     *  사용자 개인 카테고리 조회 (가나다 순)
      *
      * @param user 사용자
-     * @return 사용자의 개인 카테고리를 포함하는 PersonalCategoryResponse 리스트
+     * @return 개인 카테고리 응답 리스트
      */
     private List<PersonalCategoryResponse> getPersonalCategories(User user) {
         // 활성화되어있는 개인 카테고리 조회 (owner=user, type=PERSONAL, isDeleted=false)
@@ -167,9 +176,9 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 사용자의 그룹 카테고리 가나다 순으로 조회
+     * 사사용자 그룹 카테고리 조회 (가나다 순)
      *
-     * @param user 사용자 ID
+     * @param user 사용자
      * @return 그룹 카테고리 응답 리스트
      */
     private List<GroupCategoryResponse> getGroupCategories(User user) {
@@ -190,7 +199,9 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
-    // 카테고리 상세 조회
+    /**
+     * 카테고리 상세 조회 (멤버 포함)
+     */
     @Override
     public CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId) {
         // 1. 카테고리 조회
@@ -233,7 +244,7 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 주어진 카테고리를 PersonalCategoryResponse로 변환
      *
-     * @param category 카테고리 엔티티
+     * @param category 카테고리
      * @return PersonalCategoryResponse 객체
      */
     private PersonalCategoryResponse convertToPersonalCategory(Category category) {
@@ -246,7 +257,7 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 주어진 카테고리를 GroupCategoryResponse로 변환
      *
-     * @param category 카테고리 엔티티
+     * @param category 카테고리
      * @param totalMembers 해당 카테고리의 멤버 수
      * @return GroupCategoryResponse 객체
      */
