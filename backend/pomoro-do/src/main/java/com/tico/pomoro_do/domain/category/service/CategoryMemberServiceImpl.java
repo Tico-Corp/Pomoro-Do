@@ -28,7 +28,7 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
     @Override
     public void createCategoryMember(Category category, User user, CategoryMemberRole role) {
         // 중복 멤버 확인
-        if (categoryMemberRepository.existsByCategoryAndUser(category, user)) {
+        if (isActiveMember(category, user)) {
             log.warn("이미 등록된 멤버입니다. categoryId={}, userId={}", category.getId(), user.getId());
             return;
         }
@@ -86,9 +86,9 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
                 .collect(Collectors.toList());
     }
 
-    // 이미 카테고리 멤버인지 확인
+    // 활동중인 카테고리 멤버인지 확인 (탈퇴 여부도 확인해야함)
     @Override
-    public boolean isMember(Category category, User user) {
-        return categoryMemberRepository.existsByCategoryAndUser(category, user);
+    public boolean isActiveMember(Category category, User user) {
+        return categoryMemberRepository.existsByCategoryAndUserAndLeftDateIsNull(category, user);
     }
 }

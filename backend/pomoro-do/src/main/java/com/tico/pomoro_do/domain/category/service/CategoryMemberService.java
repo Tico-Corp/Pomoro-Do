@@ -41,11 +41,11 @@ public interface CategoryMemberService {
     List<CategoryMemberResponse> getMemberResponses(Category category);
 
     /**
-     * 사용자가 해당 카테고리의 멤버인지 여부를 확인
+     * 사용자가 해당 카테고리의 활동 멤버인지 여부를 확인
      *
      * @param category 확인할 그룹 카테고리
      * @param user 대상 사용자
      * @return 이미 멤버로 등록되어 있다면 true, 그렇지 않으면 false
      */
-    boolean isMember(Category category, User user);
+    boolean isActiveMember(Category category, User user);
 }

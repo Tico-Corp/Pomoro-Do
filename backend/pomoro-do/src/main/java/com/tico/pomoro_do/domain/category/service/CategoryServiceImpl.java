@@ -3,15 +3,12 @@ package com.tico.pomoro_do.domain.category.service;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.entity.CategoryInvitation;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
 import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
-import com.tico.pomoro_do.domain.category.repository.CategoryInvitationRepository;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
-import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.exception.CustomException;
 import com.tico.pomoro_do.global.exception.ErrorCode;
@@ -31,10 +28,9 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     private final UserService userService;
-    private final FollowService followService;
-    private final CategoryRepository categoryRepository;
     private final CategoryMemberService categoryMemberService;
-    private final CategoryInvitationRepository categoryInvitationRepository;
+    private final CategoryInvitationService categoryInvitationService;
+    private final CategoryRepository categoryRepository;
 
     /**
      * 카테고리 생성 및 그룹 카테고리 관련 멤버 처리 - 공개 API
@@ -53,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
                 owner, request.getStartDate(), request.getName(), request.getType(), request.getVisibility()
         );
 
-        // 그룹 카테고리인 경우 멤버 처리
+        // 3. 그룹 카테고리일 경우 멤버 및 초대 처리
         if (CategoryType.GROUP.equals(request.getType())) {
             // 그룹 멤버 및 초대장 처리 - N+1 문제 개선 버전
             processGroupCategoryMembers(category, owner, request.getMemberIds());
@@ -84,106 +80,21 @@ public class CategoryServiceImpl implements CategoryService {
     /**
      * 그룹 카테고리 멤버 처리 및 초대장 발송
      * 1. 소유자(생성자)를 그룹 관리자 멤버로 추가
-     * 2. 유효한 멤버 ID 필터링을 위해 팔로우 관계를 한 번에 조회
-     * 3. 초대할 사용자 정보를 한 번에 조회
-     * 4. 초대장 일괄 생성 및 저장
+     * 2. 초대 멤버에 초대장 발송
      *
      * @param category 생성된 카테고리
      * @param owner 카테고리 소유자
      * @param memberIds 초대할 멤버 ID 집합
      */
     private void processGroupCategoryMembers(Category category, User owner, Set<Long> memberIds) {
-        // 1. 소유자를 카테고리 멤버로 추가
+        // 1. 소유자를 그룹 관리자 멤버로 등록
         categoryMemberService.createCategoryMember(category, owner, CategoryMemberRole.OWNER);
-        log.debug("그룹 소유자 등록: 카테고리={}, 소유자={}", category.getId(), owner.getId());
-
-        // 2. 멤버가 없으면 처리 종료
-        // 그룹 카테고리를 생성할 때 추가 안 할 수 도 있음
-        if (memberIds == null || memberIds.isEmpty()) {
-            log.debug("초대할 멤버가 없음: 카테고리={}", category.getId());
-            return;
+        log.debug("그룹 소유자 등록 완료: categoryId={}, ownerId={}", category.getId(), owner.getId());
+        // 2. 초대할 멤버가 존재하면 초대 처리
+        if (memberIds != null && !memberIds.isEmpty()) {
+            categoryInvitationService.inviteMembers(category, owner, memberIds);
         }
 
-        // 소유자는 멤버에서 제외 (중복 방지)
-        memberIds.remove(owner.getId());
-        if (memberIds.isEmpty()) {
-            return;
-        }
-
-        // 3. 팔로우 관계 일괄 조회 (N+1 문제 방지)
-        Set<Long> followingIds = followService.getFollowingIdsByUser(owner.getId());
-
-        // 4. 팔로우 중인 사용자만 필터링
-        Set<Long> followedMemberIds = memberIds.stream()
-                .filter(followingIds::contains)
-                .collect(Collectors.toSet());
-
-        // 팔로우 중인 사용자 없으면 처리 종료
-        if (followedMemberIds.isEmpty()) {
-            log.warn("초대 가능한 팔로우 사용자 없음: 카테고리={}", category.getId());
-            return;
-        }
-
-        // 5. 유효한 사용자 정보 일괄 조회 (N+1 문제 방지)
-        Map<Long, User> inviteeMap = userService.findUsersByIds(followedMemberIds);
-
-        // 6. 초대장 일괄 생성
-        List<CategoryInvitation> invitations = createCategoryInvitations(category, owner, followedMemberIds, inviteeMap);
-
-        // 7. 초대장 일괄 저장 (단일 쿼리로 처리)
-        if (!invitations.isEmpty()) {
-            categoryInvitationRepository.saveAll(invitations);
-            log.info("그룹 멤버 초대 완료: 카테고리={}, 초대 수={}",
-                    category.getId(), invitations.size());
-        }
-    }
-
-    // 초대장 목록을 생성
-    private List<CategoryInvitation> createCategoryInvitations(
-            Category category, User owner, Set<Long> memberIds, Map<Long, User> userMap) {
-
-        return memberIds.stream()
-                .map(userMap::get)
-                .filter(Objects::nonNull)
-                .map(invitee -> CategoryInvitation.builder()
-                        .category(category)
-                        .inviter(owner)
-                        .invitee(invitee)
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * 초대장을 생성합니다.
-     *
-     * @param category 초대하는 카테고리
-     * @param inviter 초대하는 사용자
-     * @param invitee 초대받는 사용자
-     */
-    private void createCategoryInvitation(Category category, User inviter, User invitee) {
-        // 이미 초대장이 존재하는지 확인 (중복 초대 방지)
-        if (categoryInvitationRepository.existsByCategoryAndInvitee(category, invitee)) {
-            log.warn("이미 초대장이 발송된 사용자: categoryId={}, inviteeId={}", category.getId(), invitee.getId());
-            return;
-        }
-
-        // 이미 멤버인지 확인
-        if (categoryMemberService.isMember(category, invitee)) {
-            log.warn("이미 카테고리 멤버인 사용자: categoryId={}, inviteeId={}", category.getId(), invitee.getId());
-            return;
-        }
-
-        // 초대장 객체 생성
-        CategoryInvitation categoryInvitation = CategoryInvitation.builder()
-                .category(category)
-                .inviter(inviter)
-                .invitee(invitee)
-                .build();
-
-        // 저장
-        categoryInvitationRepository.save(categoryInvitation);
-        log.debug("카테고리 초대장 발송 완료: categoryId={}, inviterId={}, inviteeId={}",
-                category.getId(), inviter.getId(), invitee.getId());
     }
 
     // 일반/그룹/초대받은 카테고리 조회
@@ -203,7 +114,7 @@ public class CategoryServiceImpl implements CategoryService {
         // 그룹 카테고리
         List<GroupCategoryResponse> groupCategories = getGroupCategories(user);
         // 대기중인 초대장
-        List<CategoryInvitationResponse> pendingInvitations = getCategoryInvitations(user, CategoryInvitationStatus.PENDING);
+        List<CategoryInvitationResponse> pendingInvitations = categoryInvitationService.findInvitationsByStatus(user, CategoryInvitationStatus.PENDING);
 
         return UserCategoryResponse.builder()
                 .personalCategories(personalCategories)
@@ -279,24 +190,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<CategoryInvitationResponse> getCategoryInvitationsByStatus(Long userId, CategoryInvitationStatus status) {
-        // 사용자 조회
-        User user = userService.findUserById(userId);
-
-        return getCategoryInvitations(user, status);
-    }
-
-    // 초대장 조회 - 상태별, 최신순
-    private List<CategoryInvitationResponse> getCategoryInvitations(User user, CategoryInvitationStatus status) {
-        // 초대 상태에 따른 초대장 최신순으로 조회 (ex, invitee=user, CategoryInvitationStatus=PENDING)
-        List<CategoryInvitation> categoryInvitations = categoryInvitationRepository.findAllByInviteeAndStatusOrderByCreatedAtDesc(user, status);
-
-        return categoryInvitations.stream()
-                .map(this::convertToCategoryInvitation)
-                .collect(Collectors.toList());
-    }
-
     // 카테고리 상세 조회
     @Override
     public CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId) {
@@ -363,21 +256,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryId(category.getId())
                 .categoryName(category.getName())
                 .totalMembers(Math.toIntExact(totalMembers))
-                .build();
-    }
-
-    /**
-     * 초대장 정보를 CategoryInvitationResponse로 변환
-     *
-     * @param categoryInvitation 카테고리 초대장
-     * @return CategoryInvitationResponse 객체
-     */
-    private CategoryInvitationResponse convertToCategoryInvitation(CategoryInvitation categoryInvitation) {
-
-        return CategoryInvitationResponse.builder()
-                .categoryInvitationId(categoryInvitation.getId())
-                .categoryName(categoryInvitation.getCategory().getName())
-                .ownerNickname(categoryInvitation.getInviter().getNickname())
                 .build();
     }
 }

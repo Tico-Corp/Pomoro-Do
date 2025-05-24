@@ -19,13 +19,13 @@ public interface CategoryMemberRepository extends JpaRepository<CategoryMember, 
     List<CategoryMember> findAllByCategoryAndLeftDateIsNull(Category category);
 
     /**
-     * 카테고리와 사용자로 멤버십 존재 여부 확인
+     * 카테고리와 사용자로 멤버십 존재 여부 확인 (탈퇴 여부도 확인)
      *
      * @param category 카테고리
      * @param user 사용자
      * @return 멤버십 존재 여부
      */
-    boolean existsByCategoryAndUser(Category category, User user);
+    boolean existsByCategoryAndUserAndLeftDateIsNull(Category category, User user);
 
     /**
      * 카테고리 ID와 사용자 ID로 멤버십 존재 여부 확인
