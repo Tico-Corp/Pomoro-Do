@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     /**
-     * 카테고리 생성 및 그룹 카테고리 관련 멤버 처리 - 공개 API
+     * 카테고리 생성 및 그룹 카테고리 관련 멤버 처리
      * 그룹 카테고리면,
      * 1. 생성자는 그룹의 OWNER 멤버로 등록
      * 2. 초대 대상자에게 초대장 발송
@@ -79,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     /**
-     * 그룹 카테고리 초기 멤버를 설정합니다.
+     * 그룹 카테고리 초기 멤버 설정 (V1에서는 생성 시에만 설정 가능)
      * 1. 소유자를 그룹 OWNER 멤버로 등록합니다.
      * 2. 소유자를 제외한 memberIds 중 팔로우 관계 + 중복 멤버 제외 후 초대장을 발송합니다.
      *

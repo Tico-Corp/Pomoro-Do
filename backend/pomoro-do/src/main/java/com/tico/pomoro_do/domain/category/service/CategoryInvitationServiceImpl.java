@@ -81,14 +81,17 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
     }
 
     /**
-     * 조건을 만족하는 사용자에 대해 초대장 생성
-     * - 이미 멤버이거나 초대된 사용자는 제외
+     * 유효한 사용자에 대해 초대장을 생성
+     * - 조건:
+     *   1. 존재하는 사용자 (userMap 기준)
+     *   2. 현재 멤버가 아닌 사용자 (isActiveMember=false)
+     *   3. PENDING 상태 초대장이 없는 사용자
      *
      * @param category 그룹 카테고리
      * @param inviter 초대한 사용자
-     * @param inviteeIds 초대 대상 ID 목록
+     * @param inviteeIds 초대 대상 사용자 ID 목록
      * @param userMap 사용자 ID → User 객체 맵
-     * @return 초대장 엔티티 리스트
+     * @return 생성된 초대장 엔티티 리스트
      */
     private List<CategoryInvitation> createCategoryInvitations(
             Category category, User inviter, Set<Long> inviteeIds, Map<Long, User> userMap) {
@@ -96,7 +99,8 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
         return inviteeIds.stream()
                 .map(userMap::get)
                 .filter(Objects::nonNull) // 팔로우 한 사용자만 가져오기
-                .filter(invitee -> !categoryMemberService.isActiveMember(category, invitee)) // 기존 멤버 제외
+                .filter(invitee -> !categoryMemberService.isActiveMember(category, invitee)) // 현재 멤버 제외
+                .filter(invitee -> !hasPendingInvitation(category, invitee)) // 중복 초대 방지 (PENDING 상태 존재 여부)
                 .map(invitee -> CategoryInvitation.builder()
                         .category(category)
                         .inviter(inviter)
@@ -116,13 +120,13 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
     @Override
     @Transactional
     public void createCategoryInvitation(Category category, User inviter, User invitee) {
-        // 이미 초대장이 존재하는지 확인 (중복 초대 방지)
-        if (categoryInvitationRepository.existsByCategoryAndInvitee(category, invitee)) {
-            log.warn("이미 초대장이 존재: categoryId={}, inviteeId={}", category.getId(), invitee.getId());
+        // 이미 초대장이 존재하는지 확인 (중복 초대 방지-> 미응답 초대장 존재 여부)
+        if (hasPendingInvitation(category, invitee)) {
+            log.warn("이미 대기 중인 초대장이 존재: categoryId={}, inviteeId={}", category.getId(), invitee.getId());
             return;
         }
 
-        // 이미 멤버인지 확인
+        // 이미 멤버인지 확인 (여기서 이전에 수락한 초대장 중 현재 멤버 여부 확인)
         if (categoryMemberService.isActiveMember(category, invitee)) {
             log.warn("이미 멤버인 사용자에게 초대장 생성 시도: categoryId={}, inviteeId={}", category.getId(), invitee.getId());
             return;
@@ -186,5 +190,21 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
                 .categoryName(categoryInvitation.getCategory().getName())
                 .ownerNickname(categoryInvitation.getInviter().getNickname())
                 .build();
+    }
+
+    /**
+     * 사용자가 해당 카테고리에 대해 '대기 중(PENDING)' 상태의 초대장이 있는지 확인
+     * - PENDING 상태의 초대가 존재할 경우, 중복 초대를 방지하기 위해 true를 반환합니다.
+     *
+     * @param category 카테고리
+     * @param invitee 피초대자
+     * @return PENDING 상태의 초대장이 존재하면 true, 그렇지 않으면 false
+     */
+    private boolean hasPendingInvitation(Category category, User invitee) {
+        return categoryInvitationRepository.existsByCategoryAndInviteeAndStatus(
+                category,
+                invitee,
+                CategoryInvitationStatus.PENDING
+        );
     }
 }
