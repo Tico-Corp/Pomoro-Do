@@ -14,8 +14,6 @@ public interface CategoryInvitationRepository extends JpaRepository<CategoryInvi
 
     List<CategoryInvitation> findAllByInviteeAndStatusOrderByCreatedAtDesc(User invitee, CategoryInvitationStatus status);
 
-    boolean existsByCategoryAndInvitee(Category category, User invitee);
-
     /**
      * 카테고리, 초대대상자, 상태로 초대장 존재 여부 확인
      *
