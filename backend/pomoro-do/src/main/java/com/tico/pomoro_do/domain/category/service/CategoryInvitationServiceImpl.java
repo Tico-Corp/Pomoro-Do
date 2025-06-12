@@ -1,13 +1,17 @@
 package com.tico.pomoro_do.domain.category.service;
 
+import com.tico.pomoro_do.domain.category.dto.request.CategoryInvitationDecisionRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.CategoryInvitation;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.repository.CategoryInvitationRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.domain.user.service.UserService;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -206,5 +210,44 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
                 invitee,
                 CategoryInvitationStatus.PENDING
         );
+    }
+
+    @Override
+    @Transactional
+    public void respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request) {
+        CategoryInvitation invitation = getInvitationById(invitationId);
+        validateInvitee(invitation, userId);
+
+        // 요청용 Enum → 상태 Enum 매핑
+        CategoryInvitationStatus status = switch (request.getDecision()) {
+            case ACCEPTED -> CategoryInvitationStatus.ACCEPTED;
+            case REJECTED -> CategoryInvitationStatus.REJECTED;
+        };
+
+        // 도메인에서 상태 변경
+        invitation.respondToInvitation(status);
+
+        // 초대 승낙이면 그룹 멤버 생성
+        if (status == CategoryInvitationStatus.ACCEPTED) {
+            categoryMemberService.createCategoryMember(
+                    invitation.getCategory(),
+                    invitation.getInvitee(),
+                    CategoryMemberRole.MEMBER
+            );
+        }
+    }
+
+    private CategoryInvitation getInvitationById(Long invitationId) {
+        // 초대 정보 가져오기
+        return categoryInvitationRepository.findById(invitationId)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVITATION_NOT_FOUND));
+    }
+
+    // 초대 받은 사람 맞는 지 확인
+    private void validateInvitee(CategoryInvitation invitation, Long userId) {
+        // 응답 대상자인지 확인
+        if (!invitation.getInvitee().getId().equals(userId)) {
+            throw new CustomException(ErrorCode.NOT_INVITEE);
+        }
     }
 }

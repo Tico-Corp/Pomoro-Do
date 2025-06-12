@@ -3,6 +3,8 @@ package com.tico.pomoro_do.domain.category.entity;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -46,9 +48,13 @@ public class CategoryInvitation extends BaseTimeEntity {
     /**
      * 초대 상태 업데이트 메소드
      *
-     * @param status 변경할 상태
+     * @param decision 변경할 상태
      */
-    public void updateStatus(CategoryInvitationStatus status) {
-        this.status = status;
+    public void respondToInvitation(CategoryInvitationStatus decision) {
+        // 초대 중복 응답 방지
+        if (this.status != CategoryInvitationStatus.PENDING) {
+            throw new CustomException(ErrorCode.INVITATION_ALREADY_RESPONDED);
+        }
+        this.status = decision;
     }
 }

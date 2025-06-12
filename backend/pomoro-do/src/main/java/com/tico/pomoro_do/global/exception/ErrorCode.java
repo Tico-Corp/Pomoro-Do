@@ -168,7 +168,7 @@ public enum ErrorCode {
     CATEGORY_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-605", "카테고리 삭제 중 오류가 발생했습니다."),
     CATEGORY_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-606", "카테고리 업데이트 중 오류가 발생했습니다."),
     CATEGORY_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "C-607", "그룹 카테고리의 멤버를 찾을 수 없습니다."),
-    CATEGORY_MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "C-608", "해당 멤버는 이미 그룹에 포함되어 있습니다."),
+    CATEGORY_MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "C-608", "이미 그룹에 가입된 사용자입니다."),
     CATEGORY_MEMBER_ADDITION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-609", "그룹 카테고리에 멤버 추가 중 오류가 발생했습니다."),
     CATEGORY_MEMBER_REMOVAL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-610", "그룹 카테고리에서 멤버 삭제 중 오류가 발생했습니다."),
     CATEGORY_MEMBER_NOT_FOLLOWED(HttpStatus.BAD_REQUEST, "C-611", "팔로우하지 않은 사용자는 그룹에 초대할 수 없습니다."),
@@ -179,14 +179,14 @@ public enum ErrorCode {
     INVALID_CATEGORY_VISIBILITY(HttpStatus.BAD_REQUEST, "C-623", "유효하지 않은 카테고리 공개 범위입니다."),
 //    OWNER_CANNOT_LEAVE(HttpStatus.BAD_REQUEST, "C-618", "카테고리 관리자는 탈퇴할 수 없습니다."),
 
-    // 초대 관련 에러: -650번대
-    INVITATION_NOT_FOUND(HttpStatus.NOT_FOUND, "C-651", "초대장을 찾을 수 없습니다."),
-    DUPLICATE_INVITATION(HttpStatus.BAD_REQUEST, "C-652", "이미 초대된 사용자입니다."),
-    INVALID_INVITATION_STATUS(HttpStatus.BAD_REQUEST, "C-653", "유효하지 않은 초대 상태입니다."),
-    ALREADY_CATEGORY_MEMBER(HttpStatus.BAD_REQUEST, "C-654", "이미 카테고리 멤버인 사용자입니다."),
-
+    // 초대 응답 관련 에러: -650번대,
+    INVALID_INVITATION_STATUS(HttpStatus.BAD_REQUEST, "CI-650", "유효하지 않은 초대 상태입니다."),
+    INVITATION_NOT_FOUND(HttpStatus.NOT_FOUND, "CI-651", "해당 초대 정보를 찾을 수 없습니다."),
+    DUPLICATE_INVITATION(HttpStatus.BAD_REQUEST, "CI-652", "이미 초대된 사용자입니다."),
+    INVITATION_ALREADY_RESPONDED(HttpStatus.BAD_REQUEST, "CI-653", "이미 응답한 초대입니다."),
+    ALREADY_CATEGORY_MEMBER(HttpStatus.BAD_REQUEST, "CI-654", "이미 카테고리 멤버인 사용자입니다."),
+    NOT_INVITEE(HttpStatus.FORBIDDEN, "CI-655", "해당 초대에 응답할 권한이 없습니다."),
     ;
-
 
     private final HttpStatus httpStatus;	// HttpStatus
     private final String code;				// U-100

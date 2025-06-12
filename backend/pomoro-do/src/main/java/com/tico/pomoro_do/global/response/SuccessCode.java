@@ -38,12 +38,18 @@ public enum SuccessCode {
     CATEGORY_DELETION_SUCCESS(HttpStatus.OK, "카테고리 삭제에 성공했습니다."),
     CATEGORY_UPDATE_SUCCESS(HttpStatus.OK, "카테고리 업데이트에 성공했습니다."),
     CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "카테고리 조회에 성공했습니다."),
-    GENERAL_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "일반 카테고리 조회에 성공했습니다."),
-    GROUP_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "그룹 카테고리 조회에 성공했습니다."),
-    INVITED_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "초대받은 카테고리 조회에 성공했습니다."),
     CATEGORY_DETAIL_FETCH_SUCCESS(HttpStatus.OK, "카테고리 상세 정보 조회에 성공했습니다."),
+
+    GENERAL_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "일반 카테고리 조회에 성공했습니다."),
+
+    GROUP_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "그룹 카테고리 조회에 성공했습니다."),
     CATEGORY_MEMBER_ADDITION_SUCCESS(HttpStatus.OK, "그룹 카테고리에 멤버 추가에 성공했습니다."),
     CATEGORY_MEMBER_REMOVAL_SUCCESS(HttpStatus.OK, "그룹 카테고리에서 멤버 삭제에 성공했습니다."),
+
+    INVITED_CATEGORY_FETCH_SUCCESS(HttpStatus.OK, "초대받은 카테고리 조회에 성공했습니다."),
+    CATEGORY_INVITATION_RESPONSE_SUCCESS(HttpStatus.OK, "카테고리 초대에 응답하였습니다."),
+    CATEGORY_INVITATION_ACCEPT_SUCCESS(HttpStatus.OK, "카테고리 초대를 수락하였습니다."),
+    CATEGORY_INVITATION_REJECT_SUCCESS(HttpStatus.OK, "카테고리 초대를 거절하였습니다."),
 
     ;
 

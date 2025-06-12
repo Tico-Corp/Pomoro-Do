@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.category.controller;
 
+import com.tico.pomoro_do.domain.category.dto.request.CategoryInvitationDecisionRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
 import com.tico.pomoro_do.domain.category.service.CategoryInvitationService;
@@ -14,10 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -69,5 +67,21 @@ public class CategoryInvitationController {
                 .data(response)
                 .build();
         return ResponseEntity.ok(successResponse);
+    }
+
+    @PatchMapping("/{invitationId}")
+    public ResponseEntity<SuccessResponse<String>> responseInvitation(
+            @PathVariable Long invitationId,
+            @RequestBody CategoryInvitationDecisionRequest request,
+            @AuthenticationPrincipal CustomUserDetails userDetails // 로그인 유저
+    ) {
+        categoryInvitationService.respondInvitation(invitationId, userDetails.getUserId(), request);
+
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+                .message(SuccessCode.CATEGORY_INVITATION_RESPONSE_SUCCESS.getMessage())
+                .data(SuccessCode.CATEGORY_INVITATION_RESPONSE_SUCCESS.name())
+                .build();
+        return ResponseEntity.ok(successResponse);
+
     }
 }

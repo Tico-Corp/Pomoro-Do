@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.category.service;
 
+import com.tico.pomoro_do.domain.category.dto.request.CategoryInvitationDecisionRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
@@ -55,4 +56,6 @@ public interface CategoryInvitationService {
      * @return 초대장 응답 DTO 리스트
      */
     List<CategoryInvitationResponse> findInvitationsByStatus(User user, CategoryInvitationStatus status);
+
+    void respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request);
 }
