@@ -10,5 +10,6 @@ import lombok.Getter;
 public class CategoryInvitationDecisionRequest {
 
     @NotNull(message = "초대 응답은 필수입니다.")
-    private CategoryInvitationDecision decision; // ACCEPTED or REJECTED
+    @Schema(description = "카테고리 초대 응답 유형 (ACCEPTED/REJECTED)", example = "ACCEPTED")
+    private CategoryInvitationDecision decision;
 }

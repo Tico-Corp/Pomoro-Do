@@ -69,6 +69,36 @@ public class CategoryInvitationController {
         return ResponseEntity.ok(successResponse);
     }
 
+    /**
+     * 카테고리 초대장 응답 API
+     *
+     * @param invitationId 응답할 초대장 ID
+     * @param request 사용자 응답 정보 (ACCEPTED or REJECTED)
+     * @param userDetails 인증된 사용자 정보
+     * @return 응답 성공 메시지
+     */
+    @Operation(
+            summary = "카테고리 초대 응답",
+            description = """
+                    사용자가 받은 그룹 초대장에 수락 또는 거절로 응답합니다.
+            
+                    ## 요청 값
+                    - `ACCEPTED`: 초대를 수락하고 그룹에 참여
+                    - `REJECTED`: 초대를 거절하고 무시
+            
+                    ## 응답 처리
+                    - 이미 응답한 초대는 처리할 수 없습니다.
+                    - 수락 시 자동으로 그룹 멤버로 등록됩니다.
+                    """
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "초대 응답 성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 또는 중복 응답"),
+            @ApiResponse(responseCode = "401", description = "인증 오류 - 로그인 필요"),
+            @ApiResponse(responseCode = "403", description = "권한 없음 - 본인의 초대가 아님"),
+            @ApiResponse(responseCode = "404", description = "초대장이 존재하지 않음"),
+            @ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    })
     @PatchMapping("/{invitationId}")
     public ResponseEntity<SuccessResponse<String>> responseInvitation(
             @PathVariable Long invitationId,
@@ -82,6 +112,5 @@ public class CategoryInvitationController {
                 .data(SuccessCode.CATEGORY_INVITATION_RESPONSE_SUCCESS.name())
                 .build();
         return ResponseEntity.ok(successResponse);
-
     }
 }

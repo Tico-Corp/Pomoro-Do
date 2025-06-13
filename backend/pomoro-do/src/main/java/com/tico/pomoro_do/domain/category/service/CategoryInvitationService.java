@@ -57,5 +57,14 @@ public interface CategoryInvitationService {
      */
     List<CategoryInvitationResponse> findInvitationsByStatus(User user, CategoryInvitationStatus status);
 
+    /**
+     * 초대장에 대한 응답 처리 (수락 또는 거절)
+     * - 초대장 존재 여부와 응답 권한을 검증합니다.
+     * - 수락 시 그룹 멤버로 자동 등록됩니다.
+     *
+     * @param invitationId 응답할 초대장 ID
+     * @param userId 응답하는 사용자 ID
+     * @param request 응답 요청 객체 (ACCEPTED 또는 REJECTED)
+     */
     void respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request);
 }
