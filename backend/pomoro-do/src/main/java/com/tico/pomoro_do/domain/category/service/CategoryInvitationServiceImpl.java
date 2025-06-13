@@ -1,13 +1,17 @@
 package com.tico.pomoro_do.domain.category.service;
 
+import com.tico.pomoro_do.domain.category.dto.request.CategoryInvitationDecisionRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.CategoryInvitation;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
+import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.repository.CategoryInvitationRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.FollowService;
 import com.tico.pomoro_do.domain.user.service.UserService;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(readOnly = true) // 조회 기본 설정
 @Slf4j
 public class CategoryInvitationServiceImpl implements CategoryInvitationService{
 
@@ -206,5 +210,77 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
                 invitee,
                 CategoryInvitationStatus.PENDING
         );
+    }
+
+    /**
+     * 초대장에 대한 응답 처리 (수락 or 거절)
+     * - 초대장 존재 여부 확인
+     * - 응답 사용자의 권한 검증
+     * - 초대장 상태 변경
+     * - 수락 시 그룹 멤버로 등록
+     *
+     * @param invitationId 응답할 초대장 ID
+     * @param userId 현재 로그인한 사용자 ID
+     * @param request 응답 요청 (수락/거절)
+     */
+    @Override
+    @Transactional
+    public void respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request) {
+        // 1. 초대장 조회
+        CategoryInvitation invitation = getInvitationById(invitationId);
+        // 2. 초대 대상자 본인인지 확인
+        validateInvitee(invitation, userId);
+
+        // 3. 요청 값(ACCEPTED/REJECTED)을 도메인 상태로 변환
+        CategoryInvitationStatus status = switch (request.getDecision()) {
+            case ACCEPTED -> CategoryInvitationStatus.ACCEPTED;
+            case REJECTED -> CategoryInvitationStatus.REJECTED;
+        };
+
+        // 4. 상태 변경 (엔티티 내부에서 상태값 변경)
+        invitation.respondToInvitation(status);
+
+        // 5. 수락한 경우 그룹 멤버로 등록
+        if (status == CategoryInvitationStatus.ACCEPTED) {
+            categoryMemberService.createCategoryMember(
+                    invitation.getCategory(),
+                    invitation.getInvitee(),
+                    CategoryMemberRole.MEMBER
+            );
+            log.info("초대 수락: 그룹 멤버 생성 완료 - categoryId={}, userId={}",
+                    invitation.getCategory().getId(), invitation.getInvitee().getId());
+        }
+    }
+
+    /**
+     * 초대장 ID로 초대 정보를 조회합니다.
+     * 존재하지 않는 경우 예외를 발생시킵니다.
+     *
+     * @param invitationId 초대장 ID
+     * @return CategoryInvitation 객체
+     * @throws CustomException 초대장이 존재하지 않을 경우
+     */
+    private CategoryInvitation getInvitationById(Long invitationId) {
+        return categoryInvitationRepository.findById(invitationId)
+                .orElseThrow(() -> {
+                    log.warn("초대장 조회 실패: 존재하지 않음 - invitationId={}", invitationId);
+                    return new CustomException(ErrorCode.INVITATION_NOT_FOUND);
+                });
+    }
+
+    /**
+     * 응답 사용자가 실제 초대 대상자인지 검증합니다.
+     *
+     * @param invitation 초대장
+     * @param userId 응답자 ID
+     * @throws CustomException 본인이 아닌 경우
+     */
+    private void validateInvitee(CategoryInvitation invitation, Long userId) {
+        Long inviteeId = invitation.getInvitee().getId();
+        if (!inviteeId.equals(userId)) {
+            log.warn("초대 대상자 불일치: invitationId={}, expectedInviteeId={}, actualUserId={}",
+                    invitation.getId(), inviteeId, userId);
+            throw new CustomException(ErrorCode.NOT_INVITEE);
+        }
     }
 }
