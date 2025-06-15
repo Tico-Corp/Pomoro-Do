@@ -1,6 +1,7 @@
 package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
 import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
@@ -50,4 +51,13 @@ public interface CategoryService {
      * @return CategoryDetailResponse 객체
      */
     CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId);
+
+    /**
+     * 카테고리 삭제
+     *
+     * @param userId 삭제 요청 사용자 ID
+     * @param categoryId 삭제 대상 카테고리 ID
+     * @param request 삭제 정책 정보 (CategoryDeletionOption)
+     */
+    void deleteCategory(Long userId, Long categoryId, CategoryDeleteRequest request);
 }

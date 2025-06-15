@@ -2,6 +2,7 @@ package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.response.CategoryMemberResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
+import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
 import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.user.entity.User;
 
@@ -54,4 +55,15 @@ public interface CategoryMemberService {
      * @return true: 현재 멤버이며 탈퇴하지 않음, false: 미참여 또는 탈퇴
      */
     boolean isActiveMember(Category category, User user);
+
+    /**
+     * 그룹 카테고리의 활동 중인 멤버 전원을 탈퇴 처리
+     * - 카테고리 삭제 시 사용
+     * - 모든 멤버의 leftDate와 삭제 정책을 함께 갱신
+     * - 이미 탈퇴한 멤버는 제외
+     *
+     * @param category 탈퇴시킬 그룹 카테고리
+     * @param deletionOption 각 멤버에게 적용할 데이터 삭제 정책
+     */
+    void leaveAllActiveMembers(Category category, CategoryDeletionOption deletionOption);
 }

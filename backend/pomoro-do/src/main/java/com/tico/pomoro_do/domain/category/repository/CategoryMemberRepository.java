@@ -10,12 +10,13 @@ import java.util.Optional;
 
 public interface CategoryMemberRepository extends JpaRepository<CategoryMember, Long> {
 
-    // 활성회되어있는 카테고리 멤버 조회 (user=user, leftDate=null)
+    // 해당 멤버의 활성회되어있는 카테고리들 조회 (user=user, leftDate=null)
     List<CategoryMember> findAllByUserAndLeftDateIsNull(User user);
 
-    // 카테고리들의 활성화 되어있는 멤버 조회 (category=category, leftDate=null)
+    // 해당 카테고리들의 활성화 되어있는 멤버 모두 조회 (category=category, leftDate=null)
     List<CategoryMember> findAllByCategoryInAndLeftDateIsNull(List<Category> categories);
 
+    // 해당 카테고리의 활성화 되어있는 멤버들 조회 (category=category, leftDate=null)
     List<CategoryMember> findAllByCategoryAndLeftDateIsNull(Category category);
 
     /**

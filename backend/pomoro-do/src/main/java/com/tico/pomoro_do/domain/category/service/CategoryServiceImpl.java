@@ -1,12 +1,10 @@
 package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
-import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
-import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
-import com.tico.pomoro_do.domain.category.enums.CategoryType;
-import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
+import com.tico.pomoro_do.domain.category.enums.*;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.UserService;
@@ -268,5 +266,56 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryName(category.getName())
                 .totalMembers(Math.toIntExact(totalMembers))
                 .build();
+    }
+
+    /**
+     * 카테고리 삭제
+     * - 소유자만 삭제할 수 있으며, 삭제 정책을 기반으로 논리 삭제 처리됩니다.
+     * - 그룹 카테고리인 경우, 그룹 멤버들을 탈퇴 처리하고 PENDING 상태 초대장을 모두 제거합니다.
+     *
+     * @param userId 삭제 요청 사용자 ID
+     * @param categoryId 삭제 대상 카테고리 ID
+     * @param request 삭제 정책 정보 (CategoryDeletionOption)
+     * @throws CustomException 삭제 권한 없음, 이미 삭제됨 등의 예외 발생 가능
+     */
+    @Override
+    @Transactional
+    public void deleteCategory(Long userId, Long categoryId, CategoryDeleteRequest request) {
+        log.info("카테고리 삭제 요청: userId={}, categoryId={}, deletionOption={}",
+                userId, categoryId, request.getDeletionOption());
+
+        // 1. 카테고리 조회
+        Category category = findByCategoryId(categoryId);
+
+        // 2. 삭제 여부 확인
+        if (category.isDeleted()) {
+            log.warn("이미 삭제된 카테고리에 대한 삭제 요청: categoryId={}", categoryId);
+            throw new CustomException(ErrorCode.CATEGORY_ALREADY_DELETED);
+        }
+
+        // 3. 소유자인지 확인
+        if (!category.isOwner(userId)) {
+            log.warn("카테고리 소유자가 아닌 사용자의 삭제 시도: userId={}, categoryId={}", userId, categoryId);
+            throw new CustomException(ErrorCode.CATEGORY_DELETE_FORBIDDEN);
+        }
+
+        // 4. 논리 삭제 (삭제 옵션 포함)
+        category.delete(request.getDeletionOption());  // endDate, 삭제옵션, deleted = true
+        log.info("카테고리 논리 삭제 완료: categoryId={}, option={}", categoryId, request.getDeletionOption());
+
+        // 5. 그룹 카테고리인 경우 추가 처리
+        if (category.isGroup()) {
+            log.debug("그룹 카테고리 삭제 후 멤버 탈퇴 및 초대장 제거 처리 시작: categoryId={}", categoryId);
+
+            // 5-1. 활성화된 멤버 모두 탈퇴 처리
+            categoryMemberService.leaveAllActiveMembers(category, request.getDeletionOption());
+            log.info("그룹 멤버 탈퇴 처리 완료: categoryId={}", categoryId);
+
+            // 5-2. 응답 대기중인 초대장 물리 삭제 (PENDING 상태)
+            categoryInvitationService.deleteAllPendingInvitations(category);
+            log.info("PENDING 초대장 삭제 완료: categoryId={}", categoryId);
+        }
+
+        log.info("카테고리 삭제 전체 프로세스 완료: categoryId={}", categoryId);
     }
 }

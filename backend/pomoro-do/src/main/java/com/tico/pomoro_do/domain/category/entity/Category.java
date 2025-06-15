@@ -6,6 +6,9 @@ import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.enums.CategoryVisibility;
 import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
+import com.tico.pomoro_do.global.common.util.DateUtils;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -63,5 +66,23 @@ public class Category extends BaseTimeEntity {
         this.type = type;
         this.startDate = startDate;
         this.visibility = visibility;
+    }
+
+    public boolean isOwner(Long userId) {
+        return this.owner != null && this.owner.getId().equals(userId);
+    }
+
+    public boolean isGroup() {
+        return this.type == CategoryType.GROUP;
+    }
+
+    // 삭제 요청(카테고리 삭제 날짜, 하위 할일 삭제 정책, 논리적 삭제 여부 저장)
+    public void delete(CategoryDeletionOption deletionOption) {
+        if (this.deleted) {
+            throw new CustomException(ErrorCode.CATEGORY_ALREADY_DELETED);
+        }
+        this.deletionOption = deletionOption;
+        this.endDate = DateUtils.getBusinessDate(); // 삭제 처리 날짜
+        this.deleted = true;
     }
 }

@@ -5,6 +5,8 @@ import com.tico.pomoro_do.global.common.entity.BaseTimeEntity;
 import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
 import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.global.common.util.DateUtils;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -57,9 +59,23 @@ public class CategoryMember extends BaseTimeEntity {
      * 탈퇴 처리 메소드
      *
      * @param deletionOption 데이터 삭제 옵션
+     * @throws CustomException 이미 탈퇴된 경우 예외
      */
     public void leave(CategoryDeletionOption deletionOption) {
+        if (this.leftDate != null) {
+            throw new CustomException(ErrorCode.ALREADY_LEFT_CATEGORY);
+        }
         this.deletionOption = deletionOption;
         this.leftDate = DateUtils.getBusinessDate();
+    }
+
+    /**
+     * 현재 그룹 멤버가 활성 상태인지 확인합니다.
+     * 탈퇴일자가 null이면 아직 그룹에 남아있는 것으로 간주합니다.
+     *
+     * @return true if not yet left, false otherwise
+     */
+    public boolean isActive() {
+        return this.leftDate == null;
     }
 }
