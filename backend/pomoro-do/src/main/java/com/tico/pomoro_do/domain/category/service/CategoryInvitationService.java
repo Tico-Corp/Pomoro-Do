@@ -67,4 +67,13 @@ public interface CategoryInvitationService {
      * @param request 응답 요청 객체 (ACCEPTED 또는 REJECTED)
      */
     void respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request);
+
+    /**
+     * 해당 카테고리에 대한 응답되지 않은(PENDING) 초대장 모두 삭제
+     * - 그룹 카테고리 삭제 시 호출됩니다.
+     * - 수락 또는 거절되지 않은 초대장만 대상으로 합니다.
+     *
+     * @param category 초대장을 삭제할 대상 카테고리
+     */
+    void deleteAllPendingInvitations(Category category);
 }

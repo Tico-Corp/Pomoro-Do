@@ -1,6 +1,7 @@
 package com.tico.pomoro_do.domain.category.controller;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
 import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
@@ -150,8 +151,8 @@ public class CategoryController {
     })
     @GetMapping("/{categoryId}")
     public ResponseEntity<SuccessResponse<CategoryDetailResponse>> getCategoryDetail(
-            @PathVariable Long categoryId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long categoryId
     ) {
         CategoryDetailResponse response = categoryService.getCategoryDetail(categoryId, userDetails.getUserId());
 
@@ -160,5 +161,36 @@ public class CategoryController {
                 .data(response)
                 .build();
         return ResponseEntity.ok(successResponse);
+    }
+
+    @Operation(
+            summary = "카테고리 삭제 API",
+            description = """
+                    사용자가 소유한 카테고리를 삭제합니다.
+                    - 일반/그룹 카테고리 모두 삭제할 수 있으며, 삭제 정책에 따라 하위 할 일 데이터를 처리합니다.
+                    - 그룹 카테고리의 경우 멤버 전원 탈퇴 처리 및 초대장 삭제가 함께 수행됩니다.
+                    - 삭제는 논리 삭제 방식이며, 삭제 정책은 요청 본문에 포함되어야 합니다.
+                    """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "카테고리 삭제 성공"),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청 또는 이미 삭제된 카테고리"),
+                    @ApiResponse(responseCode = "403", description = "삭제 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "카테고리를 찾을 수 없음")
+            }
+    )
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<SuccessResponse<String>> deleteCategory(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long categoryId,
+            @RequestBody @Valid CategoryDeleteRequest request
+    ) {
+        categoryService.deleteCategory(userDetails.getUserId(), categoryId, request);
+
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+                .message(SuccessCode.CATEGORY_DELETION_SUCCESS.getMessage())
+                .data(SuccessCode.CATEGORY_DELETION_SUCCESS.name())
+                .build();
+        return ResponseEntity.ok(successResponse);
+
     }
 }

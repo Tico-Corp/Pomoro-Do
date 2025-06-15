@@ -3,6 +3,7 @@ package com.tico.pomoro_do.domain.category.service;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryMemberResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.CategoryMember;
+import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
 import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.repository.CategoryMemberRepository;
 import com.tico.pomoro_do.domain.user.entity.User;
@@ -118,5 +119,29 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
     @Override
     public boolean isActiveMember(Category category, User user) {
         return categoryMemberRepository.existsByCategoryAndUserAndLeftDateIsNull(category, user);
+    }
+
+    /**
+     * 카테고리 삭제 시 그룹 카테고리의 활동 중인 멤버 전원 탈퇴
+     * - leftDate와 삭제 정책 갱신
+     *
+     * @param category 탈퇴시킬 그룹 카테고리
+     * @param deletionOption 각 멤버에게 적용할 데이터 삭제 정책
+     */
+    @Override
+    public void leaveAllActiveMembers(Category category, CategoryDeletionOption deletionOption) {
+        List<CategoryMember> activeMembers  = categoryMemberRepository.findAllByCategoryAndLeftDateIsNull(category);
+
+        log.info("카테고리 탈퇴 처리 시작 - categoryId={}, memberCount={}, deletionOption={}",
+                category.getId(), activeMembers.size(), deletionOption);
+
+        for (CategoryMember member : activeMembers) {
+            log.debug("멤버 탈퇴 처리 - memberId={}, userId={}, deletionOption={}",
+                    member.getId(), member.getUser().getId(), deletionOption);
+
+            member.leave(deletionOption);
+        }
+
+        log.info("카테고리 멤버 탈퇴 완료 - categoryId={}, 처리된 멤버 수={}", category.getId(), activeMembers.size());
     }
 }

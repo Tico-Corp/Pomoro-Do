@@ -172,6 +172,9 @@ public enum ErrorCode {
     CATEGORY_MEMBER_ADDITION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-609", "그룹 카테고리에 멤버 추가 중 오류가 발생했습니다."),
     CATEGORY_MEMBER_REMOVAL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-610", "그룹 카테고리에서 멤버 삭제 중 오류가 발생했습니다."),
     CATEGORY_MEMBER_NOT_FOLLOWED(HttpStatus.BAD_REQUEST, "C-611", "팔로우하지 않은 사용자는 그룹에 초대할 수 없습니다."),
+    CATEGORY_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "C-612", "해당 카테고리를 삭제할 권한이 없습니다."),
+    CATEGORY_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "C-613", "이미 삭제된 카테고리입니다."),
+    ALREADY_LEFT_CATEGORY(HttpStatus.BAD_REQUEST, "C-614", "이미 탈퇴한 멤버입니다."),
 
     INVALID_CATEGORY_NAME(HttpStatus.BAD_REQUEST, "C-620", "유효하지 않은 카테고리 이름입니다."),
     INVALID_CATEGORY_TYPE(HttpStatus.BAD_REQUEST, "C-621", "유효하지 않은 카테고리 유형입니다."),

@@ -283,4 +283,16 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
             throw new CustomException(ErrorCode.NOT_INVITEE);
         }
     }
+
+    /**
+     * 해당 카테고리에 대한 응답되지 않은(PENDING) 초대장을 모두 삭제합니다.
+     * - 그룹 카테고리 삭제 시 호출
+     * - 수락 또는 거절되지 않은 초대장만 대상
+     *
+     * @param category 초대장을 삭제할 대상 카테고리
+     */
+    @Override
+    public void deleteAllPendingInvitations(Category category) {
+        categoryInvitationRepository.deleteAllByCategoryAndStatus(category, CategoryInvitationStatus.PENDING);
+    }
 }
