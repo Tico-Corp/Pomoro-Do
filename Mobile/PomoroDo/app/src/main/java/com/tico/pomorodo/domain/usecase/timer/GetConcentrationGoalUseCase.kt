@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class GetConcentrationGoalUseCase @Inject constructor(private val timerRepository: TimerRepository) {
     suspend operator fun invoke(userId: Int) = withContext(Dispatchers.IO) {
-        timerRepository.getTargetTime(userId)
+        timerRepository.getConcentrationGoal(userId)
     }
 }

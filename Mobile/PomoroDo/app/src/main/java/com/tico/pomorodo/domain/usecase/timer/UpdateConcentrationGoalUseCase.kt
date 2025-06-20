@@ -6,9 +6,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class UpdateTargetTimeUseCase @Inject constructor(private val timerRepository: TimerRepository) {
+class UpdateConcentrationGoalUseCase @Inject constructor(private val timerRepository: TimerRepository) {
     suspend operator fun invoke(timerSettingData: TimerSettingData) =
         withContext(Dispatchers.IO) {
-            timerRepository.updateTargetTime(timerSettingData)
+            timerRepository.updateConcentrationGoal(timerSettingData)
         }
 }

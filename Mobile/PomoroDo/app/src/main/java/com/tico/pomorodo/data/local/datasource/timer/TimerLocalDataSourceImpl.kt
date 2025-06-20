@@ -7,9 +7,12 @@ import javax.inject.Inject
 
 class TimerLocalDataSourceImpl @Inject constructor(private val timerDao: TimerDao) :
     TimerLocalDataSource {
-    override suspend fun getTargetTime(userId: Int): Flow<TimerSettingEntity> =
-        timerDao.getTargetTime(userId)
+    override suspend fun insertConcentrationGoal(timerSettingEntity: TimerSettingEntity) =
+        timerDao.insertConcentrationGoal(timerSettingEntity)
 
-    override suspend fun updateTargetTime(timerSettingEntity: TimerSettingEntity) =
-        timerDao.updateTargetTime(timerSettingEntity)
+    override suspend fun getConcentrationGoal(userId: Int): Flow<TimerSettingEntity?> =
+        timerDao.getConcentrationGoal(userId)
+
+    override suspend fun updateConcentrationGoal(timerSettingEntity: TimerSettingEntity) =
+        timerDao.updateConcentrationGoal(timerSettingEntity)
 }

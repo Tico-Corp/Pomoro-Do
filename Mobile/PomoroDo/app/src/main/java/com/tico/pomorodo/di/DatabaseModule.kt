@@ -33,20 +33,21 @@ object DatabaseModule {
         context.applicationContext,
         PomorodoDatabase::class.java,
         DATABASE_NAME
-    ).addCallback(object : Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            Executors.newSingleThreadExecutor().execute {
-                runBlocking {
-                    val database = provideAppDatabase(context)
-                    // 초기 데이터 설정
-                    database.categoryDao().insertAll(INITIAL_CATEGORY_DATA)
-                    database.todoDao().insertAll(INITIAL_TODO_DATA)
-                    database.calendarDao().insert(INITIAL_CALENDAR_DATA)
+    ).fallbackToDestructiveMigration(true)
+        .addCallback(object : Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                Executors.newSingleThreadExecutor().execute {
+                    runBlocking {
+                        val database = provideAppDatabase(context)
+                        // 초기 데이터 설정
+                        database.categoryDao().insertAll(INITIAL_CATEGORY_DATA)
+                        database.todoDao().insertAll(INITIAL_TODO_DATA)
+                        database.calendarDao().insert(INITIAL_CALENDAR_DATA)
+                    }
                 }
             }
-        }
-    }).build()
+        }).build()
 
     @Singleton
     @Provides

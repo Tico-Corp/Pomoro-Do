@@ -5,7 +5,9 @@ import com.tico.pomorodo.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface TimerRepository {
-    suspend fun getTargetTime(userId: Int): Flow<Resource<TimerSettingData>>
+    suspend fun insertConcentrationGoal(timerSettingData: TimerSettingData)
 
-    suspend fun updateTargetTime(timerSettingData: TimerSettingData)
+    suspend fun getConcentrationGoal(userId: Int): Flow<Resource<TimerSettingData?>>
+
+    suspend fun updateConcentrationGoal(timerSettingData: TimerSettingData)
 }

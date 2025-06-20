@@ -20,26 +20,37 @@ class TimerRepositoryImpl @Inject constructor(
     private val networkHelper: NetworkHelper,
     private val timerLocalDataSource: TimerLocalDataSource,
 ) : TimerRepository {
-    override suspend fun getTargetTime(userId: Int): Flow<Resource<TimerSettingData>> = flow {
-        emit(Resource.Loading)
+    override suspend fun insertConcentrationGoal(timerSettingData: TimerSettingData) {
+        val timerSettingEntity = timerSettingData.toTimerSettingEntity()
 
         if (networkHelper.isNetworkConnected()) {
-            // TODO: 서버에서 목표 집중 시간 받아오기
+            // TODO: 초기 목표 집중 시간 서버에 저장
         } else {
-            val data = timerLocalDataSource.getTargetTime(userId).map {
-                wrapToResource(Dispatchers.IO) { it.toTimerSettingData() }
-            }
-
-            emitAll(data)
+            timerLocalDataSource.insertConcentrationGoal(timerSettingEntity)
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
-    override suspend fun updateTargetTime(timerSettingData: TimerSettingData) {
+    override suspend fun getConcentrationGoal(userId: Int): Flow<Resource<TimerSettingData?>> =
+        flow {
+            emit(Resource.Loading)
+
+            if (networkHelper.isNetworkConnected()) {
+                // TODO: 서버에서 목표 집중 시간 받아오기
+            } else {
+                val data = timerLocalDataSource.getConcentrationGoal(userId).map {
+                    wrapToResource(Dispatchers.IO) { it?.toTimerSettingData() }
+                }
+
+                emitAll(data)
+            }
+        }.flowOn(Dispatchers.IO)
+
+    override suspend fun updateConcentrationGoal(timerSettingData: TimerSettingData) {
         val timerSettingEntity = timerSettingData.toTimerSettingEntity()
         if (networkHelper.isNetworkConnected()) {
             // TODO: 서버로 목표 집중 시간 전송
         } else {
-            timerLocalDataSource.updateTargetTime(timerSettingEntity)
+            timerLocalDataSource.updateConcentrationGoal(timerSettingEntity)
         }
     }
 }

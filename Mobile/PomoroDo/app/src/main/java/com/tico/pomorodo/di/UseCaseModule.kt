@@ -25,7 +25,8 @@ import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
 import com.tico.pomorodo.domain.usecase.timer.GetConcentrationGoalUseCase
-import com.tico.pomorodo.domain.usecase.timer.UpdateTargetTimeUseCase
+import com.tico.pomorodo.domain.usecase.timer.InsertConcentrationGoalUseCase
+import com.tico.pomorodo.domain.usecase.timer.UpdateConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
@@ -173,13 +174,19 @@ object UseCaseModule {
 
     @Singleton
     @Provides
+    fun provideInsertConcentrationGoalUseCase(timerRepository: TimerRepository): InsertConcentrationGoalUseCase {
+        return InsertConcentrationGoalUseCase(timerRepository)
+    }
+
+    @Singleton
+    @Provides
     fun provideGetConcentrationGoalUseCase(timerRepository: TimerRepository): GetConcentrationGoalUseCase {
         return GetConcentrationGoalUseCase(timerRepository)
     }
 
     @Singleton
     @Provides
-    fun provideUpdateTargetTimeUseCase(timerRepository: TimerRepository): UpdateTargetTimeUseCase {
-        return UpdateTargetTimeUseCase(timerRepository)
+    fun provideUpdateTargetTimeUseCase(timerRepository: TimerRepository): UpdateConcentrationGoalUseCase {
+        return UpdateConcentrationGoalUseCase(timerRepository)
     }
 }
