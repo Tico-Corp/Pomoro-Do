@@ -16,7 +16,7 @@ import com.tico.pomorodo.data.local.entity.UserEntity
 
 @Database(
     entities = [TodoEntity::class, CategoryEntity::class, UserEntity::class, CalendarDateEntity::class, TimerSettingEntity::class],
-    version = 10,
+    version = 11,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

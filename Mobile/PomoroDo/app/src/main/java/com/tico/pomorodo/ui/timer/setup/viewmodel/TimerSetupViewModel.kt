@@ -98,7 +98,6 @@ class TimerSetupViewModel @Inject constructor(
         _concentrationGoal.value = LocalTime(hour, minute, second)
         val timerSettingData =
             TimerSettingData(
-                0,
                 TEMP_USER_ID,
                 LocalTime(hour, minute, second),
                 System.currentTimeMillis()

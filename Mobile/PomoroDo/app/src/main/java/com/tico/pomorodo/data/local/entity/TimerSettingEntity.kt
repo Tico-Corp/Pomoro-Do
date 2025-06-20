@@ -2,16 +2,13 @@ package com.tico.pomorodo.data.local.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.tico.pomorodo.data.model.TimerSettingData
 import kotlinx.datetime.LocalTime
 import kotlinx.serialization.Serializable
 
-@Entity(tableName = "time_setting_table")
+@Entity(tableName = "time_setting_table", primaryKeys = ["user_id"])
 @Serializable
 data class TimerSettingEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
     @ColumnInfo(name = "user_id")
     val userId: Int,
     @ColumnInfo(name = "target_focus_info")
@@ -21,4 +18,4 @@ data class TimerSettingEntity(
 )
 
 fun TimerSettingEntity.toTimerSettingData() =
-    TimerSettingData(id = id, userId = userId, time = time, updatedAt = updatedAt)
+    TimerSettingData(userId = userId, time = time, updatedAt = updatedAt)
