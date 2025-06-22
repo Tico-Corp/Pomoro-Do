@@ -85,4 +85,29 @@ public class Category extends BaseTimeEntity {
         this.endDate = DateUtils.getBusinessDate(); // 삭제 처리 날짜
         this.deleted = true;
     }
+
+    public void updateName(String name) {
+        validateNotDeleted();
+        validateName(name);
+        this.name = name;
+    }
+
+    public void update(String name, CategoryVisibility visibility) {
+        validateNotDeleted();
+        validateName(name);
+        this.name = name;
+        this.visibility = visibility;
+    }
+
+    private void validateNotDeleted() {
+        if (this.deleted) {
+            throw new CustomException(ErrorCode.CATEGORY_ALREADY_DELETED);
+        }
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new CustomException(ErrorCode.INVALID_CATEGORY_NAME);
+        }
+    }
 }

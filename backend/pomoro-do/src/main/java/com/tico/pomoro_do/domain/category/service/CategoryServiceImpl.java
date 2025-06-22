@@ -2,6 +2,7 @@ package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryUpdateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.enums.*;
@@ -266,6 +267,48 @@ public class CategoryServiceImpl implements CategoryService {
                 .categoryName(category.getName())
                 .totalMembers(Math.toIntExact(totalMembers))
                 .build();
+    }
+
+    /**
+     * 카테고리 수정
+     * - 소유자만 수정할 수 있습니다.
+     * - 일반 카테고리는 이름과 공개 범위를 수정할 수 있습니다.
+     * - 그룹 카테고리는 이름만 수정 가능하며, 공개 범위는 항상 GROUP으로 고정됩니다.
+     *
+     * @param userId     수정 요청 사용자 ID
+     * @param categoryId 수정 대상 카테고리 ID
+     * @param request    수정 정보
+     * @throws CustomException 수정 권한 없음, 삭제됨 등 예외
+     */
+    @Transactional
+    @Override
+    public void updateCategory(Long categoryId, Long userId, CategoryUpdateRequest request) {
+        // 1. 카테고리 조회
+        Category category = findByCategoryId(categoryId);
+
+        // 2. 삭제 여부 확인
+        if (category.isDeleted()) {
+            log.warn("삭제된 카테고리 수정 시도: categoryId={}", categoryId);
+            throw new CustomException(ErrorCode.CATEGORY_ALREADY_DELETED);
+        }
+
+        // 3. 소유자 권한 검증
+        if (!category.isOwner(userId)) {
+            log.warn("소유자가 아닌 사용자의 수정 시도: userId={}, categoryId={}", userId, categoryId);
+            throw new CustomException(ErrorCode.CATEGORY_UPDATE_FORBIDDEN);
+        }
+
+        // 4. 도메인 정책에 따른 수정 분기
+        if (category.isGroup()) {
+            // 그룹 카테고리는 name만 수정 가능, visibility 수정 시 예외 발생
+            if (request.getVisibility() != null && request.getVisibility() != CategoryVisibility.GROUP) {
+                log.warn("그룹 카테고리의 공개 설정 변경 시도 차단: categoryId={}, visibility={}", categoryId, request.getVisibility());
+                throw new CustomException(ErrorCode.CATEGORY_VISIBILITY_UPDATE_FORBIDDEN);
+            }
+            category.updateName(request.getName());
+        } else {
+            category.update(request.getName(), request.getVisibility());
+        }
     }
 
     /**

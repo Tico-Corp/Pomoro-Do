@@ -2,6 +2,7 @@ package com.tico.pomoro_do.domain.category.controller;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
+import com.tico.pomoro_do.domain.category.dto.request.CategoryUpdateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
 import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
@@ -163,8 +164,61 @@ public class CategoryController {
         return ResponseEntity.ok(successResponse);
     }
 
+    /**
+     * 카테고리 수정 API
+     *
+     * @param userDetails 인증된 사용자 정보 (CustomUserDetails)
+     * @param categoryId 수정할 카테고리 ID
+     * @param request 카테고리 수정 정보
+     * @return 카테고리 수정 성공 메시지
+     */
     @Operation(
-            summary = "카테고리 삭제 API",
+            summary = "카테고리 수정",
+            description = """
+                    사용자가 소유한 카테고리를 수정합니다.
+                    
+                    [일반 카테고리]
+                    - 이름(name), 공개 범위(visibility) 수정 가능
+                    - visibility 예시: PRIVATE, FOLLOWERS, PUBLIC
+                    
+                    [그룹 카테고리]
+                    - 이름만 수정 가능
+                    - 공개 범위는 GROUP으로 고정 (수정 시 예외 발생)
+                    """,
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "카테고리 수정 성공"),
+                    @ApiResponse(responseCode = "400", description = "잘못된 요청 형식 또는 삭제된 카테고리"),
+                    @ApiResponse(responseCode = "403", description = "수정 권한 없음"),
+                    @ApiResponse(responseCode = "404", description = "카테고리를 찾을 수 없음")
+            }
+    )
+    @PatchMapping("/api/v1/categories/{categoryId}")
+    public ResponseEntity<SuccessResponse<String>> updateCategory(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long categoryId,
+            @Valid @RequestBody CategoryUpdateRequest request) {
+
+        categoryService.updateCategory(categoryId, userDetails.getUserId(), request);
+
+        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+                .message(SuccessCode.CATEGORY_UPDATE_SUCCESS.getMessage())
+                .data(SuccessCode.CATEGORY_UPDATE_SUCCESS.name())
+                .build();
+
+        return ResponseEntity.ok(successResponse);
+    }
+
+
+    /**
+     * 카테고리 삭제 API
+     *
+     * @param userDetails 인증된 사용자 정보 (CustomUserDetails)
+     * @param categoryId 삭제할 카테고리 ID
+     * @param request 카테고리 삭제 정책
+     * @return 카테고리 삭제 성공
+     */
+    @Operation(
+            summary = "카테고리 삭제",
             description = """
                     사용자가 소유한 카테고리를 삭제합니다.
                     - 일반/그룹 카테고리 모두 삭제할 수 있으며, 삭제 정책에 따라 하위 할 일 데이터를 처리합니다.
@@ -191,6 +245,5 @@ public class CategoryController {
                 .data(SuccessCode.CATEGORY_DELETION_SUCCESS.name())
                 .build();
         return ResponseEntity.ok(successResponse);
-
     }
 }
