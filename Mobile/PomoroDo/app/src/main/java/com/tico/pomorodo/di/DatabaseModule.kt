@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase.Callback
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.tico.pomorodo.data.local.dao.CalendarDao
 import com.tico.pomorodo.data.local.dao.CategoryDao
+import com.tico.pomorodo.data.local.dao.TimerDao
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_CALENDAR_DATA
 import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_CATEGORY_DATA
@@ -32,20 +33,23 @@ object DatabaseModule {
         context.applicationContext,
         PomorodoDatabase::class.java,
         DATABASE_NAME
-    ).addCallback(object : Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            Executors.newSingleThreadExecutor().execute {
-                runBlocking {
-                    val database = provideAppDatabase(context)
-                    // 초기 데이터 설정
-                    database.categoryDao().insertAll(INITIAL_CATEGORY_DATA)
-                    database.todoDao().insertAll(INITIAL_TODO_DATA)
-                    database.calendarDao().insert(INITIAL_CALENDAR_DATA)
+    )
+        // TODO: 추후 Release 시에 AutoMigration 혹은 Migration 코드로 변경하여 출시하기
+        .fallbackToDestructiveMigration(true)
+        .addCallback(object : Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                Executors.newSingleThreadExecutor().execute {
+                    runBlocking {
+                        val database = provideAppDatabase(context)
+                        // 초기 데이터 설정
+                        database.categoryDao().insertAll(INITIAL_CATEGORY_DATA)
+                        database.todoDao().insertAll(INITIAL_TODO_DATA)
+                        database.calendarDao().insert(INITIAL_CALENDAR_DATA)
+                    }
                 }
             }
-        }
-    }).build()
+        }).build()
 
     @Singleton
     @Provides
@@ -60,4 +64,9 @@ object DatabaseModule {
     @Provides
     fun provideCalendarDao(pomorodoDatabase: PomorodoDatabase): CalendarDao =
         pomorodoDatabase.calendarDao()
+
+    @Singleton
+    @Provides
+    fun provideTimerDao(pomorodoDatabase: PomorodoDatabase): TimerDao =
+        pomorodoDatabase.timerDao()
 }
