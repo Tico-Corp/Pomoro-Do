@@ -33,7 +33,9 @@ object DatabaseModule {
         context.applicationContext,
         PomorodoDatabase::class.java,
         DATABASE_NAME
-    ).fallbackToDestructiveMigration(true)
+    )
+        // TODO: 추후 Release 시에 AutoMigration 혹은 Migration 코드로 변경하여 출시하기
+        .fallbackToDestructiveMigration(true)
         .addCallback(object : Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
