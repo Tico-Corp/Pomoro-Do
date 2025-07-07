@@ -6,15 +6,18 @@ import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.local.entity.UserEntity
 import com.tico.pomorodo.data.model.CalendarFocusState
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.DailyTimerData
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.TimerSettingData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.timer.setup.viewmodel.TEMP_USER_ID
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 
 object DataSource {
     val userList = listOf<User>(
@@ -207,9 +210,17 @@ object DataSource {
         remainedTodoCount = 4
     )
 
-    val INITIAL_TIMER_SETTING_DATA = TimerSettingData(
+    private val timeZone = TimeZone.currentSystemDefault()
+    val INITIAL_TIMER_SETTING_DATA = DailyTimerData(
+        id = 0,
         userId = TEMP_USER_ID,
-        time = LocalTime(1, 0, 0),
-        updatedAt = System.currentTimeMillis()
+        statDate = Clock.System.todayIn(timeZone),
+        targetFocusTime = LocalTime(1, 0, 0),
+        totalFocusTime = LocalTime(0, 0, 0),
+        totalBreakTime = LocalTime(0, 0, 0),
+        maxFocusTime = LocalTime(0, 0, 0),
+        maxBreakTime = LocalTime(0, 0, 0),
+        inCompleteTodosCount = 0,
+        updatedAt = System.currentTimeMillis(),
     )
 }

@@ -10,12 +10,18 @@ import com.tico.pomorodo.data.local.dao.TimerDao
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.entity.CalendarDateEntity
 import com.tico.pomorodo.data.local.entity.CategoryEntity
-import com.tico.pomorodo.data.local.entity.TimerSettingEntity
+import com.tico.pomorodo.data.local.entity.DailyTimerEntity
 import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.local.entity.UserEntity
 
 @Database(
-    entities = [TodoEntity::class, CategoryEntity::class, UserEntity::class, CalendarDateEntity::class, TimerSettingEntity::class],
+    entities = [
+        TodoEntity::class,
+        CategoryEntity::class,
+        UserEntity::class,
+        CalendarDateEntity::class,
+        DailyTimerEntity::class
+    ],
     version = 11,
     exportSchema = false,
 //    autoMigrations = [
