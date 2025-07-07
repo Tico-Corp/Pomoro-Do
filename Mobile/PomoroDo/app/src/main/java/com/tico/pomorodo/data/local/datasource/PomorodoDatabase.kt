@@ -17,7 +17,11 @@ import com.tico.pomorodo.data.local.entity.UserEntity
 @Database(
     entities = [TodoEntity::class, CategoryEntity::class, UserEntity::class, CalendarDateEntity::class, TimerSettingEntity::class],
     version = 11,
-    exportSchema = false
+    exportSchema = false,
+//    autoMigrations = [
+//        // (https://namneul.tistory.com/36) 참고하여 작성
+//        AutoMigration(from = 10, to = 11)
+//    ]
 )
 @TypeConverters(Converters::class)
 abstract class PomorodoDatabase : RoomDatabase() {
