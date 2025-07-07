@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
 import javax.inject.Inject
 
 class TimerRepositoryImpl @Inject constructor(
@@ -30,14 +31,14 @@ class TimerRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getConcentrationGoal(userId: Int): Flow<Resource<DailyTimerData?>> =
+    override suspend fun getDailyTimerData(userId: Int, statDate: LocalDate): Flow<Resource<DailyTimerData?>> =
         flow {
             emit(Resource.Loading)
 
             if (networkHelper.isNetworkConnected()) {
-                // TODO: 서버에서 목표 집중 시간 받아오기
+                // TODO: 서버에서 일간 타이머 데이터 받아오기
             } else {
-                val data = timerLocalDataSource.getConcentrationGoal(userId).map {
+                val data = timerLocalDataSource.getDailyTimerData(userId, statDate).map {
                     wrapToResource(Dispatchers.IO) { it?.toDailyTimerData() }
                 }
 

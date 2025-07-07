@@ -210,11 +210,11 @@ object DataSource {
         remainedTodoCount = 4
     )
 
-    private val timeZone = TimeZone.currentSystemDefault()
+    val TIME_ZONE = TimeZone.currentSystemDefault()
     val INITIAL_TIMER_SETTING_DATA = DailyTimerData(
         id = 0,
         userId = TEMP_USER_ID,
-        statDate = Clock.System.todayIn(timeZone),
+        statDate = Clock.System.todayIn(TIME_ZONE),
         targetFocusTime = LocalTime(1, 0, 0),
         totalFocusTime = LocalTime(0, 0, 0),
         totalBreakTime = LocalTime(0, 0, 0),
