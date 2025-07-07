@@ -22,7 +22,7 @@ import com.tico.pomorodo.data.local.entity.UserEntity
         CalendarDateEntity::class,
         DailyTimerEntity::class
     ],
-    version = 11,
+    version = 12,
     exportSchema = false,
 //    autoMigrations = [
 //        // (https://namneul.tistory.com/36) 참고하여 작성

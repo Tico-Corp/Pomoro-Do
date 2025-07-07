@@ -9,7 +9,7 @@ import com.tico.pomorodo.data.model.Time
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.usecase.timer.GetConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.timer.InsertConcentrationGoalUseCase
-import com.tico.pomorodo.domain.usecase.timer.UpdateConcentrationGoalUseCase
+import com.tico.pomorodo.domain.usecase.timer.UpdateTargetFocusTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +24,7 @@ const val TAG = "TimerSetupViewModel"
 class TimerSetupViewModel @Inject constructor(
     private val insertConcentrationGoalUseCase: InsertConcentrationGoalUseCase,
     private val getConcentrationGoalUseCase: GetConcentrationGoalUseCase,
-    private val updateConcentrationGoalUseCase: UpdateConcentrationGoalUseCase,
+    private val updateTargetFocusTimeUseCase: UpdateTargetFocusTimeUseCase,
 ) : ViewModel() {
     private val _dailyTimerData: MutableStateFlow<DailyTimerData?> = MutableStateFlow(null)
     val dailyTimerData: StateFlow<DailyTimerData?> = _dailyTimerData
@@ -105,7 +105,7 @@ class TimerSetupViewModel @Inject constructor(
                 targetFocusTime = LocalTime(hour, minute, second),
                 updatedAt = System.currentTimeMillis()
             )
-            updateConcentrationGoalUseCase(updatedDailyTimerData)
+            updateTargetFocusTimeUseCase(updatedDailyTimerData)
         } else {
             Log.e(TAG, "updateConcentrationGoal: dailyTimerData is null")
         }
