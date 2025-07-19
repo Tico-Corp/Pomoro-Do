@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.navigation.AppNavHost
 import com.tico.pomorodo.navigation.BottomNavigationDestination
 import com.tico.pomorodo.ui.common.view.BackOnPressed
@@ -12,6 +11,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
 fun HomeScreen(
+    appState: AppState,
     navigateToConcentrationMode: () -> Unit,
     navigateToBreakMode: () -> Unit,
     navigateToCategory: () -> Unit,
@@ -22,8 +22,6 @@ fun HomeScreen(
     navigateToAddFollowerScreen: () -> Unit,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit
 ) {
-    val homeNavController = rememberNavController()
-    val appState = AppState(homeNavController)
     BackOnPressed()
     Scaffold(
         bottomBar = { BottomBar(appState) },
@@ -31,7 +29,7 @@ fun HomeScreen(
     ) { innerPadding ->
         AppNavHost(
             appState = appState,
-            Modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
             startDestination = BottomNavigationDestination.TIMER.name,
             navigateToConcentrationMode = navigateToConcentrationMode,
             navigateToBreakMode = navigateToBreakMode,

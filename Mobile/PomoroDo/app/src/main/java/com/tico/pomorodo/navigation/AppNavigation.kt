@@ -167,6 +167,7 @@ fun NavGraphBuilder.signUpScreen(
 }
 
 fun NavGraphBuilder.homeScreen(
+    appState: AppState,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
     navigateToConcentrationMode: () -> Unit,
     navigateToBreakMode: () -> Unit,
@@ -179,6 +180,7 @@ fun NavGraphBuilder.homeScreen(
 ) {
     composable(route = MainNavigationDestination.HOME.name) {
         HomeScreen(
+            appState = appState,
             setTimerState = setTimerState,
             navigateToConcentrationMode = navigateToConcentrationMode,
             navigateToBreakMode = navigateToBreakMode,
