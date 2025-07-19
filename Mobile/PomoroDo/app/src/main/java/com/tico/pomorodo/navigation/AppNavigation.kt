@@ -18,6 +18,7 @@ import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
 import com.tico.pomorodo.ui.follow.view.AddFollowerScreen
 import com.tico.pomorodo.ui.follow.view.FollowListScreen
 import com.tico.pomorodo.ui.history.view.HistoryRoute
+import com.tico.pomorodo.ui.home.view.AppState
 import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
