@@ -5,12 +5,13 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.common.util.AccessTokenInterceptorClient
 import com.tico.pomorodo.common.util.IdTokenInterceptorClient
-import com.tico.pomorodo.common.util.NetworkHelper
 import com.tico.pomorodo.common.util.RefreshTokenInterceptorClient
 import com.tico.pomorodo.data.local.PreferencesManager
 import com.tico.pomorodo.data.remote.interceptor.AccessTokenInterceptor
 import com.tico.pomorodo.data.remote.interceptor.IdTokenInterceptor
 import com.tico.pomorodo.data.remote.interceptor.RefreshTokenInterceptor
+import com.tico.pomorodo.network.NetworkMonitor
+import com.tico.pomorodo.network.NetworkMonitorImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -129,7 +130,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideNetworkHelper(@ApplicationContext context: Context): NetworkHelper {
-        return NetworkHelper(context)
+    fun provideNetworkMonitor(@ApplicationContext context: Context): NetworkMonitor {
+        return NetworkMonitorImpl(context)
     }
 }
