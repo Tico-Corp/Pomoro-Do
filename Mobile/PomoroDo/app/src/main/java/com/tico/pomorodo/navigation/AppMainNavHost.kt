@@ -23,6 +23,7 @@ fun AppMainNavHost(modifier: Modifier = Modifier, appState: AppState) {
         logInScreen(
             navigateToSignUp = mainNavController::navigateToSignUp,
             navigateToHome = mainNavController::navigateToHome,
+            isOffline = appState.isOffline.value
         )
         signUpScreen(
             navController = mainNavController,

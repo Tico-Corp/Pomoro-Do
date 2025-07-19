@@ -140,12 +140,14 @@ fun NavGraphBuilder.splashScreen(navigateToLogin: () -> Unit, navigateToHome: ()
 
 fun NavGraphBuilder.logInScreen(
     navigateToSignUp: () -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    isOffline: Boolean
 ) {
     composable(route = MainNavigationDestination.LOG_IN.name) {
         LogInRoute(
             navigateToSignUp = navigateToSignUp,
-            navigateToHome = navigateToHome
+            navigateToHome = navigateToHome,
+            isOffline = isOffline
         )
     }
 }
