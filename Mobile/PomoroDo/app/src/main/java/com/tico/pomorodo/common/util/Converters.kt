@@ -9,10 +9,13 @@ import kotlinx.serialization.json.Json
 
 class Converters {
     @TypeConverter
-    fun userListToJson(value: List<UserEntity>?): String {
+    fun userListToJson(value: List<UserEntity>?): String? {
         val json = Json {
             prettyPrint = true
             ignoreUnknownKeys = true
+        }
+        if (value == null) {
+            return null
         }
         return json.encodeToString(value)
     }
