@@ -14,10 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.rememberNavController
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
@@ -31,8 +29,8 @@ fun BottomBar(
         appState.bottomNavigationDestinationList.forEach { destination ->
             NavigationBarItem(
                 selected = appState.currentDestination?.hierarchy?.any {
-                    it.route?.contains(destination.name, true) ?: false
-                } ?: false,
+                    it.route?.contains(destination.name, true) == true
+                } == true,
                 onClick = {
                     appState.navigateToDestination(destination)
                 },
@@ -65,13 +63,5 @@ fun BottomBar(
                 )
             )
         }
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun BottomBarPreview() {
-    PomoroDoTheme() {
-        BottomBar(AppState(rememberNavController()))
     }
 }
