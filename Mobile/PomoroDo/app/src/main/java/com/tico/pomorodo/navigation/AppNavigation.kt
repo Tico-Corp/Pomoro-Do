@@ -18,6 +18,7 @@ import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
 import com.tico.pomorodo.ui.follow.view.AddFollowerScreen
 import com.tico.pomorodo.ui.follow.view.FollowListScreen
 import com.tico.pomorodo.ui.history.view.HistoryRoute
+import com.tico.pomorodo.ui.home.view.AppState
 import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
@@ -139,12 +140,14 @@ fun NavGraphBuilder.splashScreen(navigateToLogin: () -> Unit, navigateToHome: ()
 
 fun NavGraphBuilder.logInScreen(
     navigateToSignUp: () -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    isOffline: Boolean
 ) {
     composable(route = MainNavigationDestination.LOG_IN.name) {
         LogInRoute(
             navigateToSignUp = navigateToSignUp,
-            navigateToHome = navigateToHome
+            navigateToHome = navigateToHome,
+            isOffline = isOffline
         )
     }
 }
@@ -167,6 +170,7 @@ fun NavGraphBuilder.signUpScreen(
 }
 
 fun NavGraphBuilder.homeScreen(
+    appState: AppState,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
     navigateToConcentrationMode: () -> Unit,
     navigateToBreakMode: () -> Unit,
@@ -179,6 +183,7 @@ fun NavGraphBuilder.homeScreen(
 ) {
     composable(route = MainNavigationDestination.HOME.name) {
         HomeScreen(
+            appState = appState,
             setTimerState = setTimerState,
             navigateToConcentrationMode = navigateToConcentrationMode,
             navigateToBreakMode = navigateToBreakMode,

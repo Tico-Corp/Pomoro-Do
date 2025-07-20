@@ -20,7 +20,8 @@ fun AppNavHost(
     navigateToAddFollowerScreen: () -> Unit,
     setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
 ) {
-    val navController = appState.navController
+    val navController = appState.homeNavController
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
