@@ -53,7 +53,7 @@ public enum SuccessCode {
     // 그룹 카테고리
     CATEGORY_MEMBER_ADDITION_SUCCESS(HttpStatus.OK, "그룹 카테고리에 멤버를 성공적으로 추가했습니다."),
     CATEGORY_MEMBER_REMOVAL_SUCCESS(HttpStatus.OK, "그룹 카테고리에서 멤버를 성공적으로 삭제했습니다."),
-    CATEGORY_MEMBER_LEAVE_SUCCESS(HttpStatus.OK, "그룹 카테고리에서 성공적으로 탈퇴했습니다.")
+    LEAVE_GROUP_CATEGORY_SUCCESS (HttpStatus.OK, "그룹 카테고리에서 성공적으로 탈퇴했습니다.")
 
     ;
 

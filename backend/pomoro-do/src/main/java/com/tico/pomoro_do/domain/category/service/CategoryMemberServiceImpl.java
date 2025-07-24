@@ -1,12 +1,16 @@
 package com.tico.pomoro_do.domain.category.service;
 
+import com.tico.pomoro_do.domain.category.dto.request.CategoryLeaveRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryMemberResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.CategoryMember;
 import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
 import com.tico.pomoro_do.domain.category.enums.CategoryMemberRole;
 import com.tico.pomoro_do.domain.category.repository.CategoryMemberRepository;
+import com.tico.pomoro_do.domain.category.validator.CategoryValidator;
 import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.global.exception.CustomException;
+import com.tico.pomoro_do.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,84 @@ import java.util.stream.Collectors;
 public class CategoryMemberServiceImpl implements CategoryMemberService {
 
     private final CategoryMemberRepository categoryMemberRepository;
+    private final CategoryValidator categoryValidator;
+
+    @Override
+    @Transactional
+    public void leaveGroupCategory(Long userId, Long categoryId, CategoryLeaveRequest request) {
+        // 1. 카테고리 검증 및 조회
+        Category category = categoryValidator.validateExists(categoryId);
+
+        // 2. 그룹 카테고리 여부 검증
+        if (!category.isGroup()) {
+            throw new CustomException(ErrorCode.NOT_GROUP_CATEGORY);
+        }
+
+        // 3. 현재 유저의 카테고리 멤버 여부 검증 및 조회
+        CategoryMember member = categoryMemberRepository.findByCategoryIdAndUserId(categoryId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_FOUND));
+
+        // 4. 이미 탈퇴한 멤버인지 검증
+        if (member.getLeftDate() != null) {
+            throw new CustomException(ErrorCode.ALREADY_LEFT_CATEGORY);
+        }
+
+        // 5. 그룹장일 경우 → 위임 처리
+        if (member.isOwner()) {
+            // 5-1. 유효한 멤버 목록 조회 (leftDate == null, 닉네임 오름차순 정렬)
+            List<CategoryMember> activeMembers = categoryMemberRepository
+                    .findByCategoryAndLeftDateIsNullOrderByUserNicknameAsc(category);
+
+            // 5-2. 그룹장이 유일한 멤버일 경우 → 탈퇴 불가
+            if (activeMembers.size() == 1 && activeMembers.get(0).equals(member)) {
+                log.warn("마지막 그룹장은 탈퇴할 수 없습니다. [categoryId={}, userId={}]", categoryId, userId);
+                throw new CustomException(ErrorCode.GROUP_OWNER_CANNOT_LEAVE_WHEN_ALONE);
+            }
+
+            // 5-3. 다음 멤버에게 그룹장 위임
+            assignNextOwner(category, member, activeMembers);
+        }
+
+        // 6. 탈퇴 처리 (그룹장/일반 멤버 공통 처리)
+        member.leave(request.getDeletionOption());
+
+        log.info("그룹 멤버 탈퇴 완료. [categoryId={}, userId={}]", categoryId, userId);
+
+    }
+
+    /**
+     * 현재 그룹장을 제외한 유효 멤버 중 닉네임 오름차순 첫 번째 사용자에게 그룹장 권한을 위임합니다.
+     *
+     * @param category      대상 그룹 카테고리
+     * @param currentOwner  현재 그룹장 (탈퇴 전 상태)
+     * @param activeMembers leftDate == null 상태의 유효 멤버 목록 (닉네임 오름차순 정렬)
+     */
+    private void assignNextOwner(Category category, CategoryMember currentOwner, List<CategoryMember> activeMembers) {
+        // 1. 위임 대상 선정 (자기 자신 제외)
+        CategoryMember newOwner = activeMembers.stream()
+                .filter(m -> !m.getId().equals(currentOwner.getId()))
+                .findFirst()
+                .orElseThrow(() -> {
+                    // 이 지점까지 왔다면 로직상 위임 대상이 반드시 있어야 함
+                    log.error("그룹장 위임 실패 - 위임 대상이 없습니다. [categoryId={}, currentOwnerId={}]",
+                            category.getId(), currentOwner.getUser().getId());
+                    return new CustomException(ErrorCode.GROUP_OWNER_ASSIGNMENT_FAILED);
+                });
+
+        // 2. 현재 그룹장 → 일반 멤버로 역할 변경
+        currentOwner.updateRole(CategoryMemberRole.MEMBER);
+        log.info("그룹장 역할 해제. [categoryId={}, userId={}]",
+                category.getId(), currentOwner.getUser().getId());
+
+        // 3. 새 멤버 → 그룹장으로 역할 위임
+        newOwner.updateRole(CategoryMemberRole.OWNER);
+        category.updateOwner(newOwner.getUser());
+
+        log.info("그룹장 위임 완료. [categoryId={}, newOwnerId={}, newOwnerNickname={}]",
+                category.getId(),
+                newOwner.getUser().getId(),
+                newOwner.getUser().getNickname());
+    }
 
     /**
      * 카테고리에 멤버 등록
@@ -54,7 +136,6 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
         log.debug("멤버 등록 완료: categoryId={}, userId={}, role={}",
                 category.getId(), user.getId(), role);
     }
-
 
     /**
      * 사용자가 현재 참여 중인 그룹 카테고리 목록을 조회

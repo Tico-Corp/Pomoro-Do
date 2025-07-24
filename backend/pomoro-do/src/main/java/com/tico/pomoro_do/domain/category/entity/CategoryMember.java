@@ -56,10 +56,8 @@ public class CategoryMember extends BaseTimeEntity {
     }
 
     /**
-     * 탈퇴 처리 메소드
-     *
-     * @param deletionOption 데이터 삭제 옵션
-     * @throws CustomException 이미 탈퇴된 경우 예외
+     * 그룹 멤버가 탈퇴할 때 호출되는 메서드.
+     * 삭제 정책에 따라 처리 방식을 결정하고, 탈퇴 일자를 설정합니다.
      */
     public void leave(CategoryDeletionOption deletionOption) {
         if (this.leftDate != null) {
@@ -67,6 +65,10 @@ public class CategoryMember extends BaseTimeEntity {
         }
         this.deletionOption = deletionOption;
         this.leftDate = DateUtils.getBusinessDate();
+    }
+
+    public boolean isOwner() {
+        return this.role == CategoryMemberRole.OWNER;
     }
 
     /**
@@ -77,5 +79,9 @@ public class CategoryMember extends BaseTimeEntity {
      */
     public boolean isActive() {
         return this.leftDate == null;
+    }
+
+    public void updateRole(CategoryMemberRole newRole) {
+        this.role = newRole;
     }
 }

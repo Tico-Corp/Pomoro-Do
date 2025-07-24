@@ -169,8 +169,7 @@ public enum ErrorCode {
     CATEGORY_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-606", "카테고리 업데이트 중 오류가 발생했습니다."),
     CATEGORY_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "C-607", "카테고리를 삭제할 권한이 없습니다."),
     CATEGORY_ALREADY_DELETED(HttpStatus.BAD_REQUEST, "C-608", "이미 삭제된 카테고리입니다."),
-    ALREADY_LEFT_CATEGORY(HttpStatus.BAD_REQUEST, "C-609", "이미 탈퇴한 멤버입니다."),
-    CATEGORY_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN, "C-610", "카테고리를 수정할 권한이 없습니다."),
+    CATEGORY_UPDATE_FORBIDDEN(HttpStatus.FORBIDDEN, "C-609", "카테고리를 수정할 권한이 없습니다."),
 
     INVALID_CATEGORY_NAME(HttpStatus.BAD_REQUEST, "C-611", "카테고리 이름이 유효하지 않습니다."),
     INVALID_CATEGORY_TYPE(HttpStatus.BAD_REQUEST, "C-612", "카테고리 유형이 유효하지 않습니다."),
@@ -184,7 +183,10 @@ public enum ErrorCode {
     CATEGORY_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "C-632", "그룹 카테고리의 멤버를 찾을 수 없습니다."),
     CATEGORY_MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "C-633", "이미 그룹에 가입된 사용자입니다."),
     CATEGORY_MEMBER_ADDITION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-634", "그룹 카테고리에 멤버 추가 중 오류가 발생했습니다."),
-    CATEGORY_MEMBER_REMOVAL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "CM-635", "그룹 카테고리에서 멤버 삭제 중 오류가 발생했습니다."),
+    CATEGORY_MEMBER_REMOVAL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-635", "그룹 카테고리에서 멤버 삭제 중 오류가 발생했습니다."),
+    GROUP_OWNER_CANNOT_LEAVE_WHEN_ALONE(HttpStatus.FORBIDDEN, "C-636", "마지막 그룹장은 탈퇴할 수 없습니다. 그룹 삭제를 진행해주세요."),
+    GROUP_OWNER_ASSIGNMENT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-637", "그룹장 위임에 실패했습니다."),
+    ALREADY_LEFT_CATEGORY(HttpStatus.CONFLICT, "C-638", "이미 탈퇴한 멤버입니다."),
 
     // 카테고리 초대 응답 관련 에러: -670번대
     INVALID_INVITATION_STATUS(HttpStatus.BAD_REQUEST, "CI-670", "유효하지 않은 초대 상태입니다."),
