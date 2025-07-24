@@ -50,7 +50,7 @@ public class CategoryMemberController {
             @ApiResponse(responseCode = "200", description = "그룹 나가기 성공"),
             @ApiResponse(responseCode = "400", description = "그룹 카테고리가 아닙니다."),
             @ApiResponse(responseCode = "403", description = "마지막 그룹장은 탈퇴할 수 없습니다."),
-            @ApiResponse(responseCode = "404", description = "그룹 멤버를 찾을 수 없습니다."),
+            @ApiResponse(responseCode = "404", description = "현재 그룹 카테고리의 유효한 멤버가 아닙니다."),
             @ApiResponse(responseCode = "409", description = "이미 탈퇴한 멤버입니다."),
             @ApiResponse(responseCode = "500", description = "그룹장 위임에 실패했습니다.")
     })

@@ -43,7 +43,7 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
 
         // 3. 현재 유저의 카테고리 멤버 여부 검증 및 조회
         CategoryMember member = categoryMemberRepository.findByCategoryIdAndUserId(categoryId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_MEMBER_NOT_ACTIVE));
 
         // 4. 이미 탈퇴한 멤버인지 검증
         if (member.getLeftDate() != null) {

@@ -187,6 +187,7 @@ public enum ErrorCode {
     GROUP_OWNER_CANNOT_LEAVE_WHEN_ALONE(HttpStatus.FORBIDDEN, "C-636", "마지막 그룹장은 탈퇴할 수 없습니다. 그룹 삭제를 진행해주세요."),
     GROUP_OWNER_ASSIGNMENT_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "C-637", "그룹장 위임에 실패했습니다."),
     ALREADY_LEFT_CATEGORY(HttpStatus.CONFLICT, "C-638", "이미 탈퇴한 멤버입니다."),
+    CATEGORY_MEMBER_NOT_ACTIVE(HttpStatus.FORBIDDEN, "C-639", "현재 그룹 카테고리의 멤버가 아닙니다."),
 
     // 카테고리 초대 응답 관련 에러: -670번대
     INVALID_INVITATION_STATUS(HttpStatus.BAD_REQUEST, "CI-670", "유효하지 않은 초대 상태입니다."),
