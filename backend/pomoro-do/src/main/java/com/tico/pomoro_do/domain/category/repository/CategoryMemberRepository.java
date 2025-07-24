@@ -10,6 +10,9 @@ import java.util.Optional;
 
 public interface CategoryMemberRepository extends JpaRepository<CategoryMember, Long> {
 
+    // 특정 카테고리의 멤버를 조회하고 유효한(leftDate == null) 멤버를 User.nickname 기준으로 오름차순 정렬
+    List<CategoryMember> findByCategoryAndLeftDateIsNullOrderByUserNicknameAsc(Category category);
+
     // 해당 멤버의 활성회되어있는 카테고리들 조회 (user=user, leftDate=null)
     List<CategoryMember> findAllByUserAndLeftDateIsNull(User user);
 

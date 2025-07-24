@@ -1,5 +1,6 @@
 package com.tico.pomoro_do.domain.category.service;
 
+import com.tico.pomoro_do.domain.category.dto.request.CategoryLeaveRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryMemberResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.enums.CategoryDeletionOption;
@@ -10,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface CategoryMemberService {
+
+    void leaveGroupCategory(Long userId, Long categoryId, CategoryLeaveRequest request);
 
     /**
      * 카테고리 멤버를 생성하고 저장

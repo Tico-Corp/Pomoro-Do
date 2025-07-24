@@ -7,6 +7,7 @@ import com.tico.pomoro_do.domain.category.dto.response.*;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.enums.*;
 import com.tico.pomoro_do.domain.category.repository.CategoryRepository;
+import com.tico.pomoro_do.domain.category.validator.CategoryValidator;
 import com.tico.pomoro_do.domain.user.entity.User;
 import com.tico.pomoro_do.domain.user.service.UserService;
 import com.tico.pomoro_do.global.exception.CustomException;
@@ -30,6 +31,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryMemberService categoryMemberService;
     private final CategoryInvitationService categoryInvitationService;
     private final CategoryRepository categoryRepository;
+    private final CategoryValidator categoryValidator;
 
     /**
      * 카테고리 생성 및 그룹 카테고리 관련 멤버 처리
@@ -204,7 +206,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDetailResponse getCategoryDetail(Long categoryId, Long userId) {
         // 1. 카테고리 조회
-        Category category = findByCategoryId(categoryId);
+        Category category = categoryValidator.validateExists(categoryId);
 
         // 2. 멤버 응답 DTO 리스트 및 멤버 수 초기화
         List<CategoryMemberResponse> categoryMemberResponseList = new ArrayList<>();
@@ -229,14 +231,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .members(categoryMemberResponseList)
                 .totalMembers(totalMembers)
                 .build();
-    }
-
-    private Category findByCategoryId(Long categoryId) {
-        return categoryRepository.findById(categoryId)
-                .orElseThrow(() -> {
-                    log.error("카테고리를 찾을 수 없습니다. ID: " + categoryId);
-                    return new CustomException(ErrorCode.CATEGORY_NOT_FOUND);
-                });
     }
 
     // 응답 생성
@@ -284,7 +278,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void updateCategory(Long categoryId, Long userId, CategoryUpdateRequest request) {
         // 1. 카테고리 조회
-        Category category = findByCategoryId(categoryId);
+        Category category = categoryValidator.validateExists(categoryId);
 
         // 2. 삭제 여부 확인
         if (category.isDeleted()) {
@@ -328,7 +322,7 @@ public class CategoryServiceImpl implements CategoryService {
                 userId, categoryId, request.getDeletionOption());
 
         // 1. 카테고리 조회
-        Category category = findByCategoryId(categoryId);
+        Category category = categoryValidator.validateExists(categoryId);
 
         // 2. 삭제 여부 확인
         if (category.isDeleted()) {

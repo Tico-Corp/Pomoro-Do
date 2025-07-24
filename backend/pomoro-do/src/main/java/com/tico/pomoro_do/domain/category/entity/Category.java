@@ -110,4 +110,8 @@ public class Category extends BaseTimeEntity {
             throw new CustomException(ErrorCode.INVALID_CATEGORY_NAME);
         }
     }
+
+    public void updateOwner(User newOwner) {
+        this.owner = newOwner;
+    }
 }
