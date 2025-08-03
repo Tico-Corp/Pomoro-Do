@@ -150,7 +150,7 @@ fun NavGraphBuilder.logInScreen(
         LogInRoute(
             navigateToSignUp = navigateToSignUp,
             navigateToHome = navigateToHome,
-//            isOffline = isOffline
+            isOffline = isOffline
         )
     }
 }
