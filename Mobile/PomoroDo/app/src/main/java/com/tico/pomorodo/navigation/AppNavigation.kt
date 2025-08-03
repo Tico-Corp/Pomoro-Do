@@ -15,11 +15,10 @@ import com.tico.pomorodo.ui.category.view.CategoryAddScreenRoute
 import com.tico.pomorodo.ui.category.view.CategoryInfoScreenRoute
 import com.tico.pomorodo.ui.category.view.CategoryScreenRoute
 import com.tico.pomorodo.ui.category.view.GroupMemberChooseRoute
+import com.tico.pomorodo.ui.common.view.BackOnPressed
 import com.tico.pomorodo.ui.follow.view.AddFollowerScreen
 import com.tico.pomorodo.ui.follow.view.FollowListScreen
 import com.tico.pomorodo.ui.history.view.HistoryRoute
-import com.tico.pomorodo.ui.home.view.AppState
-import com.tico.pomorodo.ui.home.view.HomeScreen
 import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
 import com.tico.pomorodo.ui.setting.view.AppThemeScreen
@@ -91,6 +90,7 @@ fun NavGraphBuilder.timerScreen(
     navigateToBreakMode: () -> Unit,
 ) {
     composable(route = BottomNavigationDestination.TIMER.name) {
+        BackOnPressed()
         TimerRootScreen(
             setState = setState,
             navigateToConcentrationMode = navigateToConcentrationMode,
@@ -105,6 +105,7 @@ fun NavGraphBuilder.todoScreen(
     navigateToHistory: () -> Unit
 ) {
     composable(route = BottomNavigationDestination.TODO.name) {
+        BackOnPressed()
         TodoScreenRoute(
             navigateToAddCategory = navigateToAddCategory,
             navigateToCategory = navigateToCategory,
@@ -115,6 +116,7 @@ fun NavGraphBuilder.todoScreen(
 
 fun NavGraphBuilder.followScreen(navigateToAddFollowerScreen: () -> Unit) {
     composable(route = BottomNavigationDestination.FOLLOW.name) {
+        BackOnPressed()
         FollowListScreen(navigateToAddFollowerScreen)
     }
 }
@@ -124,6 +126,7 @@ fun NavGraphBuilder.myInfoScreen(
     navigateToSettingScreen: () -> Unit,
 ) {
     composable(route = BottomNavigationDestination.MY_INFO.name) {
+        BackOnPressed()
         MyPageScreen(
             navigateToModifyProfile = navigateToModifyProfile,
             navigateToSettingScreen = navigateToSettingScreen
@@ -147,7 +150,7 @@ fun NavGraphBuilder.logInScreen(
         LogInRoute(
             navigateToSignUp = navigateToSignUp,
             navigateToHome = navigateToHome,
-            isOffline = isOffline
+//            isOffline = isOffline
         )
     }
 }
@@ -165,34 +168,6 @@ fun NavGraphBuilder.signUpScreen(
             navBackStackEntry = authNavBackStackEntry,
             navigateToHome = navigateToHome,
             navigateToBack = navigateToBack
-        )
-    }
-}
-
-fun NavGraphBuilder.homeScreen(
-    appState: AppState,
-    setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
-    navigateToConcentrationMode: () -> Unit,
-    navigateToBreakMode: () -> Unit,
-    navigateToCategory: () -> Unit,
-    navigateToAddCategory: () -> Unit,
-    navigateToHistory: () -> Unit,
-    navigateToModifyProfile: () -> Unit,
-    navigateToSettingScreen: () -> Unit,
-    navigateToAddFollowerScreen: () -> Unit
-) {
-    composable(route = MainNavigationDestination.HOME.name) {
-        HomeScreen(
-            appState = appState,
-            setTimerState = setTimerState,
-            navigateToConcentrationMode = navigateToConcentrationMode,
-            navigateToBreakMode = navigateToBreakMode,
-            navigateToCategory = navigateToCategory,
-            navigateToAddCategory = navigateToAddCategory,
-            navigateToHistory = navigateToHistory,
-            navigateToModifyProfile = navigateToModifyProfile,
-            navigateToSettingScreen = navigateToSettingScreen,
-            navigateToAddFollowerScreen = navigateToAddFollowerScreen,
         )
     }
 }
