@@ -67,7 +67,7 @@ fun LogInRoute(
     viewModel: AuthViewModel = hiltViewModel(),
     navigateToSignUp: () -> Unit,
     navigateToHome: () -> Unit,
-    isOffline: Boolean = false
+    isOffline: Boolean
 ) {
     val authState by viewModel.authState.collectAsState()
     BackOnPressed()
