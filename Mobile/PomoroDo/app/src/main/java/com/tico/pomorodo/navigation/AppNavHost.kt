@@ -3,44 +3,99 @@ package com.tico.pomorodo.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.navigation
+import com.tico.pomorodo.ui.common.view.BREAK_TIME
+import com.tico.pomorodo.ui.common.view.CONCENTRATION_TIME
 import com.tico.pomorodo.ui.home.view.AppState
 
 @Composable
-fun AppNavHost(
-    appState: AppState,
-    modifier: Modifier = Modifier,
-    startDestination: String = BottomNavigationDestination.TIMER.name,
-    navigateToConcentrationMode: () -> Unit,
-    navigateToBreakMode: () -> Unit,
-    navigateToCategory: () -> Unit,
-    navigateToAddCategory: () -> Unit,
-    navigateToHistory: () -> Unit,
-    navigateToModifyProfile: () -> Unit,
-    navigateToSettingScreen: () -> Unit,
-    navigateToAddFollowerScreen: () -> Unit,
-    setTimerState: (concentrationTime: Int, breakTime: Int) -> Unit,
-) {
-    val navController = appState.homeNavController
-
+fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
+    val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = MainNavigationDestination.HOME.name,
         modifier = modifier
     ) {
-        timerScreen(
-            setState = setTimerState,
-            navigateToConcentrationMode = navigateToConcentrationMode,
-            navigateToBreakMode = navigateToBreakMode
+        splashScreen(
+            navigateToLogin = navController::navigateToLogIn,
+            navigateToHome = navController::navigateToHome
         )
-        todoScreen(
-            navigateToCategory = navigateToCategory,
-            navigateToAddCategory = navigateToAddCategory,
-            navigateToHistory = navigateToHistory
+
+        logInScreen(
+            navigateToSignUp = navController::navigateToSignUp,
+            navigateToHome = navController::navigateToHome,
+            isOffline = appState.isOffline.value
         )
-        followScreen(navigateToAddFollowerScreen = navigateToAddFollowerScreen)
-        myInfoScreen(
-            navigateToModifyProfile = navigateToModifyProfile,
-            navigateToSettingScreen = navigateToSettingScreen
+        signUpScreen(
+            navController = navController,
+            navigateToHome = navController::navigateToHome,
+            navigateToBack = navController::popBackStack
         )
+        navigation(
+            route = MainNavigationDestination.HOME.name,
+            startDestination = BottomNavigationDestination.TODO.name
+        ) {
+            timerScreen(
+                setState = { concentrationTime, breakTime ->
+                    navController.setState(CONCENTRATION_TIME, concentrationTime)
+                    navController.setState(BREAK_TIME, breakTime)
+                },
+                navigateToConcentrationMode = navController::navigateToConcentrationMode,
+                navigateToBreakMode = navController::navigateToBreakMode
+            )
+            todoScreen(
+                navigateToCategory = navController::navigateToCategory,
+                navigateToAddCategory = navController::navigateToAddCategory,
+                navigateToHistory = navController::navigateToHistory
+            )
+            followScreen(navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen)
+            myInfoScreen(
+                navigateToModifyProfile = navController::navigateToModifyProfile,
+                navigateToSettingScreen = navController::navigateToSettingScreen
+            )
+            concentrationModeScreen(
+                popBackStack = navController::popBackStack,
+                getState = navController::getState,
+                navigateToBreakMode = navController::navigateToBreakMode
+            )
+            breakModeScreen(
+                mainNavController = navController,
+                getState = navController::getState
+            )
+
+            categoryScreen(
+                navigateToAddCategory = navController::navigateToAddCategory,
+                navigateToBack = navController::popBackStack,
+                navigateToInfoCategory = { categoryId ->
+                    navController.navigateToInfoCategory(
+                        categoryId = categoryId
+                    )
+                }
+            )
+            addCategoryScreen(
+                navigateToGroupMemberChoose = navController::navigateToGroupMemberChoose,
+                navigateToBack = navController::popBackStack
+            )
+            infoCategoryScreen(
+                navigateToGroupMemberChoose = navController::navigateToGroupMemberChoose,
+                navigateToBack = navController::popBackStack
+            )
+            groupMemberChooseScreen(
+                navController = navController,
+                navigateToBack = navController::popBackStack
+            )
+
+            historyScreen(navigateToBack = navController::popBackStack)
+
+            modifyProfileScreen(navController = navController)
+
+            settingScreen(
+                navigateToAppThemeScreen = navController::navigateToAppThemeScreen,
+                popBackStack = navController::popBackStack
+            )
+            appThemeScreen(popBackStack = navController::popBackStack)
+
+            addFollowerScreen(popBackToFollowScreen = appState.navController::popBackStack)
+        }
     }
 }
