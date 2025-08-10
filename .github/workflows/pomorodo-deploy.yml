@@ -104,7 +104,7 @@ jobs:
           docker run -d -p 8080:8080 --name ${{ env.CONTAINER_NAME }} \
             -e DB_URL="${{ secrets.DB_URL }}" \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
             -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
             -e OAUTH2_GOOGLE_CLIENT_ID=${{ secrets.OAUTH2_GOOGLE_CLIENT_ID }} \
             -e S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} \
