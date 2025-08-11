@@ -80,7 +80,7 @@ fun AddFollowerScreen(popBackToFollowScreen: () -> Unit) {
             ),
             shape = RoundedCornerShape(5.dp),
             trailingIcon = {
-                Row {
+                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
                     if (searchName.isNotBlank()) {
                         SimpleIconButton(
                             size = 34,
@@ -92,7 +92,7 @@ fun AddFollowerScreen(popBackToFollowScreen: () -> Unit) {
                     }
 
                     SimpleIconButton(
-                        size = 24,
+                        size = 34,
                         imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_SEARCH]),
                         contentDescriptionId = R.string.content_ic_search,
                         enabled = searchName.isNotBlank(),
