@@ -14,28 +14,34 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Pomoro-Do! API 명세서", // 서비스 이름
-                description =  "Pomoro-Do!는 Pomodoro 기법을 활용한 작업 시간 관리 서비스입니다. <br>"
-                        + "<br>"
-                        + "이 API 문서는 Pomoro-Do! 서비스의 주요 기능을 설명합니다. <br>" // 서비스 설명
-                        + "<br>"
-                        + "API는 HTTPS 프로토콜을 통해 제공되며, 기본 URL은 https://pomorodo.shop/api 입니다. <br>" // API 사용 설명
-                        + "테스트 및 개발 환경에서는 http://13.209.240.41:8080/api URL을 사용할 수 있습니다. (도메인 미적용)<br>"
-                        + "<br>"
-                        + "모든 API 요청에는 JWT 인증이 필요하며, Authorization 헤더에 Bearer 토큰을 포함해야 합니다. <br>"
-                        + "단, 회원가입, 로그인, 토큰 재발행 API는 인증이 필요하지 않습니다.", // JWT 인증 설명
-                version = "v1", // 서비스 버전
-                contact = @Contact(
-                        name = "TICO", // 연락처 이름
-//                        url = "https://pomorodo.shop/contact", // 연락처 URL
-                        email = "tico240516@gmail.com" // 연락처 이메일
-                )
+                title = "Pomoro-Do! API",
+                description = """
+            Pomoro-Do!는 Pomodoro 기법을 활용한 작업 시간 관리 서비스입니다.
+
+            이 API 문서는 Pomoro-Do! 서비스의 주요 기능과 사용 방법을 설명합니다.
+
+            API는 HTTPS 프로토콜을 통해 제공되며, Base Path는 `/api/버전` 형식입니다.
+
+            **예)**
+            - 운영: https://pomorodo.store/api/v1
+            - 로컬: http://localhost:8080/api/v1
+
+            모든 API 요청에는 JWT 인증이 필요하며, Authorization 헤더에 `Bearer <token>`을 포함해야 합니다.
+            
+            단, 회원가입, 로그인, 토큰 재발행 API는 인증이 필요하지 않습니다.
+
+            **성공 응답 예시**: {"code":"SUCCESS","message":"요청이 성공적으로 처리되었습니다.","data":{...}}
+            
+            **에러 응답 예시**: {"code":"U-100","message":"이미 사용 중인 이메일입니다."}
+            """,
+                version = "v1",
+                contact = @Contact(name = "TICO", email = "tico240516@gmail.com")
         ),
         servers = {
-                @Server(url = "/", description = "접속 서버 관계 없이 Swagger에서 테스트 가능"), // 전체 서버 설정
-                @Server(url = "http://13.209.240.41:8080", description = "<HTTP 서버> HTTP 서버에서 접속 시 Swagger에서 테스트 가능"), // HTTP 서버
-                @Server(url = "https://pomorodo.shop", description = "<HTTPS 서버> HTTPS 서버에서 접속 시 Swagger에서 테스트 가능"), // HTTPS 서버
-                @Server(url = "http://pomorodo.shop:8080", description = "<HTTP 서버> HTTP 서버에서 접속 시 Swagger에서 테스트 가능") // HTTP 서버
+                @Server(
+                        url = "/",
+                        description = "Swagger UI를 연 현재 도메인과 포트를 기준으로 API 호출"
+                )
         }
 )
 @Configuration
