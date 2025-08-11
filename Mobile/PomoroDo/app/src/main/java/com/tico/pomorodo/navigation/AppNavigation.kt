@@ -237,7 +237,6 @@ internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
 }
 
 fun NavGraphBuilder.infoCategoryScreen(
-    navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit
 ) {
     composable(
@@ -246,7 +245,6 @@ fun NavGraphBuilder.infoCategoryScreen(
     ) {
         CategoryInfoScreenRoute(
             navigateToBack = navigateToBack,
-            navigateToGroupMemberChoose = navigateToGroupMemberChoose
         )
     }
 }
