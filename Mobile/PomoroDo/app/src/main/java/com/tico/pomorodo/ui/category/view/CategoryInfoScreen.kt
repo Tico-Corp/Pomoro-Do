@@ -32,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.ui.category.viewModel.CategoryInfoViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTextField
@@ -50,7 +49,6 @@ import kotlinx.coroutines.launch
 fun CategoryInfoScreenRoute(
     viewModel: CategoryInfoViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
-    navigateToGroupMemberChoose: (String) -> Unit,
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     val checkGroupMemberSheetState = rememberModalBottomSheetState()
@@ -181,11 +179,6 @@ fun CategoryInfoScreenRoute(
                     onShowOpenSettingsBottomSheetChange = {
                         showOpenSettingsBottomSheet = it
                     },
-                    onGroupMemberChooseClicked = {
-                        navigateToGroupMemberChoose(
-                            MainNavigationDestination.INFO_CATEGORY.name
-                        )
-                    },
                     onShowCheckGroupMemberBottomSheetChange = {
                         showCheckGroupMemberBottomSheet = it
                     },
@@ -209,7 +202,6 @@ fun CategoryInfoScreen(
     groupReader: String? = null,
     isGroupReader: Boolean?,
     onShowOpenSettingsBottomSheetChange: (Boolean) -> Unit,
-    onGroupMemberChooseClicked: () -> Unit,
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
     onGroupOutClicked: () -> Unit,
     onGroupDeleteClicked: () -> Unit,
@@ -278,11 +270,7 @@ fun CategoryInfoScreen(
                 CategoryGroupNumber(
                     groupMemberCount = groupMemberCount,
                     onClicked = {
-                        if (isGroupReader == true) {
-                            onGroupMemberChooseClicked()
-                        } else if (isGroupReader == false) {
-                            onShowCheckGroupMemberBottomSheetChange(true)
-                        }
+                        onShowCheckGroupMemberBottomSheetChange(true)
                     },
                     isGroupReader = isGroupReader
                 )
