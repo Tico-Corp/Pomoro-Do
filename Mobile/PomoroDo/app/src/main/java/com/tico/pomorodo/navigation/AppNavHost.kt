@@ -77,7 +77,6 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
                 navigateToBack = navController::popBackStack
             )
             infoCategoryScreen(
-                navigateToGroupMemberChoose = navController::navigateToGroupMemberChoose,
                 navigateToBack = navController::popBackStack
             )
             groupMemberChooseScreen(
