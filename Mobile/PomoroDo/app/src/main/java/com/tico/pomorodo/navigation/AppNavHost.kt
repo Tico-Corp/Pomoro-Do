@@ -24,6 +24,10 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
         logInScreen(
             navigateToSignUp = navController::navigateToSignUp,
             navigateToHome = navController::navigateToHome,
+            onClickedOffline = {
+                navController::navigateToHome
+                appState.setIsOffline(true)
+            },
             isOffline = appState.isOffline.value
         )
         signUpScreen(
