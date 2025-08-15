@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.home.view
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.Stable
@@ -25,6 +26,7 @@ import com.tico.pomorodo.navigation.navigateToTodo
 fun rememberAppState(
     mainViewModel: MainViewModel = hiltViewModel(),
     navController: NavHostController = rememberNavController(),
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ): AppState {
     val isNetworkConnected: State<Boolean> =
         mainViewModel.isNetworkConnected
@@ -35,7 +37,8 @@ fun rememberAppState(
         AppState(
             navController = navController,
             isNetworkConnected = isNetworkConnected,
-            isOffline = isOffline
+            isOffline = isOffline,
+            snackBarHostState = snackBarHostState
         )
     }
 }
@@ -43,6 +46,7 @@ fun rememberAppState(
 @Stable
 data class AppState(
     val navController: NavHostController,
+    val snackBarHostState: SnackbarHostState,
     val isNetworkConnected: State<Boolean>,
     val isOffline: MutableState<Boolean>
 ) {

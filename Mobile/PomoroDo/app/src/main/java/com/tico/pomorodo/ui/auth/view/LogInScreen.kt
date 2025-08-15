@@ -67,6 +67,7 @@ fun LogInRoute(
     viewModel: AuthViewModel = hiltViewModel(),
     navigateToSignUp: () -> Unit,
     navigateToHome: () -> Unit,
+    onClickedOffline: () -> Unit,
     isOffline: Boolean
 ) {
     val authState by viewModel.authState.collectAsState()
@@ -89,7 +90,7 @@ fun LogInRoute(
 
     LogInScreen(
         isOffline = isOffline,
-        navigateToHome = navigateToHome,
+        onClickedOffline = onClickedOffline,
         onLoginSuccess = { result ->
             viewModel.saveIdToken(result.idToken)
             viewModel.setProfile(result.profilePictureUri, null, ProfileImageType.GOOGLE)
@@ -101,7 +102,7 @@ fun LogInRoute(
 @Composable
 private fun LogInScreen(
     isOffline: Boolean,
-    navigateToHome: () -> Unit,
+    onClickedOffline: () -> Unit,
     onLoginSuccess: (GoogleIdTokenCredential) -> Unit,
 ) {
     val context = LocalContext.current
@@ -137,7 +138,7 @@ private fun LogInScreen(
                 contentAlignment = Alignment.Center
             ) {
                 if (isOffline) {
-                    OfflineLogInButton(onClick = { navigateToHome() })
+                    OfflineLogInButton(onClick = onClickedOffline)
                 } else {
                     LogInButton(
                         onClick = {
