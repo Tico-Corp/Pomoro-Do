@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.category.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -280,6 +282,8 @@ fun CategoryAddScreenRoute(
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var endOfWritingDialogVisible by remember { mutableStateOf(false) }
+
     val scope = rememberCoroutineScope()
 
     val title by viewModel.title.collectAsState()
@@ -289,7 +293,9 @@ fun CategoryAddScreenRoute(
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
+    BackHandler {
+        endOfWritingDialogVisible = true
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -313,7 +319,9 @@ fun CategoryAddScreenRoute(
                     viewModel.insertCategory()
                     navigateToBack()
                 },
-                onBackClickedListener = navigateToBack,
+                onBackClickedListener = {
+                    endOfWritingDialogVisible = true
+                },
                 isActionEnabled = viewModel.validateInput()
             )
             if (showOpenSettingsBottomSheet) {
@@ -330,6 +338,15 @@ fun CategoryAddScreenRoute(
                                     showOpenSettingsBottomSheet = false
                                 }
                             }
+                    }
+                )
+            }
+            if (endOfWritingDialogVisible) {
+                EndOfWritingDialog(
+                    onDismissRequest = { endOfWritingDialogVisible = false },
+                    onConfirmation = {
+                        endOfWritingDialogVisible = false
+                        navigateToBack()
                     }
                 )
             }
