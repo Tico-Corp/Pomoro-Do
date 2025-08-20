@@ -43,7 +43,6 @@ import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
-import com.tico.pomorodo.ui.theme.IC_ARROW_RIGHT
 import com.tico.pomorodo.ui.theme.IC_CATEGORY_FOLLOWER_OPEN
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN_DISABLE
@@ -126,7 +125,10 @@ fun CategoryAddScreen(
 }
 
 @Composable
-fun CategoryGroupNumber(groupMemberCount: Int, onClicked: () -> Unit, isGroupReader: Boolean? = true) {
+fun CategoryGroupNumber(
+    groupMemberCount: Int,
+    onClicked: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -134,7 +136,7 @@ fun CategoryGroupNumber(groupMemberCount: Int, onClicked: () -> Unit, isGroupRea
     ) {
         SimpleText(
             textId = R.string.content_group_member,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            style = PomoroDoTheme.typography.laundryGothicBold14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -155,8 +157,7 @@ fun CategoryGroupNumber(groupMemberCount: Int, onClicked: () -> Unit, isGroupRea
             )
             SimpleIcon(
                 size = 15,
-                imageVector = if (isGroupReader == true) requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_RIGHT])
-                else requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
                 contentDescriptionId = R.string.content_full_open
             )
         }
@@ -179,7 +180,7 @@ fun CategoryOpenSettings(
     ) {
         SimpleText(
             textId = R.string.title_open_settings,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            style = PomoroDoTheme.typography.laundryGothicBold14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.weight(1f))
