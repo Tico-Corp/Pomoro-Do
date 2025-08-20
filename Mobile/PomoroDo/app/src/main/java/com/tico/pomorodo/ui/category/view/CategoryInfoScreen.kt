@@ -1,11 +1,13 @@
 package com.tico.pomorodo.ui.category.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -60,17 +63,24 @@ fun CategoryInfoScreenRoute(
     var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
     var generalOutDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var endOfEditingDialogVisible by remember { mutableStateOf(false) }
 
     val category by viewModel.category.collectAsState()
     val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
 
-    var deleteDialogInputText by rememberSaveable {
-        mutableStateOf("")
-    }
+    var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
+    BackHandler{
+        if (requireNotNull(category).type == CategoryType.GROUP
+            && requireNotNull(category).isGroupReader == false
+        ){
+            navigateToBack()
+        }else{
+            endOfEditingDialogVisible = true
+        }
+    }
     if (category == null) {
         // TODO: 데이터 로딩 화면
     } else {
@@ -90,8 +100,12 @@ fun CategoryInfoScreenRoute(
                 CustomTopAppBar(
                     modifier = Modifier,
                     titleTextId = R.string.title_info_category,
-                    actionIconString = IC_OK,
-                    actionDisableIconString = IC_UNOK,
+                    actionIconString = if (requireNotNull(category).type == CategoryType.GROUP
+                        && requireNotNull(category).isGroupReader == false
+                    ) null else IC_OK,
+                    actionDisableIconString = if (requireNotNull(category).type == CategoryType.GROUP
+                        && requireNotNull(category).isGroupReader == false
+                    ) null else IC_UNOK,
                     isActionEnabled = (selectedGroupMembers.any { it.selected } && category?.type == CategoryType.GROUP && viewModel.validateInput())
                             || (category?.type == CategoryType.GENERAL && viewModel.validateInput()),
                     actionIconDescriptionId = R.string.content_ic_ok,
@@ -99,7 +113,15 @@ fun CategoryInfoScreenRoute(
                         viewModel.updateCategoryInfo()
                         navigateToBack()
                     },
-                    onBackClickedListener = navigateToBack
+                    onBackClickedListener = {
+                        if (requireNotNull(category).type == CategoryType.GROUP
+                            && requireNotNull(category).isGroupReader == false
+                        ) {
+                            navigateToBack()
+                        } else {
+                            endOfEditingDialogVisible = true
+                        }
+                    }
                 )
                 if (showCheckGroupMemberBottomSheet) {
                     requireNotNull(category).groupMember?.let { user ->
@@ -168,6 +190,15 @@ fun CategoryInfoScreenRoute(
                         onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ },
                         onDismissRequest = { generalOutDialogVisible = false })
                 }
+                if (endOfEditingDialogVisible) {
+                    EndOfEditingDialog(
+                        onDismissRequest = { endOfEditingDialogVisible = false },
+                        onConfirmation = {
+                            endOfEditingDialogVisible = false
+                            navigateToBack()
+                        }
+                    )
+                }
                 CategoryInfoScreen(
                     title = requireNotNull(category).title,
                     type = requireNotNull(category).type,
@@ -182,7 +213,7 @@ fun CategoryInfoScreenRoute(
                     onShowCheckGroupMemberBottomSheetChange = {
                         showCheckGroupMemberBottomSheet = it
                     },
-                    isGroupReader = category!!.isGroupReader,
+                    isGroupReader = requireNotNull(category).isGroupReader,
                     onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
                     onGroupOutClicked = { groupOutDialogVisible = true },
                     onGeneralDeletedClicked = { generalOutDialogVisible = true }
@@ -227,21 +258,33 @@ fun CategoryInfoScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            CustomTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = title,
-                onValueChange = { onTitleChanged(it) },
-                placeholder = {
+            if (type == CategoryType.GROUP && isGroupReader == false) {
+                Column {
+                    Spacer(Modifier.height(5.dp))
                     SimpleText(
-                        text = stringResource(id = R.string.content_input_category_title),
+                        text = title,
                         style = PomoroDoTheme.typography.laundryGothicRegular14,
-                        color = PomoroDoTheme.colorScheme.gray50
+                        color = PomoroDoTheme.colorScheme.onBackground
                     )
-                },
-                singleLine = true,
-                colors = textFieldColors,
-                textStyle = PomoroDoTheme.typography.laundryGothicRegular14
-            )
+                    Spacer(Modifier.height(5.dp))
+                }
+            } else {
+                CustomTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = title,
+                    onValueChange = { onTitleChanged(it) },
+                    placeholder = {
+                        SimpleText(
+                            text = stringResource(id = R.string.content_input_category_title),
+                            style = PomoroDoTheme.typography.laundryGothicRegular14,
+                            color = PomoroDoTheme.colorScheme.gray50
+                        )
+                    },
+                    singleLine = true,
+                    colors = textFieldColors,
+                    textStyle = PomoroDoTheme.typography.laundryGothicRegular14
+                )
+            }
             CategoryType(type)
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             if (groupReader != null) {
@@ -258,6 +301,7 @@ fun CategoryInfoScreen(
             )
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             if (type == CategoryType.GENERAL) {
+                Spacer(Modifier.height(37.dp))
                 CustomTextButton(
                     text = stringResource(id = R.string.content_do_delete),
                     containerColor = PomoroDoTheme.colorScheme.error50,
@@ -275,6 +319,7 @@ fun CategoryInfoScreen(
                     isGroupReader = isGroupReader
                 )
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
+                Spacer(Modifier.height(37.dp))
                 if (isGroupReader == true) {
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         CustomTextButton(
@@ -321,7 +366,7 @@ private fun GroupReader(name: String) {
     ) {
         SimpleText(
             textId = R.string.title_group_reader,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            style = PomoroDoTheme.typography.laundryGothicBold14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -341,7 +386,7 @@ private fun CategoryType(type: CategoryType) {
     ) {
         SimpleText(
             textId = R.string.title_type,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            style = PomoroDoTheme.typography.laundryGothicBold14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.weight(1f))
