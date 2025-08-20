@@ -315,8 +315,7 @@ fun CategoryInfoScreen(
                     groupMemberCount = groupMemberCount,
                     onClicked = {
                         onShowCheckGroupMemberBottomSheetChange(true)
-                    },
-                    isGroupReader = isGroupReader
+                    }
                 )
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
                 Spacer(Modifier.height(37.dp))
