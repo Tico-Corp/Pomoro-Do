@@ -233,4 +233,7 @@
     <string name="title_end_of_editing">수정 종료</string>
     <string name="content_end_of_editing_message">수정을 종료하고 나가시겠습니까?\n변경사항은 저장되지 않습니다.</string>
 
+    // end of writing
+    <string name="title_end_of_writing">작성 종료</string>
+    <string name="content_end_of_writing_message">작성을 종료하고 나가시겠습니까?\n변경사항은 저장되지 않습니다.</string>
 </resources>
