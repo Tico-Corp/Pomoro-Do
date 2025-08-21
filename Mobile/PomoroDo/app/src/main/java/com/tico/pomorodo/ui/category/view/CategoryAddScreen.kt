@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.category.view
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -43,7 +45,6 @@ import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
-import com.tico.pomorodo.ui.theme.IC_ARROW_RIGHT
 import com.tico.pomorodo.ui.theme.IC_CATEGORY_FOLLOWER_OPEN
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN_DISABLE
@@ -126,7 +127,10 @@ fun CategoryAddScreen(
 }
 
 @Composable
-fun CategoryGroupNumber(groupMemberCount: Int, onClicked: () -> Unit, isGroupReader: Boolean? = true) {
+fun CategoryGroupNumber(
+    groupMemberCount: Int,
+    onClicked: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -134,7 +138,7 @@ fun CategoryGroupNumber(groupMemberCount: Int, onClicked: () -> Unit, isGroupRea
     ) {
         SimpleText(
             textId = R.string.content_group_member,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            style = PomoroDoTheme.typography.laundryGothicBold14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -155,8 +159,7 @@ fun CategoryGroupNumber(groupMemberCount: Int, onClicked: () -> Unit, isGroupRea
             )
             SimpleIcon(
                 size = 15,
-                imageVector = if (isGroupReader == true) requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_RIGHT])
-                else requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
+                imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_DROP_DOWN]),
                 contentDescriptionId = R.string.content_full_open
             )
         }
@@ -179,7 +182,7 @@ fun CategoryOpenSettings(
     ) {
         SimpleText(
             textId = R.string.title_open_settings,
-            style = PomoroDoTheme.typography.laundryGothicRegular14,
+            style = PomoroDoTheme.typography.laundryGothicBold14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.weight(1f))
@@ -279,6 +282,8 @@ fun CategoryAddScreenRoute(
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
+    var endOfWritingDialogVisible by remember { mutableStateOf(false) }
+
     val scope = rememberCoroutineScope()
 
     val title by viewModel.title.collectAsState()
@@ -288,7 +293,9 @@ fun CategoryAddScreenRoute(
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
+    BackHandler {
+        endOfWritingDialogVisible = true
+    }
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -312,7 +319,9 @@ fun CategoryAddScreenRoute(
                     viewModel.insertCategory()
                     navigateToBack()
                 },
-                onBackClickedListener = navigateToBack,
+                onBackClickedListener = {
+                    endOfWritingDialogVisible = true
+                },
                 isActionEnabled = viewModel.validateInput()
             )
             if (showOpenSettingsBottomSheet) {
@@ -329,6 +338,15 @@ fun CategoryAddScreenRoute(
                                     showOpenSettingsBottomSheet = false
                                 }
                             }
+                    }
+                )
+            }
+            if (endOfWritingDialogVisible) {
+                EndOfWritingDialog(
+                    onDismissRequest = { endOfWritingDialogVisible = false },
+                    onConfirmation = {
+                        endOfWritingDialogVisible = false
+                        navigateToBack()
                     }
                 )
             }
