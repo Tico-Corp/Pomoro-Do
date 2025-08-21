@@ -236,4 +236,7 @@
     // end of writing
     <string name="title_end_of_writing">작성 종료</string>
     <string name="content_end_of_writing_message">작성을 종료하고 나가시겠습니까?\n변경사항은 저장되지 않습니다.</string>
+
+    // offline mode
+    <string name="title_not_support_offline_mode">오프라인 모드에서 지원하지 않는 기능입니다.</string>
 </resources>
