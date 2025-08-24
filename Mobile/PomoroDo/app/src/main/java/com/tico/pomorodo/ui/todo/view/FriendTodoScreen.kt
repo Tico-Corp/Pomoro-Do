@@ -140,8 +140,9 @@ fun FriendTodoScreen(
         CategorySection(
             isFriend = true,
             categoryWithTodoItemList = categoryWithTodoItemList,
+            onLikedIconClicked = onLikedIconClicked,
             onGroupIconClicked = onGroupIconClicked,
-            onLikedIconClicked = onLikedIconClicked
+            isOffline = false
         )
     }
 }

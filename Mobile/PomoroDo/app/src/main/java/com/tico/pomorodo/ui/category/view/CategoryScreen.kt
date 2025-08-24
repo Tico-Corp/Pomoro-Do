@@ -35,6 +35,7 @@ import com.tico.pomorodo.ui.todo.view.CategoryTag
 
 @Composable
 fun CategoryScreen(
+    isOffline: Boolean,
     generalCategoryList: List<Category>,
     groupCategoryList: List<Category>,
     inviteGroupCategoryList: List<InviteCategory>,
@@ -104,20 +105,22 @@ fun CategoryScreen(
                     }
                 }
             }
-            Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                SimpleText(
-                    textId = R.string.content_category_invited_group,
-                    style = PomoroDoTheme.typography.laundryGothicBold16,
-                    color = PomoroDoTheme.colorScheme.onBackground
-                )
-                Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    inviteGroupCategoryList.forEach { category ->
-                        InvitedCategoryItem(
-                            title = category.title,
-                            groupReader = category.groupReader,
-                            onAcceptButtonClicked = {},
-                            onRejectButtonClicked = {}
-                        )
+            if (!isOffline) {
+                Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    SimpleText(
+                        textId = R.string.content_category_invited_group,
+                        style = PomoroDoTheme.typography.laundryGothicBold16,
+                        color = PomoroDoTheme.colorScheme.onBackground
+                    )
+                    Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        inviteGroupCategoryList.forEach { category ->
+                            InvitedCategoryItem(
+                                title = category.title,
+                                groupReader = category.groupReader,
+                                onAcceptButtonClicked = {},
+                                onRejectButtonClicked = {}
+                            )
+                        }
                     }
                 }
             }
@@ -197,7 +200,8 @@ fun CategoryScreenRoute(
     categoryViewModel: CategoryViewModel = hiltViewModel(),
     navigateToAddCategory: () -> Unit,
     navigateToBack: () -> Unit,
-    navigateToInfoCategory: (Int) -> Unit
+    navigateToInfoCategory: (Int) -> Unit,
+    isOffline: Boolean,
 ) {
     val categoryList by categoryViewModel.categoryList.collectAsState()
     val inviteGroupCategoryList by categoryViewModel.inviteGroupCategoryList.collectAsState()
@@ -222,7 +226,8 @@ fun CategoryScreenRoute(
                 inviteGroupCategoryList = inviteGroupCategoryList,
                 generalCategoryList = categoryList.filter { it.groupMemberCount == 0 },
                 groupCategoryList = categoryList.filter { it.groupMemberCount > 0 },
-                onCategoryClicked = navigateToInfoCategory
+                onCategoryClicked = navigateToInfoCategory,
+                isOffline = isOffline
             )
         }
     }

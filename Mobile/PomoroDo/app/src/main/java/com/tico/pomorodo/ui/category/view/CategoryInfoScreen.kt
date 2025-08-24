@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.ui.category.viewModel.CategoryInfoViewModel
@@ -52,6 +53,7 @@ import kotlinx.coroutines.launch
 fun CategoryInfoScreenRoute(
     viewModel: CategoryInfoViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
+    isOffline: Boolean
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     val checkGroupMemberSheetState = rememberModalBottomSheetState()
@@ -65,162 +67,152 @@ fun CategoryInfoScreenRoute(
     var generalOutDialogVisible by rememberSaveable { mutableStateOf(false) }
     var endOfEditingDialogVisible by remember { mutableStateOf(false) }
 
-    val category by viewModel.category.collectAsState()
+    val categoryState by viewModel.category.collectAsState()
     val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
 
     var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    BackHandler{
-        if (requireNotNull(category).type == CategoryType.GROUP
-            && requireNotNull(category).isGroupReader == false
-        ){
-            navigateToBack()
-        }else{
-            endOfEditingDialogVisible = true
-        }
+
+    val category = categoryState ?: run {
+        LoadingScreen()
+        return
     }
-    if (category == null) {
-        // TODO: 데이터 로딩 화면
-    } else {
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .addFocusCleaner(focusManager) {
-                    keyboardController?.hide()
-                },
-            color = PomoroDoTheme.colorScheme.background,
+    val isReadOnly = remember(category, isOffline) { category.isReadOnly(isOffline) }
+
+    BackHandler {
+        if (isReadOnly) navigateToBack() else endOfEditingDialogVisible = true
+    }
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .addFocusCleaner(focusManager) {
+                keyboardController?.hide()
+            },
+        color = PomoroDoTheme.colorScheme.background,
+    ) {
+        Column(
+            Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize(),
         ) {
-            Column(
-                Modifier
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize(),
-            ) {
-                CustomTopAppBar(
-                    modifier = Modifier,
-                    titleTextId = R.string.title_info_category,
-                    actionIconString = if (requireNotNull(category).type == CategoryType.GROUP
-                        && requireNotNull(category).isGroupReader == false
-                    ) null else IC_OK,
-                    actionDisableIconString = if (requireNotNull(category).type == CategoryType.GROUP
-                        && requireNotNull(category).isGroupReader == false
-                    ) null else IC_UNOK,
-                    isActionEnabled = (selectedGroupMembers.any { it.selected } && category?.type == CategoryType.GROUP && viewModel.validateInput())
-                            || (category?.type == CategoryType.GENERAL && viewModel.validateInput()),
-                    actionIconDescriptionId = R.string.content_ic_ok,
-                    onActionClickedListener = {
-                        viewModel.updateCategoryInfo()
-                        navigateToBack()
-                    },
-                    onBackClickedListener = {
-                        if (requireNotNull(category).type == CategoryType.GROUP
-                            && requireNotNull(category).isGroupReader == false
-                        ) {
-                            navigateToBack()
-                        } else {
-                            endOfEditingDialogVisible = true
-                        }
-                    }
-                )
-                if (showCheckGroupMemberBottomSheet) {
-                    requireNotNull(category).groupMember?.let { user ->
-                        CheckGroupMemberBottomSheet(
-                            sheetState = checkGroupMemberSheetState,
-                            onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
-                            memberList = user,
-                            onClicked = {}
-                        )
-                    }
+            CustomTopAppBar(
+                modifier = Modifier,
+                titleTextId = R.string.title_info_category,
+                actionIconString = if (isReadOnly) null else IC_OK,
+                actionDisableIconString = if (isReadOnly) null else IC_UNOK,
+                isActionEnabled = (selectedGroupMembers.any { it.selected } && category.type == CategoryType.GROUP && viewModel.validateInput())
+                        || (category.type == CategoryType.GENERAL && viewModel.validateInput()),
+                actionIconDescriptionId = R.string.content_ic_ok,
+                onActionClickedListener = {
+                    viewModel.updateCategoryInfo()
+                    navigateToBack()
+                },
+                onBackClickedListener = {
+                    if (isReadOnly) navigateToBack() else endOfEditingDialogVisible = true
                 }
-                if (showOpenSettingsBottomSheet) {
-                    OpenSettingsBottomSheet(
-                        title = stringResource(id = R.string.title_open_settings),
-                        sheetState = openSettingsOptionSheetState,
-                        openSettingOption = requireNotNull(category).openSettings,
-                        onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
-                        onOkButtonClicked = {
-                            viewModel.setOpenSettingOption(it)
-                            scope.launch { openSettingsOptionSheetState.hide() }
-                                .invokeOnCompletion {
-                                    if (!openSettingsOptionSheetState.isVisible) {
-                                        showOpenSettingsBottomSheet = false
-                                    }
+            )
+            if (showCheckGroupMemberBottomSheet) {
+                category.groupMember?.let { user ->
+                    CheckGroupMemberBottomSheet(
+                        sheetState = checkGroupMemberSheetState,
+                        onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
+                        memberList = user,
+                        onClicked = {}
+                    )
+                }
+            }
+            if (showOpenSettingsBottomSheet) {
+                OpenSettingsBottomSheet(
+                    title = stringResource(id = R.string.title_open_settings),
+                    sheetState = openSettingsOptionSheetState,
+                    openSettingOption = category.openSettings,
+                    onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
+                    onOkButtonClicked = {
+                        viewModel.setOpenSettingOption(it)
+                        scope.launch { openSettingsOptionSheetState.hide() }
+                            .invokeOnCompletion {
+                                if (!openSettingsOptionSheetState.isVisible) {
+                                    showOpenSettingsBottomSheet = false
                                 }
-                        }
-                    )
-                }
-                if (groupDeleteFirstDialogVisible) {
-                    GroupDeleteFirstDialog(
-                        onConfirmation = {
-                            groupDeleteFirstDialogVisible = false
-                            groupDeleteSecondDialogVisible = true
-                        },
-                        onDismissRequest = { groupDeleteFirstDialogVisible = false }
-                    )
-                }
-                if (groupDeleteSecondDialogVisible) {
-                    GroupDeleteSecondDialog(
-                        groupName = requireNotNull(category).title,
-                        enabled = deleteDialogInputText == requireNotNull(category).title.getNoSpace(),
-                        value = deleteDialogInputText,
-                        onValueChange = { deleteDialogInputText = it },
-                        onConfirmation = { /*TODO: 그룹 카테고리 삭제 로직*/ },
-                        onDismissRequest = { groupDeleteSecondDialogVisible = false })
-                }
-                if (groupOutDialogVisible) {
-                    CategoryOutDialog(
-                        title = stringResource(id = R.string.title_group_out),
-                        content = stringResource(
-                            id = R.string.content_group_out_message,
-                            requireNotNull(category).title
-                        ),
-                        onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
-                        onIncompletedTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                        onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ },
-                        onDismissRequest = { groupOutDialogVisible = false }
-                    )
-                }
-                if (generalOutDialogVisible) {
-                    CategoryOutDialog(
-                        title = stringResource(id = R.string.title_category_delete),
-                        content = stringResource(id = R.string.content_category_delete_message),
-                        onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
-                        onIncompletedTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                        onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ },
-                        onDismissRequest = { generalOutDialogVisible = false })
-                }
-                if (endOfEditingDialogVisible) {
-                    EndOfEditingDialog(
-                        onDismissRequest = { endOfEditingDialogVisible = false },
-                        onConfirmation = {
-                            endOfEditingDialogVisible = false
-                            navigateToBack()
-                        }
-                    )
-                }
-                CategoryInfoScreen(
-                    title = requireNotNull(category).title,
-                    type = requireNotNull(category).type,
-                    groupMemberCount = selectedGroupMembers.filter { it.selected }.size,
-                    openSettingOption = if (requireNotNull(category).type == CategoryType.GROUP) OpenSettings.GROUP
-                    else requireNotNull(category).openSettings,
-                    groupReader = requireNotNull(category).groupReader,
-                    onTitleChanged = viewModel::setTitle,
-                    onShowOpenSettingsBottomSheetChange = {
-                        showOpenSettingsBottomSheet = it
-                    },
-                    onShowCheckGroupMemberBottomSheetChange = {
-                        showCheckGroupMemberBottomSheet = it
-                    },
-                    isGroupReader = requireNotNull(category).isGroupReader,
-                    onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
-                    onGroupOutClicked = { groupOutDialogVisible = true },
-                    onGeneralDeletedClicked = { generalOutDialogVisible = true }
+                            }
+                    }
                 )
             }
+            if (groupDeleteFirstDialogVisible) {
+                GroupDeleteFirstDialog(
+                    onConfirmation = {
+                        groupDeleteFirstDialogVisible = false
+                        groupDeleteSecondDialogVisible = true
+                    },
+                    onDismissRequest = { groupDeleteFirstDialogVisible = false }
+                )
+            }
+            if (groupDeleteSecondDialogVisible) {
+                GroupDeleteSecondDialog(
+                    groupName = category.title,
+                    enabled = deleteDialogInputText == category.title.getNoSpace(),
+                    value = deleteDialogInputText,
+                    onValueChange = { deleteDialogInputText = it },
+                    onConfirmation = { /*TODO: 그룹 카테고리 삭제 로직*/ },
+                    onDismissRequest = { groupDeleteSecondDialogVisible = false })
+            }
+            if (groupOutDialogVisible) {
+                CategoryOutDialog(
+                    title = stringResource(id = R.string.title_group_out),
+                    content = stringResource(
+                        id = R.string.content_group_out_message,
+                        category.title
+                    ),
+                    onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
+                    onIncompletedTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
+                    onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ },
+                    onDismissRequest = { groupOutDialogVisible = false }
+                )
+            }
+            if (generalOutDialogVisible) {
+                CategoryOutDialog(
+                    title = stringResource(id = R.string.title_category_delete),
+                    content = stringResource(id = R.string.content_category_delete_message),
+                    onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
+                    onIncompletedTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
+                    onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ },
+                    onDismissRequest = { generalOutDialogVisible = false })
+            }
+            if (endOfEditingDialogVisible) {
+                EndOfEditingDialog(
+                    onDismissRequest = { endOfEditingDialogVisible = false },
+                    onConfirmation = {
+                        endOfEditingDialogVisible = false
+                        navigateToBack()
+                    }
+                )
+            }
+            CategoryInfoScreen(
+                isReadOnly = isReadOnly,
+                isOffline = isOffline,
+                title = category.title,
+                type = category.type,
+                groupMemberCount = selectedGroupMembers.filter { it.selected }.size,
+                openSettingOption = if (category.type == CategoryType.GROUP) OpenSettings.GROUP
+                else category.openSettings,
+                groupReader = category.groupReader,
+                onTitleChanged = viewModel::setTitle,
+                onShowOpenSettingsBottomSheetChange = { showOpenSettingsBottomSheet = it },
+                onShowCheckGroupMemberBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
+                isGroupReader = category.isGroupReader,
+                onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
+                onGroupOutClicked = { groupOutDialogVisible = true },
+                onGeneralDeletedClicked = { generalOutDialogVisible = true }
+            )
         }
     }
+}
+
+@Composable
+fun LoadingScreen() {
+    // TODO: 데이터 로딩 화면
 }
 
 @Composable
@@ -237,6 +229,8 @@ fun CategoryInfoScreen(
     onGroupOutClicked: () -> Unit,
     onGroupDeleteClicked: () -> Unit,
     onGeneralDeletedClicked: () -> Unit,
+    isOffline: Boolean,
+    isReadOnly: Boolean
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
@@ -258,7 +252,7 @@ fun CategoryInfoScreen(
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
         ) {
-            if (type == CategoryType.GROUP && isGroupReader == false) {
+            if (isReadOnly) {
                 Column {
                     Spacer(Modifier.height(5.dp))
                     SimpleText(
@@ -302,14 +296,16 @@ fun CategoryInfoScreen(
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             if (type == CategoryType.GENERAL) {
                 Spacer(Modifier.height(37.dp))
-                CustomTextButton(
-                    text = stringResource(id = R.string.content_do_delete),
-                    containerColor = PomoroDoTheme.colorScheme.error50,
-                    contentColor = Color.White,
-                    textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                    verticalPadding = 12.dp,
-                    onClick = onGeneralDeletedClicked
-                )
+                if (!isOffline) {
+                    CustomTextButton(
+                        text = stringResource(id = R.string.content_do_delete),
+                        containerColor = PomoroDoTheme.colorScheme.error50,
+                        contentColor = Color.White,
+                        textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+                        verticalPadding = 12.dp,
+                        onClick = onGeneralDeletedClicked
+                    )
+                }
             } else {
                 CategoryGroupNumber(
                     groupMemberCount = groupMemberCount,
@@ -319,38 +315,40 @@ fun CategoryInfoScreen(
                 )
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
                 Spacer(Modifier.height(37.dp))
-                if (isGroupReader == true) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                if (!isOffline) {
+                    if (isGroupReader == true) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            CustomTextButton(
+                                modifier = Modifier.weight(1f),
+                                text = stringResource(id = R.string.content_group_out),
+                                containerColor = Color.Unspecified,
+                                textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+                                contentColor = PomoroDoTheme.colorScheme.error50,
+                                borderColor = PomoroDoTheme.colorScheme.error50,
+                                onClick = onGroupOutClicked,
+                                verticalPadding = 12.dp,
+                            )
+                            CustomTextButton(
+                                modifier = Modifier.weight(1f),
+                                containerColor = PomoroDoTheme.colorScheme.error50,
+                                text = stringResource(id = R.string.content_do_delete),
+                                textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
+                                contentColor = Color.White,
+                                onClick = onGroupDeleteClicked,
+                                verticalPadding = 12.dp,
+                            )
+                        }
+                    } else if (isGroupReader == false) {
                         CustomTextButton(
-                            modifier = Modifier.weight(1f),
                             text = stringResource(id = R.string.content_group_out),
                             containerColor = Color.Unspecified,
-                            textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
                             contentColor = PomoroDoTheme.colorScheme.error50,
                             borderColor = PomoroDoTheme.colorScheme.error50,
+                            textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
                             onClick = onGroupOutClicked,
                             verticalPadding = 12.dp,
                         )
-                        CustomTextButton(
-                            modifier = Modifier.weight(1f),
-                            containerColor = PomoroDoTheme.colorScheme.error50,
-                            text = stringResource(id = R.string.content_do_delete),
-                            textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                            contentColor = Color.White,
-                            onClick = onGroupDeleteClicked,
-                            verticalPadding = 12.dp,
-                        )
                     }
-                } else if (isGroupReader == false) {
-                    CustomTextButton(
-                        text = stringResource(id = R.string.content_group_out),
-                        containerColor = Color.Unspecified,
-                        contentColor = PomoroDoTheme.colorScheme.error50,
-                        borderColor = PomoroDoTheme.colorScheme.error50,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
-                        onClick = onGroupOutClicked,
-                        verticalPadding = 12.dp,
-                    )
                 }
             }
         }
@@ -394,5 +392,13 @@ private fun CategoryType(type: CategoryType) {
             style = PomoroDoTheme.typography.laundryGothicRegular14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
+    }
+}
+
+private fun Category.isReadOnly(isOffline: Boolean): Boolean {
+    return if (isOffline) {
+        this.type == CategoryType.GROUP
+    } else {
+        this.type == CategoryType.GROUP && this.isGroupReader == false
     }
 }

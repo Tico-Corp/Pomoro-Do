@@ -102,14 +102,16 @@ fun NavGraphBuilder.timerScreen(
 fun NavGraphBuilder.todoScreen(
     navigateToAddCategory: () -> Unit,
     navigateToCategory: () -> Unit,
-    navigateToHistory: () -> Unit
+    navigateToHistory: () -> Unit,
+    isOffline: Boolean,
 ) {
     composable(route = BottomNavigationDestination.TODO.name) {
         BackOnPressed()
         TodoScreenRoute(
             navigateToAddCategory = navigateToAddCategory,
             navigateToCategory = navigateToCategory,
-            navigateToHistory = navigateToHistory
+            navigateToHistory = navigateToHistory,
+            isOffline = isOffline
         )
     }
 }
@@ -207,13 +209,15 @@ fun NavGraphBuilder.breakModeScreen(mainNavController: NavController, getState: 
 fun NavGraphBuilder.categoryScreen(
     navigateToAddCategory: () -> Unit,
     navigateToInfoCategory: (Int) -> Unit,
-    navigateToBack: () -> Unit
+    navigateToBack: () -> Unit,
+    isOffline: Boolean,
 ) {
     composable(route = MainNavigationDestination.CATEGORY.name) {
         CategoryScreenRoute(
             navigateToAddCategory = navigateToAddCategory,
             navigateToBack = navigateToBack,
-            navigateToInfoCategory = navigateToInfoCategory
+            navigateToInfoCategory = navigateToInfoCategory,
+            isOffline = isOffline
         )
     }
 }
@@ -221,11 +225,13 @@ fun NavGraphBuilder.categoryScreen(
 fun NavGraphBuilder.addCategoryScreen(
     navigateToGroupMemberChoose: (String) -> Unit,
     navigateToBack: () -> Unit,
+    isOffline: Boolean
 ) {
     composable(route = MainNavigationDestination.ADD_CATEGORY.name) {
         CategoryAddScreenRoute(
             navigateToBack = navigateToBack,
             navigateToGroupMemberChoose = navigateToGroupMemberChoose,
+            isOffline = isOffline
         )
     }
 }
@@ -239,7 +245,8 @@ internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
 }
 
 fun NavGraphBuilder.infoCategoryScreen(
-    navigateToBack: () -> Unit
+    navigateToBack: () -> Unit,
+    isOffline: Boolean,
 ) {
     composable(
         route = "${MainNavigationDestination.INFO_CATEGORY.name}/{$CATEGORY_ID}",
@@ -247,6 +254,7 @@ fun NavGraphBuilder.infoCategoryScreen(
     ) {
         CategoryInfoScreenRoute(
             navigateToBack = navigateToBack,
+            isOffline = isOffline
         )
     }
 }

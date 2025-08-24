@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.data.model.CalendarDate
+import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.ui.common.view.addFocusCleaner
@@ -34,6 +35,7 @@ import kotlinx.datetime.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoScreenRoute(
+    isOffline: Boolean,
     viewModel: TodoViewModel = hiltViewModel(),
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
@@ -154,7 +156,8 @@ fun TodoScreenRoute(
                 onMoreInfoDeleteClicked = viewModel::deleteTodoItem,
                 updatedTodoItemTitle = updatedTodoItemTitle,
                 onUpdatedTodoItemTitle = { updatedTodoItemTitle = it },
-                calendarDates = calendarDates
+                calendarDates = calendarDates,
+                isOffline = isOffline
             )
         }
     }
@@ -162,6 +165,7 @@ fun TodoScreenRoute(
 
 @Composable
 fun TodoScreen(
+    isOffline: Boolean,
     selectedDate: LocalDate,
     onDateSelected: (LocalDate) -> Unit,
     monthlyLikedNumber: Int,
@@ -207,20 +211,21 @@ fun TodoScreen(
         CategorySection(
             isFriend = false,
             categoryWithTodoItemList = categoryWithTodoItemList,
+            onClickedCategoryTag = onClickedCategoryTag,
             isNewTodoMakeVisible = isNewTodoMakeVisible,
             newTodoItemTitle = newTodoItemTitle,
             selectedTodoItemIndex = selectedTodoItemIndex,
             selectedCategoryIndex = selectedCategoryIndex,
+            updatedTodoItemTitle = updatedTodoItemTitle,
+            onUpdatedTodoItemTitle = onUpdatedTodoItemTitle,
             onAddNewTodoItem = onAddNewTodoItem,
+            onMoreInfoEditClicked = onMoreInfoEditClicked,
+            onMoreInfoDeleteClicked = onMoreInfoDeleteClicked,
             onUpdateTodoItem = onUpdateTodoItem,
-            onClickedCategoryTag = onClickedCategoryTag,
             onChangedNewTodoItemTitle = onChangedNewTodoItemTitle,
             onTodoStateChanged = onTodoStateChanged,
             onGroupIconClicked = onGroupIconClicked,
-            onMoreInfoEditClicked = onMoreInfoEditClicked,
-            onMoreInfoDeleteClicked = onMoreInfoDeleteClicked,
-            updatedTodoItemTitle = updatedTodoItemTitle,
-            onUpdatedTodoItemTitle = onUpdatedTodoItemTitle
+            isOffline = isOffline
         )
     }
 }
@@ -243,11 +248,13 @@ fun CategorySection(
     onUpdateTodoItem: () -> Unit = {},
     onChangedNewTodoItemTitle: (String) -> Unit = {},
     onTodoStateChanged: (TodoData) -> Unit = {},
-    onGroupIconClicked: (TodoData) -> Unit
+    onGroupIconClicked: (TodoData) -> Unit,
+    isOffline: Boolean
 ) {
     Column(modifier = Modifier.fillMaxHeight()) {
         categoryWithTodoItemList.forEachIndexed { categoryIndex, category ->
             CategoryWithTodoItems(
+                isOffline = isOffline,
                 categoryWithTodoItem = category,
                 isNewTodoMakeVisible = isNewTodoMakeVisible && categoryIndex == selectedCategoryIndex,
                 onClickedCategoryTag = { onClickedCategoryTag(categoryIndex) },
@@ -289,13 +296,14 @@ fun CategoryWithTodoItems(
     onTodoStateChanged: (TodoData) -> Unit,
     onGroupIconClicked: (TodoData) -> Unit,
     onUpdateTodoItem: () -> Unit,
+    isOffline: Boolean,
 ) {
     CategoryTag(
         title = categoryWithTodoItem.title,
         groupMemberCount = categoryWithTodoItem.groupMemberCount,
         onAddClicked = onClickedCategoryTag,
-        isAddButton = !isFriend,
-        enabled = !isFriend
+        isAddButton = (!isFriend && !isOffline) || categoryWithTodoItem.type != CategoryType.GROUP,
+        enabled = (!isFriend && !isOffline) || categoryWithTodoItem.type != CategoryType.GROUP
     )
     Spacer(modifier = Modifier.height(10.dp))
     if (isNewTodoMakeVisible) {
@@ -309,6 +317,7 @@ fun CategoryWithTodoItems(
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
         categoryWithTodoItem.todoList.forEachIndexed { itemIndex, todoData ->
             TodoListItem(
+                isOffline = isOffline,
                 todoData = todoData,
                 isGroup = categoryWithTodoItem.groupMemberCount > 0,
                 onStateChanged = {
