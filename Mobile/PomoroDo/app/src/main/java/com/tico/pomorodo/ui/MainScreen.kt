@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.tico.pomorodo.R
 import com.tico.pomorodo.navigation.AppNavHost
+import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.home.view.BottomBar
 import com.tico.pomorodo.ui.home.view.rememberAppState
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
@@ -45,11 +46,7 @@ fun MainScreen() {
                 }
             }
         } else {
-            Toast.makeText(
-                appState.navController.context,
-                context.getString(R.string.title_disconnected_network),
-                Toast.LENGTH_LONG
-            ).show()
+            context.executeToast(R.string.title_disconnected_network)
             appState.setIsOffline(true)
         }
     }

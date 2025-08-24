@@ -1,7 +1,6 @@
 package com.tico.pomorodo.ui.common.view
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,11 +22,7 @@ fun BackOnPressed() {
             (context as Activity).finish()
         } else {
             backPressedState = true
-            Toast.makeText(
-                context,
-                context.getString(R.string.content_back_on_pressed_more_app_excute),
-                Toast.LENGTH_SHORT
-            ).show()
+            context.executeToast(R.string.content_back_on_pressed_more_app_excute)
         }
         backPressedTime = System.currentTimeMillis()
     }
