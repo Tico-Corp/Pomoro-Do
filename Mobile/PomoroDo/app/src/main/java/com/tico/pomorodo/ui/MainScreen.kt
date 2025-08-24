@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.tico.pomorodo.R
 import com.tico.pomorodo.navigation.AppNavHost
+import com.tico.pomorodo.navigation.BottomNavigationDestination
 import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.home.view.BottomBar
 import com.tico.pomorodo.ui.home.view.rememberAppState
@@ -28,10 +28,19 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun MainScreen() {
     val appState = rememberAppState()
-    val homeTabs = appState.bottomNavigationDestinationList.map { it.name }.toSet()
     val context = LocalContext.current
+    val allTabs = appState.bottomNavigationDestinationList
+    val homeTabsRoutes = allTabs.map { it.name }.toSet()
+    val currentRoute = appState.currentDestination?.route
 
-    LaunchedEffect(key1 = appState.isNetworkConnected.value, key2 = appState.isOffline.value) {
+    LaunchedEffect(appState.isOffline.value, currentRoute) {
+        val isNowFollow = currentRoute == BottomNavigationDestination.FOLLOW.name
+        if (appState.isOffline.value && isNowFollow) {
+            appState.navigateToDestination(BottomNavigationDestination.TIMER)
+        }
+    }
+
+    LaunchedEffect(appState.isNetworkConnected.value) {
         if (appState.isNetworkConnected.value) {
             if (appState.isOffline.value) {
                 val result = appState.snackBarHostState.showSnackbar(
@@ -55,9 +64,13 @@ fun MainScreen() {
         modifier = Modifier.fillMaxSize(),
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
-            val currentRoute = appState.currentDestination?.route
-            if (currentRoute in homeTabs) {
-                BottomBar(appState)
+            if (currentRoute in homeTabsRoutes) {
+                BottomBar(
+                    currentDestination = appState.currentDestination,
+                    navigateToDestination = appState::navigateToDestination,
+                    isOffline = appState.isOffline.value,
+                    destinations = allTabs
+                )
             }
         },
         containerColor = PomoroDoTheme.colorScheme.background,
