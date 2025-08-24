@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.RadioButtonColors
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -55,6 +56,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun CategoryAddScreen(
+    isOffline: Boolean,
     title: String,
     type: CategoryType,
     groupMemberCount: Int,
@@ -64,11 +66,11 @@ fun CategoryAddScreen(
     onShowOpenSettingsBottomSheetChange: (Boolean) -> Unit,
     onGroupMemberChooseClicked: () -> Unit,
 ) {
-    val radioButtonColors = RadioButtonColors(
+    val radioButtonColors = RadioButtonDefaults.colors(
         selectedColor = PomoroDoTheme.colorScheme.onBackground,
         unselectedColor = PomoroDoTheme.colorScheme.onBackground,
-        disabledSelectedColor = Color.Unspecified,
-        disabledUnselectedColor = Color.Unspecified
+        disabledSelectedColor = PomoroDoTheme.colorScheme.gray70,
+        disabledUnselectedColor = PomoroDoTheme.colorScheme.gray70
     )
     val textFieldColors = TextFieldDefaults.colors(
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
@@ -105,7 +107,12 @@ fun CategoryAddScreen(
                 colors = textFieldColors,
                 textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
             )
-            CategoryType(type = type, colors = radioButtonColors, onTypeChanged = onTypeChanged)
+            CategoryType(
+                type = type,
+                colors = radioButtonColors,
+                onTypeChanged = onTypeChanged,
+                isOffline = isOffline
+            )
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             CategoryOpenSettings(
                 iconString = openSettingOption.iconString,
@@ -227,6 +234,7 @@ fun CategoryOpenSettings(
 
 @Composable
 private fun CategoryType(
+    isOffline: Boolean,
     type: CategoryType,
     colors: RadioButtonColors,
     onTypeChanged: (CategoryType) -> Unit
@@ -261,13 +269,14 @@ private fun CategoryType(
                 selected = type == CategoryType.GROUP,
                 onClick = { onTypeChanged(CategoryType.GROUP) },
                 colors = colors,
-                padding = PaddingValues(horizontal = 5.dp)
+                padding = PaddingValues(horizontal = 5.dp),
+                enabled = !isOffline
             )
             SimpleText(
-                modifier = Modifier.clickableWithoutRipple { onTypeChanged(CategoryType.GROUP) },
+                modifier = Modifier.clickableWithoutRipple(!isOffline) { onTypeChanged(CategoryType.GROUP) },
                 textId = R.string.content_category_group,
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
-                color = PomoroDoTheme.colorScheme.onBackground
+                color = if (isOffline) colors.disabledUnselectedColor else PomoroDoTheme.colorScheme.onBackground
             )
         }
     }
@@ -279,6 +288,7 @@ fun CategoryAddScreenRoute(
     viewModel: CategoryAddViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
     navigateToGroupMemberChoose: (String) -> Unit,
+    isOffline: Boolean
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -351,6 +361,7 @@ fun CategoryAddScreenRoute(
                 )
             }
             CategoryAddScreen(
+                isOffline = isOffline,
                 title = title,
                 type = type,
                 groupMemberCount = selectedGroupMembers.filter { it.selected }.size,

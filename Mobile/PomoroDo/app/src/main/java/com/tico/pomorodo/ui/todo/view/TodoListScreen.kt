@@ -203,6 +203,7 @@ fun TodoListItem(
     onGroupIconClicked: () -> Unit,
     onUpdateTodoItem: () -> Unit,
     onLikedIconClicked: () -> Unit,
+    isOffline: Boolean,
 ) {
     var showDropDownMoreInfo by remember { mutableStateOf(false) }
     Row(
@@ -228,14 +229,14 @@ fun TodoListItem(
             )
         }
 
-        if (isGroup && !isFriend) {
+        if (isGroup && !isFriend && !isOffline) {
             TodoGroupButton(
                 groupNumber = todoData.completedList?.size ?: 0,
                 onGroupClicked = onGroupIconClicked
             )
         }
 
-        if (isFriend || todoData.likes > 0) {
+        if ((isFriend || todoData.likes > 0) && !isOffline) {
             TodoLikeButton(
                 likes = todoData.likes,
                 isFriend = isFriend,
@@ -244,7 +245,7 @@ fun TodoListItem(
             )
         }
 
-        if (!isFriend) {
+        if (!isFriend && (!isOffline || !isGroup)) {
             MoreInfoButton(
                 showMoreInfo = showDropDownMoreInfo,
                 onShowMoreInfoChange = { showDropDownMoreInfo = it },

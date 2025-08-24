@@ -50,7 +50,8 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             todoScreen(
                 navigateToCategory = navController::navigateToCategory,
                 navigateToAddCategory = navController::navigateToAddCategory,
-                navigateToHistory = navController::navigateToHistory
+                navigateToHistory = navController::navigateToHistory,
+                isOffline = appState.isOffline.value
             )
             followScreen(navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen)
             myInfoScreen(
@@ -74,14 +75,17 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
                     navController.navigateToInfoCategory(
                         categoryId = categoryId
                     )
-                }
+                },
+                isOffline = appState.isOffline.value
             )
             addCategoryScreen(
                 navigateToGroupMemberChoose = navController::navigateToGroupMemberChoose,
-                navigateToBack = navController::popBackStack
+                navigateToBack = navController::popBackStack,
+                isOffline = appState.isOffline.value
             )
             infoCategoryScreen(
-                navigateToBack = navController::popBackStack
+                navigateToBack = navController::popBackStack,
+                isOffline = appState.isOffline.value
             )
             groupMemberChooseScreen(
                 navController = navController,
