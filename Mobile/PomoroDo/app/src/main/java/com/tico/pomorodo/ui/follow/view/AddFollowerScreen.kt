@@ -28,7 +28,7 @@ import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
 import com.tico.pomorodo.ui.common.view.SimpleIconButton
 import com.tico.pomorodo.ui.common.view.SimpleText
-import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
+import com.tico.pomorodo.ui.follow.viewmodel.FollowViewModel
 import com.tico.pomorodo.ui.theme.IC_ALL_CLEAN
 import com.tico.pomorodo.ui.theme.IC_SEARCH
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
