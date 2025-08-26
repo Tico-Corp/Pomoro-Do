@@ -39,7 +39,7 @@ import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
-import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
+import com.tico.pomorodo.ui.follow.viewmodel.FollowViewModel
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
