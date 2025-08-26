@@ -16,7 +16,9 @@ import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class FriendTodoViewModel @Inject constructor() : ViewModel() {
+class FollowTodoViewModel @Inject constructor() : ViewModel() {
+
+    private val args = UserArgs(saveStateHandle)
 
     private var _categoryWithTodoItemList =
         MutableStateFlow<List<CategoryWithTodoItem>>(emptyList())

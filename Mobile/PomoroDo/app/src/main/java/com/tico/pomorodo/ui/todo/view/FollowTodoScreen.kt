@@ -28,13 +28,13 @@ import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.follow.view.FollowItem
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.todo.viewmodel.FriendTodoViewModel
+import com.tico.pomorodo.ui.todo.viewmodel.FollowTodoViewModel
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FollowTodoScreenRoute(
-    viewModel: FriendTodoViewModel = hiltViewModel(),
+    viewModel: FollowTodoViewModel = hiltViewModel(),
     navigateToBack: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
