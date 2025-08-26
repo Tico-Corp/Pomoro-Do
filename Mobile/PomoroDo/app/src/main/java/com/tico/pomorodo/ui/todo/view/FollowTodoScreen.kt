@@ -33,7 +33,7 @@ import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendTodoScreenRoute(
+fun FollowTodoScreenRoute(
     viewModel: FriendTodoViewModel = hiltViewModel(),
     navigateToBack: () -> Unit
 ) {
@@ -74,7 +74,7 @@ fun FriendTodoScreenRoute(
                         )
                     }
                 }
-                FriendTodoScreen(
+                FollowTodoScreen(
                     user = friendUser,
                     onButtonClicked = viewModel::setFollowing,
                     selectedDate = selectedDate,
@@ -96,7 +96,7 @@ fun FriendTodoScreenRoute(
 }
 
 @Composable
-fun FriendTodoScreen(
+fun FollowTodoScreen(
     user: Follow,
     onButtonClicked: () -> Unit,
     onGroupIconClicked: (TodoData) -> Unit,
