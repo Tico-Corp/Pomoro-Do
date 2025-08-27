@@ -77,7 +77,6 @@ fun MyPageScreen(navigateToSettingScreen: () -> Unit) {
         Spacer(modifier = Modifier.height(28.dp))
 
         MyPageMenuList(
-            isNetworkConnected = myPageViewModel.isNetworkConnected,
             concentrationAlarmOptions = concentrationAlarmOption,
             breakAlarmOptions = breakAlarmOption,
             onConcentrationAlarmClicked = { concentrationAlarmBottomSheet = true },
@@ -156,7 +155,6 @@ fun FollowText(title: String, count: Int) {
 
 @Composable
 fun MyPageMenuList(
-    isNetworkConnected: Boolean,
     concentrationAlarmOptions: AlarmOptions,
     breakAlarmOptions: AlarmOptions,
     onConcentrationAlarmClicked: () -> Unit,
@@ -215,10 +213,6 @@ fun MyPageMenuList(
                     }
                 }
             }
-        }
-
-        if (!isNetworkConnected) {
-            NetworkSyncMenu()
         }
     }
 }
@@ -292,24 +286,5 @@ fun SetStopWatchMode(
         }
 
         CustomSwitch(checked = checked, onCheckedChange = onCheckChanged)
-    }
-}
-
-@Composable
-fun NetworkSyncMenu() {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        color = PomoroDoTheme.colorScheme.myPageMenuBackgroundColor
-    ) {
-        Text(
-            modifier = Modifier
-                .clickableWithRipple { TODO("network sync") }
-                .padding(horizontal = 18.dp, vertical = 14.dp),
-            text = stringResource(id = R.string.title_network_sync),
-            color = PomoroDoTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Start,
-            style = PomoroDoTheme.typography.laundryGothicRegular14
-        )
     }
 }

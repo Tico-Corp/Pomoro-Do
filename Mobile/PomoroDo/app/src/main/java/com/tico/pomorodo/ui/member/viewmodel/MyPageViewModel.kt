@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.member.viewmodel
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.common.util.NetworkHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,6 +15,4 @@ class MyPageViewModel @Inject constructor(networkHelper: NetworkHelper) : ViewMo
 
     private var _profile = MutableStateFlow<String?>(null)
     val profile: StateFlow<String?> = _profile.asStateFlow()
-
-    val isNetworkConnected = networkHelper.isNetworkConnected()
 }
