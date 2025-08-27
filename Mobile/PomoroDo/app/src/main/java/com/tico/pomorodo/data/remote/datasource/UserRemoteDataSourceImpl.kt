@@ -1,0 +1,10 @@
+package com.tico.pomorodo.data.remote.datasource
+
+import com.tico.pomorodo.data.remote.models.response.UserInfoResponse
+import com.tico.pomorodo.data.remote.service.UserApiService
+import javax.inject.Inject
+
+class UserRemoteDataSourceImpl @Inject constructor(private val userApiService: UserApiService) :
+    UserRemoteDataSource {
+    override suspend fun getUserInfo(): UserInfoResponse = userApiService.getUserInfo()
+}
