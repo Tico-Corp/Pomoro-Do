@@ -34,7 +34,6 @@ import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
-import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcSetting
 import com.tico.pomorodo.ui.member.viewmodel.MyPageViewModel
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
