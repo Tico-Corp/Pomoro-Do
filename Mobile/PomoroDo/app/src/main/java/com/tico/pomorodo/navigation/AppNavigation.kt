@@ -71,8 +71,8 @@ fun NavController.navigateToGroupMemberChoose(previousScreenType: String) =
 
 fun NavController.navigateToHistory() = navigate(MainNavigationDestination.HISTORY.name)
 
-fun NavController.navigateToModifyProfile() =
-    navigate(MainNavigationDestination.MODIFY_PROFILE.name)
+fun NavController.navigateToModifyProfile(userName: String, profileUrl: String) =
+    navigate("${MainNavigationDestination.MODIFY_PROFILE.name}/{$userName}/{$profileUrl}")
 
 fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination.SETTING.name)
 
@@ -287,14 +287,22 @@ fun NavGraphBuilder.groupMemberChooseScreen(
     }
 }
 
+private const val USER_NAME = "userName"
+private const val PROFILE_URL = "profileUrl"
+
 fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
-    composable(route = MainNavigationDestination.MODIFY_PROFILE.name) { navBackStackEntry ->
+    composable(
+        route = "${MainNavigationDestination.MODIFY_PROFILE.name}/{$USER_NAME}/{$PROFILE_URL}",
+        arguments = listOf(
+            navArgument(name = USER_NAME) { type = NavType.StringType },
+            navArgument(name = PROFILE_URL) { type = NavType.StringType })
+    ) { navBackStackEntry ->
         ModifyProfileScreen(navController = navController, navBackStackEntry = navBackStackEntry)
     }
 }
 
 fun NavGraphBuilder.settingScreen(
-    navigateToModifyProfileScreen: () -> Unit,
+    navigateToModifyProfileScreen: (String, String) -> Unit,
     navigateToAppThemeScreen: (String) -> Unit,
     popBackStack: () -> Unit
 ) {

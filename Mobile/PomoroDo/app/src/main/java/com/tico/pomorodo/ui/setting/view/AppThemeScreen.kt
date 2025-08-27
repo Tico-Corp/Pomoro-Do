@@ -31,6 +31,16 @@ import com.tico.pomorodo.ui.theme.IC_OK
 import com.tico.pomorodo.ui.theme.IC_UNOK
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
+const val LIGHT = "light"
+const val DARK = "dark"
+const val SYSTEM = "system"
+
+val appThemeMode = mapOf(
+    LIGHT to R.string.content_app_theme_light,
+    DARK to R.string.content_app_theme_dark,
+    SYSTEM to R.string.content_app_theme_system
+)
+
 @Composable
 fun AppThemeScreen(initialSelectedMode: String, popBackStack: () -> Unit) {
     var enable by remember { mutableStateOf(false) }
