@@ -19,9 +19,9 @@ import com.tico.pomorodo.ui.common.view.BackOnPressed
 import com.tico.pomorodo.ui.follow.view.AddFollowerScreen
 import com.tico.pomorodo.ui.follow.view.FollowListScreen
 import com.tico.pomorodo.ui.history.view.HistoryRoute
-import com.tico.pomorodo.ui.member.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.member.view.MyPageScreen
 import com.tico.pomorodo.ui.setting.view.AppThemeScreen
+import com.tico.pomorodo.ui.setting.view.ModifyProfileScreen
 import com.tico.pomorodo.ui.setting.view.SettingScreen
 import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
@@ -123,16 +123,10 @@ fun NavGraphBuilder.followScreen(navigateToAddFollowerScreen: () -> Unit) {
     }
 }
 
-fun NavGraphBuilder.myInfoScreen(
-    navigateToModifyProfile: () -> Unit,
-    navigateToSettingScreen: () -> Unit,
-) {
+fun NavGraphBuilder.myInfoScreen(navigateToSettingScreen: () -> Unit) {
     composable(route = BottomNavigationDestination.MY_INFO.name) {
         BackOnPressed()
-        MyPageScreen(
-            navigateToModifyProfile = navigateToModifyProfile,
-            navigateToSettingScreen = navigateToSettingScreen
-        )
+        MyPageScreen(navigateToSettingScreen = navigateToSettingScreen)
     }
 }
 
@@ -300,12 +294,13 @@ fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
 }
 
 fun NavGraphBuilder.settingScreen(
+    navigateToModifyProfileScreen: () -> Unit,
     navigateToAppThemeScreen: (String) -> Unit,
     popBackStack: () -> Unit
 ) {
     composable(route = MainNavigationDestination.SETTING.name) {
         SettingScreen(
-            navigateToModifyProfileScreen = { /*TODO*/ },
+            navigateToModifyProfileScreen = navigateToModifyProfileScreen,
             navigateToAppThemeScreen = navigateToAppThemeScreen,
             navigateToTermsOfUseScreen = { /*TODO*/ },
             navigateToPrivacyPolicyScreen = {},
