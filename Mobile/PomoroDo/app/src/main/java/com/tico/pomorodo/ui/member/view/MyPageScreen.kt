@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.member.view
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,10 +42,7 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun MyPageScreen(
-    navigateToModifyProfile: () -> Unit,
-    navigateToSettingScreen: () -> Unit
-) {
+fun MyPageScreen(navigateToSettingScreen: () -> Unit) {
     val myPageViewModel: MyPageViewModel = hiltViewModel()
     val name by myPageViewModel.name.collectAsState()
     val profileUri by myPageViewModel.profile.collectAsState()
@@ -77,7 +73,6 @@ fun MyPageScreen(
             userName = name,
             followingCount = 4,
             followerCount = 2,
-            onProfileClick = navigateToModifyProfile,
         )
 
         Spacer(modifier = Modifier.height(28.dp))
@@ -122,7 +117,6 @@ fun MyProfile(
     userName: String,
     followingCount: Int,
     followerCount: Int,
-    onProfileClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -131,14 +125,12 @@ fun MyProfile(
     ) {
         Profile(
             uri = profileUri,
-            modifier = Modifier.clickableWithoutRipple { onProfileClick() },
             size = 60
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
                 text = userName,
-                modifier = Modifier.clickableWithoutRipple { onProfileClick() },
                 color = PomoroDoTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
                 style = PomoroDoTheme.typography.laundryGothicRegular20

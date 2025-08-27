@@ -1,4 +1,4 @@
-package com.tico.pomorodo.ui.member.view
+package com.tico.pomorodo.ui.setting.view
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -29,12 +31,13 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.tico.pomorodo.BuildConfig
 import com.tico.pomorodo.R
+import com.tico.pomorodo.data.model.NameErrorType
 import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.EditableProfile
-import com.tico.pomorodo.data.model.NameErrorType
 import com.tico.pomorodo.ui.common.view.PhotoChooseDialog
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.common.view.createImageFile
 import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.common.view.uriToFile
@@ -167,4 +170,12 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
             }
         )
     }
+
+    Text(
+        text = "회원 탈퇴",
+        modifier = Modifier.clickableWithoutRipple { /*TODO: 회원 탈퇴 로직*/ },
+        color = PomoroDoTheme.colorScheme.gray50,
+        textAlign = TextAlign.Center,
+        style = PomoroDoTheme.typography.laundryGothicRegular10
+    )
 }
