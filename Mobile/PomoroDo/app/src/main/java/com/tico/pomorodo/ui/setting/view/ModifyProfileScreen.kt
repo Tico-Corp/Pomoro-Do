@@ -111,36 +111,50 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .padding(bottom = 24.dp)
             .background(PomoroDoTheme.colorScheme.background),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomTopAppBar(
-            titleTextId = R.string.title_modify_profile,
-            isActionEnabled = enable,
-            actionIconString = IC_OK,
-            actionDisableIconString = IC_UNOK,
-            actionIconDescriptionId = R.string.content_ic_ok,
-            onActionClickedListener = {
-                runBlocking {
-                    authViewModel.setName(inputText)
-                    navController.popBackStack()
-                }
-            },
-            onBackClickedListener = { navController.popBackStack() }
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CustomTopAppBar(
+                titleTextId = R.string.title_modify_profile,
+                isActionEnabled = enable,
+                actionIconString = IC_OK,
+                actionDisableIconString = IC_UNOK,
+                actionIconDescriptionId = R.string.content_ic_ok,
+                onActionClickedListener = {
+                    runBlocking {
+                        authViewModel.setName(inputText)
+                        navController.popBackStack()
+                    }
+                },
+                onBackClickedListener = { navController.popBackStack() }
+            )
 
-        EditableProfile(
-            modifier = Modifier.padding(horizontal = 30.dp),
-            profileUri = profileUri,
-            onProfileClicked = { showPhotoChooseDialog = true },
-            inputText = inputText,
-            onInputTextChanged = {
-                inputText = it
-                errorType = authViewModel.nameValidate(it)
-                enable = errorType == NameErrorType.NONE && initialInputText != inputText
-            },
-            errorType = errorType
+            EditableProfile(
+                modifier = Modifier.padding(horizontal = 30.dp),
+                profileUri = profileUri,
+                onProfileClicked = { showPhotoChooseDialog = true },
+                inputText = inputText,
+                onInputTextChanged = {
+                    inputText = it
+                    errorType = authViewModel.nameValidate(it)
+                    enable = errorType == NameErrorType.NONE && initialInputText != inputText
+                },
+                errorType = errorType
+            )
+        }
+
+        Text(
+            text = "회원 탈퇴",
+            modifier = Modifier.clickableWithoutRipple { /*TODO: 회원 탈퇴 로직*/ },
+            color = PomoroDoTheme.colorScheme.gray50,
+            textAlign = TextAlign.Center,
+            style = PomoroDoTheme.typography.laundryGothicRegular10
         )
     }
 
@@ -170,12 +184,4 @@ fun ModifyProfileScreen(navController: NavController, navBackStackEntry: NavBack
             }
         )
     }
-
-    Text(
-        text = "회원 탈퇴",
-        modifier = Modifier.clickableWithoutRipple { /*TODO: 회원 탈퇴 로직*/ },
-        color = PomoroDoTheme.colorScheme.gray50,
-        textAlign = TextAlign.Center,
-        style = PomoroDoTheme.typography.laundryGothicRegular10
-    )
 }
