@@ -13,7 +13,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
     val navController = appState.navController
     NavHost(
         navController = navController,
-        startDestination = MainNavigationDestination.HOME.name,
+        startDestination = MainNavigationDestination.SPLASH.name,
         modifier = modifier
     ) {
         splashScreen(
