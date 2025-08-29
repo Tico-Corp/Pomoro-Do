@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BaseResponse<T>(
-    val status: Int,
     val message: String,
     val code: String,
     val data: T
