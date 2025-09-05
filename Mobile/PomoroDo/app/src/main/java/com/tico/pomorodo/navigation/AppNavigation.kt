@@ -50,7 +50,7 @@ fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LOG_IN.
 fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SIGN_UP.name)
 
 fun NavController.navigateToHome() {
-    navigate(MainNavigationDestination.HOME.name) {
+    navigate(NavigationRoute.HOME.name) {
         popUpTo(graph.id) { inclusive = true }
     }
 }
@@ -71,8 +71,8 @@ fun NavController.navigateToGroupMemberChoose(previousScreenType: String) =
 
 fun NavController.navigateToHistory() = navigate(MainNavigationDestination.HISTORY.name)
 
-fun NavController.navigateToModifyProfile(userName: String, profileUrl: String) =
-    navigate("${MainNavigationDestination.MODIFY_PROFILE.name}/{$userName}/{$profileUrl}")
+fun NavController.navigateToModifyProfile() =
+    navigate(MainNavigationDestination.MODIFY_PROFILE.name)
 
 fun NavController.navigateToSettingScreen() = navigate(MainNavigationDestination.SETTING.name)
 
@@ -180,7 +180,7 @@ fun NavGraphBuilder.concentrationModeScreen(
             getState = getState,
             navigateToBreakMode = navigateToBreakMode,
             navigateToTimerHome = {
-                popBackStack(MainNavigationDestination.HOME.name, false)
+                popBackStack(NavigationRoute.HOME.name, false)
             }
         )
     }
@@ -191,7 +191,7 @@ fun NavGraphBuilder.breakModeScreen(mainNavController: NavController, getState: 
         BreakTimerScreen(
             navigateToTimerHome = {
                 mainNavController.popBackStack(
-                    MainNavigationDestination.HOME.name,
+                    NavigationRoute.HOME.name,
                     inclusive = false
                 )
             },
@@ -287,22 +287,20 @@ fun NavGraphBuilder.groupMemberChooseScreen(
     }
 }
 
-private const val USER_NAME = "userName"
-private const val PROFILE_URL = "profileUrl"
-
 fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
-    composable(
-        route = "${MainNavigationDestination.MODIFY_PROFILE.name}/{$USER_NAME}/{$PROFILE_URL}",
-        arguments = listOf(
-            navArgument(name = USER_NAME) { type = NavType.StringType },
-            navArgument(name = PROFILE_URL) { type = NavType.StringType })
-    ) { navBackStackEntry ->
-        ModifyProfileScreen(navController = navController, navBackStackEntry = navBackStackEntry)
+    composable(route = MainNavigationDestination.MODIFY_PROFILE.name) { navBackStackEntry ->
+        val myInfoScreenEntry = remember(navBackStackEntry) {
+            navController.getBackStackEntry(NavigationRoute.MY_PAGE.name)
+        }
+        ModifyProfileScreen(
+            navController = navController,
+            navBackStackEntry = myInfoScreenEntry
+        )
     }
 }
 
 fun NavGraphBuilder.settingScreen(
-    navigateToModifyProfileScreen: (String, String) -> Unit,
+    navigateToModifyProfileScreen: () -> Unit,
     navigateToAppThemeScreen: (String) -> Unit,
     popBackStack: () -> Unit
 ) {

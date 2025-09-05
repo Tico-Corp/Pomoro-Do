@@ -36,7 +36,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             navigateToBack = navController::popBackStack
         )
         navigation(
-            route = MainNavigationDestination.HOME.name,
+            route = NavigationRoute.HOME.name,
             startDestination = BottomNavigationDestination.TODO.name
         ) {
             timerScreen(
@@ -54,9 +54,6 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
                 isOffline = appState.isOffline.value
             )
             followScreen(navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen)
-            myInfoScreen(
-                navigateToSettingScreen = navController::navigateToSettingScreen
-            )
             concentrationModeScreen(
                 popBackStack = navController::popBackStack,
                 getState = navController::getState,
@@ -93,13 +90,23 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
 
             historyScreen(navigateToBack = navController::popBackStack)
 
+            navigation(
+                route = NavigationRoute.MY_PAGE.name,
+                startDestination = BottomNavigationDestination.MY_INFO.name
+            ) {
+                myInfoScreen(
+                    navigateToSettingScreen = navController::navigateToSettingScreen
+                )
+
+                settingScreen(
+                    navigateToModifyProfileScreen = navController::navigateToModifyProfile,
+                    navigateToAppThemeScreen = navController::navigateToAppThemeScreen,
+                    popBackStack = navController::popBackStack
+                )
+            }
+
             modifyProfileScreen(navController = navController)
 
-            settingScreen(
-                navigateToModifyProfileScreen = navController::navigateToModifyProfile,
-                navigateToAppThemeScreen = navController::navigateToAppThemeScreen,
-                popBackStack = navController::popBackStack
-            )
             appThemeScreen(popBackStack = navController::popBackStack)
 
             addFollowerScreen(popBackToFollowScreen = appState.navController::popBackStack)
