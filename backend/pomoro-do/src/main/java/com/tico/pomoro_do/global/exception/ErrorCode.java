@@ -141,10 +141,10 @@ public enum ErrorCode {
     DEVICE_ID_INVALID(HttpStatus.BAD_REQUEST, "D-303", "DEVICE ID가 비어있거나 유효하지 않습니다"),
 
     // 관리자 관련 에러: -400번대
-    NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "P-400", "관리자 권한이 없습니다."),
-    INVALID_ADMIN_EMAIL(HttpStatus.BAD_REQUEST, "P-401", "허용되지 않은 관리자 이메일입니다."),
-    ADMIN_EMAIL_ONLY(HttpStatus.FORBIDDEN, "P-402", "관리자 이메일만 접근할 수 있습니다."),
-    ADMIN_LOGIN_FAILED(HttpStatus.BAD_REQUEST, "P-403", "관리자 정보가 일치하지 않습니다. 관리자 로그인에 실패했습니다."),
+    NOT_AN_ADMIN(HttpStatus.FORBIDDEN, "I-400", "관리자 권한이 없습니다."),
+    INVALID_ADMIN_EMAIL(HttpStatus.BAD_REQUEST, "I-401", "허용되지 않은 관리자 이메일입니다."),
+    ADMIN_EMAIL_ONLY(HttpStatus.FORBIDDEN, "I-402", "관리자 전용 접근입니다."),
+    ADMIN_LOGIN_FAILED(HttpStatus.UNAUTHORIZED, "I-403", "관리자 인증에 실패했습니다."),
 
     // 파일 업로드 관련 에러: -500번대
     FILE_MISSING(HttpStatus.BAD_REQUEST, "F-500", "파일이 요청에 포함되어 있지 않습니다."),
