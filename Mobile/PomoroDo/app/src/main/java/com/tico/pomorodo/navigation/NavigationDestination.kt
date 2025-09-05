@@ -36,8 +36,6 @@ enum class MainNavigationDestination {
     LOG_IN,
     SIGN_UP,
 
-    HOME,
-
     CONCENTRATION_MODE,
     BREAK_MODE,
 
@@ -54,4 +52,9 @@ enum class MainNavigationDestination {
     APP_THEME,
 
     ADD_FOLLOWER,
+}
+
+enum class NavigationRoute {
+    HOME,
+    MY_PAGE,
 }
