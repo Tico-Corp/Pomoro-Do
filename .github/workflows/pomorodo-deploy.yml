@@ -1,16 +1,17 @@
 name: CI/CD with Gradle, Docker, AWS
 
-# develop-be 브랜치에 push 또는 PR 이벤트가 발생하면 워크플로우가 실행된다.
+# develop-be 브랜치에 push가 발생하면 워크플로우가 실행
 # backend 폴더 내의 변경 사항이 있을 때만 워크플로우가 실행
+# (PR 이벤트는 비활성화됨)
 on:
   push:
     branches: [ "develop-be" ]
     paths:
       - 'backend/**'
-  pull_request:
-    branches: [ "develop-be" ]
-    paths:
-      - 'backend/**'
+  # pull_request:
+  #   branches: [ "develop-be" ]
+  #   paths:
+  #     - 'backend/**'
 
 env:
   IMAGE_NAME: ${{ secrets.DOCKER_IMAGE_NAME }}pomorodo:latest
@@ -111,4 +112,5 @@ jobs:
             -e S3_REGION=${{ secrets.S3_REGION }} \
             -e S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
             -e S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
+            -e INTERNAL_EMAIL_DOMAIN=${{ secrets.INTERNAL_EMAIL_DOMAIN }} \
             ${{ env.IMAGE_NAME }}
