@@ -3,14 +3,17 @@ package com.tico.pomoro_do.domain.user.service;
 import com.tico.pomoro_do.domain.auth.dto.response.TokenResponse;
 import com.tico.pomoro_do.domain.auth.service.AuthService;
 import com.tico.pomoro_do.domain.auth.service.TokenService;
-import com.tico.pomoro_do.domain.user.dto.request.AdminRequest;
+import com.tico.pomoro_do.domain.user.dto.request.AdminLoginRequest;
+import com.tico.pomoro_do.domain.user.dto.request.AdminRegisterRequest;
 import com.tico.pomoro_do.domain.user.entity.User;
+import com.tico.pomoro_do.domain.user.policy.InternalEmailPolicy;
 import com.tico.pomoro_do.global.exception.ErrorCode;
 import com.tico.pomoro_do.global.enums.S3Folder;
 import com.tico.pomoro_do.domain.user.enums.UserRole;
 import com.tico.pomoro_do.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,24 +30,25 @@ public class AdminServiceImpl implements AdminService {
     private final AuthService authService;
     private final TokenService tokenService;
     private final ImageService imageService;
+    private final InternalEmailPolicy emailPolicy;
 
-    private static final String ADMIN_EMAIL_DOMAIN = "pomorodo.shop";
+    @Value("${app.auth.internal-email-domain}")
+    private String internalEmailDomain;
 
     // 관리자 회원가입
     @Override
     @Transactional
-    public TokenResponse adminJoin(AdminRequest adminRequest, MultipartFile profileImage) {
-        String email = adminRequest.getEmail();
-        String nickname = adminRequest.getNickname();
+    public TokenResponse registerAdmin(AdminRegisterRequest adminRegisterRequest, MultipartFile profileImage) {
+        // 1) 이메일 정규화
+        String email = emailPolicy.normalize(adminRegisterRequest.getEmail());
 
-        // 관리자 회원가입 도메인 가져오기
-        String domain = getEmailDomain(email);
-        // 관리자 회원가입 이메일 도메인 검증
-        validateAdminEmailDomain(domain);
-        // 관리자 이메일 가입 여부 검증
+        // 2) 내부 도메인 검증
+        emailPolicy.validateInternalOnly(email);
+
+        // 3) 관리자 이메일 사용 여부 검증
         userService.verifyEmailNotRegistered(email);
 
-        // profileImage URL 가져오기
+        // 4) profileImage URL 가져오기
         String profileImageUrl;
         if (profileImage != null) {
             profileImageUrl = imageService.imageUpload(profileImage, S3Folder.PROFILES.getFolderName());
@@ -52,58 +56,36 @@ public class AdminServiceImpl implements AdminService {
             profileImageUrl = null;
         }
 
-        // 관리자 생성하기
-        User admin = authService.createUser(email, nickname, profileImageUrl, UserRole.ADMIN);
+        // 5) 관리자 생성하기
+        User admin = authService.createUser(email, adminRegisterRequest.getNickname(), profileImageUrl, UserRole.ADMIN);
 
         // 역할
         String role = String.valueOf(UserRole.ADMIN);
-        // 관리자 고유 번호: UUID 기반 + 역할명
+        // 6) 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(email.getBytes()).toString() + "_" + role;
 
         return tokenService.createAuthTokens(admin.getId(), email, String.valueOf(UserRole.ADMIN), deviceId);
     }
 
     // 관리자 로그인
+    /** 관리자 로그인 (비밀번호 대신 닉네임 일치 검증) */
     @Override
     @Transactional
-    public TokenResponse adminLogin(AdminRequest adminRequest){
-        String email = adminRequest.getEmail();
-        String nickname = adminRequest.getNickname();
+    public TokenResponse loginAdmin(AdminLoginRequest adminLoginRequest){
+        // 1) 이메일 정규화
+        String email = emailPolicy.normalize(adminLoginRequest.getEmail());
 
-        // 로그인 도메인 가져오기
-        String domain = getEmailDomain(email);
-        // 로그인 이메일 검증 (관리자 도메인)
-        validateAdminEmailDomain(domain);
-        // 관리자 로그인 검증
-        User admin = validateAdminUser(email, nickname);
+        // 2) 내부 도메인 검증
+        emailPolicy.validateInternalOnly(email);
+
+        // 3) 관리자 로그인 검증 (닉네임 일치 여부)
+        User admin = validateAdminUser(email, adminLoginRequest.getNickname());
+
         // 역할
         String role = String.valueOf(UserRole.ADMIN);
-        // 관리자 고유 번호: UUID 기반 + 역할명
+        // 4) 관리자 고유 번호: UUID 기반 + 역할명
         String deviceId = UUID.nameUUIDFromBytes(email.getBytes()).toString() + "_" + role;
         return tokenService.createAuthTokens(admin.getId(), email, role, deviceId);
-    }
-
-    /**
-     * 이메일에서 도메인 부분을 추출
-     *
-     * @param email 이메일 주소
-     * @return 이메일 도메인 부분
-     */
-    private String getEmailDomain(String email) {
-        return email.substring(email.indexOf("@") + 1);
-    }
-
-    /**
-     * 이메일 도메인 검증
-     *
-     * @param domain 이메일 도메인
-     * @throws CustomException 유효하지 않은 이메일 도메인의 경우 예외 발생
-     */
-    private void validateAdminEmailDomain(String domain) {
-        if (!ADMIN_EMAIL_DOMAIN.equals(domain)) {
-            log.error("유효하지 않은 이메일 도메인: {}", domain);
-            throw new CustomException(ErrorCode.ADMIN_EMAIL_ONLY);
-        }
     }
 
     /**
