@@ -67,11 +67,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             categoryScreen(
                 navigateToAddCategory = navController::navigateToAddCategory,
                 navigateToBack = navController::popBackStack,
-                navigateToInfoCategory = { categoryId ->
-                    navController.navigateToInfoCategory(
-                        categoryId = categoryId
-                    )
-                },
+                navigateToInfoCategory = navController::navigateToInfoCategory,
                 isOffline = appState.isOffline.value
             )
             addCategoryScreen(
