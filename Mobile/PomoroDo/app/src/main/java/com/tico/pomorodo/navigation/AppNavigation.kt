@@ -349,8 +349,14 @@ fun NavGraphBuilder.appThemeScreen(popBackStack: () -> Unit) {
     }
 }
 
-fun NavGraphBuilder.addFollowerScreen(popBackToFollowScreen: () -> Unit) {
+fun NavGraphBuilder.addFollowerScreen(
+    popBackToFollowScreen: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit
+) {
     composable(route = MainNavigationDestination.ADD_FOLLOWER.name) {
-        AddFollowerScreen(popBackToFollowScreen)
+        AddFollowerScreen(
+            popBackToFollowScreen = popBackToFollowScreen,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen
+        )
     }
 }

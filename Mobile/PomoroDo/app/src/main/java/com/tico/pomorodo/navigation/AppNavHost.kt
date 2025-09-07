@@ -113,7 +113,10 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
 
             appThemeScreen(popBackStack = navController::popBackStack)
 
-            addFollowerScreen(popBackToFollowScreen = appState.navController::popBackStack)
+            addFollowerScreen(
+                popBackToFollowScreen = appState.navController::popBackStack,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
+            )
         }
     }
 }
