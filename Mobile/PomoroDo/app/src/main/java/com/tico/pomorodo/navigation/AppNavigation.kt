@@ -99,6 +99,14 @@ fun NavGraphBuilder.timerScreen(
     }
 }
 
+private const val USER_ID = "userId"
+
+internal class UserArgs(savedStateHandle: SavedStateHandle) {
+    val userId: Int = checkNotNull(savedStateHandle[USER_ID]) {
+        "Missing userId"
+    }
+}
+
 fun NavGraphBuilder.todoScreen(
     navigateToAddCategory: () -> Unit,
     navigateToCategory: () -> Unit,
