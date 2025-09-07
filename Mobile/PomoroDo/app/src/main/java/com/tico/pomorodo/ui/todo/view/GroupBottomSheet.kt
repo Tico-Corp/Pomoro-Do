@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,7 +35,8 @@ fun GroupBottomSheet(
     completedList: List<User>,
     incompletedList: List<User>,
     totalNumber: Int,
-    onClicked: () -> Unit
+    isClicked: Boolean,
+    onClicked: (Int) -> Unit
 ) {
     ModalBottomSheet(
         onDismissRequest = {
@@ -76,13 +78,21 @@ fun GroupBottomSheet(
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                 }
-                items(completedList) {
-                    ProfileHorizontal(
-                        size = 36,
-                        name = it.name,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                        onClicked = onClicked
-                    )
+                if (completedList.isEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                } else {
+                    items(completedList) { user ->
+                        ProfileHorizontal(
+                            modifier = Modifier.fillMaxWidth(),
+                            size = 36,
+                            name = user.name,
+                            textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
+                            isClicked = isClicked,
+                            onClicked = { onClicked(user.id) }
+                        )
+                    }
                 }
                 item {
                     Spacer(modifier = Modifier.height(6.dp))
@@ -102,13 +112,21 @@ fun GroupBottomSheet(
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                 }
-                items(incompletedList) {
-                    ProfileHorizontal(
-                        size = 36,
-                        name = it.name,
-                        textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
-                        onClicked = onClicked
-                    )
+                if (incompletedList.isEmpty()) {
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                } else {
+                    items(incompletedList) { user ->
+                        ProfileHorizontal(
+                            modifier = Modifier.fillMaxWidth(),
+                            size = 36,
+                            name = user.name,
+                            textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
+                            isClicked = isClicked,
+                            onClicked = { onClicked(user.id) }
+                        )
+                    }
                 }
                 item {
                     Spacer(modifier = Modifier.height(10.dp))

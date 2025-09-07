@@ -40,6 +40,7 @@ fun TodoScreenRoute(
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val sheetState = rememberModalBottomSheetState()
@@ -100,7 +101,11 @@ fun TodoScreenRoute(
                         incompletedList = todoItem.incompletedList ?: listOf(),
                         totalNumber = (todoItem.completedList?.size ?: 0)
                                 + (todoItem.incompletedList?.size ?: 0),
-                        onClicked = {}
+                        isClicked = !isOffline,
+                        onClicked = { userId ->
+                            showGroupBottomSheet = false
+                            navigateToFollowTodoScreen(userId)
+                        }
                     )
                 }
             }
