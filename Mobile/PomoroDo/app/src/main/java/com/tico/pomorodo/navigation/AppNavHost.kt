@@ -25,7 +25,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             navigateToSignUp = navController::navigateToSignUp,
             navigateToHome = navController::navigateToHome,
             onClickedOffline = {
-                navController::navigateToHome
+                navController.navigateToHome()
                 appState.setIsOffline(true)
             },
             isOffline = appState.isOffline.value
