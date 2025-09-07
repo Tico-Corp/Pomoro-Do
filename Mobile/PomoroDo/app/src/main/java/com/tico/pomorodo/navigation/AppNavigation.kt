@@ -259,7 +259,6 @@ fun NavGraphBuilder.infoCategoryScreen(
     ) {
         CategoryInfoScreenRoute(
             navigateToBack = navigateToBack,
-            isOffline = isOffline
             isOffline = isOffline,
             navigateToFollowTodoScreen = navigateToFollowTodoScreen
         )

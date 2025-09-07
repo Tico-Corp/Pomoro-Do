@@ -77,7 +77,6 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             )
             infoCategoryScreen(
                 navigateToBack = navController::popBackStack,
-                isOffline = appState.isOffline.value
                 isOffline = appState.isOffline.value,
                 navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
             )
