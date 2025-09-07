@@ -126,10 +126,16 @@ fun NavGraphBuilder.todoScreen(
     }
 }
 
-fun NavGraphBuilder.followScreen(navigateToAddFollowerScreen: () -> Unit) {
+fun NavGraphBuilder.followScreen(
+    navigateToAddFollowerScreen: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit
+) {
     composable(route = BottomNavigationDestination.FOLLOW.name) {
         BackOnPressed()
-        FollowListScreen(navigateToAddFollowerScreen)
+        FollowListScreen(
+            navigateToAddFollowerScreen = navigateToAddFollowerScreen,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen
+        )
     }
 }
 
