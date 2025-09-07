@@ -53,7 +53,8 @@ import kotlinx.coroutines.launch
 fun CategoryInfoScreenRoute(
     viewModel: CategoryInfoViewModel = hiltViewModel(),
     navigateToBack: () -> Unit,
-    isOffline: Boolean
+    isOffline: Boolean,
+    navigateToFollowTodoScreen: (Int) -> Unit
 ) {
     val openSettingsOptionSheetState = rememberModalBottomSheetState()
     val checkGroupMemberSheetState = rememberModalBottomSheetState()
@@ -119,7 +120,10 @@ fun CategoryInfoScreenRoute(
                         sheetState = checkGroupMemberSheetState,
                         onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
                         memberList = user,
-                        onClicked = {}
+                        onClicked = { userId ->
+                            showCheckGroupMemberBottomSheet = false
+                            navigateToFollowTodoScreen(userId)
+                        }
                     )
                 }
             }

@@ -251,6 +251,7 @@ internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
 fun NavGraphBuilder.infoCategoryScreen(
     navigateToBack: () -> Unit,
     isOffline: Boolean,
+    navigateToFollowTodoScreen: (Int) -> Unit,
 ) {
     composable(
         route = "${MainNavigationDestination.INFO_CATEGORY.name}/{$CATEGORY_ID}",
@@ -259,6 +260,8 @@ fun NavGraphBuilder.infoCategoryScreen(
         CategoryInfoScreenRoute(
             navigateToBack = navigateToBack,
             isOffline = isOffline
+            isOffline = isOffline,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen
         )
     }
 }
