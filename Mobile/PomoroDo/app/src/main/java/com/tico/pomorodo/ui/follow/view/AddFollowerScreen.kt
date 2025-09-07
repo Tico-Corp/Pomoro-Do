@@ -34,7 +34,10 @@ import com.tico.pomorodo.ui.theme.IC_SEARCH
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun AddFollowerScreen(popBackToFollowScreen: () -> Unit) {
+fun AddFollowerScreen(
+    popBackToFollowScreen: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit
+) {
     val followViewModel: FollowViewModel = hiltViewModel()
     val followingList by followViewModel.followingList.collectAsState()
     var unFollowingDialogVisible by remember { mutableStateOf(false) }
@@ -112,7 +115,8 @@ fun AddFollowerScreen(popBackToFollowScreen: () -> Unit) {
                 } else {
                     followViewModel.toggleFollowState(index)
                 }
-            }
+            },
+            onProfileClicked = navigateToFollowTodoScreen
         )
     }
 
