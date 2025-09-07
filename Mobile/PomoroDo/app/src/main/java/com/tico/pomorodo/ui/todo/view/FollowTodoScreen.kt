@@ -35,7 +35,9 @@ import kotlinx.datetime.LocalDate
 @Composable
 fun FollowTodoScreenRoute(
     viewModel: FollowTodoViewModel = hiltViewModel(),
-    navigateToBack: () -> Unit
+    navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToBack: () -> Unit,
+    isOffline: Boolean
 ) {
     val sheetState = rememberModalBottomSheetState()
     val user by viewModel.user.collectAsState()
@@ -70,7 +72,11 @@ fun FollowTodoScreenRoute(
                             incompletedList = todoItem.incompletedList ?: listOf(),
                             totalNumber = (todoItem.completedList?.size ?: 0)
                                     + (todoItem.incompletedList?.size ?: 0),
-                            onClicked = {}
+                            isClicked = !isOffline,
+                            onClicked = { userId ->
+                                showGroupBottomSheet = false
+                                navigateToFollowTodoScreen(userId)
+                            }
                         )
                     }
                 }
@@ -87,7 +93,7 @@ fun FollowTodoScreenRoute(
                         selectedTodoItem = todoItem
                         showGroupBottomSheet = true
                     },
-                    onLikedIconClicked = viewModel::updateTodoLicked,
+                    onLikedIconClicked = viewModel::updateTodoLiked,
                     calendarDates = calendarDates,
                 )
             }

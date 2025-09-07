@@ -54,6 +54,10 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
                 isOffline = appState.isOffline.value,
                 navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
             )
+            followTodoScreen(
+                navigateToBack = navController::popBackStack,
+                isOffline = appState.isOffline.value,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
             )
             followScreen(
                 navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen,
