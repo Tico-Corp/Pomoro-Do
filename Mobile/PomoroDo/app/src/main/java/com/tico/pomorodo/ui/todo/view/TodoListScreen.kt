@@ -192,7 +192,7 @@ fun TodoMake(
 fun TodoListItem(
     todoData: TodoData,
     isFriend: Boolean,
-    isGroup: Boolean,
+    isGroupTodo: Boolean,
     isEditMode: Boolean = false,
     isLikedClick: Boolean,
     updatedTodoItemTitle: String,
@@ -229,7 +229,7 @@ fun TodoListItem(
             )
         }
 
-        if (isGroup && !isFriend && !isOffline) {
+        if (isGroupTodo && !isOffline) {
             TodoGroupButton(
                 groupNumber = todoData.completedList?.size ?: 0,
                 onGroupClicked = onGroupIconClicked
@@ -245,7 +245,7 @@ fun TodoListItem(
             )
         }
 
-        if (!isFriend && (!isOffline || !isGroup)) {
+        if (!isFriend && (!isOffline || !isGroupTodo)) {
             MoreInfoButton(
                 showMoreInfo = showDropDownMoreInfo,
                 onShowMoreInfoChange = { showDropDownMoreInfo = it },
