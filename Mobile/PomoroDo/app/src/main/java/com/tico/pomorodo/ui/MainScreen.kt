@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.tico.pomorodo.R
 import com.tico.pomorodo.navigation.AppNavHost
 import com.tico.pomorodo.navigation.BottomNavigationDestination
+import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.home.view.BottomBar
 import com.tico.pomorodo.ui.home.view.rememberAppState
@@ -34,7 +35,9 @@ fun MainScreen() {
     val currentRoute = appState.currentDestination?.route
 
     LaunchedEffect(appState.isOffline.value, currentRoute) {
-        val isNowFollow = currentRoute == BottomNavigationDestination.FOLLOW.name
+        val isNowFollow =
+            currentRoute?.startsWith(BottomNavigationDestination.FOLLOW.name) == true ||
+                    currentRoute?.startsWith(MainNavigationDestination.FOLLOW_TODO.name) == true
         if (appState.isOffline.value && isNowFollow) {
             appState.navigateToDestination(BottomNavigationDestination.TIMER)
         }
