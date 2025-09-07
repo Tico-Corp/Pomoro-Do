@@ -1,9 +1,11 @@
 package com.tico.pomorodo.ui.todo.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.domain.model.Follow
+import com.tico.pomorodo.navigation.UserArgs
 import com.tico.pomorodo.ui.common.view.toTimeZoneOf5AM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,7 @@ import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class FollowTodoViewModel @Inject constructor() : ViewModel() {
+class FollowTodoViewModel @Inject constructor(saveStateHandle: SavedStateHandle) : ViewModel() {
 
     private val args = UserArgs(saveStateHandle)
 
@@ -57,15 +59,19 @@ class FollowTodoViewModel @Inject constructor() : ViewModel() {
         get() = _isLoading.asStateFlow()
 
     init {
-        fetchFollowing()
-        getCategoryWithTodoItems()
+        loadData()
+    }
+
+    private fun loadData() {
+        fetchFollowInfo(args.userId)
+        getCategoryWithTodoItems(args.userId)
     }
 
     fun setSelectedDate(date: LocalDate) {
         _selectedDate.value = date
     }
 
-    private fun fetchFollowing() {
+    private fun fetchFollowInfo(userId: Int) {
         // TODO: follower user 정보 불러오는 로직 구현
     }
 
@@ -73,11 +79,11 @@ class FollowTodoViewModel @Inject constructor() : ViewModel() {
         // TODO: follow/following 버튼 클릭 로직 구현
     }
 
-    fun updateTodoLicked(todoId: Int) {
+    fun updateTodoLiked(todoId: Int) {
         // TODO: 좋아요 로직 구현
     }
 
-    private fun getCategoryWithTodoItems() {
+    private fun getCategoryWithTodoItems(userId: Int) {
         // TODO: 친구의 카테고리 별 투두 불러오는 로직
     }
 }
