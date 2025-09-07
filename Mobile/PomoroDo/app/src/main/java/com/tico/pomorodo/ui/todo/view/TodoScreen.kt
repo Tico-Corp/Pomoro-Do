@@ -271,7 +271,8 @@ fun CategorySection(
                 onUpdatedTodoItemTitle = onUpdatedTodoItemTitle,
                 isEditMode = !isNewTodoMakeVisible && categoryIndex == selectedCategoryIndex,
                 isFriend = isFriend,
-                onLikedIconClicked = onLikedIconClicked
+                onLikedIconClicked = onLikedIconClicked,
+                isGroupCategory = category.type == CategoryType.GROUP
             )
         }
     }
@@ -297,13 +298,14 @@ fun CategoryWithTodoItems(
     onGroupIconClicked: (TodoData) -> Unit,
     onUpdateTodoItem: () -> Unit,
     isOffline: Boolean,
+    isGroupCategory: Boolean
 ) {
     CategoryTag(
         title = categoryWithTodoItem.title,
         groupMemberCount = categoryWithTodoItem.groupMemberCount,
         onAddClicked = onClickedCategoryTag,
-        isAddButton = (!isFriend && !isOffline) || categoryWithTodoItem.type != CategoryType.GROUP,
-        enabled = (!isFriend && !isOffline) || categoryWithTodoItem.type != CategoryType.GROUP
+        isAddButton = (!isFriend && !isOffline) || (isOffline && !isGroupCategory),
+        enabled = (!isFriend && !isOffline) || (isOffline && !isGroupCategory)
     )
     Spacer(modifier = Modifier.height(10.dp))
     if (isNewTodoMakeVisible) {
@@ -319,7 +321,7 @@ fun CategoryWithTodoItems(
             TodoListItem(
                 isOffline = isOffline,
                 todoData = todoData,
-                isGroup = categoryWithTodoItem.groupMemberCount > 0,
+                isGroupTodo = isGroupCategory,
                 onStateChanged = {
                     onTodoStateChanged(todoData)
                 },
