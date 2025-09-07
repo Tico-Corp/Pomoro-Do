@@ -82,6 +82,8 @@ fun NavController.navigateToAppThemeScreen(appThemeMode: String) =
 fun NavController.navigateToAddFollowerScreen() =
     navigate(MainNavigationDestination.ADD_FOLLOWER.name)
 
+fun NavController.navigateToFollowTodoScreen(userId: Int) =
+    navigate("${MainNavigationDestination.FOLLOW_TODO.name}/$userId")
 
 // home navigation - composable route
 fun NavGraphBuilder.timerScreen(
