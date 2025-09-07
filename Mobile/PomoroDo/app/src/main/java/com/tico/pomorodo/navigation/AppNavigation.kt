@@ -27,6 +27,7 @@ import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
 import com.tico.pomorodo.ui.timer.running.view.ConcentrationTimerScreen
 import com.tico.pomorodo.ui.timer.setup.view.TimerRootScreen
+import com.tico.pomorodo.ui.todo.view.FollowTodoScreenRoute
 import com.tico.pomorodo.ui.todo.view.TodoScreenRoute
 
 // home navigation - navigate
@@ -127,6 +128,19 @@ fun NavGraphBuilder.todoScreen(
         )
     }
 }
+
+fun NavGraphBuilder.followTodoScreen(
+    navigateToBack: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit,
+    isOffline: Boolean
+) {
+    composable(
+        route = "${MainNavigationDestination.FOLLOW_TODO.name}/{$USER_ID}",
+        arguments = listOf(navArgument(name = USER_ID) { type = NavType.IntType })
+    ) {
+        FollowTodoScreenRoute(
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen,
+            navigateToBack = navigateToBack,
             isOffline = isOffline
         )
     }
