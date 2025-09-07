@@ -114,6 +114,7 @@ fun NavGraphBuilder.todoScreen(
     navigateToCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     isOffline: Boolean,
+    navigateToFollowTodoScreen: (Int) -> Unit,
 ) {
     composable(route = BottomNavigationDestination.TODO.name) {
         BackOnPressed()
@@ -121,6 +122,11 @@ fun NavGraphBuilder.todoScreen(
             navigateToAddCategory = navigateToAddCategory,
             navigateToCategory = navigateToCategory,
             navigateToHistory = navigateToHistory,
+            isOffline = isOffline,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen
+        )
+    }
+}
             isOffline = isOffline
         )
     }

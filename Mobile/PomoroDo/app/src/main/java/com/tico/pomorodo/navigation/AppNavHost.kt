@@ -51,7 +51,9 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
                 navigateToCategory = navController::navigateToCategory,
                 navigateToAddCategory = navController::navigateToAddCategory,
                 navigateToHistory = navController::navigateToHistory,
-                isOffline = appState.isOffline.value
+                isOffline = appState.isOffline.value,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
+            )
             )
             followScreen(
                 navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen,
