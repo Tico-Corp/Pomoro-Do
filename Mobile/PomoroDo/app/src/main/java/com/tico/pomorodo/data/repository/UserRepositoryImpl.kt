@@ -18,7 +18,7 @@ class UserRepositoryImpl @Inject constructor(private val userRemoteDataSource: U
         emit(Resource.Loading)
 
         val result = userRemoteDataSource.getUserInfo()
-            .let { wrapToResource(Dispatchers.IO) { it.toUserProfile() } }
+            .let { wrapToResource(Dispatchers.IO) { it.data.toUserProfile() } }
         emit(result)
     }.flowOn(Dispatchers.IO)
 }

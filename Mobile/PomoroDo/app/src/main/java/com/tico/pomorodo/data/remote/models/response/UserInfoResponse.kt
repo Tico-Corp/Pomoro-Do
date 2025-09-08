@@ -1,7 +1,9 @@
 package com.tico.pomorodo.data.remote.models.response
 
 import com.tico.pomorodo.data.model.UserProfile
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class UserInfoResponse(
     val userId: Int,
     val email: String,
