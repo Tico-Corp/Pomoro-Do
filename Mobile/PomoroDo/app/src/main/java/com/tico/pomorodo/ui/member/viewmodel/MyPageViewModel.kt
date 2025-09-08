@@ -44,7 +44,7 @@ class MyPageViewModel @Inject constructor(private val getUserProfileUseCase: Get
         }
     }
 
-    fun updateUserProfile(nickname: String, profileUri: Uri) = viewModelScope.launch {
+    fun updateUserProfile(nickname: String, profileUri: Uri?) = viewModelScope.launch {
 
     }
 }
