@@ -29,7 +29,6 @@ enum class BottomNavigationDestination(
     )
 }
 
-// 이곳에 디바이스 전체 화면을 차지하는 화면들을 넣어주세요.(하단 바 없는 화면들)
 enum class MainNavigationDestination {
     SPLASH,
 
@@ -48,6 +47,7 @@ enum class MainNavigationDestination {
 
     HISTORY,
 
+    MY_PAGE,
     MODIFY_PROFILE,
 
     SETTING,

@@ -4,16 +4,12 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -57,11 +53,6 @@ fun SettingScreen(
     }
 }
 
-sealed class MenuNavigateFunction {
-    data class StringFunction(val function: (String) -> Unit) : MenuNavigateFunction()
-    data class UnitFunction(val function: () -> Unit) : MenuNavigateFunction()
-}
-
 @Composable
 fun SettingMenuList(
     navigateToModifyProfileScreen: () -> Unit,
@@ -69,78 +60,42 @@ fun SettingMenuList(
     navigateToTermsOfUseScreen: () -> Unit,
     navigateToPrivacyPolicyScreen: () -> Unit
 ) {
-    val menuList: Map<SettingMenu, MenuNavigateFunction?> =
-        if (BuildConfig.APP_VERSION < "2.0.0") {
-            mapOf(
-                SettingMenu.MODIFY_PROFILE to MenuNavigateFunction.UnitFunction(
-                    navigateToModifyProfileScreen
-                ),
-                SettingMenu.TERMS_OF_USE to MenuNavigateFunction.UnitFunction(
-                    navigateToTermsOfUseScreen
-                ),
-                SettingMenu.PRIVACY_POLICY to MenuNavigateFunction.UnitFunction(
-                    navigateToPrivacyPolicyScreen
-                ),
-                SettingMenu.APP_VERSION to null
-            )
-        } else {
-            mapOf(
-                SettingMenu.MODIFY_PROFILE to MenuNavigateFunction.UnitFunction(
-                    navigateToModifyProfileScreen
-                ),
-                SettingMenu.APP_THEME to MenuNavigateFunction.StringFunction(
-                    navigateToAppThemeScreen
-                ),
-                SettingMenu.TERMS_OF_USE to MenuNavigateFunction.UnitFunction(
-                    navigateToTermsOfUseScreen
-                ),
-                SettingMenu.PRIVACY_POLICY to MenuNavigateFunction.UnitFunction(
-                    navigateToPrivacyPolicyScreen
-                ),
-                SettingMenu.APP_VERSION to null
-            )
-        }
-
-
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 18.dp, vertical = 24.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp, vertical = 24.dp)
     ) {
-        menuList.entries.forEachIndexed { index, settingMenu ->
-            SettingMenuItem(
-                menuStringResId = settingMenu.key.titleResId,
-                menuType = settingMenu.key.type,
-                content = settingMenu.key.content,
-                onClick = settingMenu.value
-            )
-
-            if (index != menuList.size - 1)
-                HorizontalDivider(color = PomoroDoTheme.colorScheme.gray70)
+        SettingMenuItem(menuStringResId = R.string.title_account_management) {
+            navigateToModifyProfileScreen()
         }
+
+        if (BuildConfig.APP_VERSION >= "2.0.0")
+            SettingMenuItem(menuStringResId = R.string.title_app_theme) {
+                /*TODO: 앱 테마 변경 화면 연결*/
+                navigateToAppThemeScreen("")
+            }
+
+        SettingMenuItem(menuStringResId = R.string.title_terms_of_use) {
+            navigateToTermsOfUseScreen()
+        }
+
+        SettingMenuItem(menuStringResId = R.string.title_privacy_policy) {
+            navigateToPrivacyPolicyScreen()
+        }
+
+        /*TODO: 앱 버전 채우기*/
+        SettingMenuItem(menuStringResId = R.string.title_app_version, appVersion = "")
     }
 }
 
 @Composable
 fun SettingMenuItem(
     @StringRes menuStringResId: Int,
-    menuType: SettingMenuType,
-    content: Any? = null,
-    onClick: MenuNavigateFunction? = null
+    onClick: () -> Unit,
 ) {
-    val modifier =
-        if (onClick != null) {
-            Modifier.clickableWithRipple {
-                when (onClick) {
-                    is MenuNavigateFunction.UnitFunction -> onClick.function()
-                    is MenuNavigateFunction.StringFunction -> onClick.function(content as String)
-                }
-            }
-        } else {
-            Modifier
-        }
-
     Row(
-        modifier = modifier
+        modifier = Modifier
+            .clickableWithRipple { onClick() }
             .fillMaxWidth()
             .padding(vertical = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -152,27 +107,38 @@ fun SettingMenuItem(
             style = PomoroDoTheme.typography.laundryGothicRegular18
         )
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            val contentString: String =
-                if (menuType == SettingMenuType.APP_THEME)
-                    stringResource(id = requireNotNull(appThemeMode[content]))
-                else content?.toString() ?: ""
+        SimpleIcon(
+            size = 20,
+            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_RIGHT]),
+            contentDescriptionId = menuStringResId
+        )
+    }
+}
 
-            Text(
-                text = contentString,
-                color = PomoroDoTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Start,
-                style = PomoroDoTheme.typography.laundryGothicRegular14
-            )
+@Composable
+fun SettingMenuItem(
+    @StringRes menuStringResId: Int,
+    appVersion: String,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = stringResource(menuStringResId),
+            color = PomoroDoTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Start,
+            style = PomoroDoTheme.typography.laundryGothicRegular18
+        )
 
-            Spacer(modifier = Modifier.width(2.dp))
+        Text(
+            text = appVersion,
+            color = PomoroDoTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Start,
+            style = PomoroDoTheme.typography.laundryGothicRegular14
+        )
 
-            if (menuType != SettingMenuType.APP_VERSION)
-                SimpleIcon(
-                    size = 20,
-                    imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ARROW_RIGHT]),
-                    contentDescriptionId = menuStringResId
-                )
-        }
     }
 }

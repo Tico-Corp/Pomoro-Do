@@ -6,6 +6,7 @@ import com.tico.pomorodo.domain.repository.CategoryRepository
 import com.tico.pomorodo.domain.repository.TimerRepository
 import com.tico.pomorodo.domain.repository.TodoRepository
 import com.tico.pomorodo.domain.repository.TokenRepository
+import com.tico.pomorodo.domain.repository.UserRepository
 import com.tico.pomorodo.domain.usecase.auth.ClearAccessTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.ClearIdTokenUseCase
 import com.tico.pomorodo.domain.usecase.auth.GetAccessTokenUseCase
@@ -31,6 +32,7 @@ import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.UpdateTodoUseCase
+import com.tico.pomorodo.domain.usecase.user.GetUserProfileUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -189,4 +191,9 @@ object UseCaseModule {
     fun provideUpdateTargetTimeUseCase(timerRepository: TimerRepository): UpdateConcentrationGoalUseCase {
         return UpdateConcentrationGoalUseCase(timerRepository)
     }
+
+    @Singleton
+    @Provides
+    fun provideGetUserProfileUseCase(userRepository: UserRepository): GetUserProfileUseCase =
+        GetUserProfileUseCase(userRepository)
 }

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.installations.FirebaseInstallations
 import com.tico.pomorodo.common.util.NetworkConstants
-import com.tico.pomorodo.data.model.NameErrorType
 import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.usecase.auth.GetFIDUseCase
@@ -73,17 +72,6 @@ class AuthViewModel @Inject constructor(
 
     fun setName(inputText: String) {
         _name.value = inputText
-    }
-
-    fun nameValidate(inputText: String): NameErrorType {
-        val regex = "[^ㄱ-ㅎ가-힣a-zA-Z0-9_]".toRegex()
-        return if (inputText.length !in NICKNAME_MIN_RANGE..NICKNAME_MAX_RANGE) {
-            NameErrorType.RANGE_ERROR
-        } else if (regex.containsMatchIn(inputText)) {
-            NameErrorType.INVALID_ERROR
-        } else {
-            NameErrorType.NONE
-        }
     }
 
     fun setProfile(uri: Uri?, file: File?, type: ProfileImageType) {
@@ -164,7 +152,5 @@ class AuthViewModel @Inject constructor(
 
     companion object {
         private const val TAG = "AuthViewModel"
-        private const val NICKNAME_MIN_RANGE = 2
-        private const val NICKNAME_MAX_RANGE = 10
     }
 }

@@ -39,10 +39,11 @@ import com.tico.pomorodo.ui.auth.viewModel.AuthState
 import com.tico.pomorodo.ui.auth.viewModel.AuthViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.EditableProfile
-import com.tico.pomorodo.data.model.NameErrorType
+import com.tico.pomorodo.ui.common.view.NameErrorType
 import com.tico.pomorodo.ui.common.view.PhotoChooseDialog
 import com.tico.pomorodo.ui.common.view.createImageFile
 import com.tico.pomorodo.ui.common.view.executeToast
+import com.tico.pomorodo.ui.common.view.checkNameValidation
 import com.tico.pomorodo.ui.common.view.uriToFile
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import java.io.File
@@ -170,7 +171,7 @@ fun SignUpRoute(
                 inputText = inputText,
                 onInputTextChanged = {
                     viewModel.setName(it)
-                    errorType = viewModel.nameValidate(it)
+                    errorType = it.checkNameValidation()
                     enable = errorType == NameErrorType.NONE
                 },
                 enable = enable,

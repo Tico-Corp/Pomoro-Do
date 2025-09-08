@@ -1,6 +1,5 @@
 package com.tico.pomorodo.ui.member.view
 
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,7 +34,6 @@ import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleIcon
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.clickableWithRipple
-import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcSetting
 import com.tico.pomorodo.ui.member.viewmodel.MyPageViewModel
 import com.tico.pomorodo.ui.theme.IC_DROP_DOWN
@@ -43,13 +41,9 @@ import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun MyPageScreen(
-    navigateToModifyProfile: () -> Unit,
-    navigateToSettingScreen: () -> Unit
-) {
+fun MyPageScreen(navigateToSettingScreen: () -> Unit) {
     val myPageViewModel: MyPageViewModel = hiltViewModel()
-    val name by myPageViewModel.name.collectAsState()
-    val profileUri by myPageViewModel.profile.collectAsState()
+    val userProfile by myPageViewModel.userProfile.collectAsState()
     var concentrationAlarmBottomSheet by remember { mutableStateOf(false) }
     var breakAlarmBottomSheet by remember { mutableStateOf(false) }
     var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.SOUND) }
@@ -73,17 +67,15 @@ fun MyPageScreen(
         )
 
         MyProfile(
-            profileUri = profileUri,
-            userName = name,
+            profileUri = userProfile?.profileImageUrl,
+            userName = userProfile?.nickname,
             followingCount = 4,
             followerCount = 2,
-            onProfileClick = navigateToModifyProfile,
         )
 
         Spacer(modifier = Modifier.height(28.dp))
 
         MyPageMenuList(
-            isNetworkConnected = myPageViewModel.isNetworkConnected,
             concentrationAlarmOptions = concentrationAlarmOption,
             breakAlarmOptions = breakAlarmOption,
             onConcentrationAlarmClicked = { concentrationAlarmBottomSheet = true },
@@ -119,10 +111,9 @@ fun MyPageScreen(
 @Composable
 fun MyProfile(
     profileUri: String?,
-    userName: String,
+    userName: String?,
     followingCount: Int,
     followerCount: Int,
-    onProfileClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -131,14 +122,12 @@ fun MyProfile(
     ) {
         Profile(
             uri = profileUri,
-            modifier = Modifier.clickableWithoutRipple { onProfileClick() },
             size = 60
         )
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = userName,
-                modifier = Modifier.clickableWithoutRipple { onProfileClick() },
+                text = userName ?: "",
                 color = PomoroDoTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
                 style = PomoroDoTheme.typography.laundryGothicRegular20
@@ -165,7 +154,6 @@ fun FollowText(title: String, count: Int) {
 
 @Composable
 fun MyPageMenuList(
-    isNetworkConnected: Boolean,
     concentrationAlarmOptions: AlarmOptions,
     breakAlarmOptions: AlarmOptions,
     onConcentrationAlarmClicked: () -> Unit,
@@ -224,10 +212,6 @@ fun MyPageMenuList(
                     }
                 }
             }
-        }
-
-        if (!isNetworkConnected) {
-            NetworkSyncMenu()
         }
     }
 }
@@ -301,24 +285,5 @@ fun SetStopWatchMode(
         }
 
         CustomSwitch(checked = checked, onCheckedChange = onCheckChanged)
-    }
-}
-
-@Composable
-fun NetworkSyncMenu() {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(10.dp),
-        color = PomoroDoTheme.colorScheme.myPageMenuBackgroundColor
-    ) {
-        Text(
-            modifier = Modifier
-                .clickableWithRipple { TODO("network sync") }
-                .padding(horizontal = 18.dp, vertical = 14.dp),
-            text = stringResource(id = R.string.title_network_sync),
-            color = PomoroDoTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Start,
-            style = PomoroDoTheme.typography.laundryGothicRegular14
-        )
     }
 }

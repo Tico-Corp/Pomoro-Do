@@ -7,6 +7,7 @@ import com.tico.pomorodo.data.remote.service.AuthApiService
 import com.tico.pomorodo.data.remote.service.ReissueTokenService
 import com.tico.pomorodo.data.remote.service.TodoApiService
 import com.tico.pomorodo.data.remote.service.TokenApiService
+import com.tico.pomorodo.data.remote.service.UserApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,4 +43,9 @@ object ServiceModule {
     @Singleton
     fun provideTodoService(@AccessTokenInterceptorClient retrofit: Retrofit): TodoApiService =
         retrofit.create(TodoApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideUserService(@AccessTokenInterceptorClient retrofit: Retrofit): UserApiService =
+        retrofit.create(UserApiService::class.java)
 }

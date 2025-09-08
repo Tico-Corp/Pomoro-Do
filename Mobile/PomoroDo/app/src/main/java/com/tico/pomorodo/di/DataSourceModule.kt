@@ -18,10 +18,13 @@ import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSourceImpl
 import com.tico.pomorodo.data.remote.datasource.TokenDataSource
 import com.tico.pomorodo.data.remote.datasource.TokenDataSourceImpl
+import com.tico.pomorodo.data.remote.datasource.UserRemoteDataSource
+import com.tico.pomorodo.data.remote.datasource.UserRemoteDataSourceImpl
 import com.tico.pomorodo.data.remote.service.AuthApiService
 import com.tico.pomorodo.data.remote.service.ReissueTokenService
 import com.tico.pomorodo.data.remote.service.TodoApiService
 import com.tico.pomorodo.data.remote.service.TokenApiService
+import com.tico.pomorodo.data.remote.service.UserApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,6 +51,11 @@ object DataSourceModule {
     @Provides
     fun provideTodoRemoteDataSource(todoApiService: TodoApiService): TodoRemoteDataSource =
         TodoRemoteDataSourceImpl(todoApiService)
+
+    @Singleton
+    @Provides
+    fun provideUserRemoteDataSource(userApiService: UserApiService): UserRemoteDataSource =
+        UserRemoteDataSourceImpl(userApiService)
 
     @Singleton
     @Provides
