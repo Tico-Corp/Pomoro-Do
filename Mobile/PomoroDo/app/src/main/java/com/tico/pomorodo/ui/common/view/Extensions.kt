@@ -196,3 +196,18 @@ fun LocalDate.weekOfMonth(): Int {
     val firstDayOfMonth = this.atStartOfMonth().dayOfWeek.isoDayNumber
     return ((this.dayOfMonth + firstDayOfMonth - 2) / 7) + 1
 }
+
+
+private const val NICKNAME_MIN_RANGE = 2
+private const val NICKNAME_MAX_RANGE = 10
+
+fun String.checkNameValidation(): NameErrorType {
+    val regex = "[^ㄱ-ㅎ가-힣a-zA-Z0-9_]".toRegex()
+    return if (this.length !in NICKNAME_MIN_RANGE..NICKNAME_MAX_RANGE) {
+        NameErrorType.RANGE_ERROR
+    } else if (regex.containsMatchIn(this)) {
+        NameErrorType.INVALID_ERROR
+    } else {
+        NameErrorType.NONE
+    }
+}

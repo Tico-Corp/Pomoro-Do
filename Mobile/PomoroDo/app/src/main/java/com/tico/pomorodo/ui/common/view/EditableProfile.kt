@@ -41,7 +41,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.model.NameErrorType
 import com.tico.pomorodo.ui.iconpack.commonIconPack.IcProfileDefault
 import com.tico.pomorodo.ui.theme.IconPack
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
