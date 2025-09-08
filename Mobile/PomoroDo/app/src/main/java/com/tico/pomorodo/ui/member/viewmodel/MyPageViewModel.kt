@@ -1,5 +1,6 @@
 package com.tico.pomorodo.ui.member.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,5 +42,9 @@ class MyPageViewModel @Inject constructor(private val getUserProfileUseCase: Get
                     Log.e("MyPageViewModel", "getUserProfile: ${result.code} ${result.message}")
             }
         }
+    }
+
+    fun updateUserProfile(nickname: String, profileUri: Uri) = viewModelScope.launch {
+
     }
 }
