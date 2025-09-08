@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.tico.pomorodo.MainViewModel
 import com.tico.pomorodo.navigation.BottomNavigationDestination
-import com.tico.pomorodo.navigation.NavigationRoute
+import com.tico.pomorodo.navigation.MainNavigationDestination
 import com.tico.pomorodo.navigation.navigateToFollow
 import com.tico.pomorodo.navigation.navigateToMyInfo
 import com.tico.pomorodo.navigation.navigateToTimer
@@ -63,7 +63,7 @@ data class AppState(
 
     fun navigateToDestination(topLevelDestination: BottomNavigationDestination) {
         val navOptions = navOptions {
-            popUpTo(NavigationRoute.HOME.name) { saveState = true }
+            popUpTo(MainNavigationDestination.HOME.name) { saveState = true }
             launchSingleTop = true
             restoreState = true
         }
