@@ -63,10 +63,6 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
                 navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen,
                 navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
             )
-            myInfoScreen(
-                navigateToModifyProfile = navController::navigateToModifyProfile,
-                navigateToSettingScreen = navController::navigateToSettingScreen
-            )
             concentrationModeScreen(
                 popBackStack = navController::popBackStack,
                 getState = navController::getState,
