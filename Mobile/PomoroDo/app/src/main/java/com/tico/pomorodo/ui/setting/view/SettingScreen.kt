@@ -24,7 +24,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
 fun SettingScreen(
-    navigateToModifyProfileScreen: (String, String) -> Unit,
+    navigateToModifyProfileScreen: () -> Unit,
     navigateToAppThemeScreen: (String) -> Unit,
     navigateToTermsOfUseScreen: () -> Unit,
     navigateToPrivacyPolicyScreen: () -> Unit,
@@ -55,7 +55,7 @@ fun SettingScreen(
 
 @Composable
 fun SettingMenuList(
-    navigateToModifyProfileScreen: (String, String) -> Unit,
+    navigateToModifyProfileScreen: () -> Unit,
     navigateToAppThemeScreen: (String) -> Unit,
     navigateToTermsOfUseScreen: () -> Unit,
     navigateToPrivacyPolicyScreen: () -> Unit
@@ -66,7 +66,7 @@ fun SettingMenuList(
             .padding(horizontal = 18.dp, vertical = 24.dp)
     ) {
         SettingMenuItem(menuStringResId = R.string.title_account_management) {
-            navigateToModifyProfileScreen("", "")
+            navigateToModifyProfileScreen()
         }
 
         if (BuildConfig.APP_VERSION >= "2.0.0")

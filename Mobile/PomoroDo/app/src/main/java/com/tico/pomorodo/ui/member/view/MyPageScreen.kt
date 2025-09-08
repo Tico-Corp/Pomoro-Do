@@ -43,8 +43,7 @@ import com.tico.pomorodo.ui.theme.PomoroDoTheme
 @Composable
 fun MyPageScreen(navigateToSettingScreen: () -> Unit) {
     val myPageViewModel: MyPageViewModel = hiltViewModel()
-    val name by myPageViewModel.name.collectAsState()
-    val profileUri by myPageViewModel.profile.collectAsState()
+    val userProfile by myPageViewModel.userProfile.collectAsState()
     var concentrationAlarmBottomSheet by remember { mutableStateOf(false) }
     var breakAlarmBottomSheet by remember { mutableStateOf(false) }
     var concentrationAlarmOption by remember { mutableStateOf(AlarmOptions.SOUND) }
@@ -68,8 +67,8 @@ fun MyPageScreen(navigateToSettingScreen: () -> Unit) {
         )
 
         MyProfile(
-            profileUri = profileUri,
-            userName = name,
+            profileUri = userProfile?.profileImageUrl,
+            userName = userProfile?.nickname,
             followingCount = 4,
             followerCount = 2,
         )
@@ -112,7 +111,7 @@ fun MyPageScreen(navigateToSettingScreen: () -> Unit) {
 @Composable
 fun MyProfile(
     profileUri: String?,
-    userName: String,
+    userName: String?,
     followingCount: Int,
     followerCount: Int,
 ) {
@@ -128,7 +127,7 @@ fun MyProfile(
 
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = userName,
+                text = userName ?: "",
                 color = PomoroDoTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Start,
                 style = PomoroDoTheme.typography.laundryGothicRegular20
