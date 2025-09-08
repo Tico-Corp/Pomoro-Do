@@ -36,7 +36,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             navigateToBack = navController::popBackStack
         )
         navigation(
-            route = NavigationRoute.HOME.name,
+            route = MainNavigationDestination.HOME.name,
             startDestination = BottomNavigationDestination.TODO.name
         ) {
             timerScreen(
@@ -91,7 +91,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             historyScreen(navigateToBack = navController::popBackStack)
 
             navigation(
-                route = NavigationRoute.MY_PAGE.name,
+                route = MainNavigationDestination.MY_PAGE.name,
                 startDestination = BottomNavigationDestination.MY_INFO.name
             ) {
                 myInfoScreen(
