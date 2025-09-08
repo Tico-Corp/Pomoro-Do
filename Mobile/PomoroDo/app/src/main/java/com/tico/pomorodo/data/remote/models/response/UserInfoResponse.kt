@@ -8,7 +8,7 @@ data class UserInfoResponse(
     val userId: Int,
     val email: String,
     val nickname: String,
-    val profileImageUrl: String,
+    val profileImageUrl: String?,
     val followingCount: Int,
     val followerCount: Int
 )
