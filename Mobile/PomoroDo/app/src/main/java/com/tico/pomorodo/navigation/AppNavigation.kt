@@ -50,7 +50,7 @@ fun NavController.navigateToLogIn() = navigate(MainNavigationDestination.LOG_IN.
 fun NavController.navigateToSignUp() = navigate(MainNavigationDestination.SIGN_UP.name)
 
 fun NavController.navigateToHome() {
-    navigate(NavigationRoute.HOME.name) {
+    navigate(MainNavigationDestination.HOME.name) {
         popUpTo(graph.id) { inclusive = true }
     }
 }
@@ -180,7 +180,7 @@ fun NavGraphBuilder.concentrationModeScreen(
             getState = getState,
             navigateToBreakMode = navigateToBreakMode,
             navigateToTimerHome = {
-                popBackStack(NavigationRoute.HOME.name, false)
+                popBackStack(MainNavigationDestination.HOME.name, false)
             }
         )
     }
@@ -191,7 +191,7 @@ fun NavGraphBuilder.breakModeScreen(mainNavController: NavController, getState: 
         BreakTimerScreen(
             navigateToTimerHome = {
                 mainNavController.popBackStack(
-                    NavigationRoute.HOME.name,
+                    MainNavigationDestination.HOME.name,
                     inclusive = false
                 )
             },
@@ -290,7 +290,7 @@ fun NavGraphBuilder.groupMemberChooseScreen(
 fun NavGraphBuilder.modifyProfileScreen(navController: NavController) {
     composable(route = MainNavigationDestination.MODIFY_PROFILE.name) { navBackStackEntry ->
         val myInfoScreenEntry = remember(navBackStackEntry) {
-            navController.getBackStackEntry(NavigationRoute.MY_PAGE.name)
+            navController.getBackStackEntry(MainNavigationDestination.MY_PAGE.name)
         }
         ModifyProfileScreen(
             navController = navController,
