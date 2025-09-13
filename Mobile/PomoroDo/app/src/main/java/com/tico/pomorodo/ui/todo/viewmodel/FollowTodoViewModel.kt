@@ -124,4 +124,8 @@ class FollowTodoViewModel @Inject constructor(
     private fun getCategoryWithTodoItems(userId: Int) {
         // TODO: 친구의 카테고리 별 투두 불러오는 로직
     }
+
+    fun isMyProfile(userId: Int): Boolean {
+        return _myUserId.value == userId
+    }
 }
