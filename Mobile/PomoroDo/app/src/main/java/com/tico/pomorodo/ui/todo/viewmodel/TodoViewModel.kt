@@ -240,4 +240,8 @@ class TodoViewModel @Inject constructor(
             deleteTodoUseCase(todoId)
         }
     }
+
+    fun isMyUserId(userId: Int): Boolean {
+        return myUserId.value == userId
+    }
 }
