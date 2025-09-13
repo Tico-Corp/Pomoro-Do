@@ -41,7 +41,7 @@ class CategoryInfoViewModel @Inject constructor(
     val selectedGroupMembers: StateFlow<List<SelectedUser>>
         get() = _selectedGroupMembers.asStateFlow()
 
-    private var follower = MutableStateFlow<List<User>?>(null)
+    private val follower = MutableStateFlow<List<User>?>(null)
 
     init {
         loadData()

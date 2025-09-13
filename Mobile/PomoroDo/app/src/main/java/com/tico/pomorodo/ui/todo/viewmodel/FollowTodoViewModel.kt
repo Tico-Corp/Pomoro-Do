@@ -35,9 +35,7 @@ class FollowTodoViewModel @Inject constructor(
     val categoryWithTodoItemList: StateFlow<List<CategoryWithTodoItem>>
         get() = _categoryWithTodoItemList.asStateFlow()
 
-    private var _myUserId = MutableStateFlow<Int>(-1)
-    val myUserId: StateFlow<Int>
-        get() = _myUserId.asStateFlow()
+    private val myUserId = MutableStateFlow<Int>(-1)
 
     private var _user = MutableStateFlow<Follow?>(null)
     val user: StateFlow<Follow?>
@@ -88,7 +86,7 @@ class FollowTodoViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    _myUserId.value = result.data
+                    myUserId.value = result.data
                 }
 
                 is Resource.Failure.Exception -> {
@@ -126,6 +124,6 @@ class FollowTodoViewModel @Inject constructor(
     }
 
     fun isMyProfile(userId: Int): Boolean {
-        return _myUserId.value == userId
+        return myUserId.value == userId
     }
 }
