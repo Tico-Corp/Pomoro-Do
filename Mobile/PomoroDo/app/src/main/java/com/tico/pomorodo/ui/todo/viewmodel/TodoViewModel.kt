@@ -44,9 +44,7 @@ class TodoViewModel @Inject constructor(
     private val getMyUserIdUseCase: GetMyUserIdUseCase
 ) : ViewModel() {
 
-    private var _myUserId = MutableStateFlow<Int>(-1)
-    val myUserId: StateFlow<Int?>
-        get() = _myUserId.asStateFlow()
+    private val myUserId = MutableStateFlow<Int>(-1)
 
     private var _categoryWithTodoItemList =
         MutableStateFlow<List<CategoryWithTodoItem>>(emptyList())
@@ -92,7 +90,7 @@ class TodoViewModel @Inject constructor(
                 is Resource.Loading -> {}
 
                 is Resource.Success -> {
-                    _myUserId.value = result.data
+                    myUserId.value = result.data
                 }
 
                 is Resource.Failure.Exception -> {
