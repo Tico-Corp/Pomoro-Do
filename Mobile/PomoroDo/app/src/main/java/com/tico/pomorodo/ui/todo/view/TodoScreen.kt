@@ -40,7 +40,8 @@ fun TodoScreenRoute(
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
-    navigateToFollowTodoScreen: (Int) -> Unit
+    navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToMyTodoScreen: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val sheetState = rememberModalBottomSheetState()
@@ -104,7 +105,11 @@ fun TodoScreenRoute(
                         isClicked = !isOffline,
                         onClicked = { userId ->
                             showGroupBottomSheet = false
-                            navigateToFollowTodoScreen(userId)
+                            if(viewModel.isMyUserId(userId)){
+                                navigateToMyTodoScreen()
+                            }else{
+                                navigateToFollowTodoScreen(userId)
+                            }
                         }
                     )
                 }
