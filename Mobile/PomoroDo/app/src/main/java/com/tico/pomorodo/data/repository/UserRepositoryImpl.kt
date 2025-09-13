@@ -21,4 +21,12 @@ class UserRepositoryImpl @Inject constructor(private val userRemoteDataSource: U
             .let { wrapToResource(Dispatchers.IO) { it.data.toUserProfile() } }
         emit(result)
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun getMyUserId(): Flow<Resource<Int>> = flow {
+        emit(Resource.Loading)
+
+        val result =
+            wrapToResource(Dispatchers.IO) { userRemoteDataSource.getUserInfo().data.userId }
+        emit(result)
+    }.flowOn(Dispatchers.IO)
 }
