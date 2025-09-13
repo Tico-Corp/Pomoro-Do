@@ -36,6 +36,7 @@ import kotlinx.datetime.LocalDate
 fun FollowTodoScreenRoute(
     viewModel: FollowTodoViewModel = hiltViewModel(),
     navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToMyTodoScreen: () -> Unit,
     navigateToBack: () -> Unit,
     isOffline: Boolean
 ) {
@@ -75,7 +76,11 @@ fun FollowTodoScreenRoute(
                             isClicked = !isOffline,
                             onClicked = { userId ->
                                 showGroupBottomSheet = false
-                                navigateToFollowTodoScreen(userId)
+                                if(viewModel.isMyProfile(userId)){
+                                    navigateToMyTodoScreen()
+                                }else{
+                                    navigateToFollowTodoScreen(userId)
+                                }
                             }
                         )
                     }

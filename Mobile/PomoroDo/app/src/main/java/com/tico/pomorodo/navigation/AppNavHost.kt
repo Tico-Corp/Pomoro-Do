@@ -60,7 +60,10 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             followTodoScreen(
                 navigateToBack = navController::popBackStack,
                 isOffline = appState.isOffline.value,
-                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen,
+                navigateToMyTodoScreen = {
+                    appState.navigateToDestinationReset(BottomNavigationDestination.TODO)
+                }
             )
             followScreen(
                 navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen,

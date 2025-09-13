@@ -134,6 +134,7 @@ fun NavGraphBuilder.todoScreen(
 fun NavGraphBuilder.followTodoScreen(
     navigateToBack: () -> Unit,
     navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToMyTodoScreen: () -> Unit,
     isOffline: Boolean
 ) {
     composable(
@@ -143,7 +144,8 @@ fun NavGraphBuilder.followTodoScreen(
         FollowTodoScreenRoute(
             navigateToFollowTodoScreen = navigateToFollowTodoScreen,
             navigateToBack = navigateToBack,
-            isOffline = isOffline
+            isOffline = isOffline,
+            navigateToMyTodoScreen = navigateToMyTodoScreen
         )
     }
 }
