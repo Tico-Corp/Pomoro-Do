@@ -37,7 +37,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
         )
         navigation(
             route = MainNavigationDestination.HOME.name,
-            startDestination = BottomNavigationDestination.TODO.name
+            startDestination = BottomNavigationDestination.TIMER.name
         ) {
             timerScreen(
                 setState = { concentrationTime, breakTime ->
