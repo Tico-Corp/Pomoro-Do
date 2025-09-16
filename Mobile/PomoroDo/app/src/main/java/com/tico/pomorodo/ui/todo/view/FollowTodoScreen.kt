@@ -28,14 +28,17 @@ import com.tico.pomorodo.domain.model.Follow
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.follow.view.FollowItem
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
-import com.tico.pomorodo.ui.todo.viewmodel.FriendTodoViewModel
+import com.tico.pomorodo.ui.todo.viewmodel.FollowTodoViewModel
 import kotlinx.datetime.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FriendTodoScreenRoute(
-    viewModel: FriendTodoViewModel = hiltViewModel(),
-    navigateToBack: () -> Unit
+fun FollowTodoScreenRoute(
+    viewModel: FollowTodoViewModel = hiltViewModel(),
+    navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToMyTodoScreen: () -> Unit,
+    navigateToBack: () -> Unit,
+    isOffline: Boolean
 ) {
     val sheetState = rememberModalBottomSheetState()
     val user by viewModel.user.collectAsState()
@@ -70,11 +73,19 @@ fun FriendTodoScreenRoute(
                             incompletedList = todoItem.incompletedList ?: listOf(),
                             totalNumber = (todoItem.completedList?.size ?: 0)
                                     + (todoItem.incompletedList?.size ?: 0),
-                            onClicked = {}
+                            isClicked = !isOffline,
+                            onClicked = { userId ->
+                                showGroupBottomSheet = false
+                                if(viewModel.isMyProfile(userId)){
+                                    navigateToMyTodoScreen()
+                                }else{
+                                    navigateToFollowTodoScreen(userId)
+                                }
+                            }
                         )
                     }
                 }
-                FriendTodoScreen(
+                FollowTodoScreen(
                     user = friendUser,
                     onButtonClicked = viewModel::setFollowing,
                     selectedDate = selectedDate,
@@ -87,7 +98,7 @@ fun FriendTodoScreenRoute(
                         selectedTodoItem = todoItem
                         showGroupBottomSheet = true
                     },
-                    onLikedIconClicked = viewModel::updateTodoLicked,
+                    onLikedIconClicked = viewModel::updateTodoLiked,
                     calendarDates = calendarDates,
                 )
             }
@@ -96,7 +107,7 @@ fun FriendTodoScreenRoute(
 }
 
 @Composable
-fun FriendTodoScreen(
+fun FollowTodoScreen(
     user: Follow,
     onButtonClicked: () -> Unit,
     onGroupIconClicked: (TodoData) -> Unit,

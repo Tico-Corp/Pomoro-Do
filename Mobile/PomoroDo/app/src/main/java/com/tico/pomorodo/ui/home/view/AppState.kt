@@ -67,12 +67,28 @@ data class AppState(
             launchSingleTop = true
             restoreState = true
         }
-
         when (topLevelDestination) {
             BottomNavigationDestination.TIMER -> navController.navigateToTimer(navOptions)
             BottomNavigationDestination.TODO -> navController.navigateToTodo(navOptions)
             BottomNavigationDestination.FOLLOW -> navController.navigateToFollow(navOptions)
             BottomNavigationDestination.MY_INFO -> navController.navigateToMyInfo(navOptions)
+        }
+    }
+
+    fun navigateToDestinationReset(topLevelDestination: BottomNavigationDestination) {
+        val resetOptions = navOptions {
+            popUpTo(MainNavigationDestination.HOME.name) {
+                inclusive = false
+                saveState = false
+            }
+            launchSingleTop = true
+            restoreState = false
+        }
+        when (topLevelDestination) {
+            BottomNavigationDestination.TIMER -> navController.navigateToTimer(resetOptions)
+            BottomNavigationDestination.TODO -> navController.navigateToTodo(resetOptions)
+            BottomNavigationDestination.FOLLOW -> navController.navigateToFollow(resetOptions)
+            BottomNavigationDestination.MY_INFO -> navController.navigateToMyInfo(resetOptions)
         }
     }
 }

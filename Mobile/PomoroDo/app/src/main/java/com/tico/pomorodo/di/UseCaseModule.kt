@@ -32,6 +32,7 @@ import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.UpdateTodoUseCase
+import com.tico.pomorodo.domain.usecase.user.GetMyUserIdUseCase
 import com.tico.pomorodo.domain.usecase.user.GetUserProfileUseCase
 import dagger.Module
 import dagger.Provides
@@ -196,4 +197,9 @@ object UseCaseModule {
     @Provides
     fun provideGetUserProfileUseCase(userRepository: UserRepository): GetUserProfileUseCase =
         GetUserProfileUseCase(userRepository)
+
+    @Singleton
+    @Provides
+    fun provideGetMyUserIdUseCase(userRepository: UserRepository): GetMyUserIdUseCase =
+        GetMyUserIdUseCase(userRepository)
 }

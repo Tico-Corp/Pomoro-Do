@@ -1,14 +1,21 @@
 package com.tico.pomorodo.ui.todo.viewmodel
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.domain.model.Follow
+import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.user.GetMyUserIdUseCase
+import com.tico.pomorodo.navigation.UserArgs
 import com.tico.pomorodo.ui.common.view.toTimeZoneOf5AM
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -16,12 +23,19 @@ import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
-class FriendTodoViewModel @Inject constructor() : ViewModel() {
+class FollowTodoViewModel @Inject constructor(
+    saveStateHandle: SavedStateHandle,
+    private val getMyUserIdUseCase: GetMyUserIdUseCase
+) : ViewModel() {
+
+    private val args = UserArgs(saveStateHandle)
 
     private var _categoryWithTodoItemList =
         MutableStateFlow<List<CategoryWithTodoItem>>(emptyList())
     val categoryWithTodoItemList: StateFlow<List<CategoryWithTodoItem>>
         get() = _categoryWithTodoItemList.asStateFlow()
+
+    private val myUserId = MutableStateFlow<Int>(-1)
 
     private var _user = MutableStateFlow<Follow?>(null)
     val user: StateFlow<Follow?>
@@ -55,15 +69,45 @@ class FriendTodoViewModel @Inject constructor() : ViewModel() {
         get() = _isLoading.asStateFlow()
 
     init {
-        fetchFollowing()
-        getCategoryWithTodoItems()
+        loadData()
+    }
+
+    private fun loadData() {
+        fetchFollowInfo(args.userId)
+        getCategoryWithTodoItems(args.userId)
+        getMyUserId()
+    }
+
+    private fun getMyUserId() = viewModelScope.launch {
+        getMyUserIdUseCase().collect { result ->
+            when (result) {
+                is Resource.Loading -> {
+
+                }
+
+                is Resource.Success -> {
+                    myUserId.value = result.data
+                }
+
+                is Resource.Failure.Exception -> {
+                    Log.e("FollowTodoViewModel", "getMyUserId: ${result.message}")
+                }
+
+                is Resource.Failure.Error -> {
+                    Log.e(
+                        "FollowTodoViewModel",
+                        "getMyUserId: ${result.code} ${result.message}"
+                    )
+                }
+            }
+        }
     }
 
     fun setSelectedDate(date: LocalDate) {
         _selectedDate.value = date
     }
 
-    private fun fetchFollowing() {
+    private fun fetchFollowInfo(userId: Int) {
         // TODO: follower user 정보 불러오는 로직 구현
     }
 
@@ -71,11 +115,15 @@ class FriendTodoViewModel @Inject constructor() : ViewModel() {
         // TODO: follow/following 버튼 클릭 로직 구현
     }
 
-    fun updateTodoLicked(todoId: Int) {
+    fun updateTodoLiked(todoId: Int) {
         // TODO: 좋아요 로직 구현
     }
 
-    private fun getCategoryWithTodoItems() {
+    private fun getCategoryWithTodoItems(userId: Int) {
         // TODO: 친구의 카테고리 별 투두 불러오는 로직
+    }
+
+    fun isMyProfile(userId: Int): Boolean {
+        return myUserId.value == userId
     }
 }

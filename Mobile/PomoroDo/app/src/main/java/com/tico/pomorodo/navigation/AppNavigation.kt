@@ -27,6 +27,7 @@ import com.tico.pomorodo.ui.splash.view.SplashScreen
 import com.tico.pomorodo.ui.timer.running.view.BreakTimerScreen
 import com.tico.pomorodo.ui.timer.running.view.ConcentrationTimerScreen
 import com.tico.pomorodo.ui.timer.setup.view.TimerRootScreen
+import com.tico.pomorodo.ui.todo.view.FollowTodoScreenRoute
 import com.tico.pomorodo.ui.todo.view.TodoScreenRoute
 
 // home navigation - navigate
@@ -82,6 +83,8 @@ fun NavController.navigateToAppThemeScreen(appThemeMode: String) =
 fun NavController.navigateToAddFollowerScreen() =
     navigate(MainNavigationDestination.ADD_FOLLOWER.name)
 
+fun NavController.navigateToFollowTodoScreen(userId: Int) =
+    navigate("${MainNavigationDestination.FOLLOW_TODO.name}/$userId")
 
 // home navigation - composable route
 fun NavGraphBuilder.timerScreen(
@@ -99,11 +102,21 @@ fun NavGraphBuilder.timerScreen(
     }
 }
 
+private const val USER_ID = "userId"
+
+internal class UserArgs(savedStateHandle: SavedStateHandle) {
+    val userId: Int = checkNotNull(savedStateHandle[USER_ID]) {
+        "Missing userId"
+    }
+}
+
 fun NavGraphBuilder.todoScreen(
     navigateToAddCategory: () -> Unit,
     navigateToCategory: () -> Unit,
     navigateToHistory: () -> Unit,
     isOffline: Boolean,
+    navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToMyTodoScreen: () -> Unit,
 ) {
     composable(route = BottomNavigationDestination.TODO.name) {
         BackOnPressed()
@@ -111,15 +124,42 @@ fun NavGraphBuilder.todoScreen(
             navigateToAddCategory = navigateToAddCategory,
             navigateToCategory = navigateToCategory,
             navigateToHistory = navigateToHistory,
-            isOffline = isOffline
+            isOffline = isOffline,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen,
+            navigateToMyTodoScreen = navigateToMyTodoScreen
         )
     }
 }
 
-fun NavGraphBuilder.followScreen(navigateToAddFollowerScreen: () -> Unit) {
+fun NavGraphBuilder.followTodoScreen(
+    navigateToBack: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToMyTodoScreen: () -> Unit,
+    isOffline: Boolean
+) {
+    composable(
+        route = "${MainNavigationDestination.FOLLOW_TODO.name}/{$USER_ID}",
+        arguments = listOf(navArgument(name = USER_ID) { type = NavType.IntType })
+    ) {
+        FollowTodoScreenRoute(
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen,
+            navigateToBack = navigateToBack,
+            isOffline = isOffline,
+            navigateToMyTodoScreen = navigateToMyTodoScreen
+        )
+    }
+}
+
+fun NavGraphBuilder.followScreen(
+    navigateToAddFollowerScreen: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit
+) {
     composable(route = BottomNavigationDestination.FOLLOW.name) {
         BackOnPressed()
-        FollowListScreen(navigateToAddFollowerScreen)
+        FollowListScreen(
+            navigateToAddFollowerScreen = navigateToAddFollowerScreen,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen
+        )
     }
 }
 
@@ -241,6 +281,7 @@ internal class CategoryArgs(savedStateHandle: SavedStateHandle) {
 fun NavGraphBuilder.infoCategoryScreen(
     navigateToBack: () -> Unit,
     isOffline: Boolean,
+    navigateToFollowTodoScreen: (Int) -> Unit,
 ) {
     composable(
         route = "${MainNavigationDestination.INFO_CATEGORY.name}/{$CATEGORY_ID}",
@@ -248,7 +289,8 @@ fun NavGraphBuilder.infoCategoryScreen(
     ) {
         CategoryInfoScreenRoute(
             navigateToBack = navigateToBack,
-            isOffline = isOffline
+            isOffline = isOffline,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen
         )
     }
 }
@@ -331,8 +373,14 @@ fun NavGraphBuilder.appThemeScreen(popBackStack: () -> Unit) {
     }
 }
 
-fun NavGraphBuilder.addFollowerScreen(popBackToFollowScreen: () -> Unit) {
+fun NavGraphBuilder.addFollowerScreen(
+    popBackToFollowScreen: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit
+) {
     composable(route = MainNavigationDestination.ADD_FOLLOWER.name) {
-        AddFollowerScreen(popBackToFollowScreen)
+        AddFollowerScreen(
+            popBackToFollowScreen = popBackToFollowScreen,
+            navigateToFollowTodoScreen = navigateToFollowTodoScreen
+        )
     }
 }

@@ -39,13 +39,17 @@ import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.Profile
 import com.tico.pomorodo.ui.common.view.SimpleAlertDialog
-import com.tico.pomorodo.ui.member.viewmodel.FollowViewModel
+import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
+import com.tico.pomorodo.ui.follow.viewmodel.FollowViewModel
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import kotlinx.coroutines.launch
 
 @Composable
-fun FollowListScreen(navigateToAddFollowerScreen: () -> Unit) {
+fun FollowListScreen(
+    navigateToAddFollowerScreen: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit
+) {
     val followViewModel: FollowViewModel = hiltViewModel()
     val followerList by followViewModel.followerList.collectAsState()
     val followingList by followViewModel.followingList.collectAsState()
@@ -78,14 +82,16 @@ fun FollowListScreen(navigateToAddFollowerScreen: () -> Unit) {
                     } else {
                         followViewModel.toggleFollowState(index)
                     }
-                }
+                },
+                onProfileClicked = navigateToFollowTodoScreen
             )
             else FollowerList(
                 followList = followerList,
                 onClick = { index ->
                     selectedIndex = index
                     removeFollowerDialogVisible = true
-                }
+                },
+                onProfileClicked = navigateToFollowTodoScreen
             )
         }
     }
@@ -176,7 +182,11 @@ fun FollowTabRow(selectedTabIndex: Int, onSelectedTabIndexChange: (Int) -> Unit)
 }
 
 @Composable
-fun FollowingList(followList: List<Follow>, onClick: (Int, Boolean) -> Unit) {
+fun FollowingList(
+    followList: List<Follow>,
+    onClick: (Int, Boolean) -> Unit,
+    onProfileClicked: (Int) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 18.dp)
@@ -195,14 +205,19 @@ fun FollowingList(followList: List<Follow>, onClick: (Int, Boolean) -> Unit) {
                 followButtonContentColor = PomoroDoTheme.colorScheme.gray20,
                 unFollowButtonContainerColor = PomoroDoTheme.colorScheme.primaryContainer,
                 unFollowButtonContentColor = Color.White,
-                onClick = { onClick(index, user.isFollowing) }
+                onClick = { onClick(index, user.isFollowing) },
+                onProfileClicked = onProfileClicked
             )
         }
     }
 }
 
 @Composable
-fun FollowerList(followList: List<Follow>, onClick: (Int) -> Unit) {
+fun FollowerList(
+    followList: List<Follow>,
+    onClick: (Int) -> Unit,
+    onProfileClicked: (Int) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .padding(top = 18.dp, start = 18.dp, end = 18.dp)
@@ -215,7 +230,8 @@ fun FollowerList(followList: List<Follow>, onClick: (Int) -> Unit) {
                 followButtonText = stringResource(id = R.string.content_delete),
                 followButtonContainerColor = PomoroDoTheme.colorScheme.gray90,
                 followButtonContentColor = PomoroDoTheme.colorScheme.gray20,
-                onClick = { onClick(index) }
+                onClick = { onClick(index) },
+                onProfileClicked = onProfileClicked
             )
         }
     }
@@ -230,7 +246,8 @@ fun FollowItem(
     followButtonContentColor: Color,
     unFollowButtonContainerColor: Color? = null,
     unFollowButtonContentColor: Color? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onProfileClicked: (Int) -> Unit = {}
 ) {
     val buttonText =
         if (user.isFollowing) followButtonText
@@ -247,18 +264,20 @@ fun FollowItem(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Profile(size = 40, uri = user.profileUrl)
+        Row(
+            modifier = Modifier.weight(1f).clickableWithoutRipple { onProfileClicked(user.followId) },
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Profile(size = 40, uri = user.profileUrl)
 
-        Text(
-            text = user.name,
-            modifier = Modifier.padding(start = 16.dp),
-            color = PomoroDoTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Start,
-            style = PomoroDoTheme.typography.laundryGothicRegular16
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
+            Text(
+                text = user.name,
+                modifier = Modifier.padding(start = 16.dp),
+                color = PomoroDoTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Start,
+                style = PomoroDoTheme.typography.laundryGothicRegular16
+            )
+        }
         CustomTextButton(
             text = buttonText,
             containerColor = buttonContainerColor,

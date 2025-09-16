@@ -1,7 +1,7 @@
-package com.tico.pomorodo.ui.member.viewmodel
+package com.tico.pomorodo.ui.follow.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.tico.pomorodo.data.local.datasource.DataSource.followList
+import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.domain.model.Follow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,10 +10,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FollowViewModel @Inject constructor() : ViewModel() {
-    private val _followingList: MutableStateFlow<List<Follow>> = MutableStateFlow(followList)
+    private val _followingList: MutableStateFlow<List<Follow>> =
+        MutableStateFlow(DataSource.followList)
     val followingList: StateFlow<List<Follow>> = _followingList
 
-    private val _followerList: MutableStateFlow<List<Follow>> = MutableStateFlow(followList)
+    private val _followerList: MutableStateFlow<List<Follow>> =
+        MutableStateFlow(DataSource.followList)
     val followerList: StateFlow<List<Follow>> = _followerList
 
     fun toggleFollowState(index: Int) {

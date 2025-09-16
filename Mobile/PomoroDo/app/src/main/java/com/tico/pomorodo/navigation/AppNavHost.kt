@@ -25,7 +25,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             navigateToSignUp = navController::navigateToSignUp,
             navigateToHome = navController::navigateToHome,
             onClickedOffline = {
-                navController::navigateToHome
+                navController.navigateToHome()
                 appState.setIsOffline(true)
             },
             isOffline = appState.isOffline.value
@@ -37,7 +37,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
         )
         navigation(
             route = MainNavigationDestination.HOME.name,
-            startDestination = BottomNavigationDestination.TODO.name
+            startDestination = BottomNavigationDestination.TIMER.name
         ) {
             timerScreen(
                 setState = { concentrationTime, breakTime ->
@@ -51,9 +51,24 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
                 navigateToCategory = navController::navigateToCategory,
                 navigateToAddCategory = navController::navigateToAddCategory,
                 navigateToHistory = navController::navigateToHistory,
-                isOffline = appState.isOffline.value
+                isOffline = appState.isOffline.value,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen,
+                navigateToMyTodoScreen = {
+                    appState.navigateToDestinationReset(BottomNavigationDestination.TODO)
+                }
             )
-            followScreen(navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen)
+            followTodoScreen(
+                navigateToBack = navController::popBackStack,
+                isOffline = appState.isOffline.value,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen,
+                navigateToMyTodoScreen = {
+                    appState.navigateToDestinationReset(BottomNavigationDestination.TODO)
+                }
+            )
+            followScreen(
+                navigateToAddFollowerScreen = navController::navigateToAddFollowerScreen,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
+            )
             concentrationModeScreen(
                 popBackStack = navController::popBackStack,
                 getState = navController::getState,
@@ -67,11 +82,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             categoryScreen(
                 navigateToAddCategory = navController::navigateToAddCategory,
                 navigateToBack = navController::popBackStack,
-                navigateToInfoCategory = { categoryId ->
-                    navController.navigateToInfoCategory(
-                        categoryId = categoryId
-                    )
-                },
+                navigateToInfoCategory = navController::navigateToInfoCategory,
                 isOffline = appState.isOffline.value
             )
             addCategoryScreen(
@@ -81,7 +92,8 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
             )
             infoCategoryScreen(
                 navigateToBack = navController::popBackStack,
-                isOffline = appState.isOffline.value
+                isOffline = appState.isOffline.value,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
             )
             groupMemberChooseScreen(
                 navController = navController,
@@ -109,7 +121,10 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
 
             appThemeScreen(popBackStack = navController::popBackStack)
 
-            addFollowerScreen(popBackToFollowScreen = appState.navController::popBackStack)
+            addFollowerScreen(
+                popBackToFollowScreen = appState.navController::popBackStack,
+                navigateToFollowTodoScreen = navController::navigateToFollowTodoScreen
+            )
         }
     }
 }

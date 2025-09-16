@@ -15,6 +15,7 @@ import com.tico.pomorodo.domain.usecase.todo.DeleteTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.GetCategoryWithTodoItemsUseCase
 import com.tico.pomorodo.domain.usecase.todo.InsertTodoUseCase
 import com.tico.pomorodo.domain.usecase.todo.UpdateTodoUseCase
+import com.tico.pomorodo.domain.usecase.user.GetMyUserIdUseCase
 import com.tico.pomorodo.ui.common.view.atEndOfMonth
 import com.tico.pomorodo.ui.common.view.atStartOfMonth
 import com.tico.pomorodo.ui.common.view.toTimeZoneOf5AM
@@ -40,7 +41,10 @@ class TodoViewModel @Inject constructor(
     private val getCalendarDateForMonthUseCase: GetCalendarDateForMonthUseCase,
     private val insertCalendarDateForMonthUseCase: InsertCalendarDateForMonthUseCase,
     private val updateCalendarDateForMonthUseCase: UpdateCalendarDateForMonthUseCase,
+    private val getMyUserIdUseCase: GetMyUserIdUseCase
 ) : ViewModel() {
+
+    private val myUserId = MutableStateFlow<Int>(-1)
 
     private var _categoryWithTodoItemList =
         MutableStateFlow<List<CategoryWithTodoItem>>(emptyList())
@@ -75,8 +79,32 @@ class TodoViewModel @Inject constructor(
         get() = _isLoading.asStateFlow()
 
     init {
+        getMyUserId()
         getCategoryWithTodoItems()
         getCalendarDates()
+    }
+
+    private fun getMyUserId() = viewModelScope.launch {
+        getMyUserIdUseCase().collect { result ->
+            when (result) {
+                is Resource.Loading -> {}
+
+                is Resource.Success -> {
+                    myUserId.value = result.data
+                }
+
+                is Resource.Failure.Exception -> {
+                    Log.e("TodoViewModel", "getMyUserId: ${result.message}")
+                }
+
+                is Resource.Failure.Error -> {
+                    Log.e(
+                        "TodoViewModel",
+                        "getMyUserId: ${result.code} ${result.message}"
+                    )
+                }
+            }
+        }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -209,5 +237,9 @@ class TodoViewModel @Inject constructor(
         viewModelScope.launch {
             deleteTodoUseCase(todoId)
         }
+    }
+
+    fun isMyUserId(userId: Int): Boolean {
+        return myUserId.value == userId
     }
 }

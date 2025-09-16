@@ -40,6 +40,8 @@ fun TodoScreenRoute(
     navigateToCategory: () -> Unit,
     navigateToAddCategory: () -> Unit,
     navigateToHistory: () -> Unit,
+    navigateToFollowTodoScreen: (Int) -> Unit,
+    navigateToMyTodoScreen: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
     val sheetState = rememberModalBottomSheetState()
@@ -100,7 +102,15 @@ fun TodoScreenRoute(
                         incompletedList = todoItem.incompletedList ?: listOf(),
                         totalNumber = (todoItem.completedList?.size ?: 0)
                                 + (todoItem.incompletedList?.size ?: 0),
-                        onClicked = {}
+                        isClicked = !isOffline,
+                        onClicked = { userId ->
+                            showGroupBottomSheet = false
+                            if(viewModel.isMyUserId(userId)){
+                                navigateToMyTodoScreen()
+                            }else{
+                                navigateToFollowTodoScreen(userId)
+                            }
+                        }
                     )
                 }
             }
@@ -271,7 +281,8 @@ fun CategorySection(
                 onUpdatedTodoItemTitle = onUpdatedTodoItemTitle,
                 isEditMode = !isNewTodoMakeVisible && categoryIndex == selectedCategoryIndex,
                 isFriend = isFriend,
-                onLikedIconClicked = onLikedIconClicked
+                onLikedIconClicked = onLikedIconClicked,
+                isGroupCategory = category.type == CategoryType.GROUP
             )
         }
     }
@@ -297,13 +308,14 @@ fun CategoryWithTodoItems(
     onGroupIconClicked: (TodoData) -> Unit,
     onUpdateTodoItem: () -> Unit,
     isOffline: Boolean,
+    isGroupCategory: Boolean
 ) {
     CategoryTag(
         title = categoryWithTodoItem.title,
         groupMemberCount = categoryWithTodoItem.groupMemberCount,
         onAddClicked = onClickedCategoryTag,
-        isAddButton = (!isFriend && !isOffline) || categoryWithTodoItem.type != CategoryType.GROUP,
-        enabled = (!isFriend && !isOffline) || categoryWithTodoItem.type != CategoryType.GROUP
+        isAddButton = (!isFriend && !isOffline) || (isOffline && !isGroupCategory),
+        enabled = (!isFriend && !isOffline) || (isOffline && !isGroupCategory)
     )
     Spacer(modifier = Modifier.height(10.dp))
     if (isNewTodoMakeVisible) {
@@ -319,7 +331,7 @@ fun CategoryWithTodoItems(
             TodoListItem(
                 isOffline = isOffline,
                 todoData = todoData,
-                isGroup = categoryWithTodoItem.groupMemberCount > 0,
+                isGroupTodo = isGroupCategory,
                 onStateChanged = {
                     onTodoStateChanged(todoData)
                 },
