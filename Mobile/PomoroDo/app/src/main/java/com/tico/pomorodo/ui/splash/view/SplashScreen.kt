@@ -30,6 +30,10 @@ fun SplashScreen(
 ) {
     val authState by viewModel.authState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.attemptAutoLogin(isNetworkConnected)
+    }
+
     LaunchedEffect(authState) {
         when (authState) {
             AuthState.SUCCESS_LOGIN -> {
