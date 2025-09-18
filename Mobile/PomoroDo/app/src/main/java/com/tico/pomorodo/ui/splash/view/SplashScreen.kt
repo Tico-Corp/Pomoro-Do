@@ -41,7 +41,7 @@ fun SplashScreen(
                 navigateToHome()
             }
 
-            AuthState.NEED_LOGIN -> {
+            AuthState.NEED_LOGIN, AuthState.OFFLINE -> {
                 delay(3000)
                 navigateToLogin()
             }
