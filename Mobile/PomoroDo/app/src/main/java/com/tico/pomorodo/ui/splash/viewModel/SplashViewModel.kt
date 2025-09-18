@@ -31,8 +31,12 @@ class SplashViewModel @Inject constructor(
     val authState: StateFlow<AuthState>
         get() = _authState.asStateFlow()
 
-    init {
-        fetchIsAccessToken()
+    fun attemptAutoLogin(isNetworkConnected: Boolean) {
+        if (isNetworkConnected) {
+            fetchIsAccessToken()
+        } else {
+            _authState.value = AuthState.OFFLINE
+        }
     }
 
     private fun fetchIsAccessToken() = viewModelScope.launch {
