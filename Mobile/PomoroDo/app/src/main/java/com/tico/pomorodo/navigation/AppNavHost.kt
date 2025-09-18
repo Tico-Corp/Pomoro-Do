@@ -17,6 +17,7 @@ fun AppNavHost(modifier: Modifier = Modifier, appState: AppState) {
         modifier = modifier
     ) {
         splashScreen(
+            isNetworkConnected = appState.isNetworkConnected.value,
             navigateToLogin = navController::navigateToLogIn,
             navigateToHome = navController::navigateToHome
         )

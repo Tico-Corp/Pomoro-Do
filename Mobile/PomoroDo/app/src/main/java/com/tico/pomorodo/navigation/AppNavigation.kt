@@ -171,9 +171,17 @@ fun NavGraphBuilder.myInfoScreen(navigateToSettingScreen: () -> Unit) {
 }
 
 // main navigation - composable route
-fun NavGraphBuilder.splashScreen(navigateToLogin: () -> Unit, navigateToHome: () -> Unit) {
+fun NavGraphBuilder.splashScreen(
+    navigateToLogin: () -> Unit,
+    navigateToHome: () -> Unit,
+    isNetworkConnected: Boolean
+) {
     composable(route = MainNavigationDestination.SPLASH.name) {
-        SplashScreen(navigateToLogin = navigateToLogin, navigateToHome = navigateToHome)
+        SplashScreen(
+            navigateToLogin = navigateToLogin,
+            navigateToHome = navigateToHome,
+            isNetworkConnected = isNetworkConnected
+        )
     }
 }
 

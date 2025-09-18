@@ -25,7 +25,8 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel(),
     navigateToLogin: () -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    isNetworkConnected: Boolean
 ) {
     val authState by viewModel.authState.collectAsState()
 
