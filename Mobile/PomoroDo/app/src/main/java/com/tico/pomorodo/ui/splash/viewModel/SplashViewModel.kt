@@ -31,12 +31,12 @@ class SplashViewModel @Inject constructor(
     val authState: StateFlow<AuthState>
         get() = _authState.asStateFlow()
 
-    private var _isLoading = MutableStateFlow<Boolean>(true)
-    val isLoading: StateFlow<Boolean>
-        get() = _isLoading.asStateFlow()
-
-    init {
-        fetchIsAccessToken()
+    fun attemptAutoLogin(isNetworkConnected: Boolean) {
+        if (isNetworkConnected) {
+            fetchIsAccessToken()
+        } else {
+            _authState.value = AuthState.OFFLINE
+        }
     }
 
     private fun fetchIsAccessToken() = viewModelScope.launch {
@@ -53,11 +53,10 @@ class SplashViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     _authState.value = AuthState.SUCCESS_LOGIN
-                    _isLoading.value = false
                 }
 
                 is Resource.Loading -> {
-                    _isLoading.value = true
+                    _authState.value = AuthState.LOADING
                 }
 
                 is Resource.Failure.Error -> {
@@ -81,11 +80,10 @@ class SplashViewModel @Inject constructor(
                     saveRefreshToken(result.data.data.refreshToken)
                     saveAccessToken(result.data.data.accessToken)
                     _authState.value = AuthState.SUCCESS_LOGIN
-                    _isLoading.value = false
                 }
 
                 is Resource.Loading -> {
-                    _isLoading.value = true
+                    _authState.value = AuthState.LOADING
                 }
 
                 is Resource.Failure.Error -> {

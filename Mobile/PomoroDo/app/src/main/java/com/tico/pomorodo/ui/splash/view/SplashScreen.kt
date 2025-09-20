@@ -25,9 +25,14 @@ import kotlinx.coroutines.delay
 fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel(),
     navigateToLogin: () -> Unit,
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    isNetworkConnected: Boolean
 ) {
     val authState by viewModel.authState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.attemptAutoLogin(isNetworkConnected)
+    }
 
     LaunchedEffect(authState) {
         when (authState) {
@@ -36,7 +41,7 @@ fun SplashScreen(
                 navigateToHome()
             }
 
-            AuthState.NEED_LOGIN -> {
+            AuthState.NEED_LOGIN, AuthState.OFFLINE -> {
                 delay(3000)
                 navigateToLogin()
             }
