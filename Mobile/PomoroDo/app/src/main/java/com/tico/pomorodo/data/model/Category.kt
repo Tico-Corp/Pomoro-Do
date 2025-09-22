@@ -14,7 +14,7 @@ data class Category(
 )
 
 enum class CategoryType {
-    GENERAL, GROUP
+    PERSONAL, GROUP
 }
 
 fun Category.toCategoryEntity() = CategoryEntity(

@@ -101,7 +101,7 @@ fun CategoryInfoScreenRoute(
                 actionIconString = if (isReadOnly) null else IC_OK,
                 actionDisableIconString = if (isReadOnly) null else IC_UNOK,
                 isActionEnabled = (selectedGroupMembers.any { it.selected } && category.type == CategoryType.GROUP && viewModel.validateInput())
-                        || (category.type == CategoryType.GENERAL && viewModel.validateInput()),
+                        || (category.type == CategoryType.PERSONAL && viewModel.validateInput()),
                 actionIconDescriptionId = R.string.content_ic_ok,
                 onActionClickedListener = {
                     viewModel.updateCategoryInfo()
@@ -276,7 +276,7 @@ fun CategoryInfoScreen(
                 isGroupInfo = type == CategoryType.GROUP
             )
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
-            if (type == CategoryType.GENERAL) {
+            if (type == CategoryType.PERSONAL) {
                 Spacer(Modifier.height(37.dp))
                 if (!isOffline) {
                     CustomTextButton(
@@ -370,7 +370,7 @@ private fun CategoryType(type: CategoryType) {
         )
         Spacer(modifier = Modifier.weight(1f))
         SimpleText(
-            textId = if (type == CategoryType.GENERAL) R.string.content_category_general else R.string.content_category_group,
+            textId = if (type == CategoryType.PERSONAL) R.string.content_category_personal else R.string.content_category_group,
             style = PomoroDoTheme.typography.laundryGothicRegular14,
             color = PomoroDoTheme.colorScheme.onBackground
         )

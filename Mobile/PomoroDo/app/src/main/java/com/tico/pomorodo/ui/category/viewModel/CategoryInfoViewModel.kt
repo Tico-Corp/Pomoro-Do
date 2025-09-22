@@ -76,7 +76,7 @@ class CategoryInfoViewModel @Inject constructor(
 
     fun validateInput(): Boolean {
         category.value?.let { category ->
-            if (category.type == CategoryType.GENERAL) {
+            if (category.type == CategoryType.PERSONAL) {
                 return category.title.isNotBlank()
             } else {
                 return category.title.isNotBlank() && selectedGroupMembers.value.any { it.selected }

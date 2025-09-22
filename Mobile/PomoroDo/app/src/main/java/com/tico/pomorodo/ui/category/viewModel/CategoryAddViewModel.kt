@@ -22,7 +22,7 @@ class CategoryAddViewModel @Inject constructor(private val insertCategoryUseCase
     val title: StateFlow<String>
         get() = _title.asStateFlow()
 
-    private var _type = MutableStateFlow(CategoryType.GENERAL)
+    private var _type = MutableStateFlow(CategoryType.PERSONAL)
     val type: StateFlow<CategoryType>
         get() = _type.asStateFlow()
 
@@ -56,7 +56,7 @@ class CategoryAddViewModel @Inject constructor(private val insertCategoryUseCase
     }
 
     fun validateInput(): Boolean =
-        if (type.value == CategoryType.GENERAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
+        if (type.value == CategoryType.PERSONAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
 
     private fun fetchSelectedGroupMembers() {
         // TODO: 선택된 그룹원 불러오는 로직

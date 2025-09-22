@@ -191,7 +191,7 @@ object DataSource {
         ),
         CategoryEntity(
             id = 3,
-            type = CategoryType.GENERAL,
+            type = CategoryType.PERSONAL,
             openSettings = OpenSettings.PRIVATE,
             title = "일반 카테고리 1",
             isGroupReader = true,
@@ -200,7 +200,7 @@ object DataSource {
         ),
         CategoryEntity(
             id = 4,
-            type = CategoryType.GENERAL,
+            type = CategoryType.PERSONAL,
             openSettings = OpenSettings.FOLLOWERS,
             title = "일반 카테고리 2",
             isGroupReader = true,
@@ -330,7 +330,7 @@ object DataSource {
             CategoryWithTodoItem(
                 categoryId = 3,
                 title = "일반 카테고리 1",
-                type = CategoryType.GENERAL,
+                type = CategoryType.PERSONAL,
                 todoList = listOf(
                     TodoData(
                         id = 5,
@@ -367,7 +367,7 @@ object DataSource {
             CategoryWithTodoItem(
                 categoryId = 4,
                 title = "일반 카테고리 2",
-                type = CategoryType.GENERAL,
+                type = CategoryType.PERSONAL,
                 todoList = listOf(
                     TodoData(
                         id = 8,
