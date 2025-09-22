@@ -26,7 +26,7 @@ class CategoryAddViewModel @Inject constructor(private val insertCategoryUseCase
     val type: StateFlow<CategoryType>
         get() = _type.asStateFlow()
 
-    private var _openSettingOption = MutableStateFlow(OpenSettings.FULL)
+    private var _openSettingOption = MutableStateFlow(OpenSettings.PUBLIC)
     val openSettingOption: StateFlow<OpenSettings>
         get() = _openSettingOption.asStateFlow()
 

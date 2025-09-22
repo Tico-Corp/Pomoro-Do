@@ -5,7 +5,7 @@ data class CategoryWithTodoItem(
     val title: String,
     val type: CategoryType,
     val todoList: List<TodoData> = listOf(),
-    val openSettings: OpenSettings = OpenSettings.FULL,
+    val openSettings: OpenSettings = OpenSettings.PUBLIC,
     val groupMemberCount: Int = 0,
     val groupMember: List<User>? = null
 )

@@ -192,7 +192,7 @@ object DataSource {
         CategoryEntity(
             id = 3,
             type = CategoryType.GENERAL,
-            openSettings = OpenSettings.ME,
+            openSettings = OpenSettings.PRIVATE,
             title = "일반 카테고리 1",
             isGroupReader = true,
             groupReader = "사용자 1",
@@ -201,7 +201,7 @@ object DataSource {
         CategoryEntity(
             id = 4,
             type = CategoryType.GENERAL,
-            openSettings = OpenSettings.FOLLOWER,
+            openSettings = OpenSettings.FOLLOWERS,
             title = "일반 카테고리 2",
             isGroupReader = true,
             groupReader = "사용자 1",
