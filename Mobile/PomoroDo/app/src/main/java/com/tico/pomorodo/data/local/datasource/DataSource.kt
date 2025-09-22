@@ -193,7 +193,7 @@ object DataSource {
             id = 3,
             type = CategoryType.PERSONAL,
             openSettings = OpenSettings.PRIVATE,
-            title = "일반 카테고리 1",
+            title = "개인 카테고리 1",
             isGroupReader = true,
             groupReader = "사용자 1",
             groupMember = null
@@ -202,7 +202,7 @@ object DataSource {
             id = 4,
             type = CategoryType.PERSONAL,
             openSettings = OpenSettings.FOLLOWERS,
-            title = "일반 카테고리 2",
+            title = "개인 카테고리 2",
             isGroupReader = true,
             groupReader = "사용자 1",
             groupMember = null
@@ -334,7 +334,7 @@ object DataSource {
                 todoList = listOf(
                     TodoData(
                         id = 5,
-                        title = "General Todo 1",
+                        title = "Personal Todo 1",
                         status = TodoState.UNCHECKED,
                         categoryId = 3,
                         likes = 2,
@@ -344,7 +344,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 6,
-                        title = "General Todo 2",
+                        title = "Personal Todo 2",
                         status = TodoState.UNCHECKED,
                         categoryId = 3,
                         likes = 0,
@@ -354,7 +354,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 7,
-                        title = "General Todo 3",
+                        title = "Personal Todo 3",
                         status = TodoState.UNCHECKED,
                         categoryId = 3,
                         likes = 5,
@@ -371,7 +371,7 @@ object DataSource {
                 todoList = listOf(
                     TodoData(
                         id = 8,
-                        title = "General Todo 1",
+                        title = "Personal Todo 1",
                         status = TodoState.UNCHECKED,
                         categoryId = 4,
                         likes = 2,
@@ -381,7 +381,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 9,
-                        title = "General Todo 2",
+                        title = "Personal Todo 2",
                         status = TodoState.UNCHECKED,
                         categoryId = 4,
                         likes = 0,
@@ -391,7 +391,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 10,
-                        title = "General Todo 3",
+                        title = "Personal Todo 3",
                         status = TodoState.UNCHECKED,
                         categoryId = 4,
                         likes = 5,

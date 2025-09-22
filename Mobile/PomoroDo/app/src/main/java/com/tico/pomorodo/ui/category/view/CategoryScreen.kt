@@ -38,7 +38,7 @@ import com.tico.pomorodo.ui.todo.view.CategoryTag
 @Composable
 fun CategoryScreen(
     isOffline: Boolean,
-    generalCategoryList: List<Category>,
+    personalCategoryList: List<Category>,
     groupCategoryList: List<Category>,
     inviteGroupCategoryList: List<InviteCategory>,
     onCategoryClicked: (Int) -> Unit
@@ -55,7 +55,7 @@ fun CategoryScreen(
         ) {
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 SimpleText(
-                    textId = R.string.content_category_general,
+                    textId = R.string.content_category_personal,
                     style = PomoroDoTheme.typography.laundryGothicBold16,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
@@ -63,7 +63,7 @@ fun CategoryScreen(
                     modifier = Modifier,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    generalCategoryList.forEach { category ->
+                    personalCategoryList.forEach { category ->
                         Row(
                             modifier = Modifier
                                 .clickableWithoutRipple(
@@ -233,7 +233,7 @@ fun CategoryScreenRoute(
             )
             CategoryScreen(
                 inviteGroupCategoryList = inviteGroupCategoryList,
-                generalCategoryList = categoryList.filter { it.groupMemberCount == 0 },
+                personalCategoryList = categoryList.filter { it.groupMemberCount == 0 },
                 groupCategoryList = categoryList.filter { it.groupMemberCount > 0 },
                 onCategoryClicked = navigateToInfoCategory,
                 isOffline = isOffline
