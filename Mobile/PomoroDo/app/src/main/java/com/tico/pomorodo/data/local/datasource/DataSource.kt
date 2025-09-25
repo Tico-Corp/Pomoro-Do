@@ -307,12 +307,6 @@ object DataSource {
                     ),
                 ),
                 openSettings = OpenSettings.GROUP,
-                    User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
-                    User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
-                    User(id = 3, name = "사용자 3", email = "abce@abc.abc"),
-                    User(id = 4, name = "구름이2", email = "abc@gmail.com"),
-                    User(id = 5, name = "구름이3", email = "abc@gmail.com"),
-                    User(id = 6, name = "구름이4", email = "abc@gmail.com"),
                 groupMembers = listOf(
                 ),
                 totalMembers = 6
