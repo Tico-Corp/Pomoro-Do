@@ -307,7 +307,6 @@ object DataSource {
                     ),
                 ),
                 openSettings = OpenSettings.GROUP,
-                groupMember = listOf(
                     User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
                     User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
                     User(id = 3, name = "사용자 3", email = "abce@abc.abc"),
@@ -361,13 +360,12 @@ object DataSource {
                     ),
                 ),
                 openSettings = OpenSettings.GROUP,
-                groupMember = listOf(
-                    User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
-                    User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
-                    User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
-                    User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
-                    User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
                 groupMembers = listOf(
+                    User(id = 7, name = "모카커피1"),
+                    User(id = 8, name = "모카커피2"),
+                    User(id = 9, name = "모카커피3"),
+                    User(id = 10, name = "모카커피4"),
+                    User(id = 11, name = "모카커피5"),
                 ),
                 totalMembers = 6
             ),
