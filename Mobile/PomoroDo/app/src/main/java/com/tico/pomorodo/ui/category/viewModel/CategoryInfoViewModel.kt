@@ -118,7 +118,7 @@ class CategoryInfoViewModel @Inject constructor(
         val followerValue = follower.value
 
         if (categoryValue != null && followerValue != null) {
-            val groupMembers = categoryValue.groupMember
+            val groupMembers = categoryValue.groupMembers
 
             if (groupMembers != null) {
                 _selectedGroupMembers.value = followerValue.map { user ->

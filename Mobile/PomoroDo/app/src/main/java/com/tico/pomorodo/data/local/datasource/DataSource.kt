@@ -5,9 +5,9 @@ import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.local.entity.UserEntity
 import com.tico.pomorodo.data.model.CalendarFocusState
+import com.tico.pomorodo.data.model.CategoryInvitation
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
-import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
@@ -35,17 +35,57 @@ object DataSource {
         User(id = 16, name = "구름이1", email = "abc@gmail.com"),
     )
 
-    val inviteList = listOf<InviteCategory>(
-        InviteCategory(id = "1", title = "알고리즘 뿌셔!", groupReader = "랑드샤 쿠키"),
-        InviteCategory(id = "2", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "3", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피2"),
-        InviteCategory(id = "4", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피3"),
-        InviteCategory(id = "5", title = "알고리즘 뿌셔!", groupReader = "모카커피4"),
-        InviteCategory(id = "6", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
+    val inviteList = listOf<CategoryInvitation>(
+        CategoryInvitation(
+            categoryInvitationId = 1,
+            categoryName = "알고리즘 뿌셔!",
+            ownerNickname = "랑드샤 쿠키"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 2,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 3,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피2"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 4,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피3"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 5,
+            categoryName = "알고리즘 뿌셔!",
+            ownerNickname = "모카커피4"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 6,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 7,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 8,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 9,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 10,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
     )
 
     val followList = listOf(
@@ -161,9 +201,8 @@ object DataSource {
             type = CategoryType.GROUP,
             openSettings = OpenSettings.GROUP,
             title = "그룹 카테고리 1",
-            groupMemberCount = 2,
-            isGroupReader = true,
-            groupReader = "사용자 1",
+            ownerFlag = true,
+            ownerNickname = "사용자 1",
             groupMember = listOf(
                 UserEntity(id = 1, name = "사용자 1", email = "abc@abc.abc"),
                 UserEntity(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
@@ -172,15 +211,15 @@ object DataSource {
                 UserEntity(id = 5, name = "구름이3", email = "abc@gmail.com"),
                 UserEntity(id = 6, name = "구름이4", email = "abc@gmail.com"),
             ),
+            totalMembers = 6
         ),
         CategoryEntity(
             id = 2,
             type = CategoryType.GROUP,
             openSettings = OpenSettings.GROUP,
             title = "그룹 카테고리 2",
-            groupMemberCount = 2,
-            isGroupReader = false,
-            groupReader = "사용자 2",
+            ownerFlag = false,
+            ownerNickname = "사용자 2",
             groupMember = listOf(
                 UserEntity(id = 7, name = "모카커피1", email = "abc@gmail.com"),
                 UserEntity(id = 8, name = "모카커피2", email = "abc@gmail.com"),
@@ -188,24 +227,27 @@ object DataSource {
                 UserEntity(id = 10, name = "모카커피4", email = "abc@gmail.com"),
                 UserEntity(id = 11, name = "모카커피5", email = "abc@gmail.com"),
             ),
+            totalMembers = 5
         ),
         CategoryEntity(
             id = 3,
             type = CategoryType.PERSONAL,
             openSettings = OpenSettings.PRIVATE,
             title = "개인 카테고리 1",
-            isGroupReader = true,
-            groupReader = "사용자 1",
-            groupMember = null
+            ownerFlag = true,
+            ownerNickname = "사용자 1",
+            groupMember = null,
+            totalMembers = 0
         ),
         CategoryEntity(
             id = 4,
             type = CategoryType.PERSONAL,
             openSettings = OpenSettings.FOLLOWERS,
             title = "개인 카테고리 2",
-            isGroupReader = true,
-            groupReader = "사용자 1",
-            groupMember = null
+            ownerFlag = true,
+            ownerNickname = "사용자 1",
+            groupMember = null,
+            totalMembers = 0
         ),
     )
 
@@ -265,7 +307,6 @@ object DataSource {
                     ),
                 ),
                 openSettings = OpenSettings.GROUP,
-                groupMemberCount = 6,
                 groupMember = listOf(
                     User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
                     User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
@@ -273,7 +314,9 @@ object DataSource {
                     User(id = 4, name = "구름이2", email = "abc@gmail.com"),
                     User(id = 5, name = "구름이3", email = "abc@gmail.com"),
                     User(id = 6, name = "구름이4", email = "abc@gmail.com"),
-                )
+                groupMembers = listOf(
+                ),
+                totalMembers = 6
             ),
             CategoryWithTodoItem(
                 categoryId = 2,
@@ -318,14 +361,15 @@ object DataSource {
                     ),
                 ),
                 openSettings = OpenSettings.GROUP,
-                groupMemberCount = 5,
                 groupMember = listOf(
                     User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
                     User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
                     User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
                     User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
                     User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
-                )
+                groupMembers = listOf(
+                ),
+                totalMembers = 6
             ),
             CategoryWithTodoItem(
                 categoryId = 3,
@@ -363,6 +407,7 @@ object DataSource {
                         updatedAt = System.currentTimeMillis()
                     ),
                 ),
+                totalMembers = 0
             ),
             CategoryWithTodoItem(
                 categoryId = 4,
@@ -400,6 +445,7 @@ object DataSource {
                         updatedAt = System.currentTimeMillis()
                     ),
                 ),
+                totalMembers = 0
             ),
         )
 }

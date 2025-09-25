@@ -112,7 +112,7 @@ fun CategoryInfoScreenRoute(
                 }
             )
             if (showCheckGroupMemberBottomSheet) {
-                category.groupMember?.let { user ->
+                category.groupMembers?.let { user ->
                     CheckGroupMemberBottomSheet(
                         sheetState = checkGroupMemberSheetState,
                         onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
@@ -179,11 +179,11 @@ fun CategoryInfoScreenRoute(
                 groupMemberCount = selectedGroupMembers.filter { it.selected }.size,
                 openSettingOption = if (category.type == CategoryType.GROUP) OpenSettings.GROUP
                 else category.openSettings,
-                groupReader = category.groupReader,
+                ownerNickname = category.ownerNickname,
                 onTitleChanged = viewModel::setTitle,
                 onShowOpenSettingsBottomSheetChange = { showOpenSettingsBottomSheet = it },
                 onShowCheckGroupMemberBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
-                isGroupReader = category.isGroupReader,
+                ownerFlag = category.ownerFlag,
                 onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
                 onGroupOutClicked = { groupOutDialogVisible = true },
                 onPersonalDeletedClicked = { personalDeleteDialogVisible = true }
@@ -204,8 +204,8 @@ fun CategoryInfoScreen(
     groupMemberCount: Int,
     onTitleChanged: (String) -> Unit,
     openSettingOption: OpenSettings,
-    groupReader: String? = null,
-    isGroupReader: Boolean?,
+    ownerNickname: String? = null,
+    ownerFlag: Boolean,
     onShowOpenSettingsBottomSheetChange: (Boolean) -> Unit,
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
     onGroupOutClicked: () -> Unit,
@@ -263,8 +263,8 @@ fun CategoryInfoScreen(
             }
             CategoryType(type)
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
-            if (groupReader != null) {
-                GroupReader(groupReader)
+            if (ownerNickname != null) {
+                GroupReader(ownerNickname)
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             }
             CategoryOpenSettings(
@@ -298,7 +298,7 @@ fun CategoryInfoScreen(
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
                 Spacer(Modifier.height(37.dp))
                 if (!isOffline) {
-                    if (isGroupReader == true) {
+                    if (ownerFlag) {
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             CustomTextButton(
                                 modifier = Modifier.weight(1f),
@@ -320,7 +320,7 @@ fun CategoryInfoScreen(
                                 verticalPadding = 12.dp,
                             )
                         }
-                    } else if (isGroupReader == false) {
+                    } else {
                         CustomTextButton(
                             text = stringResource(id = R.string.content_group_out),
                             containerColor = Color.Unspecified,
@@ -381,7 +381,7 @@ private fun Category.isReadOnly(isOffline: Boolean): Boolean {
     return if (isOffline) {
         this.type == CategoryType.GROUP
     } else {
-        this.type == CategoryType.GROUP && this.isGroupReader == false
+        this.type == CategoryType.GROUP && !ownerFlag
     }
 }
 

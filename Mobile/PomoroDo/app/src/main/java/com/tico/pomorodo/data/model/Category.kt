@@ -7,10 +7,10 @@ data class Category(
     val title: String,
     val type: CategoryType,
     val openSettings: OpenSettings = OpenSettings.PUBLIC,
-    val groupReader: String? = null,
-    val isGroupReader: Boolean? = null,
-    val groupMemberCount: Int = 0,
-    val groupMember: List<User>? = null
+    val ownerNickname: String? = null,
+    val ownerFlag: Boolean,
+    val groupMembers: List<User>? = null,
+    val totalMembers: Int
 )
 
 enum class CategoryType {
@@ -22,8 +22,8 @@ fun Category.toCategoryEntity() = CategoryEntity(
     title = title,
     type = type,
     openSettings = openSettings,
-    groupReader = groupReader,
-    isGroupReader = isGroupReader,
-    groupMemberCount = groupMemberCount,
-    groupMember = groupMember?.map(User::toUserEntity)
+    ownerNickname = ownerNickname,
+    ownerFlag = ownerFlag,
+    groupMember = groupMembers?.map(User::toUserEntity),
+    totalMembers = totalMembers
 )

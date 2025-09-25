@@ -179,7 +179,7 @@ class TodoViewModel @Inject constructor(
                 insertTodoUseCase(
                     title = title,
                     categoryId = category.categoryId,
-                    incompletedList = category.groupMember,
+                    incompletedList = category.groupMembers,
                     completedList = listOf(),
                     targetDate = selectedDate.value
                 )

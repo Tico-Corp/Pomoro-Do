@@ -15,10 +15,10 @@ data class CategoryEntity(
     val title: String,
     val type: CategoryType,
     val openSettings: OpenSettings,
-    val groupReader: String?,
-    val isGroupReader: Boolean?,
-    val groupMemberCount: Int = 0,
-    val groupMember: List<UserEntity>?
+    val ownerNickname: String? = null,
+    val ownerFlag: Boolean = true,
+    val groupMember: List<UserEntity>? = null,
+    val totalMembers: Int = 0
 )
 
 fun CategoryEntity.toCategory() =
@@ -27,8 +27,8 @@ fun CategoryEntity.toCategory() =
         title = title,
         type = type,
         openSettings = openSettings,
-        groupReader = groupReader,
-        isGroupReader = isGroupReader,
-        groupMemberCount = groupMemberCount,
-        groupMember = groupMember?.map { it.toUser() }
+        ownerNickname = ownerNickname,
+        ownerFlag = ownerFlag,
+        groupMembers = groupMember?.map { it.toUser() },
+        totalMembers = totalMembers
     )
