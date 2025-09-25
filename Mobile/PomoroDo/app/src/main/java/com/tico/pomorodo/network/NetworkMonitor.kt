@@ -1,8 +1,7 @@
 package com.tico.pomorodo.network
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface NetworkMonitor {
-    fun observeIsNetworkConnected(): Flow<Boolean>
-    suspend fun isNetworkConnected(): Boolean
+    val isNetworkConnected: StateFlow<Boolean>
 }
