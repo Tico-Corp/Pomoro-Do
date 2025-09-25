@@ -77,8 +77,8 @@ class SplashViewModel @Inject constructor(
         reissueTokenUseCase().collect { result ->
             when (result) {
                 is Resource.Success -> {
-                    saveRefreshToken(result.data.data.refreshToken)
-                    saveAccessToken(result.data.data.accessToken)
+                    saveRefreshToken(result.data.refreshToken)
+                    saveAccessToken(result.data.accessToken)
                     _authState.value = AuthState.SUCCESS_LOGIN
                 }
 
