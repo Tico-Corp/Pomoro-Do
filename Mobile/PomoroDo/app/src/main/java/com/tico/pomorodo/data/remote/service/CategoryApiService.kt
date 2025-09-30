@@ -1,6 +1,7 @@
 package com.tico.pomorodo.data.remote.service
 
 import com.tico.pomorodo.data.remote.models.request.CategoryDeleteRequest
+import com.tico.pomorodo.data.remote.models.request.CategoryInvitationRequest
 import com.tico.pomorodo.data.remote.models.request.CategoryRequest
 import com.tico.pomorodo.data.remote.models.request.CategoryUpdateRequest
 import com.tico.pomorodo.data.remote.models.response.AllCategoryResponse
@@ -33,5 +34,17 @@ interface CategoryApiService {
     suspend fun deleteCategory(
         @Path("categoryId") categoryId: Int,
         @Body categoryDeleteRequest: CategoryDeleteRequest
+    )
+
+    @POST("v1/categories/{categoryId}/leave")
+    suspend fun outCategory(
+        @Path("categoryId") categoryId: Int,
+        @Body categoryDeleteRequest: CategoryDeleteRequest
+    )
+
+    @PATCH("v1/categories/invitations/{invitationId}")
+    suspend fun decideCategoryInvitation(
+        @Path("invitationId") invitationId: Int,
+        @Body categoryInvitationRequest: CategoryInvitationRequest
     )
 }

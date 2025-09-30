@@ -26,4 +26,7 @@ interface CategoryRepository {
 
     suspend fun deleteCategory(categoryId: Int, deleteOption: DeletionOption)
 
+    suspend fun outCategory(categoryId: Int, deleteOption: DeletionOption)
+
+    suspend fun decideCategoryInvitation(invitationId: Int, decision: Decision)
 }

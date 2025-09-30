@@ -10,12 +10,14 @@ import com.tico.pomorodo.data.local.entity.toPersonalCategory
 import com.tico.pomorodo.data.model.AllCategory
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.Decision
 import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.toCategoryEntity
 import com.tico.pomorodo.data.model.toCategoryUpdateRequest
 import com.tico.pomorodo.data.remote.datasource.CategoryRemoteDataSource
 import com.tico.pomorodo.data.remote.models.request.CategoryDeleteRequest
+import com.tico.pomorodo.data.remote.models.request.CategoryInvitationRequest
 import com.tico.pomorodo.data.remote.models.request.CategoryRequest
 import com.tico.pomorodo.data.remote.models.response.toAllCategory
 import com.tico.pomorodo.data.remote.models.response.toCategory
@@ -125,6 +127,30 @@ class CategoryRepositoryImpl @Inject constructor(
             )
         } else {
             categoryLocalDataSource.delete(categoryId)
+        }
+    }
+
+    override suspend fun outCategory(
+        categoryId: Int,
+        deleteOption: DeletionOption
+    ) {
+        if (networkHelper.isNetworkConnected()) {
+            categoryRemoteDataSource.outCategory(
+                categoryId,
+                CategoryDeleteRequest(deleteOption)
+            )
+        }
+    }
+
+    override suspend fun decideCategoryInvitation(
+        invitationId: Int,
+        decision: Decision
+    ) {
+        if (networkHelper.isNetworkConnected()) {
+            categoryRemoteDataSource.decideCategoryInvitation(
+                invitationId,
+                CategoryInvitationRequest(decision)
+            )
         }
     }
 }
