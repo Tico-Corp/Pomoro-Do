@@ -3,6 +3,7 @@ package com.tico.pomorodo.domain.repository
 import com.tico.pomorodo.data.model.AllCategory
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.Decision
 import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.domain.model.Resource
@@ -25,5 +26,4 @@ interface CategoryRepository {
 
     suspend fun deleteCategory(categoryId: Int, deleteOption: DeletionOption)
 
-    suspend fun deleteCategoryInfo(id: Int)
 }
