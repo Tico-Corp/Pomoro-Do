@@ -3,9 +3,9 @@ package com.tico.pomorodo.ui.category.viewModel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tico.pomorodo.data.local.datasource.DataSource
-import com.tico.pomorodo.data.model.Category
-import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.data.model.CategoryInvitation
+import com.tico.pomorodo.data.model.GroupCategory
+import com.tico.pomorodo.data.model.PersonalCategory
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,14 +18,17 @@ import javax.inject.Inject
 @HiltViewModel
 class CategoryViewModel @Inject constructor(private val getAllCategoryUseCase: GetAllCategoryUseCase) :
     ViewModel() {
+    private var _personalCategories = MutableStateFlow<List<PersonalCategory>>(emptyList())
+    val personalCategories: StateFlow<List<PersonalCategory>>
+        get() = _personalCategories.asStateFlow()
 
-    private var _categoryList = MutableStateFlow<List<Category>>(emptyList())
-    val categoryList: StateFlow<List<Category>>
-        get() = _categoryList.asStateFlow()
+    private var _groupCategories = MutableStateFlow<List<GroupCategory>>(emptyList())
+    val groupCategories: StateFlow<List<GroupCategory>>
+        get() = _groupCategories.asStateFlow()
 
-    private var _inviteGroupCategoryList = MutableStateFlow(DataSource.inviteList)
-    val inviteGroupCategoryList: StateFlow<List<InviteCategory>>
-        get() = _inviteGroupCategoryList.asStateFlow()
+    private var _categoryInvitations = MutableStateFlow<List<CategoryInvitation>>(emptyList())
+    val categoryInvitations: StateFlow<List<CategoryInvitation>>
+        get() = _categoryInvitations.asStateFlow()
 
     private var _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean>
