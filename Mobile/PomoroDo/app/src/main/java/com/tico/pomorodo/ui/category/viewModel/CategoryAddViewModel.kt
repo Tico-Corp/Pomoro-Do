@@ -67,11 +67,8 @@ class CategoryAddViewModel @Inject constructor(private val insertCategoryUseCase
         insertCategoryUseCase.invoke(
             title = title.value,
             type = type.value,
-            isGroupReader = true,
             openSettings = openSettingOption.value,
-            groupReader = "",
-            groupMemberCount = groupMember.size,
-            groupMember = groupMember
+            groupMemberIds = groupMember.map { it.id },
         )
     }
 }
