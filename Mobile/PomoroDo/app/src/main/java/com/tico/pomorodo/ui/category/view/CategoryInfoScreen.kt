@@ -68,6 +68,8 @@ fun CategoryInfoScreenRoute(
     var endOfEditingDialogVisible by remember { mutableStateOf(false) }
 
     val categoryState by viewModel.category.collectAsState()
+    val title by viewModel.title.collectAsState()
+    val openSettings by viewModel.openSettings.collectAsState()
     val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
 
     val focusManager = LocalFocusManager.current
@@ -128,7 +130,7 @@ fun CategoryInfoScreenRoute(
                 OpenSettingsBottomSheet(
                     title = stringResource(id = R.string.title_open_settings),
                     sheetState = openSettingsOptionSheetState,
-                    openSettingOption = category.openSettings,
+                    openSettingOption = openSettings,
                     onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
                     onOkButtonClicked = {
                         viewModel.setOpenSettingOption(it)
@@ -174,11 +176,11 @@ fun CategoryInfoScreenRoute(
             CategoryInfoScreen(
                 isReadOnly = isReadOnly,
                 isOffline = isOffline,
-                title = category.title,
+                title = title,
                 type = category.type,
                 groupMemberCount = selectedGroupMembers.filter { it.selected }.size,
                 openSettingOption = if (category.type == CategoryType.GROUP) OpenSettings.GROUP
-                else category.openSettings,
+                else openSettings,
                 ownerNickname = category.ownerNickname,
                 onTitleChanged = viewModel::setTitle,
                 onShowOpenSettingsBottomSheetChange = { showOpenSettingsBottomSheet = it },

@@ -36,8 +36,14 @@ class CategoryInfoViewModel @Inject constructor(
     val category: StateFlow<Category?>
         get() = _category.asStateFlow()
 
+    private val _title = MutableStateFlow("")
+    val title: StateFlow<String> = _title
+
+    private val _openSettings = MutableStateFlow(OpenSettings.PUBLIC)
+    val openSettings: StateFlow<OpenSettings> = _openSettings
+
     private var _selectedGroupMembers =
-        MutableStateFlow<List<SelectedUser>>(listOf())
+        MutableStateFlow<List<SelectedUser>>(emptyList())
     val selectedGroupMembers: StateFlow<List<SelectedUser>>
         get() = _selectedGroupMembers.asStateFlow()
 
