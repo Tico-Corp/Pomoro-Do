@@ -41,7 +41,7 @@ fun Profile(uri: String?, modifier: Modifier = Modifier, size: Int) {
             modifier = modifier
                 .size(size.dp)
                 .clip(shape = CircleShape),
-            requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+            requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL) },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
@@ -85,7 +85,7 @@ fun ProfileVertical(
                 GlideImage(
                     modifier = Modifier.size(size.dp),
                     imageModel = { defaultProfileUri },
-                    requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+                    requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL) },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center
@@ -130,7 +130,7 @@ fun ProfileHorizontal(
             GlideImage(
                 modifier = Modifier.size(size.dp),
                 imageModel = { defaultProfileUri },
-                requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC) },
+                requestOptions = { RequestOptions().diskCacheStrategy(DiskCacheStrategy.ALL) },
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center
