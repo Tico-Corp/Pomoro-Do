@@ -16,6 +16,7 @@ import com.tico.pomorodo.data.model.toUser
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.usecase.category.DeleteCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
+import com.tico.pomorodo.domain.usecase.category.OutCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.UpdateCategoryInfoUseCase
 import com.tico.pomorodo.navigation.CategoryArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,7 @@ class CategoryInfoViewModel @Inject constructor(
     private val getCategoryInfoUseCase: GetCategoryInfoUseCase,
     private val updateCategoryInfoUseCase: UpdateCategoryInfoUseCase,
     private val deleteCategoryUseCase: DeleteCategoryUseCase,
+    private val outCategoryUseCase: OutCategoryUseCase
 ) : ViewModel() {
 
     private val args = CategoryArgs(savedStateHandle)
@@ -86,6 +88,10 @@ class CategoryInfoViewModel @Inject constructor(
 
     fun deleteCategory(option: DeletionOption) = viewModelScope.launch {
         deleteCategoryUseCase(args.categoryId, option)
+    }
+
+    fun outCategory(option: DeletionOption) = viewModelScope.launch {
+        outCategoryUseCase(args.categoryId, option)
     }
 
     fun validateInput(): Boolean {

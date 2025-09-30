@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.ui.category.viewModel.CategoryInfoViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
