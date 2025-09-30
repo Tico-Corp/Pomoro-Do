@@ -1,6 +1,7 @@
 package com.tico.pomorodo.data.remote.models.request
 
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.Decision
 import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
 import kotlinx.serialization.SerialName
@@ -28,4 +29,9 @@ data class CategoryUpdateRequest(
 @Serializable
 data class CategoryDeleteRequest(
     val deletionOption: DeletionOption
+)
+
+@Serializable
+data class CategoryInvitationRequest(
+    val decision: Decision
 )
