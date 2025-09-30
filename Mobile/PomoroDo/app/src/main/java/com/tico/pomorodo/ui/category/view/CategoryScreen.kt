@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,6 +30,7 @@ import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
 import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.common.view.clickableWithoutRipple
+import com.tico.pomorodo.ui.common.view.executeToast
 import com.tico.pomorodo.ui.theme.IC_ADD_CATEGORY
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 import com.tico.pomorodo.ui.todo.view.CategoryTag
@@ -41,6 +43,7 @@ fun CategoryScreen(
     inviteGroupCategoryList: List<InviteCategory>,
     onCategoryClicked: (Int) -> Unit
 ) {
+    val context = LocalContext.current
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -91,7 +94,10 @@ fun CategoryScreen(
                             modifier = Modifier
                                 .clickableWithoutRipple(
                                     enabled = true,
-                                    onClick = { onCategoryClicked(category.id) }
+                                    onClick = {
+                                        if (isOffline) context.executeToast(R.string.title_not_support_offline_mode)
+                                        else onCategoryClicked(category.id)
+                                    }
                                 )
                                 .fillMaxWidth()
                         ) {
@@ -99,7 +105,10 @@ fun CategoryScreen(
                                 title = category.title,
                                 groupMemberCount = category.groupMemberCount,
                                 isAddButton = false,
-                                onAddClicked = { onCategoryClicked(category.id) }
+                                onAddClicked = {
+                                    if (isOffline) context.executeToast(R.string.title_not_support_offline_mode)
+                                    else onCategoryClicked(category.id)
+                                }
                             )
                         }
                     }
