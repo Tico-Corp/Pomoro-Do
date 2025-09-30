@@ -5,12 +5,20 @@ import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSource
 import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.toCategory
+import com.tico.pomorodo.data.local.entity.toGroupCategory
+import com.tico.pomorodo.data.local.entity.toPersonalCategory
+import com.tico.pomorodo.data.model.AllCategory
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.data.model.toCategoryEntity
-import com.tico.pomorodo.data.model.toUserEntity
+import com.tico.pomorodo.data.model.toCategoryUpdateRequest
+import com.tico.pomorodo.data.remote.datasource.CategoryRemoteDataSource
+import com.tico.pomorodo.data.remote.models.request.CategoryDeleteRequest
+import com.tico.pomorodo.data.remote.models.request.CategoryRequest
+import com.tico.pomorodo.data.remote.models.response.toAllCategory
+import com.tico.pomorodo.data.remote.models.response.toCategory
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.CategoryRepository
 import kotlinx.coroutines.Dispatchers
@@ -23,19 +31,29 @@ import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryLocalDataSource: CategoryLocalDataSource,
+    private val categoryRemoteDataSource: CategoryRemoteDataSource,
     private val networkHelper: NetworkHelper
 ) : CategoryRepository {
-    override suspend fun getAllCategory(): Flow<Resource<List<Category>>> = flow {
+    override suspend fun getAllCategory(): Flow<Resource<AllCategory>> = flow {
         emit(Resource.Loading)
 
         if (networkHelper.isNetworkConnected()) {
-            // TODO:bring network data
+            val data = wrapToResource(Dispatchers.IO) {
+                categoryRemoteDataSource.getAllCategory().data.toAllCategory()
+            }
+            emit(data)
         } else {
-            emitAll(categoryLocalDataSource.getAllCategory().map {
+            val res = categoryLocalDataSource.getAllCategory().map {
                 wrapToResource(Dispatchers.IO) {
-                    it.map { entity -> entity.toCategory() }
+                    it.partition { it.type == CategoryType.PERSONAL }.let { (personal, group) ->
+                        AllCategory(
+                            personalCategories = personal.map(CategoryEntity::toPersonalCategory),
+                            groupCategories = group.map(CategoryEntity::toGroupCategory)
+                        )
+                    }
                 }
-            })
+            }
+            emitAll(res)
         }
     }.flowOn(Dispatchers.IO)
 
@@ -43,7 +61,8 @@ class CategoryRepositoryImpl @Inject constructor(
         emit(Resource.Loading)
 
         if (networkHelper.isNetworkConnected()) {
-            // TODO:bring network data
+            val res = categoryRemoteDataSource.getCategoryInfo(categoryId).data.toCategory()
+            emit(wrapToResource(Dispatchers.IO) { res })
         } else {
             val data = categoryLocalDataSource.getCategoryInfo(categoryId).map {
                 wrapToResource(Dispatchers.IO) {
@@ -54,48 +73,58 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun insert(
+    override suspend fun insertCategory(
         title: String,
         type: CategoryType,
-        isGroupReader: Boolean,
         openSettings: OpenSettings,
-        groupReader: String,
-        groupMemberCount: Int,
-        groupMember: List<User>
+        groupMemberIds: List<Int>?,
+        startDate: String
     ) {
-        val categoryEntity = CategoryEntity(
-            title = title,
-            type = type,
-            isGroupReader = isGroupReader,
-            openSettings = openSettings,
-            groupReader = groupReader,
-            groupMemberCount = groupMemberCount,
-            groupMember = groupMember.map(User::toUserEntity)
-        )
         if (networkHelper.isNetworkConnected()) {
-
+            categoryRemoteDataSource.insertCategory(
+                CategoryRequest(
+                    startDate = startDate,
+                    title = title,
+                    type = type,
+                    openSettings = openSettings,
+                    memberIds = groupMemberIds
+                )
+            )
+            val categoryEntity = CategoryEntity(
+                title = title,
+                type = type,
+                openSettings = openSettings,
+            )
+            categoryLocalDataSource.insert(categoryEntity)
         } else {
+            val categoryEntity = CategoryEntity(
+                title = title,
+                type = type,
+                openSettings = openSettings,
+            )
             categoryLocalDataSource.insert(categoryEntity)
         }
     }
 
-    override suspend fun insertAll(entities: List<Category>) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateCategoryInfo(entity: Category) {
+    override suspend fun updateCategory(category: Category) {
         if (networkHelper.isNetworkConnected()) {
-
+            categoryRemoteDataSource.updateCategory(
+                category.id,
+                category.toCategoryUpdateRequest()
+            )
         } else {
-            categoryLocalDataSource.update(entity.toCategoryEntity())
+            categoryLocalDataSource.update(category.toCategoryEntity())
         }
     }
 
-    override suspend fun deleteCategoryInfo(id: Int) {
+    override suspend fun deleteCategory(categoryId: Int, deleteOption: DeletionOption) {
         if (networkHelper.isNetworkConnected()) {
-
+            categoryRemoteDataSource.deleteCategory(
+                categoryId,
+                CategoryDeleteRequest(deleteOption)
+            )
         } else {
-            categoryLocalDataSource.delete(id)
+            categoryLocalDataSource.delete(categoryId)
         }
     }
 }
