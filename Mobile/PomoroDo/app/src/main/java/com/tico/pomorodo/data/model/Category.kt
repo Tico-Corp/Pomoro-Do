@@ -1,6 +1,7 @@
 package com.tico.pomorodo.data.model
 
 import com.tico.pomorodo.data.local.entity.CategoryEntity
+import com.tico.pomorodo.data.remote.models.request.CategoryUpdateRequest
 
 data class Category(
     val id: Int = 0,
@@ -26,4 +27,9 @@ fun Category.toCategoryEntity() = CategoryEntity(
     ownerFlag = ownerFlag,
     groupMember = groupMembers?.map(User::toUserEntity),
     totalMembers = totalMembers
+)
+
+fun Category.toCategoryUpdateRequest() = CategoryUpdateRequest(
+    title = title,
+    openSettings = openSettings
 )
