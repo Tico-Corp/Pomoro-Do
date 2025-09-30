@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 data class UserResponse(
     val groupMemberId: Int,
     val nickname: String,
-    val profileImageUrl: String
+    val profileImageUrl: String?
 )
 
 fun UserResponse.toUser() = User(
