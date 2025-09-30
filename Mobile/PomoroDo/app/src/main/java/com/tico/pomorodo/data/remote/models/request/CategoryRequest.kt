@@ -1,6 +1,7 @@
 package com.tico.pomorodo.data.remote.models.request
 
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -22,4 +23,9 @@ data class CategoryUpdateRequest(
     val title: String,
     @SerialName("visibility")
     val openSettings: OpenSettings
+)
+
+@Serializable
+data class CategoryDeleteRequest(
+    val deletionOption: DeletionOption
 )
