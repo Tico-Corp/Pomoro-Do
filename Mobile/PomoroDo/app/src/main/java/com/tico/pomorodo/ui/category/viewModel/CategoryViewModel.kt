@@ -43,7 +43,9 @@ class CategoryViewModel @Inject constructor(private val getAllCategoryUseCase: G
             when (result) {
                 is Resource.Success -> {
                     _isLoading.value = false
-                    _categoryList.value = result.data
+                    _personalCategories.value = result.data.personalCategories
+                    _groupCategories.value = result.data.groupCategories
+                    _categoryInvitations.value = result.data.categoryInvitations
                 }
 
                 is Resource.Loading -> {
