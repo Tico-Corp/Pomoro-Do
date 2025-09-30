@@ -2,30 +2,29 @@ package com.tico.pomorodo.domain.usecase.category
 
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.repository.CategoryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 class InsertCategoryUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
     suspend operator fun invoke(
         title: String,
         type: CategoryType,
-        isGroupReader: Boolean,
         openSettings: OpenSettings,
-        groupReader: String,
-        groupMemberCount: Int,
-        groupMember: List<User>
+        groupMemberIds: List<Int>?,
     ) = withContext(Dispatchers.IO) {
-        categoryRepository.insert(
+        val startDate =
+            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+        categoryRepository.insertCategory(
             title = title,
             type = type,
-            isGroupReader = isGroupReader,
             openSettings = openSettings,
-            groupReader = groupReader,
-            groupMemberCount = groupMemberCount,
-            groupMember = groupMember
+            groupMemberIds = groupMemberIds,
+            startDate = startDate
         )
     }
 }

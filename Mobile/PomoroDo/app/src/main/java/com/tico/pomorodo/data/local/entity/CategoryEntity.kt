@@ -4,7 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.GroupCategory
 import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.model.PersonalCategory
 import kotlinx.serialization.Serializable
 
 @Entity(tableName = "category_table")
@@ -21,14 +23,24 @@ data class CategoryEntity(
     val totalMembers: Int = 0
 )
 
-fun CategoryEntity.toCategory() =
-    Category(
-        id = id,
-        title = title,
-        type = type,
-        openSettings = openSettings,
-        ownerNickname = ownerNickname,
-        ownerFlag = ownerFlag,
-        groupMembers = groupMember?.map { it.toUser() },
-        totalMembers = totalMembers
-    )
+fun CategoryEntity.toCategory() = Category(
+    id = id,
+    title = title,
+    type = type,
+    openSettings = openSettings,
+    ownerNickname = ownerNickname,
+    ownerFlag = ownerFlag,
+    groupMembers = groupMember?.map { it.toUser() },
+    totalMembers = totalMembers
+)
+
+fun CategoryEntity.toPersonalCategory() = PersonalCategory(
+    categoryId = id,
+    categoryName = title
+)
+
+fun CategoryEntity.toGroupCategory() = GroupCategory(
+    categoryId = id,
+    categoryName = title,
+    totalMembers = totalMembers
+)

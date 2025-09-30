@@ -3,7 +3,7 @@ package com.tico.pomorodo.data.model
 data class AllCategory(
     val personalCategories: List<PersonalCategory>,
     val groupCategories: List<GroupCategory>,
-    val categoryInvitations: List<CategoryInvitation>
+    val categoryInvitations: List<CategoryInvitation> = emptyList()
 )
 
 data class PersonalCategory(
