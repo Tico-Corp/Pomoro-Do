@@ -14,6 +14,8 @@ import com.tico.pomorodo.data.local.datasource.todo.TodoLocalDataSource
 import com.tico.pomorodo.data.local.datasource.todo.TodoLocalDataSourceImpl
 import com.tico.pomorodo.data.remote.datasource.AuthDataSource
 import com.tico.pomorodo.data.remote.datasource.AuthDataSourceImpl
+import com.tico.pomorodo.data.remote.datasource.FollowRemoteDataSource
+import com.tico.pomorodo.data.remote.datasource.FollowRemoteDataSourceImpl
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSourceImpl
 import com.tico.pomorodo.data.remote.datasource.TokenDataSource
@@ -21,6 +23,7 @@ import com.tico.pomorodo.data.remote.datasource.TokenDataSourceImpl
 import com.tico.pomorodo.data.remote.datasource.UserRemoteDataSource
 import com.tico.pomorodo.data.remote.datasource.UserRemoteDataSourceImpl
 import com.tico.pomorodo.data.remote.service.AuthApiService
+import com.tico.pomorodo.data.remote.service.FollowApiService
 import com.tico.pomorodo.data.remote.service.ReissueTokenService
 import com.tico.pomorodo.data.remote.service.TodoApiService
 import com.tico.pomorodo.data.remote.service.TokenApiService
@@ -56,6 +59,11 @@ object DataSourceModule {
     @Provides
     fun provideUserRemoteDataSource(userApiService: UserApiService): UserRemoteDataSource =
         UserRemoteDataSourceImpl(userApiService)
+
+    @Singleton
+    @Provides
+    fun provideFollowRemoteDataSource(followApiService: FollowApiService): FollowRemoteDataSource =
+        FollowRemoteDataSourceImpl(followApiService)
 
     @Singleton
     @Provides

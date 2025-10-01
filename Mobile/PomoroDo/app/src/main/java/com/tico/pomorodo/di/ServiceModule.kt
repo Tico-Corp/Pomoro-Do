@@ -4,6 +4,7 @@ import com.tico.pomorodo.common.util.AccessTokenInterceptorClient
 import com.tico.pomorodo.common.util.IdTokenInterceptorClient
 import com.tico.pomorodo.common.util.RefreshTokenInterceptorClient
 import com.tico.pomorodo.data.remote.service.AuthApiService
+import com.tico.pomorodo.data.remote.service.FollowApiService
 import com.tico.pomorodo.data.remote.service.ReissueTokenService
 import com.tico.pomorodo.data.remote.service.TodoApiService
 import com.tico.pomorodo.data.remote.service.TokenApiService
@@ -48,4 +49,9 @@ object ServiceModule {
     @Singleton
     fun provideUserService(@AccessTokenInterceptorClient retrofit: Retrofit): UserApiService =
         retrofit.create(UserApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFollowService(@AccessTokenInterceptorClient retrofit: Retrofit): FollowApiService =
+        retrofit.create(FollowApiService::class.java)
 }

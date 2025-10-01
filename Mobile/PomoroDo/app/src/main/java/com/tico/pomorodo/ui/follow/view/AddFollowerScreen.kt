@@ -39,7 +39,7 @@ fun AddFollowerScreen(
     navigateToFollowTodoScreen: (Int) -> Unit
 ) {
     val followViewModel: FollowViewModel = hiltViewModel()
-    val followingList by followViewModel.followingList.collectAsState()
+    val findList by followViewModel.findList.collectAsState()
     var unFollowingDialogVisible by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(0) }
 
@@ -99,7 +99,7 @@ fun AddFollowerScreen(
                         imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_SEARCH]),
                         contentDescriptionId = R.string.content_ic_search,
                         enabled = searchName.isNotBlank(),
-                        onClickedListener = { /*TODO: */ }
+                        onClickedListener = { followViewModel.findUserByNickname(searchName) }
                     )
                 }
             },
@@ -107,7 +107,7 @@ fun AddFollowerScreen(
         )
 
         FollowingList(
-            followList = followingList,
+            followList = findList,
             onClick = { index, isFollowing ->
                 if (isFollowing) {
                     selectedIndex = index
