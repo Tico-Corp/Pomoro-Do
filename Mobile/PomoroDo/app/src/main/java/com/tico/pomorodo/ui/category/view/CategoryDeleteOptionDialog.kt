@@ -27,7 +27,7 @@ fun CategoryDeleteOptionDialog(
     title: String,
     content: String,
     onAllDeleteClicked: () -> Unit,
-    onIncompletedTodoDeleteClicked: () -> Unit,
+    onIncompleteTodoDeleteClicked: () -> Unit,
     onNoDeleteClicked: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
@@ -76,7 +76,7 @@ fun CategoryDeleteOptionDialog(
                         contentColor = Color.White,
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular14,
                         verticalPadding = 8.dp,
-                        onClick = onIncompletedTodoDeleteClicked
+                        onClick = onIncompleteTodoDeleteClicked
                     )
                     CustomTextButton(
                         text = stringResource(id = R.string.content_no_delete),
