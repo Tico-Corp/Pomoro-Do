@@ -65,7 +65,7 @@ fun CategoryInfoScreenRoute(
     var groupDeleteFirstDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
-    var generalOutDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var generalDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
     var endOfEditingDialogVisible by remember { mutableStateOf(false) }
 
     val categoryState by viewModel.category.collectAsState()
@@ -158,14 +158,14 @@ fun CategoryInfoScreenRoute(
                 onIncompleteTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
                 onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ }
             )
-            if (generalOutDialogVisible) {
+            if (generalDeleteDialogVisible) {
                 CategoryDeleteOptionDialog(
                     title = stringResource(id = R.string.title_category_delete),
                     content = stringResource(id = R.string.content_category_delete_message),
                     onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
                     onIncompleteTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
                     onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ },
-                    onDismissRequest = { generalOutDialogVisible = false })
+                    onDismissRequest = { generalDeleteDialogVisible = false })
             }
             if (endOfEditingDialogVisible) {
                 EndOfEditingDialog(
@@ -191,7 +191,7 @@ fun CategoryInfoScreenRoute(
                 isGroupReader = category.isGroupReader,
                 onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
                 onGroupOutClicked = { groupOutDialogVisible = true },
-                onGeneralDeletedClicked = { generalOutDialogVisible = true }
+                onGeneralDeletedClicked = { generalDeleteDialogVisible = true }
             )
         }
     }
