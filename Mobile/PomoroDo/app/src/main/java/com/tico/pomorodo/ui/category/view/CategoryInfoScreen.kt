@@ -150,19 +150,14 @@ fun CategoryInfoScreenRoute(
                 setGroupDeleteSecondDialogVisible = { groupDeleteSecondDialogVisible = it },
                 onGroupDeleteClicked = { TODO("그룹 카테고리 삭제 로직") }
             )
-            if (groupOutDialogVisible) {
-                CategoryDeleteOptionDialog(
-                    title = stringResource(id = R.string.title_group_out),
-                    content = stringResource(
-                        id = R.string.content_group_out_message,
-                        category.title
-                    ),
-                    onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
-                    onIncompletedTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                    onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ },
-                    onDismissRequest = { groupOutDialogVisible = false }
-                )
-            }
+            GroupCategoryOutDialog(
+                groupOutDialogVisible = groupOutDialogVisible,
+                category = category,
+                setGroupOutDialogVisible = { groupOutDialogVisible = it },
+                onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
+                onIncompletedTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
+                onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ }
+            )
             if (generalOutDialogVisible) {
                 CategoryDeleteOptionDialog(
                     title = stringResource(id = R.string.title_category_delete),
@@ -199,6 +194,30 @@ fun CategoryInfoScreenRoute(
                 onGeneralDeletedClicked = { generalOutDialogVisible = true }
             )
         }
+    }
+}
+
+@Composable
+private fun GroupCategoryOutDialog(
+    groupOutDialogVisible: Boolean,
+    category: Category,
+    setGroupOutDialogVisible: (Boolean) -> Unit,
+    onAllDeleteClicked: () -> Unit,
+    onIncompletedTodoDeleteClicked: () -> Unit,
+    onNoDeleteClicked: () -> Unit,
+) {
+    if (groupOutDialogVisible) {
+        CategoryDeleteOptionDialog(
+            title = stringResource(id = R.string.title_group_out),
+            content = stringResource(
+                id = R.string.content_group_out_message,
+                category.title
+            ),
+            onAllDeleteClicked = onAllDeleteClicked,
+            onIncompletedTodoDeleteClicked = onIncompletedTodoDeleteClicked,
+            onNoDeleteClicked = onNoDeleteClicked,
+            onDismissRequest = { setGroupOutDialogVisible(false) }
+        )
     }
 }
 
