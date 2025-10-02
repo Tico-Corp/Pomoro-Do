@@ -145,8 +145,21 @@ fun CategoryInfoScreenRoute(
                 )
             }
             if (groupDeleteFirstDialogVisible) {
-                GroupDeleteFirstDialog(
-                    onConfirmation = {
+                CategoryOutDialog(
+                    title = stringResource(id = R.string.title_group_category_delete),
+                    content = stringResource(
+                        id = R.string.content_group_delete_first_message,
+                        category.title
+                    ),
+                    onAllDeleteClicked = {
+                        groupDeleteFirstDialogVisible = false
+                        groupDeleteSecondDialogVisible = true
+                    },
+                    onIncompletedTodoDeleteClicked = {
+                        groupDeleteFirstDialogVisible = false
+                        groupDeleteSecondDialogVisible = true
+                    },
+                    onNoDeleteClicked = {
                         groupDeleteFirstDialogVisible = false
                         groupDeleteSecondDialogVisible = true
                     },
