@@ -83,7 +83,10 @@ fun AddFollowerScreen(
             ),
             shape = RoundedCornerShape(5.dp),
             trailingIcon = {
-                Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                Row(
+                    modifier = Modifier.padding(end = 10.dp),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
                     if (searchName.isNotBlank()) {
                         SimpleIconButton(
                             size = 34,
