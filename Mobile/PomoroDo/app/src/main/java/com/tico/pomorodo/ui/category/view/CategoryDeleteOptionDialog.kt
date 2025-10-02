@@ -23,7 +23,7 @@ import com.tico.pomorodo.ui.common.view.SimpleText
 import com.tico.pomorodo.ui.theme.PomoroDoTheme
 
 @Composable
-fun CategoryOutDialog(
+fun CategoryDeleteOptionDialog(
     title: String,
     content: String,
     onAllDeleteClicked: () -> Unit,

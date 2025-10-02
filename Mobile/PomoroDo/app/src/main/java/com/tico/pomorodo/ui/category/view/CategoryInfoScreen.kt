@@ -151,7 +151,7 @@ fun CategoryInfoScreenRoute(
                 onGroupDeleteClicked = { TODO("그룹 카테고리 삭제 로직") }
             )
             if (groupOutDialogVisible) {
-                CategoryOutDialog(
+                CategoryDeleteOptionDialog(
                     title = stringResource(id = R.string.title_group_out),
                     content = stringResource(
                         id = R.string.content_group_out_message,
@@ -164,7 +164,7 @@ fun CategoryInfoScreenRoute(
                 )
             }
             if (generalOutDialogVisible) {
-                CategoryOutDialog(
+                CategoryDeleteOptionDialog(
                     title = stringResource(id = R.string.title_category_delete),
                     content = stringResource(id = R.string.content_category_delete_message),
                     onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
@@ -407,7 +407,7 @@ private fun GroupCategoryDeleteDialog(
     var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
 
     if (groupDeleteFirstDialogVisible) {
-        CategoryOutDialog(
+        CategoryDeleteOptionDialog(
             title = stringResource(id = R.string.title_group_category_delete),
             content = stringResource(
                 id = R.string.content_group_delete_first_message,
