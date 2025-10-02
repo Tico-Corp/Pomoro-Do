@@ -71,8 +71,6 @@ fun CategoryInfoScreenRoute(
     val categoryState by viewModel.category.collectAsState()
     val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
 
-    var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
-
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -144,37 +142,14 @@ fun CategoryInfoScreenRoute(
                     }
                 )
             }
-            if (groupDeleteFirstDialogVisible) {
-                CategoryOutDialog(
-                    title = stringResource(id = R.string.title_group_category_delete),
-                    content = stringResource(
-                        id = R.string.content_group_delete_first_message,
-                        category.title
-                    ),
-                    onAllDeleteClicked = {
-                        groupDeleteFirstDialogVisible = false
-                        groupDeleteSecondDialogVisible = true
-                    },
-                    onIncompletedTodoDeleteClicked = {
-                        groupDeleteFirstDialogVisible = false
-                        groupDeleteSecondDialogVisible = true
-                    },
-                    onNoDeleteClicked = {
-                        groupDeleteFirstDialogVisible = false
-                        groupDeleteSecondDialogVisible = true
-                    },
-                    onDismissRequest = { groupDeleteFirstDialogVisible = false }
-                )
-            }
-            if (groupDeleteSecondDialogVisible) {
-                GroupDeleteSecondDialog(
-                    groupName = category.title,
-                    enabled = deleteDialogInputText == category.title.getNoSpace(),
-                    value = deleteDialogInputText,
-                    onValueChange = { deleteDialogInputText = it },
-                    onConfirmation = { /*TODO: 그룹 카테고리 삭제 로직*/ },
-                    onDismissRequest = { groupDeleteSecondDialogVisible = false })
-            }
+            GroupCategoryDeleteDialog(
+                groupDeleteFirstDialogVisible = groupDeleteFirstDialogVisible,
+                groupDeleteSecondDialogVisible = groupDeleteSecondDialogVisible,
+                category = category,
+                setGroupDeleteFirstDialogVisible = { groupDeleteFirstDialogVisible = it },
+                setGroupDeleteSecondDialogVisible = { groupDeleteSecondDialogVisible = it },
+                onGroupDeleteClicked = { TODO("그룹 카테고리 삭제 로직") }
+            )
             if (groupOutDialogVisible) {
                 CategoryOutDialog(
                     title = stringResource(id = R.string.title_group_out),
@@ -417,5 +392,49 @@ private fun Category.isReadOnly(isOffline: Boolean): Boolean {
         this.type == CategoryType.GROUP
     } else {
         this.type == CategoryType.GROUP && this.isGroupReader == false
+    }
+}
+
+@Composable
+private fun GroupCategoryDeleteDialog(
+    groupDeleteFirstDialogVisible: Boolean,
+    groupDeleteSecondDialogVisible: Boolean,
+    setGroupDeleteFirstDialogVisible: (Boolean) -> Unit = {},
+    setGroupDeleteSecondDialogVisible: (Boolean) -> Unit = {},
+    category: Category,
+    onGroupDeleteClicked: () -> Unit
+) {
+    var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
+
+    if (groupDeleteFirstDialogVisible) {
+        CategoryOutDialog(
+            title = stringResource(id = R.string.title_group_category_delete),
+            content = stringResource(
+                id = R.string.content_group_delete_first_message,
+                category.title
+            ),
+            onAllDeleteClicked = {
+                setGroupDeleteFirstDialogVisible(false)
+                setGroupDeleteSecondDialogVisible(true)
+            },
+            onIncompletedTodoDeleteClicked = {
+                setGroupDeleteFirstDialogVisible(false)
+                setGroupDeleteSecondDialogVisible(true)
+            },
+            onNoDeleteClicked = {
+                setGroupDeleteFirstDialogVisible(false)
+                setGroupDeleteSecondDialogVisible(true)
+            },
+            onDismissRequest = { setGroupDeleteFirstDialogVisible(false) }
+        )
+    }
+    if (groupDeleteSecondDialogVisible) {
+        GroupDeleteSecondDialog(
+            groupName = category.title,
+            enabled = deleteDialogInputText == category.title.getNoSpace(),
+            value = deleteDialogInputText,
+            onValueChange = { deleteDialogInputText = it },
+            onConfirmation = onGroupDeleteClicked,
+            onDismissRequest = { setGroupDeleteSecondDialogVisible(false) })
     }
 }
