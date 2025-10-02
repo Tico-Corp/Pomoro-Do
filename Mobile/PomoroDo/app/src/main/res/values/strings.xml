@@ -105,6 +105,7 @@
     <string name="content_color">색상</string>
     <string name="content_group_out">그룹 나가기</string>
     <string name="title_group_out">그룹 카테고리 나가기</string>
+    <string name="title_group_category_delete">그룹 카테고리 삭제</string>
     <string name="title_group_member_choose">그룹원 선택</string>
     <string name="content_ic_selected_group_member_cancel">그룹원 선택 취소 아이콘</string>
     <string name="content_search_group_member">닉네임 검색</string>
@@ -122,7 +123,7 @@
     <string name="content_group_out_message">\"%s\" 그룹에서 나갑니다.\n기존 할 일을 삭제하시겠습니까?</string>
     <string name="content_group_delete_second_message">삭제하려는 그룹의 이름을 입력하세요.\n“%s”</string>
     <string name="content_group_delete_placehold">그룹 이름을 따라 입력하세요.</string>
-    <string name="content_group_delete_first_message">그룹을 삭제하시겠습니까?\n모든 그룹원들의 할 일이 모두 삭제됩니다.</string>
+    <string name="content_group_delete_first_message">\"%s\" 그룹을 삭제합니다.\n모든 그룹원들의 할 일을 삭제하시겠습니까?</string>
     <string name="content_do_delete">삭제하기</string>
     <string name="title_category_delete">카테고리 삭제</string>
     <string name="content_category_delete_message">카테고리를 삭제합니다.\n기존 할 일을 삭제하시겠습니까?</string>
