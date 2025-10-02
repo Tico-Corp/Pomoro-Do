@@ -155,7 +155,7 @@ fun CategoryInfoScreenRoute(
                 category = category,
                 setGroupOutDialogVisible = { groupOutDialogVisible = it },
                 onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
-                onIncompletedTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
+                onIncompleteTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
                 onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ }
             )
             if (generalOutDialogVisible) {
@@ -163,7 +163,7 @@ fun CategoryInfoScreenRoute(
                     title = stringResource(id = R.string.title_category_delete),
                     content = stringResource(id = R.string.content_category_delete_message),
                     onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
-                    onIncompletedTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
+                    onIncompleteTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
                     onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ },
                     onDismissRequest = { generalOutDialogVisible = false })
             }
@@ -203,7 +203,7 @@ private fun GroupCategoryOutDialog(
     category: Category,
     setGroupOutDialogVisible: (Boolean) -> Unit,
     onAllDeleteClicked: () -> Unit,
-    onIncompletedTodoDeleteClicked: () -> Unit,
+    onIncompleteTodoDeleteClicked: () -> Unit,
     onNoDeleteClicked: () -> Unit,
 ) {
     if (groupOutDialogVisible) {
@@ -214,7 +214,7 @@ private fun GroupCategoryOutDialog(
                 category.title
             ),
             onAllDeleteClicked = onAllDeleteClicked,
-            onIncompletedTodoDeleteClicked = onIncompletedTodoDeleteClicked,
+            onIncompleteTodoDeleteClicked = onIncompleteTodoDeleteClicked,
             onNoDeleteClicked = onNoDeleteClicked,
             onDismissRequest = { setGroupOutDialogVisible(false) }
         )
@@ -436,7 +436,7 @@ private fun GroupCategoryDeleteDialog(
                 setGroupDeleteFirstDialogVisible(false)
                 setGroupDeleteSecondDialogVisible(true)
             },
-            onIncompletedTodoDeleteClicked = {
+            onIncompleteTodoDeleteClicked = {
                 setGroupDeleteFirstDialogVisible(false)
                 setGroupDeleteSecondDialogVisible(true)
             },
