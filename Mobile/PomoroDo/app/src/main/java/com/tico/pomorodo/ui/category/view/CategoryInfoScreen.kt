@@ -154,9 +154,21 @@ fun CategoryInfoScreenRoute(
                 groupOutDialogVisible = groupOutDialogVisible,
                 category = category,
                 setGroupOutDialogVisible = { groupOutDialogVisible = it },
-                onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
-                onIncompleteTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ }
+                onAllDeleteClicked = {
+                    groupOutDialogVisible = false
+                    viewModel.outCategory(DeletionOption.DELETE_ALL)
+                    navigateToBack()
+                },
+                onIncompleteTodoDeleteClicked = {
+                    groupOutDialogVisible = false
+                    viewModel.outCategory(DeletionOption.RETAIN_COMPLETED)
+                    navigateToBack()
+                },
+                onNoDeleteClicked = {
+                    groupOutDialogVisible = false
+                    viewModel.outCategory(DeletionOption.RETAIN_ALL)
+                    navigateToBack()
+                }
             )
             PersonalDeleteDialog(
                 personalDeleteDialogVisible = personalDeleteDialogVisible,
