@@ -182,7 +182,7 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
 
         return categoryMembers.stream()
                 .map(member -> CategoryMemberResponse.builder()
-                        .groupMemberId(member.getId())
+                        .userId(member.getUser().getId())
                         .nickname(member.getUser().getNickname())
                         .profileImageUrl(member.getUser().getProfileImageUrl())
                         .build())
