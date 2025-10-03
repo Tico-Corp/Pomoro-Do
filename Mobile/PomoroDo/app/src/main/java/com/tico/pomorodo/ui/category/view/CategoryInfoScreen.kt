@@ -148,7 +148,10 @@ fun CategoryInfoScreenRoute(
                 groupDeleteFirstDialogVisible = groupDeleteFirstDialogVisible,
                 category = category,
                 setGroupDeleteFirstDialogVisible = { groupDeleteFirstDialogVisible = it },
-                onGroupDeleteClicked = { TODO("그룹 카테고리 삭제 로직") }
+                onGroupDeleteClicked = {
+                    viewModel.deleteCategory(it)
+                    navigateToBack()
+                }
             )
             GroupCategoryOutDialog(
                 groupOutDialogVisible = groupOutDialogVisible,
@@ -417,10 +420,11 @@ private fun GroupCategoryDeleteDialog(
     groupDeleteFirstDialogVisible: Boolean,
     setGroupDeleteFirstDialogVisible: (Boolean) -> Unit,
     category: Category,
-    onGroupDeleteClicked: () -> Unit
+    onGroupDeleteClicked: (DeletionOption) -> Unit
 ) {
     var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
     var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var deleteOption: DeletionOption? by rememberSaveable { mutableStateOf(null) }
 
     if (groupDeleteFirstDialogVisible) {
         CategoryDeleteOptionDialog(
@@ -430,14 +434,17 @@ private fun GroupCategoryDeleteDialog(
                 category.title
             ),
             onAllDeleteClicked = {
+                deleteOption = DeletionOption.DELETE_ALL
                 setGroupDeleteFirstDialogVisible(false)
                 groupDeleteSecondDialogVisible = true
             },
             onIncompleteTodoDeleteClicked = {
+                deleteOption = DeletionOption.RETAIN_COMPLETED
                 setGroupDeleteFirstDialogVisible(false)
                 groupDeleteSecondDialogVisible = true
             },
             onNoDeleteClicked = {
+                deleteOption = DeletionOption.RETAIN_ALL
                 setGroupDeleteFirstDialogVisible(false)
                 groupDeleteSecondDialogVisible = true
             },
@@ -450,7 +457,12 @@ private fun GroupCategoryDeleteDialog(
             enabled = deleteDialogInputText == category.title.getNoSpace(),
             value = deleteDialogInputText,
             onValueChange = { deleteDialogInputText = it },
-            onConfirmation = onGroupDeleteClicked,
+            onConfirmation = {
+                groupDeleteSecondDialogVisible = false
+                deleteOption?.let {
+                    onGroupDeleteClicked(it)
+                }
+            },
             onDismissRequest = { groupDeleteSecondDialogVisible = false })
     }
 }
