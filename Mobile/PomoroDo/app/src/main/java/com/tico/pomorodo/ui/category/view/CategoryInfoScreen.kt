@@ -63,15 +63,12 @@ fun CategoryInfoScreenRoute(
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showCheckGroupMemberBottomSheet by rememberSaveable { mutableStateOf(false) }
     var groupDeleteFirstDialogVisible by rememberSaveable { mutableStateOf(false) }
-    var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
-    var generalOutDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var personalDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
     var endOfEditingDialogVisible by remember { mutableStateOf(false) }
 
     val categoryState by viewModel.category.collectAsState()
     val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
-
-    var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -144,46 +141,27 @@ fun CategoryInfoScreenRoute(
                     }
                 )
             }
-            if (groupDeleteFirstDialogVisible) {
-                GroupDeleteFirstDialog(
-                    onConfirmation = {
-                        groupDeleteFirstDialogVisible = false
-                        groupDeleteSecondDialogVisible = true
-                    },
-                    onDismissRequest = { groupDeleteFirstDialogVisible = false }
-                )
-            }
-            if (groupDeleteSecondDialogVisible) {
-                GroupDeleteSecondDialog(
-                    groupName = category.title,
-                    enabled = deleteDialogInputText == category.title.getNoSpace(),
-                    value = deleteDialogInputText,
-                    onValueChange = { deleteDialogInputText = it },
-                    onConfirmation = { /*TODO: 그룹 카테고리 삭제 로직*/ },
-                    onDismissRequest = { groupDeleteSecondDialogVisible = false })
-            }
-            if (groupOutDialogVisible) {
-                CategoryOutDialog(
-                    title = stringResource(id = R.string.title_group_out),
-                    content = stringResource(
-                        id = R.string.content_group_out_message,
-                        category.title
-                    ),
-                    onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
-                    onIncompletedTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                    onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ },
-                    onDismissRequest = { groupOutDialogVisible = false }
-                )
-            }
-            if (generalOutDialogVisible) {
-                CategoryOutDialog(
-                    title = stringResource(id = R.string.title_category_delete),
-                    content = stringResource(id = R.string.content_category_delete_message),
-                    onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
-                    onIncompletedTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                    onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ },
-                    onDismissRequest = { generalOutDialogVisible = false })
-            }
+            GroupCategoryDeleteDialog(
+                groupDeleteFirstDialogVisible = groupDeleteFirstDialogVisible,
+                category = category,
+                setGroupDeleteFirstDialogVisible = { groupDeleteFirstDialogVisible = it },
+                onGroupDeleteClicked = { TODO("그룹 카테고리 삭제 로직") }
+            )
+            GroupCategoryOutDialog(
+                groupOutDialogVisible = groupOutDialogVisible,
+                category = category,
+                setGroupOutDialogVisible = { groupOutDialogVisible = it },
+                onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
+                onIncompleteTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
+                onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ }
+            )
+            PersonalDeleteDialog(
+                personalDeleteDialogVisible = personalDeleteDialogVisible,
+                setPersonalDeleteDialogVisible = { personalDeleteDialogVisible = it },
+                onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
+                onIncompleteTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
+                onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ }
+            )
             if (endOfEditingDialogVisible) {
                 EndOfEditingDialog(
                     onDismissRequest = { endOfEditingDialogVisible = false },
@@ -208,7 +186,7 @@ fun CategoryInfoScreenRoute(
                 isGroupReader = category.isGroupReader,
                 onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
                 onGroupOutClicked = { groupOutDialogVisible = true },
-                onGeneralDeletedClicked = { generalOutDialogVisible = true }
+                onPersonalDeletedClicked = { personalDeleteDialogVisible = true }
             )
         }
     }
@@ -232,7 +210,7 @@ fun CategoryInfoScreen(
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
     onGroupOutClicked: () -> Unit,
     onGroupDeleteClicked: () -> Unit,
-    onGeneralDeletedClicked: () -> Unit,
+    onPersonalDeletedClicked: () -> Unit,
     isOffline: Boolean,
     isReadOnly: Boolean
 ) {
@@ -307,7 +285,7 @@ fun CategoryInfoScreen(
                         contentColor = Color.White,
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
                         verticalPadding = 12.dp,
-                        onClick = onGeneralDeletedClicked
+                        onClick = onPersonalDeletedClicked
                     )
                 }
             } else {
@@ -404,5 +382,91 @@ private fun Category.isReadOnly(isOffline: Boolean): Boolean {
         this.type == CategoryType.GROUP
     } else {
         this.type == CategoryType.GROUP && this.isGroupReader == false
+    }
+}
+
+@Composable
+private fun GroupCategoryDeleteDialog(
+    groupDeleteFirstDialogVisible: Boolean,
+    setGroupDeleteFirstDialogVisible: (Boolean) -> Unit,
+    category: Category,
+    onGroupDeleteClicked: () -> Unit
+) {
+    var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
+    var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
+
+    if (groupDeleteFirstDialogVisible) {
+        CategoryDeleteOptionDialog(
+            title = stringResource(id = R.string.title_group_category_delete),
+            content = stringResource(
+                id = R.string.content_group_delete_first_message,
+                category.title
+            ),
+            onAllDeleteClicked = {
+                setGroupDeleteFirstDialogVisible(false)
+                groupDeleteSecondDialogVisible = true
+            },
+            onIncompleteTodoDeleteClicked = {
+                setGroupDeleteFirstDialogVisible(false)
+                groupDeleteSecondDialogVisible = true
+            },
+            onNoDeleteClicked = {
+                setGroupDeleteFirstDialogVisible(false)
+                groupDeleteSecondDialogVisible = true
+            },
+            onDismissRequest = { setGroupDeleteFirstDialogVisible(false) }
+        )
+    }
+    if (groupDeleteSecondDialogVisible) {
+        GroupDeleteSecondDialog(
+            groupName = category.title,
+            enabled = deleteDialogInputText == category.title.getNoSpace(),
+            value = deleteDialogInputText,
+            onValueChange = { deleteDialogInputText = it },
+            onConfirmation = onGroupDeleteClicked,
+            onDismissRequest = { groupDeleteSecondDialogVisible = false })
+    }
+}
+
+@Composable
+private fun PersonalDeleteDialog(
+    personalDeleteDialogVisible: Boolean,
+    setPersonalDeleteDialogVisible: (Boolean) -> Unit,
+    onAllDeleteClicked: () -> Unit,
+    onIncompleteTodoDeleteClicked: () -> Unit,
+    onNoDeleteClicked: () -> Unit,
+) {
+    if (personalDeleteDialogVisible) {
+        CategoryDeleteOptionDialog(
+            title = stringResource(id = R.string.title_category_delete),
+            content = stringResource(id = R.string.content_category_delete_message),
+            onAllDeleteClicked = onAllDeleteClicked,
+            onIncompleteTodoDeleteClicked = onIncompleteTodoDeleteClicked,
+            onNoDeleteClicked = onNoDeleteClicked,
+            onDismissRequest = { setPersonalDeleteDialogVisible(false) })
+    }
+}
+
+@Composable
+private fun GroupCategoryOutDialog(
+    groupOutDialogVisible: Boolean,
+    category: Category,
+    setGroupOutDialogVisible: (Boolean) -> Unit,
+    onAllDeleteClicked: () -> Unit,
+    onIncompleteTodoDeleteClicked: () -> Unit,
+    onNoDeleteClicked: () -> Unit,
+) {
+    if (groupOutDialogVisible) {
+        CategoryDeleteOptionDialog(
+            title = stringResource(id = R.string.title_group_out),
+            content = stringResource(
+                id = R.string.content_group_out_message,
+                category.title
+            ),
+            onAllDeleteClicked = onAllDeleteClicked,
+            onIncompleteTodoDeleteClicked = onIncompleteTodoDeleteClicked,
+            onNoDeleteClicked = onNoDeleteClicked,
+            onDismissRequest = { setGroupOutDialogVisible(false) }
+        )
     }
 }

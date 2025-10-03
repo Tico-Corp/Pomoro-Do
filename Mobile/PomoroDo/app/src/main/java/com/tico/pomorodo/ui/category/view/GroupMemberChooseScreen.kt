@@ -55,6 +55,7 @@ import com.tico.pomorodo.ui.iconpack.commonIconPack.IcNoSearch
 import com.tico.pomorodo.ui.theme.IC_ALL_CLEAN
 import com.tico.pomorodo.ui.theme.IC_GROUP_SELECTED_UNCHECKED
 import com.tico.pomorodo.ui.theme.IC_OK
+import com.tico.pomorodo.ui.theme.IC_SEARCH
 import com.tico.pomorodo.ui.theme.IC_SELECTED_GROUP_MEMBER_CANCEL
 import com.tico.pomorodo.ui.theme.IC_UNOK
 import com.tico.pomorodo.ui.theme.IconPack
@@ -147,6 +148,7 @@ private fun GroupMemberChooseScreen(viewModel: ViewModel, navigateToBack: () -> 
                 searchName = searchName,
                 onSearchNameChanged = { searchName = it },
                 filteredList = filteredList,
+                onClickedSearchListener = {}
             )
         }
     }
@@ -158,6 +160,7 @@ fun GroupMemberChooseContent(
     searchName: String,
     onSearchNameChanged: (String) -> Unit,
     filteredList: List<SelectedUser>,
+    onClickedSearchListener: () -> Unit
 ) {
     val textFieldColors = TextFieldDefaults.colors(
         focusedTextColor = PomoroDoTheme.colorScheme.onBackground,
@@ -220,13 +223,26 @@ fun GroupMemberChooseContent(
             ),
             shape = RoundedCornerShape(5.dp),
             trailingIcon = {
-                if (searchName.isNotBlank()) {
+                Row(
+                    modifier = Modifier.padding(end = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    if (searchName.isNotBlank()) {
+                        SimpleIconButton(
+                            size = 34,
+                            imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ALL_CLEAN]),
+                            contentDescriptionId = R.string.content_ic_all_clean,
+                            enabled = true,
+                            onClickedListener = { onSearchNameChanged("") }
+                        )
+                    }
                     SimpleIconButton(
-                        size = 34,
-                        imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_ALL_CLEAN]),
-                        contentDescriptionId = R.string.content_ic_all_clean,
+                        size = 24,
+                        imageVector = requireNotNull(PomoroDoTheme.iconPack[IC_SEARCH]),
+                        contentDescriptionId = R.string.content_ic_search,
                         enabled = true,
-                        onClickedListener = { onSearchNameChanged("") }
+                        onClickedListener = onClickedSearchListener
                     )
                 }
             },
