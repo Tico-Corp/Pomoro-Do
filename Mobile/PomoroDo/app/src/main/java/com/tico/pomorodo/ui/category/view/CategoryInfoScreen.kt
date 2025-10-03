@@ -65,7 +65,7 @@ fun CategoryInfoScreenRoute(
     var groupDeleteFirstDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
-    var generalDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var personalDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
     var endOfEditingDialogVisible by remember { mutableStateOf(false) }
 
     val categoryState by viewModel.category.collectAsState()
@@ -158,9 +158,9 @@ fun CategoryInfoScreenRoute(
                 onIncompleteTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
                 onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ }
             )
-            GeneralDeleteDialog(
-                generalDeleteDialogVisible = generalDeleteDialogVisible,
-                setGeneralDeleteDialogVisible = { generalDeleteDialogVisible = it },
+            PersonalDeleteDialog(
+                personalDeleteDialogVisible = personalDeleteDialogVisible,
+                setPersonalDeleteDialogVisible = { personalDeleteDialogVisible = it },
                 onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
                 onIncompleteTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
                 onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ }
@@ -189,7 +189,7 @@ fun CategoryInfoScreenRoute(
                 isGroupReader = category.isGroupReader,
                 onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
                 onGroupOutClicked = { groupOutDialogVisible = true },
-                onGeneralDeletedClicked = { generalDeleteDialogVisible = true }
+                onPersonalDeletedClicked = { personalDeleteDialogVisible = true }
             )
         }
     }
@@ -213,7 +213,7 @@ fun CategoryInfoScreen(
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
     onGroupOutClicked: () -> Unit,
     onGroupDeleteClicked: () -> Unit,
-    onGeneralDeletedClicked: () -> Unit,
+    onPersonalDeletedClicked: () -> Unit,
     isOffline: Boolean,
     isReadOnly: Boolean
 ) {
@@ -288,7 +288,7 @@ fun CategoryInfoScreen(
                         contentColor = Color.White,
                         textStyle = PomoroDoTheme.typography.laundryGothicRegular16,
                         verticalPadding = 12.dp,
-                        onClick = onGeneralDeletedClicked
+                        onClick = onPersonalDeletedClicked
                     )
                 }
             } else {
@@ -433,21 +433,21 @@ private fun GroupCategoryDeleteDialog(
 }
 
 @Composable
-private fun GeneralDeleteDialog(
-    generalDeleteDialogVisible: Boolean,
-    setGeneralDeleteDialogVisible: (Boolean) -> Unit,
+private fun PersonalDeleteDialog(
+    personalDeleteDialogVisible: Boolean,
+    setPersonalDeleteDialogVisible: (Boolean) -> Unit,
     onAllDeleteClicked: () -> Unit,
     onIncompleteTodoDeleteClicked: () -> Unit,
     onNoDeleteClicked: () -> Unit,
 ) {
-    if (generalDeleteDialogVisible) {
+    if (personalDeleteDialogVisible) {
         CategoryDeleteOptionDialog(
             title = stringResource(id = R.string.title_category_delete),
             content = stringResource(id = R.string.content_category_delete_message),
             onAllDeleteClicked = onAllDeleteClicked,
             onIncompleteTodoDeleteClicked = onIncompleteTodoDeleteClicked,
             onNoDeleteClicked = onNoDeleteClicked,
-            onDismissRequest = { setGeneralDeleteDialogVisible(false) })
+            onDismissRequest = { setPersonalDeleteDialogVisible(false) })
     }
 }
 
