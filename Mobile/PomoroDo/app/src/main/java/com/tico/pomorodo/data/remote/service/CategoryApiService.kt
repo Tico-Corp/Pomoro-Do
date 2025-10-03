@@ -8,8 +8,8 @@ import com.tico.pomorodo.data.remote.models.response.AllCategoryResponse
 import com.tico.pomorodo.data.remote.models.response.BaseResponse
 import com.tico.pomorodo.data.remote.models.response.CategoryResponse
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -30,7 +30,7 @@ interface CategoryApiService {
         @Body categoryUpdateRequest: CategoryUpdateRequest
     )
 
-    @DELETE("v1/categories/{categoryId}")
+    @HTTP(method = "DELETE", path = "v1/categories/{categoryId}", hasBody = true)
     suspend fun deleteCategory(
         @Path("categoryId") categoryId: Int,
         @Body categoryDeleteRequest: CategoryDeleteRequest
