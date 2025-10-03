@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.CategoryInvitation
+import com.tico.pomorodo.data.model.Decision
 import com.tico.pomorodo.data.model.GroupCategory
 import com.tico.pomorodo.data.model.PersonalCategory
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
@@ -42,7 +43,8 @@ fun CategoryScreen(
     personalCategoryList: List<PersonalCategory>,
     groupCategoryList: List<GroupCategory>,
     inviteGroupCategoryList: List<CategoryInvitation>,
-    onCategoryClicked: (Int) -> Unit
+    onCategoryClicked: (Int) -> Unit,
+    onInvitationDecisionClicked: (Int, Decision) -> Unit,
 ) {
     val context = LocalContext.current
     Surface(
@@ -122,12 +124,22 @@ fun CategoryScreen(
                         color = PomoroDoTheme.colorScheme.onBackground
                     )
                     Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        inviteGroupCategoryList.forEach { category ->
+                        inviteGroupCategoryList.forEach { invitation ->
                             InvitedCategoryItem(
-                                title = category.categoryName,
-                                groupReader = category.ownerNickname,
-                                onAcceptButtonClicked = {},
-                                onRejectButtonClicked = {}
+                                title = invitation.categoryName,
+                                groupReader = invitation.ownerNickname,
+                                onAcceptButtonClicked = {
+                                    onInvitationDecisionClicked(
+                                        invitation.categoryInvitationId,
+                                        Decision.ACCEPTED
+                                    )
+                                },
+                                onRejectButtonClicked = {
+                                    onInvitationDecisionClicked(
+                                        invitation.categoryInvitationId,
+                                        Decision.REJECTED
+                                    )
+                                }
                             )
                         }
                     }
@@ -237,7 +249,8 @@ fun CategoryScreenRoute(
                 personalCategoryList = personalCategories,
                 groupCategoryList = groupCategories,
                 onCategoryClicked = navigateToInfoCategory,
-                isOffline = isOffline
+                isOffline = isOffline,
+                onInvitationDecisionClicked = categoryViewModel::decideCategoryInvitation
             )
         }
     }
