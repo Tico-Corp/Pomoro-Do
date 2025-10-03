@@ -161,9 +161,21 @@ fun CategoryInfoScreenRoute(
             PersonalDeleteDialog(
                 personalDeleteDialogVisible = personalDeleteDialogVisible,
                 setPersonalDeleteDialogVisible = { personalDeleteDialogVisible = it },
-                onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
-                onIncompleteTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ }
+                onAllDeleteClicked = {
+                    personalDeleteDialogVisible = false
+                    viewModel.deleteCategory(DeletionOption.DELETE_ALL)
+                    navigateToBack()
+                },
+                onIncompleteTodoDeleteClicked = {
+                    personalDeleteDialogVisible = false
+                    viewModel.deleteCategory(DeletionOption.RETAIN_COMPLETED)
+                    navigateToBack()
+                },
+                onNoDeleteClicked = {
+                    personalDeleteDialogVisible = false
+                    viewModel.deleteCategory(DeletionOption.RETAIN_ALL)
+                    navigateToBack()
+                }
             )
             if (endOfEditingDialogVisible) {
                 EndOfEditingDialog(
