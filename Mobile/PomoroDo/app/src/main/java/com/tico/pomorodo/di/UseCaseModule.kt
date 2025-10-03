@@ -22,10 +22,12 @@ import com.tico.pomorodo.domain.usecase.auth.ValidateTokenUseCase
 import com.tico.pomorodo.domain.usecase.calendar.GetCalendarDateForMonthUseCase
 import com.tico.pomorodo.domain.usecase.calendar.InsertCalendarDateForMonthUseCase
 import com.tico.pomorodo.domain.usecase.calendar.UpdateCalendarDateForMonthUseCase
+import com.tico.pomorodo.domain.usecase.category.DecideCategoryInvitationUseCase
 import com.tico.pomorodo.domain.usecase.category.DeleteCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
+import com.tico.pomorodo.domain.usecase.category.OutCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.UpdateCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.timer.GetConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.timer.InsertConcentrationGoalUseCase
@@ -160,6 +162,18 @@ object UseCaseModule {
     @Provides
     fun provideDeleteCategoryUseCase(categoryRepository: CategoryRepository): DeleteCategoryUseCase {
         return DeleteCategoryUseCase(categoryRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOutCategoryUseCase(categoryRepository: CategoryRepository): OutCategoryUseCase {
+        return OutCategoryUseCase(categoryRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideDecideCategoryInvitationUseCase(categoryRepository: CategoryRepository): DecideCategoryInvitationUseCase {
+        return DecideCategoryInvitationUseCase(categoryRepository)
     }
 
     @Singleton
