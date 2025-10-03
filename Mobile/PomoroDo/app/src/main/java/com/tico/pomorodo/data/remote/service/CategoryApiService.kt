@@ -46,5 +46,5 @@ interface CategoryApiService {
     suspend fun decideCategoryInvitation(
         @Path("invitationId") invitationId: Int,
         @Body categoryInvitationRequest: CategoryInvitationRequest
-    )
+    ): BaseResponse<String>
 }

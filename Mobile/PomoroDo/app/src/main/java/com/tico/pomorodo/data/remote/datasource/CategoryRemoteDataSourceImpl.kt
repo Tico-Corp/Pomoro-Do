@@ -46,7 +46,7 @@ class CategoryRemoteDataSourceImpl @Inject constructor(val categoryApiService: C
     override suspend fun decideCategoryInvitation(
         invitationId: Int,
         categoryInvitationRequest: CategoryInvitationRequest
-    ) {
-        categoryApiService.decideCategoryInvitation(invitationId, categoryInvitationRequest)
+    ): BaseResponse<String> {
+        return categoryApiService.decideCategoryInvitation(invitationId, categoryInvitationRequest)
     }
 }

@@ -24,5 +24,5 @@ interface CategoryRemoteDataSource {
     suspend fun decideCategoryInvitation(
         invitationId: Int,
         categoryInvitationRequest: CategoryInvitationRequest
-    )
+    ): BaseResponse<String>
 }

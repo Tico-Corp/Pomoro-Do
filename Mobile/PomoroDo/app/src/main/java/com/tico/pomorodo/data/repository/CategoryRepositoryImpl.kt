@@ -145,12 +145,13 @@ class CategoryRepositoryImpl @Inject constructor(
     override suspend fun decideCategoryInvitation(
         invitationId: Int,
         decision: Decision
-    ) {
-        if (networkHelper.isNetworkConnected()) {
+    ): Resource<Unit> {
+        return wrapToResource(Dispatchers.IO) {
             categoryRemoteDataSource.decideCategoryInvitation(
                 invitationId,
                 CategoryInvitationRequest(decision)
             )
+            Unit
         }
     }
 }
