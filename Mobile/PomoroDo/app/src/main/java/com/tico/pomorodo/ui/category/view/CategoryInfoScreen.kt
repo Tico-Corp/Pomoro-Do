@@ -63,7 +63,6 @@ fun CategoryInfoScreenRoute(
     var showOpenSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
     var showCheckGroupMemberBottomSheet by rememberSaveable { mutableStateOf(false) }
     var groupDeleteFirstDialogVisible by rememberSaveable { mutableStateOf(false) }
-    var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
     var groupOutDialogVisible by rememberSaveable { mutableStateOf(false) }
     var personalDeleteDialogVisible by rememberSaveable { mutableStateOf(false) }
     var endOfEditingDialogVisible by remember { mutableStateOf(false) }
@@ -144,10 +143,8 @@ fun CategoryInfoScreenRoute(
             }
             GroupCategoryDeleteDialog(
                 groupDeleteFirstDialogVisible = groupDeleteFirstDialogVisible,
-                groupDeleteSecondDialogVisible = groupDeleteSecondDialogVisible,
                 category = category,
                 setGroupDeleteFirstDialogVisible = { groupDeleteFirstDialogVisible = it },
-                setGroupDeleteSecondDialogVisible = { groupDeleteSecondDialogVisible = it },
                 onGroupDeleteClicked = { TODO("그룹 카테고리 삭제 로직") }
             )
             GroupCategoryOutDialog(
@@ -391,13 +388,12 @@ private fun Category.isReadOnly(isOffline: Boolean): Boolean {
 @Composable
 private fun GroupCategoryDeleteDialog(
     groupDeleteFirstDialogVisible: Boolean,
-    groupDeleteSecondDialogVisible: Boolean,
-    setGroupDeleteFirstDialogVisible: (Boolean) -> Unit = {},
-    setGroupDeleteSecondDialogVisible: (Boolean) -> Unit = {},
+    setGroupDeleteFirstDialogVisible: (Boolean) -> Unit,
     category: Category,
     onGroupDeleteClicked: () -> Unit
 ) {
     var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
+    var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
 
     if (groupDeleteFirstDialogVisible) {
         CategoryDeleteOptionDialog(
@@ -408,15 +404,15 @@ private fun GroupCategoryDeleteDialog(
             ),
             onAllDeleteClicked = {
                 setGroupDeleteFirstDialogVisible(false)
-                setGroupDeleteSecondDialogVisible(true)
+                groupDeleteSecondDialogVisible = true
             },
             onIncompleteTodoDeleteClicked = {
                 setGroupDeleteFirstDialogVisible(false)
-                setGroupDeleteSecondDialogVisible(true)
+                groupDeleteSecondDialogVisible = true
             },
             onNoDeleteClicked = {
                 setGroupDeleteFirstDialogVisible(false)
-                setGroupDeleteSecondDialogVisible(true)
+                groupDeleteSecondDialogVisible = true
             },
             onDismissRequest = { setGroupDeleteFirstDialogVisible(false) }
         )
@@ -428,7 +424,7 @@ private fun GroupCategoryDeleteDialog(
             value = deleteDialogInputText,
             onValueChange = { deleteDialogInputText = it },
             onConfirmation = onGroupDeleteClicked,
-            onDismissRequest = { setGroupDeleteSecondDialogVisible(false) })
+            onDismissRequest = { groupDeleteSecondDialogVisible = false })
     }
 }
 
