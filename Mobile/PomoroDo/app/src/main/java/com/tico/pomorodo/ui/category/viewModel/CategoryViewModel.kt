@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tico.pomorodo.data.model.CategoryInvitation
+import com.tico.pomorodo.data.model.Decision
 import com.tico.pomorodo.data.model.GroupCategory
 import com.tico.pomorodo.data.model.PersonalCategory
 import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.category.DecideCategoryInvitationUseCase
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +18,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(private val getAllCategoryUseCase: GetAllCategoryUseCase) :
+class CategoryViewModel @Inject constructor(
+    private val getAllCategoryUseCase: GetAllCategoryUseCase,
+    private val decideCategoryInvitationUseCase: DecideCategoryInvitationUseCase
+) :
     ViewModel() {
     private var _personalCategories = MutableStateFlow<List<PersonalCategory>>(emptyList())
     val personalCategories: StateFlow<List<PersonalCategory>>
@@ -59,6 +64,26 @@ class CategoryViewModel @Inject constructor(private val getAllCategoryUseCase: G
                 is Resource.Failure.Error -> {
                     Log.e("CategoryViewModel", "getAllCategory: ${result.code} ${result.message}")
                 }
+            }
+        }
+    }
+
+    fun decideCategoryInvitation(invitationId: Int, decision: Decision) = viewModelScope.launch {
+        when (val result = decideCategoryInvitationUseCase(invitationId, decision)) {
+            is Resource.Success -> {
+                _categoryInvitations.value =
+                    _categoryInvitations.value.filterNot { it.categoryInvitationId == invitationId }
+            }
+
+            is Resource.Loading -> {
+            }
+
+            is Resource.Failure.Exception -> {
+                Log.e("CategoryViewModel", "getAllCategory: ${result.message}")
+            }
+
+            is Resource.Failure.Error -> {
+                Log.e("CategoryViewModel", "getAllCategory: ${result.code} ${result.message}")
             }
         }
     }
