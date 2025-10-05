@@ -6,17 +6,11 @@ import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.local.entity.UserEntity
 import com.tico.pomorodo.data.model.CalendarFocusState
 import com.tico.pomorodo.data.model.CategoryType
-<<<<<<< HEAD
+import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.DailyTimerData
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.OpenSettings
-=======
-import com.tico.pomorodo.data.model.CategoryWithTodoItem
-import com.tico.pomorodo.data.model.InviteCategory
-import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.TimerSettingData
 import com.tico.pomorodo.data.model.TodoData
->>>>>>> 00c92e3c ([FEAT] 팔로우 투두리스트 이동 기능 테스트를 위한 샘플 데이터 추가)
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.model.Follow
