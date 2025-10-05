@@ -4,6 +4,7 @@ import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryUpdateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryInfoResponse;
 import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
@@ -21,7 +22,7 @@ public interface CategoryService {
      * @param request 카테고리 생성 요청 DTO
      * @return 생성된 카테고리의 ID
      */
-    Long processCategoryCreation(Long userId, CategoryCreateRequest request);
+    CategoryInfoResponse processCategoryCreation(Long userId, CategoryCreateRequest request);
 
     /**
      * 새로운 카테고리 객체를 생성하고 저장

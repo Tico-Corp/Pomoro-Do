@@ -4,6 +4,7 @@ import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryUpdateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryInfoResponse;
 import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
@@ -66,15 +67,15 @@ public class CategoryController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @PostMapping
-    public ResponseEntity<SuccessResponse<Long>> createCategory(
+    public ResponseEntity<SuccessResponse<CategoryInfoResponse>> createCategory(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody CategoryCreateRequest request
     ){
-        Long categoryId = categoryService.processCategoryCreation(userDetails.getUserId(), request);
+        CategoryInfoResponse categoryInfoResponse = categoryService.processCategoryCreation(userDetails.getUserId(), request);
 
-        SuccessResponse<Long> successResponse = SuccessResponse.<Long>builder()
+        SuccessResponse<CategoryInfoResponse> successResponse = SuccessResponse.<CategoryInfoResponse>builder()
                 .message(SuccessCode.CATEGORY_CREATION_SUCCESS.getMessage())
-                .data(categoryId)
+                .data(categoryInfoResponse)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);

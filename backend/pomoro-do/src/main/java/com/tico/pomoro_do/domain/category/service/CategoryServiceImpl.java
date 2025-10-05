@@ -41,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     @Transactional
-    public Long processCategoryCreation(Long userId, CategoryCreateRequest request) {
+    public CategoryInfoResponse processCategoryCreation(Long userId, CategoryCreateRequest request) {
         // 1. 사용자 조회
         User owner = userService.findUserById(userId);
 
@@ -59,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("카테고리 생성 완료: categoryId={}, 유형={}, 이름={}, 소유자={}",
                 category.getId(), category.getType(), category.getName(), owner.getId());
 
-        return category.getId();
+        return CategoryInfoResponse.of(category, 1);
     }
 
     /**
