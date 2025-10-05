@@ -63,6 +63,7 @@ class CategoryAddViewModel @Inject constructor(private val insertCategoryUseCase
     }
 
     fun insertCategory() = viewModelScope.launch {
+        // TODO: 그룹 카테고리 추가 테스트 필요
         val groupMember = selectedGroupMembers.value.filter { it.selected }.map { it.toUser() }
         insertCategoryUseCase.invoke(
             title = title.value,

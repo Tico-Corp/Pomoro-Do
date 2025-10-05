@@ -152,6 +152,7 @@ class CategoryInfoViewModel @Inject constructor(
     }
 
     fun updateCategoryInfo() {
+        // TODO: 그룹 카테고리 정보 수정 테스트 필요
         viewModelScope.launch {
             category.value?.let { original ->
                 val update = original.copy(
