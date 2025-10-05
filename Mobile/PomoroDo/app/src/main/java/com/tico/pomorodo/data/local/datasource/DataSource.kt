@@ -7,9 +7,12 @@ import com.tico.pomorodo.data.local.entity.UserEntity
 import com.tico.pomorodo.data.model.CalendarFocusState
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
+import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.DailyTimerData
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.model.TimerSettingData
+import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
@@ -234,6 +237,196 @@ object DataSource {
         maxBreakTime = LocalTime(0, 0, 0),
         inCompleteTodosCount = 0,
         updatedAt = System.currentTimeMillis(),
+    )
+
+    val categoryWithTodoItemList =
+        listOf(
+            CategoryWithTodoItem(
+                categoryId = 1,
+                title = "그룹 카테고리 1",
+                type = CategoryType.GROUP,
+                todoList = listOf(
+                    TodoData(
+                        id = 1,
+                        title = "Group Todo 1",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 1,
+                        completedList = listOf(
+                            User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
+                            User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
+                            User(id = 3, name = "사용자 3", email = "abce@abc.abc")
+                        ),
+                        incompletedList = listOf(
+                            User(id = 4, name = "구름이2", email = "abc@gmail.com"),
+                            User(id = 5, name = "구름이3", email = "abc@gmail.com"),
+                            User(id = 6, name = "구름이4", email = "abc@gmail.com"),
+                        ),
+                        likes = 2,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                    TodoData(
+                        id = 1,
+                        title = "Group Todo 2",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 1,
+                        completedList = listOf(
+                            User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
+                            User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
+                            User(id = 3, name = "사용자 3", email = "abce@abc.abc"),
+                            User(id = 4, name = "구름이2", email = "abc@gmail.com"),
+                            User(id = 5, name = "구름이3", email = "abc@gmail.com"),
+                        ),
+                        incompletedList = listOf(
+                            User(id = 6, name = "구름이4", email = "abc@gmail.com"),
+                        ),
+                        likes = 0,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                ),
+                openSettings = OpenSettings.GROUP,
+                groupMemberCount = 6,
+                groupMember = listOf(
+                    User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
+                    User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
+                    User(id = 3, name = "사용자 3", email = "abce@abc.abc"),
+                    User(id = 4, name = "구름이2", email = "abc@gmail.com"),
+                    User(id = 5, name = "구름이3", email = "abc@gmail.com"),
+                    User(id = 6, name = "구름이4", email = "abc@gmail.com"),
+                )
+            ),
+            CategoryWithTodoItem(
+                categoryId = 2,
+                title = "그룹 카테고리 2",
+                type = CategoryType.GROUP,
+                todoList = listOf(
+                    TodoData(
+                        id = 3,
+                        title = "Group Todo 1",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 2,
+                        completedList = listOf(),
+                        incompletedList = listOf(
+                            User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
+                            User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
+                            User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
+                            User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
+                            User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
+                        ),
+                        likes = 2,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                    TodoData(
+                        id = 4,
+                        title = "Group Todo 2",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 2,
+                        completedList = listOf(
+                            User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
+                            User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
+                            User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
+                            User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
+                            User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
+                        ),
+                        incompletedList = listOf(),
+                        likes = 0,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                ),
+                openSettings = OpenSettings.GROUP,
+                groupMemberCount = 5,
+                groupMember = listOf(
+                    User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
+                    User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
+                    User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
+                    User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
+                    User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
+                )
+            ),
+            CategoryWithTodoItem(
+                categoryId = 3,
+                title = "일반 카테고리 1",
+                type = CategoryType.GENERAL,
+                todoList = listOf(
+                    TodoData(
+                        id = 5,
+                        title = "General Todo 1",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 3,
+                        likes = 2,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                    TodoData(
+                        id = 6,
+                        title = "General Todo 2",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 3,
+                        likes = 0,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                    TodoData(
+                        id = 7,
+                        title = "General Todo 3",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 3,
+                        likes = 5,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                ),
+            ),
+            CategoryWithTodoItem(
+                categoryId = 4,
+                title = "일반 카테고리 2",
+                type = CategoryType.GENERAL,
+                todoList = listOf(
+                    TodoData(
+                        id = 8,
+                        title = "General Todo 1",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 4,
+                        likes = 2,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                    TodoData(
+                        id = 9,
+                        title = "General Todo 2",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 4,
+                        likes = 0,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                    TodoData(
+                        id = 10,
+                        title = "General Todo 3",
+                        status = TodoState.UNCHECKED,
+                        categoryId = 4,
+                        likes = 5,
+                        targetDate = LocalDate(2025, 8, 27),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    ),
+                ),
+            ),
+        )
+        time = LocalTime(1, 0, 0),
+        updatedAt = System.currentTimeMillis()
     )
 
     val categoryWithTodoItemList =
