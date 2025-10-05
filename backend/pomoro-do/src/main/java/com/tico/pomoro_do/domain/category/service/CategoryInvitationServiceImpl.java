@@ -2,6 +2,7 @@ package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryInvitationDecisionRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
+import com.tico.pomoro_do.domain.category.dto.response.InvitedCategoryInfoResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.entity.CategoryInvitation;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
@@ -225,7 +226,7 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
      */
     @Override
     @Transactional
-    public void respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request) {
+    public InvitedCategoryInfoResponse respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request) {
         // 1. 초대장 조회
         CategoryInvitation invitation = getInvitationById(invitationId);
         // 2. 초대 대상자 본인인지 확인
@@ -250,6 +251,11 @@ public class CategoryInvitationServiceImpl implements CategoryInvitationService{
             log.info("초대 수락: 그룹 멤버 생성 완료 - categoryId={}, userId={}",
                     invitation.getCategory().getId(), invitation.getInvitee().getId());
         }
+
+        // 6. 현재 활성 멤버 수 계산
+        int totalMembers = categoryMemberService.countActiveMembers(invitation.getCategory().getId());
+
+        return InvitedCategoryInfoResponse.of(invitation.getCategory(), totalMembers);
     }
 
     /**

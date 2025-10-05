@@ -2,6 +2,7 @@ package com.tico.pomoro_do.domain.category.controller;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryInvitationDecisionRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
+import com.tico.pomoro_do.domain.category.dto.response.InvitedCategoryInfoResponse;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
 import com.tico.pomoro_do.domain.category.service.CategoryInvitationService;
 import com.tico.pomoro_do.global.response.SuccessCode;
@@ -100,16 +101,16 @@ public class CategoryInvitationController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @PatchMapping("/{invitationId}")
-    public ResponseEntity<SuccessResponse<String>> responseInvitation(
+    public ResponseEntity<SuccessResponse<InvitedCategoryInfoResponse>> responseInvitation(
             @PathVariable Long invitationId,
             @RequestBody CategoryInvitationDecisionRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails // 로그인 유저
     ) {
-        categoryInvitationService.respondInvitation(invitationId, userDetails.getUserId(), request);
+        InvitedCategoryInfoResponse invitedCategoryInfoResponse = categoryInvitationService.respondInvitation(invitationId, userDetails.getUserId(), request);
 
-        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+        SuccessResponse<InvitedCategoryInfoResponse> successResponse = SuccessResponse.<InvitedCategoryInfoResponse>builder()
                 .message(SuccessCode.CATEGORY_INVITATION_RESPONSE_SUCCESS.getMessage())
-                .data(SuccessCode.CATEGORY_INVITATION_RESPONSE_SUCCESS.name())
+                .data(invitedCategoryInfoResponse)
                 .build();
         return ResponseEntity.ok(successResponse);
     }
