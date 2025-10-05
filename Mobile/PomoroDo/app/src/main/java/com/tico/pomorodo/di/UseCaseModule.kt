@@ -3,6 +3,7 @@ package com.tico.pomorodo.di
 import com.tico.pomorodo.domain.repository.AuthRepository
 import com.tico.pomorodo.domain.repository.CalendarRepository
 import com.tico.pomorodo.domain.repository.CategoryRepository
+import com.tico.pomorodo.domain.repository.FollowRepository
 import com.tico.pomorodo.domain.repository.TimerRepository
 import com.tico.pomorodo.domain.repository.TodoRepository
 import com.tico.pomorodo.domain.repository.TokenRepository
@@ -25,6 +26,7 @@ import com.tico.pomorodo.domain.usecase.calendar.UpdateCalendarDateForMonthUseCa
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
+import com.tico.pomorodo.domain.usecase.follow.FindUserByNicknameUseCase
 import com.tico.pomorodo.domain.usecase.timer.GetConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.timer.InsertConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.timer.UpdateConcentrationGoalUseCase
@@ -202,4 +204,9 @@ object UseCaseModule {
     @Provides
     fun provideGetMyUserIdUseCase(userRepository: UserRepository): GetMyUserIdUseCase =
         GetMyUserIdUseCase(userRepository)
+
+    @Singleton
+    @Provides
+    fun provideFindUserByNicknameUseCase(followRepository: FollowRepository): FindUserByNicknameUseCase =
+        FindUserByNicknameUseCase(followRepository)
 }
