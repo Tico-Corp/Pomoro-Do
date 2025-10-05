@@ -24,9 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.CategoryInvitation
+import com.tico.pomorodo.data.model.CategoryList
 import com.tico.pomorodo.data.model.Decision
-import com.tico.pomorodo.data.model.GroupCategory
-import com.tico.pomorodo.data.model.PersonalCategory
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
@@ -40,8 +39,8 @@ import com.tico.pomorodo.ui.todo.view.CategoryTag
 @Composable
 fun CategoryScreen(
     isOffline: Boolean,
-    personalCategoryList: List<PersonalCategory>,
-    groupCategoryList: List<GroupCategory>,
+    personalCategoryList: List<CategoryList>,
+    groupCategoryList: List<CategoryList>,
     inviteGroupCategoryList: List<CategoryInvitation>,
     onCategoryClicked: (Int) -> Unit,
     onInvitationDecisionClicked: (Int, Decision) -> Unit,

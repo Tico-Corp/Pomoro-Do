@@ -4,9 +4,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
-import com.tico.pomorodo.data.model.GroupCategory
+import com.tico.pomorodo.data.model.CategoryList
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.PersonalCategory
 import kotlinx.serialization.Serializable
 
 @Entity(tableName = "category_table")
@@ -34,12 +33,7 @@ fun CategoryEntity.toCategory() = Category(
     totalMembers = totalMembers
 )
 
-fun CategoryEntity.toPersonalCategory() = PersonalCategory(
-    categoryId = id,
-    categoryName = title
-)
-
-fun CategoryEntity.toGroupCategory() = GroupCategory(
+fun CategoryEntity.toCategoryList() = CategoryList(
     categoryId = id,
     categoryName = title,
     totalMembers = totalMembers

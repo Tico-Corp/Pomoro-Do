@@ -1,17 +1,12 @@
 package com.tico.pomorodo.data.model
 
 data class AllCategory(
-    val personalCategories: List<PersonalCategory>,
-    val groupCategories: List<GroupCategory>,
+    val personalCategories: List<CategoryList>,
+    val groupCategories: List<CategoryList>,
     val categoryInvitations: List<CategoryInvitation> = emptyList()
 )
 
-data class PersonalCategory(
-    val categoryId: Int,
-    val categoryName: String
-)
-
-data class GroupCategory(
+data class CategoryList(
     val categoryId: Int,
     val categoryName: String,
     val totalMembers: Int

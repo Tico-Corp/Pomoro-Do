@@ -5,8 +5,7 @@ import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSource
 import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.toCategory
-import com.tico.pomorodo.data.local.entity.toGroupCategory
-import com.tico.pomorodo.data.local.entity.toPersonalCategory
+import com.tico.pomorodo.data.local.entity.toCategoryList
 import com.tico.pomorodo.data.model.AllCategory
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
@@ -49,8 +48,8 @@ class CategoryRepositoryImpl @Inject constructor(
                 wrapToResource(Dispatchers.IO) {
                     it.partition { it.type == CategoryType.PERSONAL }.let { (personal, group) ->
                         AllCategory(
-                            personalCategories = personal.map(CategoryEntity::toPersonalCategory),
-                            groupCategories = group.map(CategoryEntity::toGroupCategory)
+                            personalCategories = personal.map(CategoryEntity::toCategoryList),
+                            groupCategories = group.map(CategoryEntity::toCategoryList)
                         )
                     }
                 }

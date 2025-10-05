@@ -4,9 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tico.pomorodo.data.model.CategoryInvitation
+import com.tico.pomorodo.data.model.CategoryList
 import com.tico.pomorodo.data.model.Decision
-import com.tico.pomorodo.data.model.GroupCategory
-import com.tico.pomorodo.data.model.PersonalCategory
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.usecase.category.DecideCategoryInvitationUseCase
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
@@ -23,12 +22,12 @@ class CategoryViewModel @Inject constructor(
     private val decideCategoryInvitationUseCase: DecideCategoryInvitationUseCase
 ) :
     ViewModel() {
-    private var _personalCategories = MutableStateFlow<List<PersonalCategory>>(emptyList())
-    val personalCategories: StateFlow<List<PersonalCategory>>
+    private var _personalCategories = MutableStateFlow<List<CategoryList>>(emptyList())
+    val personalCategories: StateFlow<List<CategoryList>>
         get() = _personalCategories.asStateFlow()
 
-    private var _groupCategories = MutableStateFlow<List<GroupCategory>>(emptyList())
-    val groupCategories: StateFlow<List<GroupCategory>>
+    private var _groupCategories = MutableStateFlow<List<CategoryList>>(emptyList())
+    val groupCategories: StateFlow<List<CategoryList>>
         get() = _groupCategories.asStateFlow()
 
     private var _categoryInvitations = MutableStateFlow<List<CategoryInvitation>>(emptyList())
