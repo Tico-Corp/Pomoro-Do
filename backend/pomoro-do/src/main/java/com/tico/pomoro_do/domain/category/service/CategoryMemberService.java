@@ -42,6 +42,11 @@ public interface CategoryMemberService {
     Map<Long, Long> getActiveMemberCounts(List<Category> groupCategories);
 
     /**
+     * 활동 중(LEFT_DATE IS NULL) 멤버 수를 반환
+     */
+    int countActiveMembers(Long categoryId);
+
+    /**
      * 그룹 카테고리의 활동 중인 멤버 목록을 닉네임 기준으로 정렬된 응답 DTO 반환
      *
      * @param category 그룹 카테고리

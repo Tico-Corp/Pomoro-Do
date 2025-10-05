@@ -276,7 +276,7 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Transactional
     @Override
-    public void updateCategory(Long categoryId, Long userId, CategoryUpdateRequest request) {
+    public CategoryInfoResponse updateCategory(Long categoryId, Long userId, CategoryUpdateRequest request) {
         // 1. 카테고리 조회
         Category category = categoryValidator.validateExists(categoryId);
 
@@ -303,6 +303,12 @@ public class CategoryServiceImpl implements CategoryService {
         } else {
             category.update(request.getName(), request.getVisibility());
         }
+
+        int totalMembers = (category.getType() == CategoryType.GROUP)
+                ? categoryMemberService.countActiveMembers(category.getId())
+                : 1;
+
+        return CategoryInfoResponse.of(category, totalMembers);
     }
 
     /**

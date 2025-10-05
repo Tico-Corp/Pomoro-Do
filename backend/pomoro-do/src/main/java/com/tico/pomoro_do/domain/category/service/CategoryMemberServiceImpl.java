@@ -153,6 +153,18 @@ public class CategoryMemberServiceImpl implements CategoryMemberService {
     }
 
     /**
+     * 해당 그룹 카테고리에 대해 현재 참여 중인 멤버 수 조회
+     *
+     * @param categoryId 대상 그룹 카테고리 ID
+     * @return 그룹 멤버 수
+     */
+    @Override
+    public int countActiveMembers(Long categoryId) {
+        // 필요 시 categoryId 유효성 검증/권한 체크 추가 가능
+        return categoryMemberRepository.countByCategoryIdAndLeftDateIsNull(categoryId);
+    }
+
+    /**
      * 여러 그룹 카테고리에 대해 현재 참여 중인 멤버 수 조회
      *
      * @param groupCategories 대상 그룹 카테고리 목록

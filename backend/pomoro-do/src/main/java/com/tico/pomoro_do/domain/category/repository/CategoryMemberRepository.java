@@ -22,6 +22,9 @@ public interface CategoryMemberRepository extends JpaRepository<CategoryMember, 
     // 해당 카테고리의 활성화 되어있는 멤버들 조회 (category=category, leftDate=null)
     List<CategoryMember> findAllByCategoryAndLeftDateIsNull(Category category);
 
+    // 활동 중(탈퇴하지 않은) 멤버 수
+    int countByCategoryIdAndLeftDateIsNull(Long categoryId);
+
     /**
      * 카테고리와 사용자로 멤버십 존재 여부 확인 (탈퇴 여부도 확인)
      *

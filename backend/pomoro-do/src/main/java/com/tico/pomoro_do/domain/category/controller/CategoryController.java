@@ -194,21 +194,20 @@ public class CategoryController {
             }
     )
     @PatchMapping("/api/v1/categories/{categoryId}")
-    public ResponseEntity<SuccessResponse<String>> updateCategory(
+    public ResponseEntity<SuccessResponse<CategoryInfoResponse>> updateCategory(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long categoryId,
             @Valid @RequestBody CategoryUpdateRequest request) {
 
-        categoryService.updateCategory(categoryId, userDetails.getUserId(), request);
+        CategoryInfoResponse categoryInfoResponse = categoryService.updateCategory(categoryId, userDetails.getUserId(), request);
 
-        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+        SuccessResponse<CategoryInfoResponse> successResponse = SuccessResponse.<CategoryInfoResponse>builder()
                 .message(SuccessCode.CATEGORY_UPDATE_SUCCESS.getMessage())
-                .data(SuccessCode.CATEGORY_UPDATE_SUCCESS.name())
+                .data(categoryInfoResponse)
                 .build();
 
         return ResponseEntity.ok(successResponse);
     }
-
 
     /**
      * 카테고리 삭제 API

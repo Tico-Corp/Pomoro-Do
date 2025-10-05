@@ -59,9 +59,9 @@ public interface CategoryService {
      *
      * @param userId 수정 요청 사용자 ID
      * @param categoryId 수정 대상 카테고리 ID
-     * @param request 수정 정보 (카테고리 이름, CategoryVisibility)
+     * @param request 수정 정보 (카테고리 이름, CategoryVisibility, ...)
      */
-    void updateCategory(Long categoryId, Long userId, CategoryUpdateRequest request);
+    CategoryInfoResponse updateCategory(Long categoryId, Long userId, CategoryUpdateRequest request);
 
     /**
      * 카테고리 삭제
