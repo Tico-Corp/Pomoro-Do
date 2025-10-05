@@ -4,6 +4,7 @@ import com.tico.pomoro_do.domain.category.dto.request.CategoryCreateRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryDeleteRequest;
 import com.tico.pomoro_do.domain.category.dto.request.CategoryUpdateRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryDetailResponse;
+import com.tico.pomoro_do.domain.category.dto.response.CategoryInfoResponse;
 import com.tico.pomoro_do.domain.category.dto.response.UserCategoryResponse;
 import com.tico.pomoro_do.domain.category.enums.CategoryType;
 import com.tico.pomoro_do.domain.category.service.CategoryService;
@@ -66,15 +67,15 @@ public class CategoryController {
             @ApiResponse(responseCode = "500", description = "서버 내부 오류")
     })
     @PostMapping
-    public ResponseEntity<SuccessResponse<Long>> createCategory(
+    public ResponseEntity<SuccessResponse<CategoryInfoResponse>> createCategory(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody CategoryCreateRequest request
     ){
-        Long categoryId = categoryService.processCategoryCreation(userDetails.getUserId(), request);
+        CategoryInfoResponse categoryInfoResponse = categoryService.processCategoryCreation(userDetails.getUserId(), request);
 
-        SuccessResponse<Long> successResponse = SuccessResponse.<Long>builder()
+        SuccessResponse<CategoryInfoResponse> successResponse = SuccessResponse.<CategoryInfoResponse>builder()
                 .message(SuccessCode.CATEGORY_CREATION_SUCCESS.getMessage())
-                .data(categoryId)
+                .data(categoryInfoResponse)
                 .build();
 
         return ResponseEntity.status(HttpStatus.CREATED).body(successResponse);
@@ -193,21 +194,20 @@ public class CategoryController {
             }
     )
     @PatchMapping("/api/v1/categories/{categoryId}")
-    public ResponseEntity<SuccessResponse<String>> updateCategory(
+    public ResponseEntity<SuccessResponse<CategoryInfoResponse>> updateCategory(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long categoryId,
             @Valid @RequestBody CategoryUpdateRequest request) {
 
-        categoryService.updateCategory(categoryId, userDetails.getUserId(), request);
+        CategoryInfoResponse categoryInfoResponse = categoryService.updateCategory(categoryId, userDetails.getUserId(), request);
 
-        SuccessResponse<String> successResponse = SuccessResponse.<String>builder()
+        SuccessResponse<CategoryInfoResponse> successResponse = SuccessResponse.<CategoryInfoResponse>builder()
                 .message(SuccessCode.CATEGORY_UPDATE_SUCCESS.getMessage())
-                .data(SuccessCode.CATEGORY_UPDATE_SUCCESS.name())
+                .data(categoryInfoResponse)
                 .build();
 
         return ResponseEntity.ok(successResponse);
     }
-
 
     /**
      * 카테고리 삭제 API

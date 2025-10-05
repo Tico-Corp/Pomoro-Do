@@ -2,6 +2,7 @@ package com.tico.pomoro_do.domain.category.service;
 
 import com.tico.pomoro_do.domain.category.dto.request.CategoryInvitationDecisionRequest;
 import com.tico.pomoro_do.domain.category.dto.response.CategoryInvitationResponse;
+import com.tico.pomoro_do.domain.category.dto.response.InvitedCategoryInfoResponse;
 import com.tico.pomoro_do.domain.category.entity.Category;
 import com.tico.pomoro_do.domain.category.enums.CategoryInvitationStatus;
 import com.tico.pomoro_do.domain.user.entity.User;
@@ -66,7 +67,7 @@ public interface CategoryInvitationService {
      * @param userId 응답하는 사용자 ID
      * @param request 응답 요청 객체 (ACCEPTED 또는 REJECTED)
      */
-    void respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request);
+    InvitedCategoryInfoResponse respondInvitation(Long invitationId, Long userId, CategoryInvitationDecisionRequest request);
 
     /**
      * 해당 카테고리에 대한 응답되지 않은(PENDING) 초대장 모두 삭제
