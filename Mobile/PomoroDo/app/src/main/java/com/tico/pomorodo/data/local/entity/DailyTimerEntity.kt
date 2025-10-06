@@ -13,8 +13,6 @@ import kotlinx.serialization.Serializable
 data class DailyTimerEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    @ColumnInfo(name = "user_id")
-    val userId: Int,
     @ColumnInfo(name = "stat_date")
     val statDate: LocalDate,
     @ColumnInfo(name = "target_focus_seconds")
@@ -36,7 +34,6 @@ data class DailyTimerEntity(
 fun DailyTimerEntity.toDailyTimerData() =
     DailyTimerData(
         id = id,
-        userId = userId,
         statDate = statDate,
         targetFocusTime = targetFocusTime,
         totalFocusTime = totalFocusTime,

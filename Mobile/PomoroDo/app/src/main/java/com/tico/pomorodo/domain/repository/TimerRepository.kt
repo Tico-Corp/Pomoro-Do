@@ -8,7 +8,7 @@ import kotlinx.datetime.LocalDate
 interface TimerRepository {
     suspend fun insertConcentrationGoal(dailyTimerData: DailyTimerData)
 
-    suspend fun getDailyTimerData(userId: Int, statDate: LocalDate): Flow<Resource<DailyTimerData?>>
+    suspend fun getDailyTimerData(statDate: LocalDate): Flow<Resource<DailyTimerData?>>
 
     suspend fun updateTargetFocusTime(dailyTimerData: DailyTimerData)
 }

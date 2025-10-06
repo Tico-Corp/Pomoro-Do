@@ -3,7 +3,6 @@ package com.tico.pomorodo.ui.timer.setup.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_TIMER_SETTING_DATA
 import com.tico.pomorodo.data.local.datasource.DataSource.TIME_ZONE
 import com.tico.pomorodo.data.model.DailyTimerData
 import com.tico.pomorodo.data.model.Time
@@ -20,7 +19,6 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
-const val TEMP_USER_ID = 2000
 const val TAG = "TimerSetupViewModel"
 
 @HiltViewModel
@@ -39,20 +37,7 @@ class TimerSetupViewModel @Inject constructor(
     val breakTime: StateFlow<Time> = _breakTime
 
     init {
-        viewModelScope.launch {
-            val todayDateTime = Clock.System.todayIn(TIME_ZONE)
 
-            getDailyTimerDataUseCase(
-                userId = TEMP_USER_ID,
-                statDate = todayDateTime
-            ).collect { result ->
-                if (result is Resource.Success && result.data == null) {
-                    insertConcentrationGoal(INITIAL_TIMER_SETTING_DATA)
-                }
-            }
-        }
-
-        getDailyTimerData()
     }
 
     fun setConcentrationTime(hour: Int, minute: Int, second: Int? = null) {
@@ -63,19 +48,20 @@ class TimerSetupViewModel @Inject constructor(
         _breakTime.value = Time(hour, minute)
     }
 
-    private fun insertConcentrationGoal(dailyTimerData: DailyTimerData) =
-        viewModelScope.launch {
-            insertConcentrationGoalUseCase(dailyTimerData)
-        }
+    private fun getDailyTimerData() = viewModelScope.launch {
+        Log.d("TimerSetupViewModel", "dailyTimerData2: ${dailyTimerData.value.toString()}")
 
-    private fun getDailyTimerData(userId: Int = TEMP_USER_ID) = viewModelScope.launch {
         val todayDateTime = Clock.System.todayIn(TIME_ZONE)
 
-        getDailyTimerDataUseCase(userId = userId, statDate = todayDateTime).collect { result ->
+        getDailyTimerDataUseCase(statDate = todayDateTime).collect { result ->
             when (result) {
                 is Resource.Success -> {
                     if (result.data != null) {
                         _dailyTimerData.value = result.data
+                        Log.d(
+                            "TimerSetupViewModel",
+                            "dailyTimerData3: ${dailyTimerData.value.toString()}"
+                        )
                     } else {
                         Log.e(TAG, "getDailyTimerDate: No data found")
                     }
@@ -94,6 +80,7 @@ class TimerSetupViewModel @Inject constructor(
 
     fun updateConcentrationGoal(hour: Int, minute: Int, second: Int) = viewModelScope.launch {
         if (dailyTimerData.value != null) {
+            Log.d("TimerSetupViewModel", "updateConcentrationGoal is running")
             val updatedDailyTimerData = dailyTimerData.value!!.copy(
                 targetFocusTime = LocalTime(hour, minute, second),
                 updatedAt = System.currentTimeMillis()

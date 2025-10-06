@@ -14,8 +14,8 @@ interface TimerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertConcentrationGoal(dailyTimerEntity: DailyTimerEntity)
 
-    @Query("SELECT * FROM daily_timer_table WHERE user_id = :userId AND stat_date = :statDate")
-    fun getDailyTimerData(userId: Int, statDate: LocalDate): Flow<DailyTimerEntity?>
+    @Query("SELECT * FROM daily_timer_table WHERE stat_date = :statDate")
+    fun getDailyTimerData(statDate: LocalDate): Flow<DailyTimerEntity?>
 
     @Update
     suspend fun updateTargetFocusTime(dailyTimerEntity: DailyTimerEntity)

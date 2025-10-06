@@ -11,8 +11,8 @@ class TimerLocalDataSourceImpl @Inject constructor(private val timerDao: TimerDa
     override suspend fun insertConcentrationGoal(dailyTimerEntity: DailyTimerEntity) =
         timerDao.insertConcentrationGoal(dailyTimerEntity)
 
-    override suspend fun getDailyTimerData(userId: Int, statDate: LocalDate): Flow<DailyTimerEntity?> =
-        timerDao.getDailyTimerData(userId, statDate)
+    override suspend fun getDailyTimerData(statDate: LocalDate): Flow<DailyTimerEntity?> =
+        timerDao.getDailyTimerData(statDate)
 
     override suspend fun updateTargetFocusTime(dailyTimerEntity: DailyTimerEntity) =
         timerDao.updateTargetFocusTime(dailyTimerEntity)

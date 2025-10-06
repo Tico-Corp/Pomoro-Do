@@ -31,14 +31,14 @@ class TimerRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getDailyTimerData(userId: Int, statDate: LocalDate): Flow<Resource<DailyTimerData?>> =
+    override suspend fun getDailyTimerData(statDate: LocalDate): Flow<Resource<DailyTimerData?>> =
         flow {
             emit(Resource.Loading)
 
             if (networkHelper.isNetworkConnected()) {
                 // TODO: 서버에서 일간 타이머 데이터 받아오기
             } else {
-                val data = timerLocalDataSource.getDailyTimerData(userId, statDate).map {
+                val data = timerLocalDataSource.getDailyTimerData(statDate).map {
                     wrapToResource(Dispatchers.IO) { it?.toDailyTimerData() }
                 }
 

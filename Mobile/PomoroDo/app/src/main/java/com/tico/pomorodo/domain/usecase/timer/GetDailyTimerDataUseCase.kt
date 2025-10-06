@@ -7,7 +7,7 @@ import kotlinx.datetime.LocalDate
 import javax.inject.Inject
 
 class GetDailyTimerDataUseCase @Inject constructor(private val timerRepository: TimerRepository) {
-    suspend operator fun invoke(userId: Int, statDate: LocalDate) = withContext(Dispatchers.IO) {
-        timerRepository.getDailyTimerData(userId, statDate)
+    suspend operator fun invoke(statDate: LocalDate) = withContext(Dispatchers.IO) {
+        timerRepository.getDailyTimerData(statDate)
     }
 }
