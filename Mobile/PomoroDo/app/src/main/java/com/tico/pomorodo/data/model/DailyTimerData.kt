@@ -5,7 +5,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalTime
 
 data class DailyTimerData(
-    val id: Int,
     val statDate: LocalDate,
     val targetFocusTime: LocalTime,
     val totalFocusTime: LocalTime,
@@ -16,7 +15,6 @@ data class DailyTimerData(
     val updatedAt: Long
 ) {
     override fun toString(): String = "DailyTimerData( " +
-            "id = $id, " +
             "statDate = $statDate, " +
             "targetFocusTime = $targetFocusTime, " +
             "totalFocusTime = $totalFocusTime, " +
@@ -28,7 +26,6 @@ data class DailyTimerData(
 }
 
 fun DailyTimerData.toDailyTimerEntity() = DailyTimerEntity(
-    id = id,
     statDate = statDate,
     targetFocusTime = targetFocusTime,
     totalFocusTime = totalFocusTime,

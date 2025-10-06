@@ -11,29 +11,27 @@ import kotlinx.serialization.Serializable
 @Entity(tableName = "daily_timer_table")
 @Serializable
 data class DailyTimerEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
     @ColumnInfo(name = "stat_date")
     val statDate: LocalDate,
     @ColumnInfo(name = "target_focus_seconds")
-    val targetFocusTime: LocalTime,
+    var targetFocusTime: LocalTime,
     @ColumnInfo(name = "total_focus_seconds")
-    val totalFocusTime: LocalTime,
+    var totalFocusTime: LocalTime,
     @ColumnInfo(name = "total_break_seconds")
-    val totalBreakTime: LocalTime,
+    var totalBreakTime: LocalTime,
     @ColumnInfo(name = "max_focus_seconds")
-    val maxFocusTime: LocalTime,
+    var maxFocusTime: LocalTime,
     @ColumnInfo(name = "max_break_time")
-    val maxBreakTime: LocalTime,
+    var maxBreakTime: LocalTime,
     @ColumnInfo(name = "incomplete_todos_count")
-    val inCompleteTodosCount: Int,
+    var inCompleteTodosCount: Int,
     @ColumnInfo(name = "updated_at")
-    val updatedAt: Long = System.currentTimeMillis()
+    var updatedAt: Long = System.currentTimeMillis()
 )
 
 fun DailyTimerEntity.toDailyTimerData() =
     DailyTimerData(
-        id = id,
         statDate = statDate,
         targetFocusTime = targetFocusTime,
         totalFocusTime = totalFocusTime,
