@@ -25,7 +25,6 @@ import com.tico.pomorodo.domain.usecase.calendar.UpdateCalendarDateForMonthUseCa
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
-import com.tico.pomorodo.domain.usecase.timer.CreateConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.timer.CreateDailyTimerStatUseCase
 import com.tico.pomorodo.domain.usecase.timer.GetDailyTimerDataUseCase
 import com.tico.pomorodo.domain.usecase.timer.UpdateTargetFocusTimeUseCase
@@ -174,12 +173,6 @@ object UseCaseModule {
     @Provides
     fun provideInsertCalendarDateForMonthUseCase(calendarRepository: CalendarRepository): InsertCalendarDateForMonthUseCase {
         return InsertCalendarDateForMonthUseCase(calendarRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideCreateConcentrationGoalUseCase(timerRepository: TimerRepository): CreateConcentrationGoalUseCase {
-        return CreateConcentrationGoalUseCase(timerRepository)
     }
 
     @Singleton
