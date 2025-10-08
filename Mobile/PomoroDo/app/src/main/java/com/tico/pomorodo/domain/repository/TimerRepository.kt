@@ -11,4 +11,6 @@ interface TimerRepository {
     suspend fun getDailyTimerData(statDate: LocalDate): Flow<Resource<DailyTimerData?>>
 
     suspend fun updateTargetFocusTime(dailyTimerData: DailyTimerData)
+
+    suspend fun createDailyTimerStat(statDate: LocalDate)
 }

@@ -16,4 +16,7 @@ class TimerLocalDataSourceImpl @Inject constructor(private val timerDao: TimerDa
 
     override suspend fun updateTargetFocusTime(dailyTimerEntity: DailyTimerEntity) =
         timerDao.updateTargetFocusTime(dailyTimerEntity)
+
+    override suspend fun createDailyTimerStat(dailyTimerEntity: DailyTimerEntity) =
+        timerDao.createDailyTimerStat(dailyTimerEntity)
 }

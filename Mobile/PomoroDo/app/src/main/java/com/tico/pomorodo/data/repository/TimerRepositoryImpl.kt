@@ -54,4 +54,10 @@ class TimerRepositoryImpl @Inject constructor(
             timerLocalDataSource.updateTargetFocusTime(timerSettingEntity)
         }
     }
+
+    override suspend fun createDailyTimerStat(statDate: LocalDate) {
+        val dailyTimerEntity = DailyTimerData(statDate).toDailyTimerEntity()
+
+        timerLocalDataSource.createDailyTimerStat(dailyTimerEntity)
+    }
 }

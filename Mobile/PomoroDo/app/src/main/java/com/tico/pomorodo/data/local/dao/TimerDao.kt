@@ -19,4 +19,7 @@ interface TimerDao {
 
     @Update
     suspend fun updateTargetFocusTime(dailyTimerEntity: DailyTimerEntity)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun createDailyTimerStat(dailyTimerEntity: DailyTimerEntity)
 }

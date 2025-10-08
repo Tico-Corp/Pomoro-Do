@@ -10,4 +10,6 @@ interface TimerLocalDataSource {
     suspend fun getDailyTimerData(statDate: LocalDate): Flow<DailyTimerEntity?>
 
     suspend fun updateTargetFocusTime(dailyTimerEntity: DailyTimerEntity)
+
+    suspend fun createDailyTimerStat(dailyTimerEntity: DailyTimerEntity)
 }
