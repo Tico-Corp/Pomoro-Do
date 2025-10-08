@@ -14,7 +14,6 @@ import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.model.Follow
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 
 object DataSource {
     val userList = listOf<User>(
@@ -216,8 +215,6 @@ object DataSource {
         totalCount = 6,
         remainedTodoCount = 4
     )
-
-    val TIME_ZONE = TimeZone.currentSystemDefault()
 
     val categoryWithTodoItemList =
         listOf(

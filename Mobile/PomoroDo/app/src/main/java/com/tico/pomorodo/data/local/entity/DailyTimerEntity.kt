@@ -3,9 +3,13 @@ package com.tico.pomorodo.data.local.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.tico.pomorodo.common.util.Converters.Companion.TIME_ZONE
 import com.tico.pomorodo.data.model.DailyTimerData
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
 @Entity(tableName = "daily_timer_table")
@@ -27,7 +31,7 @@ data class DailyTimerEntity(
     @ColumnInfo(name = "incomplete_todos_count")
     var inCompleteTodosCount: Int,
     @ColumnInfo(name = "updated_at")
-    var updatedAt: Long = System.currentTimeMillis()
+    var updatedAt: LocalDateTime = Clock.System.now().toLocalDateTime(TIME_ZONE)
 )
 
 fun DailyTimerEntity.toDailyTimerData() =

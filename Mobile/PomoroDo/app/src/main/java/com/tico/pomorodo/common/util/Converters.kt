@@ -3,7 +3,9 @@ package com.tico.pomorodo.common.util
 import androidx.room.TypeConverter
 import com.tico.pomorodo.data.local.entity.UserEntity
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -47,5 +49,19 @@ class Converters {
     @TypeConverter
     fun toLocalTime(time: Long): LocalTime {
         return LocalTime.fromMillisecondOfDay(time.toInt())
+    }
+
+    companion object {
+        val TIME_ZONE = TimeZone.currentSystemDefault()
+    }
+
+    @TypeConverter
+    fun fromLocalDateTime(localDateTime: LocalDateTime): String {
+        return LocalDateTime.Formats.ISO.format(localDateTime)
+    }
+
+    @TypeConverter
+    fun toLocalDateTime(localDateTime: String): LocalDateTime {
+        return LocalDateTime.Formats.ISO.parse(localDateTime)
     }
 }
