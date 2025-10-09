@@ -3,57 +3,42 @@ package com.tico.pomorodo.ui.timer.setup.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tico.pomorodo.data.local.datasource.DataSource.INITIAL_TIMER_SETTING_DATA
+import com.tico.pomorodo.common.util.Converters.Companion.TIME_ZONE
+import com.tico.pomorodo.data.model.DailyTimerData
 import com.tico.pomorodo.data.model.Time
-import com.tico.pomorodo.data.model.TimerSettingData
 import com.tico.pomorodo.domain.model.Resource
-import com.tico.pomorodo.domain.usecase.timer.GetConcentrationGoalUseCase
-import com.tico.pomorodo.domain.usecase.timer.InsertConcentrationGoalUseCase
-import com.tico.pomorodo.domain.usecase.timer.UpdateConcentrationGoalUseCase
+import com.tico.pomorodo.domain.usecase.timer.CreateDailyTimerStatUseCase
+import com.tico.pomorodo.domain.usecase.timer.GetDailyTimerDataUseCase
+import com.tico.pomorodo.domain.usecase.timer.UpdateTargetFocusTimeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalTime
+import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
-const val TEMP_USER_ID = 2000
 const val TAG = "TimerSetupViewModel"
 
 @HiltViewModel
 class TimerSetupViewModel @Inject constructor(
-    private val insertConcentrationGoalUseCase: InsertConcentrationGoalUseCase,
-    private val getConcentrationGoalUseCase: GetConcentrationGoalUseCase,
-    private val updateConcentrationGoalUseCase: UpdateConcentrationGoalUseCase,
+    private val createDailyTimerStatUseCase: CreateDailyTimerStatUseCase,
+    private val getDailyTimerDataUseCase: GetDailyTimerDataUseCase,
+    private val updateTargetFocusTimeUseCase: UpdateTargetFocusTimeUseCase,
 ) : ViewModel() {
+    private val _dailyTimerData: MutableStateFlow<DailyTimerData?> = MutableStateFlow(null)
+    val dailyTimerData: StateFlow<DailyTimerData?> = _dailyTimerData
+
     private val _concentrationTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0))
     val concentrationTime: StateFlow<Time> = _concentrationTime
 
     private val _breakTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0))
     val breakTime: StateFlow<Time> = _breakTime
 
-    private val _concentrationGoal: MutableStateFlow<LocalTime> =
-        MutableStateFlow(LocalTime(0, 0, 0))
-    val concentrationGoal: StateFlow<LocalTime> = _concentrationGoal
-
-    private val _totalConcentrationTime: MutableStateFlow<Time> =
-        MutableStateFlow(Time(0, 0, 0))
-    val totalConcentrationTime: StateFlow<Time> = _totalConcentrationTime
-
-    private val _totalBreakTime: MutableStateFlow<Time> = MutableStateFlow(Time(0, 0, 0))
-    val totalBreakTime: StateFlow<Time> = _totalBreakTime
-
     init {
-        viewModelScope.launch {
-            getConcentrationGoalUseCase(TEMP_USER_ID).collect { result ->
-
-                if (result is Resource.Success && result.data == null) {
-                    insertConcentrationGoal(INITIAL_TIMER_SETTING_DATA)
-                }
-            }
-        }
-
-        getConcentrationGoal()
+        getTodayDailyTimerData()
     }
 
     fun setConcentrationTime(hour: Int, minute: Int, second: Int? = null) {
@@ -64,45 +49,47 @@ class TimerSetupViewModel @Inject constructor(
         _breakTime.value = Time(hour, minute)
     }
 
-    private fun insertConcentrationGoal(timerSettingData: TimerSettingData) =
-        viewModelScope.launch {
-            insertConcentrationGoalUseCase(timerSettingData)
-        }
+    private fun getTodayDailyTimerData() = viewModelScope.launch {
+        val todayDateTime = Clock.System.todayIn(TIME_ZONE)
 
-    private fun getConcentrationGoal(userId: Int = TEMP_USER_ID) = viewModelScope.launch {
-        getConcentrationGoalUseCase(userId).collect { result ->
+        getDailyTimerDataUseCase(statDate = todayDateTime).collect { result ->
             when (result) {
                 is Resource.Success -> {
                     if (result.data != null) {
-                        _concentrationGoal.value = result.data.time
+                        _dailyTimerData.value = result.data
                     } else {
-                        Log.e(TAG, "getConcentrationGoal: No data found")
+                        // dailyTimerData가 null이면 해당 날짜 데이터가 아직 생성되지 않았다는 뜻이므로 새로운 데이터를 생성해 room에 저장한다.
+                        createTodayDailyTimerData()
                     }
                 }
 
-                is Resource.Failure.Error -> {
-                    Log.e(TAG, "getConcentrationGoal: ${result.message}")
-                }
+                is Resource.Failure.Error ->
+                    Log.e(TAG, "getDailyTimerDate: ${result.message}")
 
-                is Resource.Failure.Exception -> {
-                    Log.e(TAG, "getConcentrationGoal: ${result.code} ${result.message}")
-                }
+                is Resource.Failure.Exception ->
+                    Log.e(TAG, "getDailyTimerDate: ${result.code} ${result.message}")
 
                 Resource.Loading -> {}
             }
-
         }
     }
 
+    private fun createTodayDailyTimerData() = viewModelScope.launch {
+        createDailyTimerStatUseCase(statDate = Clock.System.todayIn(TIME_ZONE))
+    }
+
     fun updateConcentrationGoal(hour: Int, minute: Int, second: Int) = viewModelScope.launch {
-        _concentrationGoal.value = LocalTime(hour, minute, second)
-        val timerSettingData =
-            TimerSettingData(
-                TEMP_USER_ID,
-                LocalTime(hour, minute, second),
-                System.currentTimeMillis()
+        if (dailyTimerData.value != null) {
+            val updatedDailyTimerData = dailyTimerData.value!!.copy(
+                targetFocusTime = LocalTime(hour, minute, second),
+                updatedAt = Clock.System.now().toLocalDateTime(TIME_ZONE)
             )
-        updateConcentrationGoalUseCase(timerSettingData)
+            _dailyTimerData.value = updatedDailyTimerData
+
+            updateTargetFocusTimeUseCase(updatedDailyTimerData)
+        } else {
+            Log.e(TAG, "updateConcentrationGoal: dailyTimerData is null")
+        }
     }
 
     fun initTimer() {

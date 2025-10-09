@@ -9,14 +9,11 @@ import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.OpenSettings
-import com.tico.pomorodo.data.model.TimerSettingData
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.domain.model.Follow
-import com.tico.pomorodo.ui.timer.setup.viewmodel.TEMP_USER_ID
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
 
 object DataSource {
     val userList = listOf<User>(
@@ -217,12 +214,6 @@ object DataSource {
         focusState = CalendarFocusState.WHITE,
         totalCount = 6,
         remainedTodoCount = 4
-    )
-
-    val INITIAL_TIMER_SETTING_DATA = TimerSettingData(
-        userId = TEMP_USER_ID,
-        time = LocalTime(1, 0, 0),
-        updatedAt = System.currentTimeMillis()
     )
 
     val categoryWithTodoItemList =

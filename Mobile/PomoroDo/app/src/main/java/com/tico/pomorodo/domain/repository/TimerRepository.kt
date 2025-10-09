@@ -1,13 +1,16 @@
 package com.tico.pomorodo.domain.repository
 
-import com.tico.pomorodo.data.model.TimerSettingData
+import com.tico.pomorodo.data.model.DailyTimerData
 import com.tico.pomorodo.domain.model.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.LocalDate
 
 interface TimerRepository {
-    suspend fun insertConcentrationGoal(timerSettingData: TimerSettingData)
+    suspend fun insertConcentrationGoal(dailyTimerData: DailyTimerData)
 
-    suspend fun getConcentrationGoal(userId: Int): Flow<Resource<TimerSettingData?>>
+    suspend fun getDailyTimerData(statDate: LocalDate): Flow<Resource<DailyTimerData?>>
 
-    suspend fun updateConcentrationGoal(timerSettingData: TimerSettingData)
+    suspend fun updateTargetFocusTime(dailyTimerData: DailyTimerData)
+
+    suspend fun createDailyTimerStat(statDate: LocalDate)
 }

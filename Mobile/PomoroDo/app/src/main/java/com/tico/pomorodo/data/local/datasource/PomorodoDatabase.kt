@@ -10,14 +10,24 @@ import com.tico.pomorodo.data.local.dao.TimerDao
 import com.tico.pomorodo.data.local.dao.TodoDao
 import com.tico.pomorodo.data.local.entity.CalendarDateEntity
 import com.tico.pomorodo.data.local.entity.CategoryEntity
-import com.tico.pomorodo.data.local.entity.TimerSettingEntity
+import com.tico.pomorodo.data.local.entity.DailyTimerEntity
 import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.local.entity.UserEntity
 
 @Database(
-    entities = [TodoEntity::class, CategoryEntity::class, UserEntity::class, CalendarDateEntity::class, TimerSettingEntity::class],
-    version = 11,
-    exportSchema = false
+    entities = [
+        TodoEntity::class,
+        CategoryEntity::class,
+        UserEntity::class,
+        CalendarDateEntity::class,
+        DailyTimerEntity::class
+    ],
+    version = 12,
+    exportSchema = false,
+//    autoMigrations = [
+//        // (https://namneul.tistory.com/36) 참고하여 작성
+//        AutoMigration(from = 10, to = 11)
+//    ]
 )
 @TypeConverters(Converters::class)
 abstract class PomorodoDatabase : RoomDatabase() {

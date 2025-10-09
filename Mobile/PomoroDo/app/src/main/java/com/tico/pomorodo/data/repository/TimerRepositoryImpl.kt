@@ -3,9 +3,9 @@ package com.tico.pomorodo.data.repository
 import com.tico.pomorodo.common.util.NetworkHelper
 import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.local.datasource.timer.TimerLocalDataSource
-import com.tico.pomorodo.data.local.entity.toTimerSettingData
-import com.tico.pomorodo.data.model.TimerSettingData
-import com.tico.pomorodo.data.model.toTimerSettingEntity
+import com.tico.pomorodo.data.local.entity.toDailyTimerData
+import com.tico.pomorodo.data.model.DailyTimerData
+import com.tico.pomorodo.data.model.toDailyTimerEntity
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.TimerRepository
 import kotlinx.coroutines.Dispatchers
@@ -14,14 +14,15 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
 import javax.inject.Inject
 
 class TimerRepositoryImpl @Inject constructor(
     private val networkHelper: NetworkHelper,
     private val timerLocalDataSource: TimerLocalDataSource,
 ) : TimerRepository {
-    override suspend fun insertConcentrationGoal(timerSettingData: TimerSettingData) {
-        val timerSettingEntity = timerSettingData.toTimerSettingEntity()
+    override suspend fun insertConcentrationGoal(dailyTimerData: DailyTimerData) {
+        val timerSettingEntity = dailyTimerData.toDailyTimerEntity()
 
         if (networkHelper.isNetworkConnected()) {
             // TODO: 초기 목표 집중 시간 서버에 저장
@@ -30,27 +31,33 @@ class TimerRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getConcentrationGoal(userId: Int): Flow<Resource<TimerSettingData?>> =
+    override suspend fun getDailyTimerData(statDate: LocalDate): Flow<Resource<DailyTimerData?>> =
         flow {
             emit(Resource.Loading)
 
             if (networkHelper.isNetworkConnected()) {
-                // TODO: 서버에서 목표 집중 시간 받아오기
+                // TODO: 서버에서 일간 타이머 데이터 받아오기
             } else {
-                val data = timerLocalDataSource.getConcentrationGoal(userId).map {
-                    wrapToResource(Dispatchers.IO) { it?.toTimerSettingData() }
+                val data = timerLocalDataSource.getDailyTimerData(statDate).map {
+                    wrapToResource(Dispatchers.IO) { it?.toDailyTimerData() }
                 }
 
                 emitAll(data)
             }
         }.flowOn(Dispatchers.IO)
 
-    override suspend fun updateConcentrationGoal(timerSettingData: TimerSettingData) {
-        val timerSettingEntity = timerSettingData.toTimerSettingEntity()
+    override suspend fun updateTargetFocusTime(dailyTimerData: DailyTimerData) {
+        val timerSettingEntity = dailyTimerData.toDailyTimerEntity()
         if (networkHelper.isNetworkConnected()) {
             // TODO: 서버로 목표 집중 시간 전송
         } else {
-            timerLocalDataSource.updateConcentrationGoal(timerSettingEntity)
+            timerLocalDataSource.updateTargetFocusTime(timerSettingEntity)
         }
+    }
+
+    override suspend fun createDailyTimerStat(statDate: LocalDate) {
+        val dailyTimerEntity = DailyTimerData(statDate).toDailyTimerEntity()
+
+        timerLocalDataSource.createDailyTimerStat(dailyTimerEntity)
     }
 }

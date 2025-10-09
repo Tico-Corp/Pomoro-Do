@@ -37,11 +37,13 @@ fun TimerRootScreen(
     navigateToBreakMode: () -> Unit,
 ) {
     val timerSetupViewModel: TimerSetupViewModel = hiltViewModel()
+    val dailyTimerData by timerSetupViewModel.dailyTimerData.collectAsState()
     val concentrationTime by timerSetupViewModel.concentrationTime.collectAsState()
     val breakTime by timerSetupViewModel.breakTime.collectAsState()
-    val concentrationGoal by timerSetupViewModel.concentrationGoal.collectAsState()
-    val totalConcentrationTime by timerSetupViewModel.totalConcentrationTime.collectAsState()
-    val totalBreakTime by timerSetupViewModel.totalBreakTime.collectAsState()
+    val concentrationGoal = dailyTimerData?.targetFocusTime ?: LocalTime(0, 0, 0)
+    val totalConcentrationTime = dailyTimerData?.totalFocusTime ?: LocalTime(0, 0, 0)
+    val totalBreakTime = dailyTimerData?.totalBreakTime ?: LocalTime(0, 0, 0)
+
     val (editConcentrationTimerDialogVisible, setEditConcentrationTimerDialogVisible) = remember {
         mutableStateOf(false)
     }
@@ -167,8 +169,8 @@ fun PomodoroTimerScreen(
     concentrationTime: Time,
     breakTime: Time,
     concentrationGoal: LocalTime,
-    totalConcentrationTime: Time,
-    totalBreakTime: Time,
+    totalConcentrationTime: LocalTime,
+    totalBreakTime: LocalTime,
     onConcentrationTimeChange: (Int) -> Unit,
     onBreakTimeChange: (Int) -> Unit,
     isEditTimerDialogVisible: Boolean,
@@ -204,8 +206,8 @@ fun PomodoroTimerScreen(
 @Composable
 fun TodayConcentrationInformation(
     concentrationGoal: LocalTime,
-    totalConcentrationTime: Time,
-    totalBreakTime: Time,
+    totalConcentrationTime: LocalTime,
+    totalBreakTime: LocalTime,
     onConcentrationGoalClick: () -> Unit
 ) {
     Column(
