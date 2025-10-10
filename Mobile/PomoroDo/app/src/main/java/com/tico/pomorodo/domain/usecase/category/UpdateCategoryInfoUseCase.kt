@@ -8,6 +8,6 @@ import javax.inject.Inject
 
 class UpdateCategoryInfoUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
     suspend operator fun invoke(category: Category) = withContext(Dispatchers.IO) {
-        categoryRepository.updateCategoryInfo(category)
+        categoryRepository.updateCategory(category)
     }
 }

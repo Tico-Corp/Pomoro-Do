@@ -7,12 +7,16 @@ import androidx.lifecycle.viewModelScope
 import com.tico.pomorodo.data.local.datasource.DataSource
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.SelectedUser
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.data.model.toSelectedUser
+import com.tico.pomorodo.data.model.toUser
 import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.category.DeleteCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
+import com.tico.pomorodo.domain.usecase.category.OutCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.UpdateCategoryInfoUseCase
 import com.tico.pomorodo.navigation.CategoryArgs
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +31,9 @@ import javax.inject.Inject
 class CategoryInfoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getCategoryInfoUseCase: GetCategoryInfoUseCase,
-    private val updateCategoryInfoUseCase: UpdateCategoryInfoUseCase
+    private val updateCategoryInfoUseCase: UpdateCategoryInfoUseCase,
+    private val deleteCategoryUseCase: DeleteCategoryUseCase,
+    private val outCategoryUseCase: OutCategoryUseCase
 ) : ViewModel() {
 
     private val args = CategoryArgs(savedStateHandle)
@@ -36,8 +42,14 @@ class CategoryInfoViewModel @Inject constructor(
     val category: StateFlow<Category?>
         get() = _category.asStateFlow()
 
+    private val _title = MutableStateFlow("")
+    val title: StateFlow<String> = _title
+
+    private val _openSettings = MutableStateFlow(OpenSettings.PUBLIC)
+    val openSettings: StateFlow<OpenSettings> = _openSettings
+
     private var _selectedGroupMembers =
-        MutableStateFlow<List<SelectedUser>>(listOf())
+        MutableStateFlow<List<SelectedUser>>(emptyList())
     val selectedGroupMembers: StateFlow<List<SelectedUser>>
         get() = _selectedGroupMembers.asStateFlow()
 
@@ -63,23 +75,31 @@ class CategoryInfoViewModel @Inject constructor(
     }
 
     fun setOpenSettingOption(newOption: OpenSettings) {
-        _category.value = category.value?.copy(openSettings = newOption)
+        _openSettings.value = newOption
     }
 
     fun setTitle(title: String) {
-        _category.value = category.value?.copy(title = title)
+        _title.value = title
     }
 
     fun setSelectedGroupMembers(newList: List<SelectedUser>) {
         _selectedGroupMembers.value = newList
     }
 
+    fun deleteCategory(option: DeletionOption) = viewModelScope.launch {
+        deleteCategoryUseCase(args.categoryId, option)
+    }
+
+    fun outCategory(option: DeletionOption) = viewModelScope.launch {
+        outCategoryUseCase(args.categoryId, option)
+    }
+
     fun validateInput(): Boolean {
         category.value?.let { category ->
-            if (category.type == CategoryType.GENERAL) {
-                return category.title.isNotBlank()
+            return if (category.type == CategoryType.PERSONAL) {
+                title.value.isNotBlank()
             } else {
-                return category.title.isNotBlank() && selectedGroupMembers.value.any { it.selected }
+                title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
             }
         }
         return false
@@ -90,6 +110,8 @@ class CategoryInfoViewModel @Inject constructor(
             when (result) {
                 is Resource.Success -> {
                     _category.value = result.data
+                    _title.value = result.data.title
+                    _openSettings.value = result.data.openSettings
                 }
 
                 is Resource.Loading -> {
@@ -118,7 +140,7 @@ class CategoryInfoViewModel @Inject constructor(
         val followerValue = follower.value
 
         if (categoryValue != null && followerValue != null) {
-            val groupMembers = categoryValue.groupMember
+            val groupMembers = categoryValue.groupMembers
 
             if (groupMembers != null) {
                 _selectedGroupMembers.value = followerValue.map { user ->
@@ -130,9 +152,17 @@ class CategoryInfoViewModel @Inject constructor(
     }
 
     fun updateCategoryInfo() {
+        // TODO: 그룹 카테고리 정보 수정 테스트 필요
         viewModelScope.launch {
-            category.value?.let {
-                updateCategoryInfoUseCase(it)
+            category.value?.let { original ->
+                val update = original.copy(
+                    title = title.value,
+                    openSettings = openSettings.value,
+                    groupMembers = selectedGroupMembers.value.filter { it.selected }
+                        .map(SelectedUser::toUser)
+                )
+                updateCategoryInfoUseCase(update)
+                _category.value = update
             }
         }
     }

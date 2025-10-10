@@ -22,11 +22,11 @@ class CategoryAddViewModel @Inject constructor(private val insertCategoryUseCase
     val title: StateFlow<String>
         get() = _title.asStateFlow()
 
-    private var _type = MutableStateFlow(CategoryType.GENERAL)
+    private var _type = MutableStateFlow(CategoryType.PERSONAL)
     val type: StateFlow<CategoryType>
         get() = _type.asStateFlow()
 
-    private var _openSettingOption = MutableStateFlow(OpenSettings.FULL)
+    private var _openSettingOption = MutableStateFlow(OpenSettings.PUBLIC)
     val openSettingOption: StateFlow<OpenSettings>
         get() = _openSettingOption.asStateFlow()
 
@@ -56,22 +56,20 @@ class CategoryAddViewModel @Inject constructor(private val insertCategoryUseCase
     }
 
     fun validateInput(): Boolean =
-        if (type.value == CategoryType.GENERAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
+        if (type.value == CategoryType.PERSONAL) title.value.isNotBlank() else title.value.isNotBlank() && selectedGroupMembers.value.any { it.selected }
 
     private fun fetchSelectedGroupMembers() {
         // TODO: 선택된 그룹원 불러오는 로직
     }
 
     fun insertCategory() = viewModelScope.launch {
+        // TODO: 그룹 카테고리 추가 테스트 필요
         val groupMember = selectedGroupMembers.value.filter { it.selected }.map { it.toUser() }
         insertCategoryUseCase.invoke(
             title = title.value,
             type = type.value,
-            isGroupReader = true,
             openSettings = openSettingOption.value,
-            groupReader = "",
-            groupMemberCount = groupMember.size,
-            groupMember = groupMember
+            groupMemberIds = groupMember.map { it.id },
         )
     }
 }

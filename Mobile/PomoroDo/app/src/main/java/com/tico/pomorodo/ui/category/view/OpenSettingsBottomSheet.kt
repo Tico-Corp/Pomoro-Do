@@ -82,72 +82,72 @@ fun OpenSettingsBottomSheet(
                 color = PomoroDoTheme.colorScheme.onBackground
             )
             Row(
-                modifier = Modifier.clickableWithoutRipple { selectedOption = OpenSettings.FULL },
+                modifier = Modifier.clickableWithoutRipple { selectedOption = OpenSettings.PUBLIC },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 SimpleIcon(
                     size = 15,
-                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.FULL.iconString]),
-                    contentDescriptionId = OpenSettings.FULL.descriptionId
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.PUBLIC.iconString]),
+                    contentDescriptionId = OpenSettings.PUBLIC.descriptionId
                 )
                 SimpleText(
-                    textId = OpenSettings.FULL.textId,
+                    textId = OpenSettings.PUBLIC.textId,
                     style = PomoroDoTheme.typography.laundryGothicRegular14,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 NoPaddingRadioButton(
-                    selected = selectedOption == OpenSettings.FULL,
-                    onClick = { selectedOption = OpenSettings.FULL },
+                    selected = selectedOption == OpenSettings.PUBLIC,
+                    onClick = { selectedOption = OpenSettings.PUBLIC },
                     colors = radioButtonColors
                 )
             }
             HorizontalDivider(color = PomoroDoTheme.colorScheme.dialogGray90)
             Row(
                 modifier = Modifier.clickableWithoutRipple {
-                    selectedOption = OpenSettings.FOLLOWER
+                    selectedOption = OpenSettings.FOLLOWERS
                 },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 SimpleIcon(
                     size = 15,
-                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.FOLLOWER.iconString]),
-                    contentDescriptionId = OpenSettings.FOLLOWER.descriptionId
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.FOLLOWERS.iconString]),
+                    contentDescriptionId = OpenSettings.FOLLOWERS.descriptionId
                 )
                 SimpleText(
-                    textId = OpenSettings.FOLLOWER.textId,
+                    textId = OpenSettings.FOLLOWERS.textId,
                     style = PomoroDoTheme.typography.laundryGothicRegular14,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 NoPaddingRadioButton(
-                    selected = selectedOption == OpenSettings.FOLLOWER,
-                    onClick = { selectedOption = OpenSettings.FOLLOWER },
+                    selected = selectedOption == OpenSettings.FOLLOWERS,
+                    onClick = { selectedOption = OpenSettings.FOLLOWERS },
                     colors = radioButtonColors
                 )
             }
             HorizontalDivider(color = PomoroDoTheme.colorScheme.dialogGray90)
             Row(
-                modifier = Modifier.clickableWithoutRipple { selectedOption = OpenSettings.ME },
+                modifier = Modifier.clickableWithoutRipple { selectedOption = OpenSettings.PRIVATE },
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 SimpleIcon(
                     size = 15,
-                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.ME.iconString]),
-                    contentDescriptionId = OpenSettings.ME.descriptionId
+                    imageVector = requireNotNull(PomoroDoTheme.iconPack[OpenSettings.PRIVATE.iconString]),
+                    contentDescriptionId = OpenSettings.PRIVATE.descriptionId
                 )
                 SimpleText(
-                    textId = OpenSettings.ME.textId,
+                    textId = OpenSettings.PRIVATE.textId,
                     style = PomoroDoTheme.typography.laundryGothicRegular14,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 NoPaddingRadioButton(
-                    selected = selectedOption == OpenSettings.ME,
-                    onClick = { selectedOption = OpenSettings.ME },
+                    selected = selectedOption == OpenSettings.PRIVATE,
+                    onClick = { selectedOption = OpenSettings.PRIVATE },
                     colors = radioButtonColors
                 )
             }

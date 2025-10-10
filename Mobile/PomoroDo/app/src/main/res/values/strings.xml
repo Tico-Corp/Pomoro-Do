@@ -80,7 +80,7 @@
     <string name="content_todo_more_info_delete">삭제</string>
 
     // category
-    <string name="content_category_general">일반</string>
+    <string name="content_category_personal">개인</string>
     <string name="content_category_group">그룹</string>
     <string name="content_category_invited_group">초대받은 그룹</string>
     <string name="content_accept">수락</string>

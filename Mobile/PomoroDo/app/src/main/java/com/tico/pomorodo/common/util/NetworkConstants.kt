@@ -8,4 +8,5 @@ object NetworkConstants {
     const val USER_NOT_FOUND = "U-102"
     const val INVALID_ACCESS_TOKEN = "T-201"
     const val INVALID_REFRESH_TOKEN = "T-202"
+    const val SUCCESS = "SUCCESS"
 }

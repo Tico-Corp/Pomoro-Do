@@ -12,8 +12,8 @@ data class CategoryWithTodoItemResponse(
     val type: CategoryType,
     val todoList: List<TodoResponse>,
     val openSettings: OpenSettings,
-    val groupMemberCount: Int,
-    val groupMember: List<UserResponse>
+    val totalMembers: Int,
+    val groupMembers: List<UserResponse>
 )
 
 fun CategoryWithTodoItemResponse.toCategoryWithTodoItem() = CategoryWithTodoItem(
@@ -22,6 +22,6 @@ fun CategoryWithTodoItemResponse.toCategoryWithTodoItem() = CategoryWithTodoItem
     type = type,
     todoList = todoList.map(TodoResponse::toTodoData),
     openSettings = openSettings,
-    groupMemberCount = groupMemberCount,
-    groupMember = groupMember.map(UserResponse::toUser)
+    totalMembers = totalMembers,
+    groupMembers = groupMembers.map(UserResponse::toUser)
 )

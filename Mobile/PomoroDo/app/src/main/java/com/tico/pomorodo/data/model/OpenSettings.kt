@@ -13,14 +13,14 @@ enum class OpenSettings(
     @StringRes val textId: Int,
     val enabled: Boolean
 ) {
-    FULL(IC_CATEGORY_FULL_OPEN, R.string.content_full_open, R.string.content_full_open, true),
-    FOLLOWER(
+    PUBLIC(IC_CATEGORY_FULL_OPEN, R.string.content_full_open, R.string.content_full_open, true),
+    FOLLOWERS(
         IC_CATEGORY_FOLLOWER_OPEN,
         R.string.content_follower_open,
         R.string.content_follower_open,
         true
     ),
-    ME(
+    PRIVATE(
         IC_CATEGORY_ONLY_ME_OPEN,
         R.string.content_only_me_open,
         R.string.content_only_me_open,

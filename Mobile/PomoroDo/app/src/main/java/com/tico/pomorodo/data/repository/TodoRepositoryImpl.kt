@@ -67,9 +67,9 @@ class TodoRepositoryImpl @Inject constructor(
                                 title = categoryEntity.title,
                                 openSettings = categoryEntity.openSettings,
                                 type = categoryEntity.type,
-                                groupMemberCount = categoryEntity.groupMemberCount,
-                                groupMember = categoryEntity.groupMember?.map { it.toUser() },
-                                todoList = todoListEntity.map(TodoEntity::toTodoData)
+                                groupMembers = categoryEntity.groupMember?.map { it.toUser() },
+                                todoList = todoListEntity.map(TodoEntity::toTodoData),
+                                totalMembers = categoryEntity.totalMembers
                             )
                         }.let { wrapToResource(Dispatchers.IO) { it } }
                     }

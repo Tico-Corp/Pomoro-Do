@@ -8,6 +8,7 @@ import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSource
 import com.tico.pomorodo.data.local.datasource.timer.TimerLocalDataSource
 import com.tico.pomorodo.data.local.datasource.todo.TodoLocalDataSource
 import com.tico.pomorodo.data.remote.datasource.AuthDataSource
+import com.tico.pomorodo.data.remote.datasource.CategoryRemoteDataSource
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource
 import com.tico.pomorodo.data.remote.datasource.TokenDataSource
 import com.tico.pomorodo.data.remote.datasource.UserRemoteDataSource
@@ -72,9 +73,14 @@ object RepositoryModule {
     @Singleton
     fun provideCategoryRepository(
         categoryLocalDataSource: CategoryLocalDataSource,
+        categoryRemoteDataSource: CategoryRemoteDataSource,
         networkHelper: NetworkHelper
     ): CategoryRepository {
-        return CategoryRepositoryImpl(categoryLocalDataSource, networkHelper)
+        return CategoryRepositoryImpl(
+            categoryLocalDataSource,
+            categoryRemoteDataSource,
+            networkHelper
+        )
     }
 
     @Provides

@@ -10,7 +10,7 @@ interface CategoryLocalDataSource {
 
     suspend fun insert(entity: CategoryEntity)
 
-    suspend fun insertAll(entities: List<CategoryEntity>)
+    suspend fun upsertAll(entities: List<CategoryEntity>)
 
     suspend fun update(entity: CategoryEntity)
 

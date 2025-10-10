@@ -28,9 +28,7 @@ fun rememberAppState(
     navController: NavHostController = rememberNavController(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ): AppState {
-    val isNetworkConnected: State<Boolean> =
-        mainViewModel.isNetworkConnected
-            .collectAsState(initial = false)
+    val isNetworkConnected: State<Boolean> = mainViewModel.isNetworkConnected.collectAsState()
     val isOffline = remember { mutableStateOf(false) }
 
     return remember(navController, isNetworkConnected, isOffline.value) {

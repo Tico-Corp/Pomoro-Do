@@ -1,6 +1,5 @@
 package com.tico.pomorodo.domain.repository
 
-import com.tico.pomorodo.data.model.Base
 import com.tico.pomorodo.data.model.Token
 import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.domain.model.Resource
@@ -18,10 +17,10 @@ interface AuthRepository {
     suspend fun clearIdToken()
     suspend fun saveFID(fid: String)
     suspend fun getFID(): String?
-    suspend fun requestLogin(): Flow<Resource<Base<Token>>>
+    suspend fun requestLogin(): Flow<Resource<Token>>
     suspend fun requestJoin(
         name: String,
         profile: File?,
         profileImageType: ProfileImageType
-    ): Flow<Resource<Base<Token>>>
+    ): Flow<Resource<Token>>
 }

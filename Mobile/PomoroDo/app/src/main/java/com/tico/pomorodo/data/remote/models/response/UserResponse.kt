@@ -5,10 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserResponse(
-    val id: Int,
-    val email: String,
-    val name: String,
-    val profileUrl: String? = null
+    val userId: Int,
+    val nickname: String,
+    val profileImageUrl: String?
 )
 
-fun UserResponse.toUser() = User(id, email, name, profileUrl)
+fun UserResponse.toUser() = User(
+    id = userId,
+    name = nickname,
+    profileUrl = profileImageUrl
+)

@@ -19,8 +19,8 @@ class CategoryLocalDataSourceImpl @Inject constructor(private val categoryDao: C
         return categoryDao.insert(entity)
     }
 
-    override suspend fun insertAll(entities: List<CategoryEntity>) {
-        return categoryDao.insertAll(entities)
+    override suspend fun upsertAll(entities: List<CategoryEntity>) {
+        return categoryDao.upsertAll(entities)
     }
 
     override suspend fun update(entity: CategoryEntity) {
