@@ -36,6 +36,15 @@ data class DecideCategoryInvitationResponse(
     val totalMembers: Int = 0
 )
 
+@Serializable
+data class InsertUpdateCategoryResponse(
+    val categoryId: Int,
+    val name: String,
+    val type: CategoryType,
+    val visibility: OpenSettings,
+    val totalMembers: Int = 0
+)
+
 fun AllCategoryResponse.toAllCategory() = AllCategory(
     personalCategories = personalCategories.map { it.toCategoryList(CategoryType.PERSONAL) },
     groupCategories = groupCategories.map { it.toCategoryList(CategoryType.GROUP) },
@@ -64,4 +73,12 @@ fun DecideCategoryInvitationResponse.toCategoryEntity(
     type = type,
     totalMembers = totalMembers,
     openSettings = openSettings
+)
+
+fun InsertUpdateCategoryResponse.toCategoryEntity() = CategoryEntity(
+    id = categoryId,
+    title = name,
+    type = type,
+    totalMembers = totalMembers,
+    openSettings = visibility
 )
