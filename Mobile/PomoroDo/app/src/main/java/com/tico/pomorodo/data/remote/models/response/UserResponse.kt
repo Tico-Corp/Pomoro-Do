@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserResponse(
-    val groupMemberId: Int,
+    val userId: Int,
     val nickname: String,
     val profileImageUrl: String?
 )
 
 fun UserResponse.toUser() = User(
-    id = groupMemberId,
+    id = userId,
     name = nickname,
     profileUrl = profileImageUrl
 )
