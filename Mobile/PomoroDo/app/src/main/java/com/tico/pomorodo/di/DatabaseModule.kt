@@ -43,7 +43,7 @@ object DatabaseModule {
                     runBlocking {
                         val database = provideAppDatabase(context)
                         // 초기 데이터 설정
-                        database.categoryDao().insertAll(INITIAL_CATEGORY_DATA)
+                        database.categoryDao().upsertAll(INITIAL_CATEGORY_DATA)
                         database.todoDao().insertAll(INITIAL_TODO_DATA)
                         database.calendarDao().insert(INITIAL_CALENDAR_DATA)
                     }

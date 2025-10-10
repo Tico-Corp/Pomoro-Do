@@ -5,13 +5,14 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.tico.pomorodo.data.local.entity.CategoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface CategoryDao{
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(categories: List<CategoryEntity>)
+interface CategoryDao {
+    @Upsert
+    suspend fun upsertAll(categories: List<CategoryEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(category: CategoryEntity)
