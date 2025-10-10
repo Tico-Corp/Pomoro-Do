@@ -7,6 +7,7 @@ import com.tico.pomorodo.data.remote.models.request.CategoryUpdateRequest
 import com.tico.pomorodo.data.remote.models.response.AllCategoryResponse
 import com.tico.pomorodo.data.remote.models.response.BaseResponse
 import com.tico.pomorodo.data.remote.models.response.CategoryResponse
+import com.tico.pomorodo.data.remote.models.response.DecideCategoryInvitationResponse
 import com.tico.pomorodo.data.remote.service.CategoryApiService
 import javax.inject.Inject
 
@@ -46,7 +47,7 @@ class CategoryRemoteDataSourceImpl @Inject constructor(val categoryApiService: C
     override suspend fun decideCategoryInvitation(
         invitationId: Int,
         categoryInvitationRequest: CategoryInvitationRequest
-    ): BaseResponse<String> {
+    ): BaseResponse<DecideCategoryInvitationResponse> {
         return categoryApiService.decideCategoryInvitation(invitationId, categoryInvitationRequest)
     }
 }

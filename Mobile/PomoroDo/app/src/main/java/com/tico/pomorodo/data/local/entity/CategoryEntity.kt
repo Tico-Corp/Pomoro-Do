@@ -3,8 +3,8 @@ package com.tico.pomorodo.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tico.pomorodo.data.model.Category
-import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.CategoryList
+import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import kotlinx.serialization.Serializable
 
@@ -36,5 +36,6 @@ fun CategoryEntity.toCategory() = Category(
 fun CategoryEntity.toCategoryList() = CategoryList(
     categoryId = id,
     categoryName = title,
+    type = type,
     totalMembers = totalMembers
 )

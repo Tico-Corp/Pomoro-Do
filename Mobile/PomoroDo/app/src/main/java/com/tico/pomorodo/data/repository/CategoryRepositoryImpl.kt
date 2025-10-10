@@ -20,6 +20,7 @@ import com.tico.pomorodo.data.remote.models.request.CategoryInvitationRequest
 import com.tico.pomorodo.data.remote.models.request.CategoryRequest
 import com.tico.pomorodo.data.remote.models.response.toAllCategory
 import com.tico.pomorodo.data.remote.models.response.toCategory
+import com.tico.pomorodo.data.remote.models.response.toCategoryEntity
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.CategoryRepository
 import kotlinx.coroutines.Dispatchers
@@ -146,11 +147,13 @@ class CategoryRepositoryImpl @Inject constructor(
         decision: Decision
     ): Resource<Unit> {
         return wrapToResource(Dispatchers.IO) {
-            categoryRemoteDataSource.decideCategoryInvitation(
+            val res = categoryRemoteDataSource.decideCategoryInvitation(
                 invitationId,
                 CategoryInvitationRequest(decision)
             )
-            Unit
+            categoryLocalDataSource.update(
+                res.data.toCategoryEntity(CategoryType.GROUP, OpenSettings.GROUP)
+            )
         }
     }
 }

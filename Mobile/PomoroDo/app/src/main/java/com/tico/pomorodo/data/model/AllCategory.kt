@@ -9,6 +9,7 @@ data class AllCategory(
 data class CategoryList(
     val categoryId: Int,
     val categoryName: String,
+    val type: CategoryType,
     val totalMembers: Int
 )
 
