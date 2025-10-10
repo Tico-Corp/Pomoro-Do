@@ -19,23 +19,18 @@ class CategoryRemoteDataSourceImpl @Inject constructor(val categoryApiService: C
     override suspend fun getCategoryInfo(categoryId: Int): BaseResponse<CategoryResponse> =
         categoryApiService.getCategoryInfo(categoryId)
 
-    override suspend fun insertCategory(categoryRequest: CategoryRequest) {
+    override suspend fun insertCategory(categoryRequest: CategoryRequest) =
         categoryApiService.insertCategory(categoryRequest)
-    }
 
     override suspend fun updateCategory(
         categoryId: Int,
         categoryUpdateRequest: CategoryUpdateRequest
-    ) {
-        categoryApiService.updateCategory(categoryId, categoryUpdateRequest)
-    }
+    ) = categoryApiService.updateCategory(categoryId, categoryUpdateRequest)
 
     override suspend fun deleteCategory(
         categoryId: Int,
         categoryDeleteRequest: CategoryDeleteRequest
-    ) {
-        categoryApiService.deleteCategory(categoryId, categoryDeleteRequest)
-    }
+    ) = categoryApiService.deleteCategory(categoryId, categoryDeleteRequest)
 
     override suspend fun outCategory(
         categoryId: Int,

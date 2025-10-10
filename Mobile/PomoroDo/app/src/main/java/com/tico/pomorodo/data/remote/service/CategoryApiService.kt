@@ -8,6 +8,7 @@ import com.tico.pomorodo.data.remote.models.response.AllCategoryResponse
 import com.tico.pomorodo.data.remote.models.response.BaseResponse
 import com.tico.pomorodo.data.remote.models.response.CategoryResponse
 import com.tico.pomorodo.data.remote.models.response.DecideCategoryInvitationResponse
+import com.tico.pomorodo.data.remote.models.response.InsertUpdateCategoryResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -23,19 +24,19 @@ interface CategoryApiService {
     suspend fun getCategoryInfo(@Path("categoryId") categoryId: Int): BaseResponse<CategoryResponse>
 
     @POST("v1/categories")
-    suspend fun insertCategory(@Body categoryRequest: CategoryRequest)
+    suspend fun insertCategory(@Body categoryRequest: CategoryRequest): BaseResponse<InsertUpdateCategoryResponse>
 
     @PATCH("v1/categories/api/v1/categories/{categoryId}")
     suspend fun updateCategory(
         @Path("categoryId") categoryId: Int,
         @Body categoryUpdateRequest: CategoryUpdateRequest
-    )
+    ): BaseResponse<InsertUpdateCategoryResponse>
 
     @HTTP(method = "DELETE", path = "v1/categories/{categoryId}", hasBody = true)
     suspend fun deleteCategory(
         @Path("categoryId") categoryId: Int,
         @Body categoryDeleteRequest: CategoryDeleteRequest
-    )
+    ): BaseResponse<String>
 
     @POST("v1/categories/{categoryId}/leave")
     suspend fun outCategory(

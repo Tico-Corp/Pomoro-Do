@@ -1,9 +1,11 @@
 package com.tico.pomorodo.data.repository
 
+import com.tico.pomorodo.common.util.NetworkConstants
 import com.tico.pomorodo.common.util.NetworkHelper
 import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.local.datasource.category.CategoryLocalDataSource
 import com.tico.pomorodo.data.local.entity.CategoryEntity
+import com.tico.pomorodo.data.local.entity.SyncState
 import com.tico.pomorodo.data.local.entity.toCategory
 import com.tico.pomorodo.data.local.entity.toCategoryList
 import com.tico.pomorodo.data.model.AllCategory
@@ -41,7 +43,9 @@ class CategoryRepositoryImpl @Inject constructor(
 
         if (networkHelper.isNetworkConnected()) {
             val data = wrapToResource(Dispatchers.IO) {
-                categoryRemoteDataSource.getAllCategory().data.toAllCategory()
+                val res = categoryRemoteDataSource.getAllCategory().data.toAllCategory()
+                categoryLocalDataSource.upsertAll(res.toCategoryEntity())
+                res
             }
             emit(data)
         } else {
@@ -63,17 +67,19 @@ class CategoryRepositoryImpl @Inject constructor(
         emit(Resource.Loading)
 
         if (networkHelper.isNetworkConnected()) {
-            val res = categoryRemoteDataSource.getCategoryInfo(categoryId).data.toCategory()
-            emit(wrapToResource(Dispatchers.IO) { res })
-        } else {
-            val data = categoryLocalDataSource.getCategoryInfo(categoryId).map {
-                wrapToResource(Dispatchers.IO) {
-                    it.toCategory()
-                }
+            val data = wrapToResource(Dispatchers.IO) {
+                val response = categoryRemoteDataSource.getCategoryInfo(categoryId)
+                val category = response.data.toCategory()
+                categoryLocalDataSource.update(category.toCategoryEntity())
+                category
             }
+            emit(data)
+        } else {
+            val data = categoryLocalDataSource.getCategoryInfo(categoryId)
+                .map { wrapToResource(Dispatchers.IO) { it.toCategory() } }
             emitAll(data)
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
     override suspend fun insertCategory(
         title: String,
@@ -83,7 +89,7 @@ class CategoryRepositoryImpl @Inject constructor(
         startDate: String
     ) {
         if (networkHelper.isNetworkConnected()) {
-            categoryRemoteDataSource.insertCategory(
+            val res = categoryRemoteDataSource.insertCategory(
                 CategoryRequest(
                     startDate = startDate,
                     title = title,
@@ -92,17 +98,13 @@ class CategoryRepositoryImpl @Inject constructor(
                     memberIds = groupMemberIds
                 )
             )
-            val categoryEntity = CategoryEntity(
-                title = title,
-                type = type,
-                openSettings = openSettings,
-            )
-            categoryLocalDataSource.insert(categoryEntity)
+            categoryLocalDataSource.insert(res.data.toCategoryEntity())
         } else {
             val categoryEntity = CategoryEntity(
                 title = title,
                 type = type,
                 openSettings = openSettings,
+                syncState = SyncState.PENDING_CREATE
             )
             categoryLocalDataSource.insert(categoryEntity)
         }
@@ -110,21 +112,29 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override suspend fun updateCategory(category: Category) {
         if (networkHelper.isNetworkConnected()) {
-            categoryRemoteDataSource.updateCategory(
+            val res = categoryRemoteDataSource.updateCategory(
                 category.id,
                 category.toCategoryUpdateRequest()
             )
+
+            val updatedEntity = res.data.toCategoryEntity().copy(syncState = SyncState.SYNCED)
+            categoryLocalDataSource.update(updatedEntity)
         } else {
-            categoryLocalDataSource.update(category.toCategoryEntity())
+            categoryLocalDataSource.update(
+                category.toCategoryEntity().copy(syncState = SyncState.PENDING_UPDATE)
+            )
         }
     }
 
     override suspend fun deleteCategory(categoryId: Int, deleteOption: DeletionOption) {
         if (networkHelper.isNetworkConnected()) {
-            categoryRemoteDataSource.deleteCategory(
+            val res = categoryRemoteDataSource.deleteCategory(
                 categoryId,
                 CategoryDeleteRequest(deleteOption)
             )
+            if (res.code == NetworkConstants.SUCCESS) {
+                categoryLocalDataSource.delete(categoryId)
+            }
         } else {
             categoryLocalDataSource.delete(categoryId)
         }
