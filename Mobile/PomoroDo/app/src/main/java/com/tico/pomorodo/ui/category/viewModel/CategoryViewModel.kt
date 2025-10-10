@@ -67,6 +67,7 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
+    // TODO: 카테고리 초대 응답 테스트 필요
     fun decideCategoryInvitation(invitationId: Int, decision: Decision) = viewModelScope.launch {
         when (val result = decideCategoryInvitationUseCase(invitationId, decision)) {
             is Resource.Success -> {
