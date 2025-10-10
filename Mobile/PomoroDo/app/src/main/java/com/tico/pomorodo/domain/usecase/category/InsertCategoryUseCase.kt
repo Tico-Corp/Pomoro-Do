@@ -1,13 +1,13 @@
 package com.tico.pomorodo.domain.usecase.category
 
+import com.tico.pomorodo.common.util.Converters.Companion.TIME_ZONE
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.domain.repository.CategoryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import javax.inject.Inject
 
 class InsertCategoryUseCase @Inject constructor(private val categoryRepository: CategoryRepository) {
@@ -18,7 +18,7 @@ class InsertCategoryUseCase @Inject constructor(private val categoryRepository: 
         groupMemberIds: List<Int>?,
     ) = withContext(Dispatchers.IO) {
         val startDate =
-            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
+            Clock.System.todayIn(TIME_ZONE).toString()
         categoryRepository.insertCategory(
             title = title,
             type = type,

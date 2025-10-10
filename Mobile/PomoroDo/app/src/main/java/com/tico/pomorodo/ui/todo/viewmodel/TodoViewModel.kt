@@ -3,6 +3,7 @@ package com.tico.pomorodo.ui.todo.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tico.pomorodo.common.util.Converters.Companion.TIME_ZONE
 import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.TodoData
@@ -28,7 +29,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
@@ -53,7 +53,7 @@ class TodoViewModel @Inject constructor(
 
     private var _selectedDate =
         MutableStateFlow<LocalDate>(
-            Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).toTimeZoneOf5AM()
+            Clock.System.now().toLocalDateTime(TIME_ZONE).toTimeZoneOf5AM()
         )
     val selectedDate: StateFlow<LocalDate>
         get() = _selectedDate.asStateFlow()

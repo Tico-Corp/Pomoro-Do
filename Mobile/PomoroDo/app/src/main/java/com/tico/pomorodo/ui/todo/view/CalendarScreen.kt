@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.tico.pomorodo.R
+import com.tico.pomorodo.common.util.Converters.Companion.TIME_ZONE
 import com.tico.pomorodo.data.model.CalendarDate
 import com.tico.pomorodo.data.model.CalendarFocusState
 import com.tico.pomorodo.data.model.DayOfWeeks
@@ -49,11 +50,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DatePeriod
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.todayIn
 import kotlin.math.ceil
 
 @Composable
@@ -67,7 +67,7 @@ fun TodoCalendarScreen(
 ) {
     var showMonthly by remember { mutableStateOf(false) }
 
-    val currentDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
+    val currentDate = Clock.System.todayIn(TIME_ZONE)
 
     var currentMonth by remember {
         mutableStateOf(LocalDate(currentDate.year, currentDate.month, 1))
