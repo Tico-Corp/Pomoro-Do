@@ -29,9 +29,6 @@ import com.tico.pomorodo.domain.usecase.category.GetCategoryInfoUseCase
 import com.tico.pomorodo.domain.usecase.category.InsertCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.OutCategoryUseCase
 import com.tico.pomorodo.domain.usecase.category.UpdateCategoryInfoUseCase
-import com.tico.pomorodo.domain.usecase.timer.GetConcentrationGoalUseCase
-import com.tico.pomorodo.domain.usecase.timer.InsertConcentrationGoalUseCase
-import com.tico.pomorodo.domain.usecase.timer.UpdateConcentrationGoalUseCase
 import com.tico.pomorodo.domain.usecase.timer.CreateDailyTimerStatUseCase
 import com.tico.pomorodo.domain.usecase.timer.GetDailyTimerDataUseCase
 import com.tico.pomorodo.domain.usecase.timer.UpdateTargetFocusTimeUseCase
