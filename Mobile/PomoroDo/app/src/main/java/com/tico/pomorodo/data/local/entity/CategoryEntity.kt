@@ -19,7 +19,8 @@ data class CategoryEntity(
     val ownerNickname: String? = null,
     val ownerFlag: Boolean = true,
     val groupMember: List<UserEntity>? = null,
-    val totalMembers: Int = 0
+    val totalMembers: Int = 0,
+    val syncState: SyncState = SyncState.SYNCED
 )
 
 fun CategoryEntity.toCategory() = Category(
