@@ -267,14 +267,16 @@ fun CategoryInfoScreen(
                 GroupReader(groupReader)
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             }
-            CategoryOpenSettings(
-                iconString = openSettingOption.iconString,
-                textId = openSettingOption.textId,
-                enabled = openSettingOption.enabled,
-                descriptionId = openSettingOption.descriptionId,
-                onClicked = { onShowOpenSettingsBottomSheetChange(true) },
-                isGroupInfo = type == CategoryType.GROUP
-            )
+            if (!isOffline) {
+                CategoryOpenSettings(
+                    iconString = openSettingOption.iconString,
+                    textId = openSettingOption.textId,
+                    enabled = openSettingOption.enabled,
+                    descriptionId = openSettingOption.descriptionId,
+                    onClicked = { onShowOpenSettingsBottomSheetChange(true) },
+                    isGroupInfo = type == CategoryType.GROUP
+                )
+            }
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             if (type == CategoryType.GENERAL) {
                 Spacer(Modifier.height(37.dp))
