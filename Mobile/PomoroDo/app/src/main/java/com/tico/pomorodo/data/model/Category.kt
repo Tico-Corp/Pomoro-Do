@@ -11,7 +11,7 @@ data class Category(
     val ownerNickname: String? = null,
     val ownerFlag: Boolean,
     val groupMembers: List<User>? = null,
-    val totalMembers: Int
+    val totalMemberCount: Int
 )
 
 enum class CategoryType {
@@ -26,7 +26,7 @@ fun Category.toCategoryEntity() = CategoryEntity(
     ownerNickname = ownerNickname,
     ownerFlag = ownerFlag,
     groupMember = groupMembers?.map(User::toUserEntity),
-    totalMembers = totalMembers
+    totalMemberCount = totalMemberCount
 )
 
 fun Category.toCategoryUpdateRequest() = CategoryUpdateRequest(

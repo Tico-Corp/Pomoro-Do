@@ -104,7 +104,7 @@ fun CategoryScreen(
                         ) {
                             CategoryTag(
                                 title = category.categoryName,
-                                totalMembers = category.totalMembers,
+                                totalMemberCount = category.totalMemberCount,
                                 isAddButton = false,
                                 onAddClicked = {
                                     if (isOffline) context.executeToast(R.string.title_not_support_offline_mode)

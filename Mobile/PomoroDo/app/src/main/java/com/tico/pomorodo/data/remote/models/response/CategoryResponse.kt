@@ -3,6 +3,7 @@ package com.tico.pomorodo.data.remote.models.response
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,7 +15,8 @@ data class CategoryResponse(
     val ownerFlag: Boolean,
     val visibility: OpenSettings,
     val members: List<UserResponse>,
-    val totalMembers: Int,
+    @SerialName("totalMembers")
+    val totalMemberCount: Int,
 )
 
 fun CategoryResponse.toCategory() = Category(
@@ -25,5 +27,5 @@ fun CategoryResponse.toCategory() = Category(
     ownerNickname = ownerNickname,
     ownerFlag = ownerFlag,
     groupMembers = members.map(UserResponse::toUser),
-    totalMembers = totalMembers
+    totalMemberCount = totalMemberCount
 )

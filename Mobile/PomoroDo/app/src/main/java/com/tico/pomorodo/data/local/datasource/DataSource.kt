@@ -211,7 +211,7 @@ object DataSource {
                 UserEntity(id = 5, name = "구름이3"),
                 UserEntity(id = 6, name = "구름이4"),
             ),
-            totalMembers = 6
+            totalMemberCount = 6
         ),
         CategoryEntity(
             id = 2,
@@ -227,7 +227,7 @@ object DataSource {
                 UserEntity(id = 10, name = "모카커피4"),
                 UserEntity(id = 11, name = "모카커피5"),
             ),
-            totalMembers = 5
+            totalMemberCount = 5
         ),
         CategoryEntity(
             id = 3,
@@ -237,7 +237,7 @@ object DataSource {
             ownerFlag = true,
             ownerNickname = "사용자 1",
             groupMember = null,
-            totalMembers = 0
+            totalMemberCount = 0
         ),
         CategoryEntity(
             id = 4,
@@ -247,7 +247,7 @@ object DataSource {
             ownerFlag = true,
             ownerNickname = "사용자 1",
             groupMember = null,
-            totalMembers = 0
+            totalMemberCount = 0
         ),
     )
 
@@ -315,7 +315,7 @@ object DataSource {
                     User(id = 5, name = "구름이3"),
                     User(id = 6, name = "구름이4"),
                 ),
-                totalMembers = 6
+                totalMemberCount = 6
             ),
             CategoryWithTodoItem(
                 categoryId = 2,
@@ -367,7 +367,7 @@ object DataSource {
                     User(id = 10, name = "모카커피4"),
                     User(id = 11, name = "모카커피5"),
                 ),
-                totalMembers = 6
+                totalMemberCount = 6
             ),
             CategoryWithTodoItem(
                 categoryId = 3,
@@ -405,7 +405,7 @@ object DataSource {
                         updatedAt = System.currentTimeMillis()
                     ),
                 ),
-                totalMembers = 0
+                totalMemberCount = 0
             ),
             CategoryWithTodoItem(
                 categoryId = 4,
@@ -443,7 +443,7 @@ object DataSource {
                         updatedAt = System.currentTimeMillis()
                     ),
                 ),
-                totalMembers = 0
+                totalMemberCount = 0
             ),
         )
 }

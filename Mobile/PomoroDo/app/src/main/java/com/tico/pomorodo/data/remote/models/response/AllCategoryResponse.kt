@@ -6,6 +6,7 @@ import com.tico.pomorodo.data.model.CategoryInvitation
 import com.tico.pomorodo.data.model.CategoryList
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -19,7 +20,8 @@ data class AllCategoryResponse(
 data class CategoryListResponse(
     val categoryId: Int,
     val categoryName: String,
-    val totalMembers: Int = 0
+    @SerialName("totalMembers")
+    val totalMemberCount: Int = 0
 )
 
 @Serializable
@@ -33,7 +35,8 @@ data class CategoryInvitationResponse(
 data class DecideCategoryInvitationResponse(
     val categoryId: Int,
     val name: String,
-    val totalMembers: Int = 0
+    @SerialName("totalMembers")
+    val totalMemberCount: Int = 0
 )
 
 @Serializable
@@ -42,7 +45,8 @@ data class InsertUpdateCategoryResponse(
     val name: String,
     val type: CategoryType,
     val visibility: OpenSettings,
-    val totalMembers: Int = 0
+    @SerialName("totalMembers")
+    val totalMemberCount: Int = 0
 )
 
 fun AllCategoryResponse.toAllCategory() = AllCategory(
@@ -54,7 +58,7 @@ fun AllCategoryResponse.toAllCategory() = AllCategory(
 fun CategoryListResponse.toCategoryList(type: CategoryType) = CategoryList(
     categoryId = categoryId,
     categoryName = categoryName,
-    totalMembers = totalMembers,
+    totalMemberCount = totalMemberCount,
     type = type
 )
 
@@ -71,7 +75,7 @@ fun DecideCategoryInvitationResponse.toCategoryEntity(
     id = categoryId,
     title = name,
     type = type,
-    totalMembers = totalMembers,
+    totalMemberCount = totalMemberCount,
     openSettings = openSettings
 )
 
@@ -79,6 +83,6 @@ fun InsertUpdateCategoryResponse.toCategoryEntity() = CategoryEntity(
     id = categoryId,
     title = name,
     type = type,
-    totalMembers = totalMembers,
+    totalMemberCount = totalMemberCount,
     openSettings = visibility
 )

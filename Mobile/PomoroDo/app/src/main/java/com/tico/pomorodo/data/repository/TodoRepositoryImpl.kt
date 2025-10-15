@@ -69,7 +69,7 @@ class TodoRepositoryImpl @Inject constructor(
                                 type = categoryEntity.type,
                                 groupMembers = categoryEntity.groupMember?.map { it.toUser() },
                                 todoList = todoListEntity.map(TodoEntity::toTodoData),
-                                totalMembers = categoryEntity.totalMembers
+                                totalMemberCount = categoryEntity.totalMemberCount
                             )
                         }.let { wrapToResource(Dispatchers.IO) { it } }
                     }

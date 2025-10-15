@@ -19,7 +19,7 @@ data class CategoryEntity(
     val ownerNickname: String? = null,
     val ownerFlag: Boolean = true,
     val groupMember: List<UserEntity>? = null,
-    val totalMembers: Int = 0,
+    val totalMemberCount: Int = 0,
     val syncState: SyncState = SyncState.SYNCED
 )
 
@@ -31,12 +31,12 @@ fun CategoryEntity.toCategory() = Category(
     ownerNickname = ownerNickname,
     ownerFlag = ownerFlag,
     groupMembers = groupMember?.map { it.toUser() },
-    totalMembers = totalMembers
+    totalMemberCount = totalMemberCount
 )
 
 fun CategoryEntity.toCategoryList() = CategoryList(
     categoryId = id,
     categoryName = title,
     type = type,
-    totalMembers = totalMembers
+    totalMemberCount = totalMemberCount
 )

@@ -12,7 +12,7 @@ data class CategoryList(
     val categoryId: Int,
     val categoryName: String,
     val type: CategoryType,
-    val totalMembers: Int
+    val totalMemberCount: Int
 )
 
 data class CategoryInvitation(
@@ -28,7 +28,7 @@ fun CategoryList.toCategoryEntity() = CategoryEntity(
     id = categoryId,
     title = categoryName,
     type = type,
-    totalMembers = totalMembers,
+    totalMemberCount = totalMemberCount,
     openSettings = when (type) {
         CategoryType.PERSONAL -> OpenSettings.PUBLIC
         CategoryType.GROUP -> OpenSettings.GROUP
