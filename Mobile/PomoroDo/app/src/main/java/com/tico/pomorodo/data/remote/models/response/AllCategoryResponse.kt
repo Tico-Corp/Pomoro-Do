@@ -1,6 +1,7 @@
 package com.tico.pomorodo.data.remote.models.response
 
 import com.tico.pomorodo.data.local.entity.CategoryEntity
+import com.tico.pomorodo.data.local.entity.SyncState
 import com.tico.pomorodo.data.model.AllCategory
 import com.tico.pomorodo.data.model.CategoryInvitation
 import com.tico.pomorodo.data.model.CategoryList
@@ -79,10 +80,12 @@ fun DecideCategoryInvitationResponse.toCategoryEntity(
     openSettings = openSettings
 )
 
-fun InsertUpdateCategoryResponse.toCategoryEntity() = CategoryEntity(
-    id = categoryId,
-    title = name,
-    type = type,
-    totalMemberCount = totalMemberCount,
-    openSettings = visibility
-)
+fun InsertUpdateCategoryResponse.toCategoryEntity(syncState: SyncState = SyncState.SYNCED) =
+    CategoryEntity(
+        id = categoryId,
+        title = name,
+        type = type,
+        totalMemberCount = totalMemberCount,
+        openSettings = visibility,
+        syncState = syncState
+    )

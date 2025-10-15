@@ -117,11 +117,11 @@ class CategoryRepositoryImpl @Inject constructor(
                 category.toCategoryUpdateRequest()
             )
 
-            val updatedEntity = res.data.toCategoryEntity().copy(syncState = SyncState.SYNCED)
+            val updatedEntity = res.data.toCategoryEntity()
             categoryLocalDataSource.update(updatedEntity)
         } else {
             categoryLocalDataSource.update(
-                category.toCategoryEntity().copy(syncState = SyncState.PENDING_UPDATE)
+                category.toCategoryEntity(SyncState.PENDING_UPDATE)
             )
         }
     }
