@@ -11,7 +11,7 @@ import com.tico.pomorodo.data.remote.models.response.DecideCategoryInvitationRes
 import com.tico.pomorodo.data.remote.service.CategoryApiService
 import javax.inject.Inject
 
-class CategoryRemoteDataSourceImpl @Inject constructor(val categoryApiService: CategoryApiService) :
+class CategoryRemoteDataSourceImpl @Inject constructor(private val categoryApiService: CategoryApiService) :
     CategoryRemoteDataSource {
     override suspend fun getAllCategory(): BaseResponse<AllCategoryResponse> =
         categoryApiService.getAllCategory()
