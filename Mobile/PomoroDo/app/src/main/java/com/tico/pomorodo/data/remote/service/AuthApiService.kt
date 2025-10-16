@@ -1,7 +1,7 @@
 package com.tico.pomorodo.data.remote.service
 
 import com.tico.pomorodo.data.remote.models.response.BaseResponse
-import com.tico.pomorodo.data.remote.models.response.TokenResponse
+import com.tico.pomorodo.data.remote.models.response.user.TokenResponse
 import com.tico.pomorodo.domain.model.ProfileImageType
 import okhttp3.MultipartBody
 import retrofit2.http.Multipart

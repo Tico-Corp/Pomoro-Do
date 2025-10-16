@@ -1,7 +1,7 @@
 package com.tico.pomorodo.data.model
 
 import com.tico.pomorodo.data.local.entity.TodoEntity
-import com.tico.pomorodo.data.remote.models.request.TodoRequest
+import com.tico.pomorodo.data.remote.models.request.todo.TodoRequest
 import kotlinx.datetime.LocalDate
 
 data class TodoData(

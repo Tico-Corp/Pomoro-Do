@@ -1,14 +1,14 @@
 package com.tico.pomorodo.data.remote.datasource
 
-import com.tico.pomorodo.data.remote.models.request.CategoryDeleteRequest
-import com.tico.pomorodo.data.remote.models.request.CategoryInvitationRequest
-import com.tico.pomorodo.data.remote.models.request.CategoryRequest
-import com.tico.pomorodo.data.remote.models.request.CategoryUpdateRequest
-import com.tico.pomorodo.data.remote.models.response.AllCategoryResponse
+import com.tico.pomorodo.data.remote.models.request.category.CategoryDeleteRequest
+import com.tico.pomorodo.data.remote.models.request.category.CategoryInvitationRequest
+import com.tico.pomorodo.data.remote.models.request.category.CategoryRequest
+import com.tico.pomorodo.data.remote.models.request.category.CategoryUpdateRequest
+import com.tico.pomorodo.data.remote.models.response.category.AllCategoryResponse
 import com.tico.pomorodo.data.remote.models.response.BaseResponse
-import com.tico.pomorodo.data.remote.models.response.CategoryResponse
-import com.tico.pomorodo.data.remote.models.response.DecideCategoryInvitationResponse
-import com.tico.pomorodo.data.remote.models.response.InsertUpdateCategoryResponse
+import com.tico.pomorodo.data.remote.models.response.category.CategoryResponse
+import com.tico.pomorodo.data.remote.models.response.category.DecideCategoryInvitationResponse
+import com.tico.pomorodo.data.remote.models.response.category.InsertUpdateCategoryResponse
 
 interface CategoryRemoteDataSource {
     suspend fun getAllCategory(): BaseResponse<AllCategoryResponse>

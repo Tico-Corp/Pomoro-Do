@@ -1,4 +1,4 @@
-package com.tico.pomorodo.data.remote.models.response
+package com.tico.pomorodo.data.remote.models.response.todo
 
 import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.model.TodoData

@@ -2,7 +2,7 @@ package com.tico.pomorodo.data.model
 
 import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.SyncState
-import com.tico.pomorodo.data.remote.models.request.CategoryUpdateRequest
+import com.tico.pomorodo.data.remote.models.request.category.CategoryUpdateRequest
 
 data class Category(
     val id: Int = 0,

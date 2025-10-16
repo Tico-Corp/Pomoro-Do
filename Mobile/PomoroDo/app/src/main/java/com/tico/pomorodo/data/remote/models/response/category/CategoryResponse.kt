@@ -1,8 +1,10 @@
-package com.tico.pomorodo.data.remote.models.response
+package com.tico.pomorodo.data.remote.models.response.category
 
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.remote.models.response.user.UserResponse
+import com.tico.pomorodo.data.remote.models.response.user.toUser
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

@@ -3,7 +3,7 @@ package com.tico.pomorodo.data.repository
 import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.model.Token
 import com.tico.pomorodo.data.remote.datasource.TokenDataSource
-import com.tico.pomorodo.data.remote.models.response.toToken
+import com.tico.pomorodo.data.remote.models.response.user.toToken
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.TokenRepository
 import kotlinx.coroutines.Dispatchers

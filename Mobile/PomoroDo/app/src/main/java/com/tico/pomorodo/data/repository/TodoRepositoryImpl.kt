@@ -11,8 +11,8 @@ import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.data.model.toTodoEntity
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource
-import com.tico.pomorodo.data.remote.models.response.CategoryWithTodoItemResponse
-import com.tico.pomorodo.data.remote.models.response.toCategoryWithTodoItem
+import com.tico.pomorodo.data.remote.models.response.todo.CategoryWithTodoItemResponse
+import com.tico.pomorodo.data.remote.models.response.todo.toCategoryWithTodoItem
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.TodoRepository
 import kotlinx.coroutines.Dispatchers

@@ -3,7 +3,7 @@ package com.tico.pomorodo.data.repository
 import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.model.UserProfile
 import com.tico.pomorodo.data.remote.datasource.UserRemoteDataSource
-import com.tico.pomorodo.data.remote.models.response.toUserProfile
+import com.tico.pomorodo.data.remote.models.response.user.toUserProfile
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.UserRepository
 import kotlinx.coroutines.Dispatchers

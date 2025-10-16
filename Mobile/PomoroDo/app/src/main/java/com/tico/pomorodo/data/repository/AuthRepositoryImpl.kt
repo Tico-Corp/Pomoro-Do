@@ -4,7 +4,7 @@ import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.local.PreferencesManager
 import com.tico.pomorodo.data.model.Token
 import com.tico.pomorodo.data.remote.datasource.AuthDataSource
-import com.tico.pomorodo.data.remote.models.response.toToken
+import com.tico.pomorodo.data.remote.models.response.user.toToken
 import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.AuthRepository
