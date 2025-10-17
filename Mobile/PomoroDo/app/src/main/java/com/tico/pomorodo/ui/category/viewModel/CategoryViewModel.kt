@@ -3,10 +3,11 @@ package com.tico.pomorodo.ui.category.viewModel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tico.pomorodo.data.local.datasource.DataSource
-import com.tico.pomorodo.data.model.Category
-import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.data.model.CategoryInvitation
+import com.tico.pomorodo.data.model.CategoryList
+import com.tico.pomorodo.data.model.Decision
 import com.tico.pomorodo.domain.model.Resource
+import com.tico.pomorodo.domain.usecase.category.DecideCategoryInvitationUseCase
 import com.tico.pomorodo.domain.usecase.category.GetAllCategoryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,16 +17,22 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoryViewModel @Inject constructor(private val getAllCategoryUseCase: GetAllCategoryUseCase) :
+class CategoryViewModel @Inject constructor(
+    private val getAllCategoryUseCase: GetAllCategoryUseCase,
+    private val decideCategoryInvitationUseCase: DecideCategoryInvitationUseCase
+) :
     ViewModel() {
+    private var _personalCategories = MutableStateFlow<List<CategoryList>>(emptyList())
+    val personalCategories: StateFlow<List<CategoryList>>
+        get() = _personalCategories.asStateFlow()
 
-    private var _categoryList = MutableStateFlow<List<Category>>(emptyList())
-    val categoryList: StateFlow<List<Category>>
-        get() = _categoryList.asStateFlow()
+    private var _groupCategories = MutableStateFlow<List<CategoryList>>(emptyList())
+    val groupCategories: StateFlow<List<CategoryList>>
+        get() = _groupCategories.asStateFlow()
 
-    private var _inviteGroupCategoryList = MutableStateFlow(DataSource.inviteList)
-    val inviteGroupCategoryList: StateFlow<List<InviteCategory>>
-        get() = _inviteGroupCategoryList.asStateFlow()
+    private var _categoryInvitations = MutableStateFlow<List<CategoryInvitation>>(emptyList())
+    val categoryInvitations: StateFlow<List<CategoryInvitation>>
+        get() = _categoryInvitations.asStateFlow()
 
     private var _isLoading = MutableStateFlow<Boolean>(false)
     val isLoading: StateFlow<Boolean>
@@ -40,7 +47,9 @@ class CategoryViewModel @Inject constructor(private val getAllCategoryUseCase: G
             when (result) {
                 is Resource.Success -> {
                     _isLoading.value = false
-                    _categoryList.value = result.data
+                    _personalCategories.value = result.data.personalCategories
+                    _groupCategories.value = result.data.groupCategories
+                    _categoryInvitations.value = result.data.categoryInvitations
                 }
 
                 is Resource.Loading -> {
@@ -54,6 +63,27 @@ class CategoryViewModel @Inject constructor(private val getAllCategoryUseCase: G
                 is Resource.Failure.Error -> {
                     Log.e("CategoryViewModel", "getAllCategory: ${result.code} ${result.message}")
                 }
+            }
+        }
+    }
+
+    // TODO: 카테고리 초대 응답 테스트 필요
+    fun decideCategoryInvitation(invitationId: Int, decision: Decision) = viewModelScope.launch {
+        when (val result = decideCategoryInvitationUseCase(invitationId, decision)) {
+            is Resource.Success -> {
+                _categoryInvitations.value =
+                    _categoryInvitations.value.filterNot { it.categoryInvitationId == invitationId }
+            }
+
+            is Resource.Loading -> {
+            }
+
+            is Resource.Failure.Exception -> {
+                Log.e("CategoryViewModel", "getAllCategory: ${result.message}")
+            }
+
+            is Resource.Failure.Error -> {
+                Log.e("CategoryViewModel", "getAllCategory: ${result.code} ${result.message}")
             }
         }
     }

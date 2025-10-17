@@ -254,14 +254,14 @@ private fun CategoryType(
             verticalAlignment = Alignment.CenterVertically
         ) {
             NoPaddingRadioButton(
-                selected = type == CategoryType.GENERAL,
-                onClick = { onTypeChanged(CategoryType.GENERAL) },
+                selected = type == CategoryType.PERSONAL,
+                onClick = { onTypeChanged(CategoryType.PERSONAL) },
                 colors = colors,
                 padding = PaddingValues(horizontal = 5.dp)
             )
             SimpleText(
-                modifier = Modifier.clickableWithoutRipple { onTypeChanged(CategoryType.GENERAL) },
-                textId = R.string.content_category_general,
+                modifier = Modifier.clickableWithoutRipple { onTypeChanged(CategoryType.PERSONAL) },
+                textId = R.string.content_category_personal,
                 style = PomoroDoTheme.typography.laundryGothicRegular14,
                 color = PomoroDoTheme.colorScheme.onBackground
             )

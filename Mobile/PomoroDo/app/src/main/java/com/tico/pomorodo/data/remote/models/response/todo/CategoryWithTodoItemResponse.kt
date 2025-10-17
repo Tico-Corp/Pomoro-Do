@@ -1,8 +1,10 @@
-package com.tico.pomorodo.data.remote.models.response
+package com.tico.pomorodo.data.remote.models.response.todo
 
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
 import com.tico.pomorodo.data.model.OpenSettings
+import com.tico.pomorodo.data.remote.models.response.user.UserResponse
+import com.tico.pomorodo.data.remote.models.response.user.toUser
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,8 +14,8 @@ data class CategoryWithTodoItemResponse(
     val type: CategoryType,
     val todoList: List<TodoResponse>,
     val openSettings: OpenSettings,
-    val groupMemberCount: Int,
-    val groupMember: List<UserResponse>
+    val totalMemberCount: Int,
+    val groupMembers: List<UserResponse>
 )
 
 fun CategoryWithTodoItemResponse.toCategoryWithTodoItem() = CategoryWithTodoItem(
@@ -22,6 +24,6 @@ fun CategoryWithTodoItemResponse.toCategoryWithTodoItem() = CategoryWithTodoItem
     type = type,
     todoList = todoList.map(TodoResponse::toTodoData),
     openSettings = openSettings,
-    groupMemberCount = groupMemberCount,
-    groupMember = groupMember.map(UserResponse::toUser)
+    totalMemberCount = totalMemberCount,
+    groupMembers = groupMembers.map(UserResponse::toUser)
 )

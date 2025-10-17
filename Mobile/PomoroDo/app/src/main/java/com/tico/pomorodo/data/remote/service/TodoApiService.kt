@@ -1,9 +1,9 @@
 package com.tico.pomorodo.data.remote.service
 
-import com.tico.pomorodo.data.remote.models.request.TodoRequest
+import com.tico.pomorodo.data.remote.models.request.todo.TodoRequest
 import com.tico.pomorodo.data.remote.models.response.BaseResponse
-import com.tico.pomorodo.data.remote.models.response.CategoryWithTodoItemResponse
-import com.tico.pomorodo.data.remote.models.response.TodoResponse
+import com.tico.pomorodo.data.remote.models.response.todo.CategoryWithTodoItemResponse
+import com.tico.pomorodo.data.remote.models.response.todo.TodoResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

@@ -1,7 +1,7 @@
 package com.tico.pomorodo.data.remote.datasource
 
 import com.tico.pomorodo.data.remote.models.response.BaseResponse
-import com.tico.pomorodo.data.remote.models.response.UserInfoResponse
+import com.tico.pomorodo.data.remote.models.response.user.UserInfoResponse
 import com.tico.pomorodo.data.remote.service.UserApiService
 import javax.inject.Inject
 

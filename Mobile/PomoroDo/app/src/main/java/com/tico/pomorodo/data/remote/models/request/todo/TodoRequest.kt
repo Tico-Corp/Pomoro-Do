@@ -1,4 +1,4 @@
-package com.tico.pomorodo.data.remote.models.request
+package com.tico.pomorodo.data.remote.models.request.todo
 
 import com.tico.pomorodo.data.model.TodoState
 import kotlinx.serialization.Serializable

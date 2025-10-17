@@ -35,6 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
 import com.tico.pomorodo.data.model.Category
 import com.tico.pomorodo.data.model.CategoryType
+import com.tico.pomorodo.data.model.DeletionOption
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.ui.category.viewModel.CategoryInfoViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
@@ -68,6 +69,8 @@ fun CategoryInfoScreenRoute(
     var endOfEditingDialogVisible by remember { mutableStateOf(false) }
 
     val categoryState by viewModel.category.collectAsState()
+    val title by viewModel.title.collectAsState()
+    val openSettings by viewModel.openSettings.collectAsState()
     val selectedGroupMembers by viewModel.selectedGroupMembers.collectAsState()
 
     val focusManager = LocalFocusManager.current
@@ -101,7 +104,7 @@ fun CategoryInfoScreenRoute(
                 actionIconString = if (isReadOnly) null else IC_OK,
                 actionDisableIconString = if (isReadOnly) null else IC_UNOK,
                 isActionEnabled = (selectedGroupMembers.any { it.selected } && category.type == CategoryType.GROUP && viewModel.validateInput())
-                        || (category.type == CategoryType.GENERAL && viewModel.validateInput()),
+                        || (category.type == CategoryType.PERSONAL && viewModel.validateInput()),
                 actionIconDescriptionId = R.string.content_ic_ok,
                 onActionClickedListener = {
                     viewModel.updateCategoryInfo()
@@ -112,7 +115,7 @@ fun CategoryInfoScreenRoute(
                 }
             )
             if (showCheckGroupMemberBottomSheet) {
-                category.groupMember?.let { user ->
+                category.groupMembers?.let { user ->
                     CheckGroupMemberBottomSheet(
                         sheetState = checkGroupMemberSheetState,
                         onShowBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
@@ -128,7 +131,7 @@ fun CategoryInfoScreenRoute(
                 OpenSettingsBottomSheet(
                     title = stringResource(id = R.string.title_open_settings),
                     sheetState = openSettingsOptionSheetState,
-                    openSettingOption = category.openSettings,
+                    openSettingOption = openSettings,
                     onShowBottomSheetChange = { showOpenSettingsBottomSheet = it },
                     onOkButtonClicked = {
                         viewModel.setOpenSettingOption(it)
@@ -145,22 +148,49 @@ fun CategoryInfoScreenRoute(
                 groupDeleteFirstDialogVisible = groupDeleteFirstDialogVisible,
                 category = category,
                 setGroupDeleteFirstDialogVisible = { groupDeleteFirstDialogVisible = it },
-                onGroupDeleteClicked = { TODO("그룹 카테고리 삭제 로직") }
+                onGroupDeleteClicked = {
+                    viewModel.deleteCategory(it)
+                    navigateToBack()
+                }
             )
             GroupCategoryOutDialog(
                 groupOutDialogVisible = groupOutDialogVisible,
                 category = category,
                 setGroupOutDialogVisible = { groupOutDialogVisible = it },
-                onAllDeleteClicked = { /*TODO: 그룹 카테고리 할 일 모두 삭제 로직*/ },
-                onIncompleteTodoDeleteClicked = { /*TODO: 그룹 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                onNoDeleteClicked = { /*TODO: 그룹 카테고리 할 일은 삭제 안하는 로직*/ }
+                onAllDeleteClicked = {
+                    groupOutDialogVisible = false
+                    viewModel.outCategory(DeletionOption.DELETE_ALL)
+                    navigateToBack()
+                },
+                onIncompleteTodoDeleteClicked = {
+                    groupOutDialogVisible = false
+                    viewModel.outCategory(DeletionOption.RETAIN_COMPLETED)
+                    navigateToBack()
+                },
+                onNoDeleteClicked = {
+                    groupOutDialogVisible = false
+                    viewModel.outCategory(DeletionOption.RETAIN_ALL)
+                    navigateToBack()
+                }
             )
             PersonalDeleteDialog(
                 personalDeleteDialogVisible = personalDeleteDialogVisible,
                 setPersonalDeleteDialogVisible = { personalDeleteDialogVisible = it },
-                onAllDeleteClicked = { /*TODO: 일반 카테고리 할 일 모두 삭제 로직*/ },
-                onIncompleteTodoDeleteClicked = { /*TODO: 일반 카테고리 할 일 중 미완료 할 일만 삭제 로직*/ },
-                onNoDeleteClicked = { /*TODO: 일반 카테고리 할 일은 삭제 안하는 로직*/ }
+                onAllDeleteClicked = {
+                    personalDeleteDialogVisible = false
+                    viewModel.deleteCategory(DeletionOption.DELETE_ALL)
+                    navigateToBack()
+                },
+                onIncompleteTodoDeleteClicked = {
+                    personalDeleteDialogVisible = false
+                    viewModel.deleteCategory(DeletionOption.RETAIN_COMPLETED)
+                    navigateToBack()
+                },
+                onNoDeleteClicked = {
+                    personalDeleteDialogVisible = false
+                    viewModel.deleteCategory(DeletionOption.RETAIN_ALL)
+                    navigateToBack()
+                }
             )
             if (endOfEditingDialogVisible) {
                 EndOfEditingDialog(
@@ -174,16 +204,16 @@ fun CategoryInfoScreenRoute(
             CategoryInfoScreen(
                 isReadOnly = isReadOnly,
                 isOffline = isOffline,
-                title = category.title,
+                title = title,
                 type = category.type,
                 groupMemberCount = selectedGroupMembers.filter { it.selected }.size,
                 openSettingOption = if (category.type == CategoryType.GROUP) OpenSettings.GROUP
-                else category.openSettings,
-                groupReader = category.groupReader,
+                else openSettings,
+                ownerNickname = category.ownerNickname,
                 onTitleChanged = viewModel::setTitle,
                 onShowOpenSettingsBottomSheetChange = { showOpenSettingsBottomSheet = it },
                 onShowCheckGroupMemberBottomSheetChange = { showCheckGroupMemberBottomSheet = it },
-                isGroupReader = category.isGroupReader,
+                ownerFlag = category.ownerFlag,
                 onGroupDeleteClicked = { groupDeleteFirstDialogVisible = true },
                 onGroupOutClicked = { groupOutDialogVisible = true },
                 onPersonalDeletedClicked = { personalDeleteDialogVisible = true }
@@ -204,8 +234,8 @@ fun CategoryInfoScreen(
     groupMemberCount: Int,
     onTitleChanged: (String) -> Unit,
     openSettingOption: OpenSettings,
-    groupReader: String? = null,
-    isGroupReader: Boolean?,
+    ownerNickname: String? = null,
+    ownerFlag: Boolean,
     onShowOpenSettingsBottomSheetChange: (Boolean) -> Unit,
     onShowCheckGroupMemberBottomSheetChange: (Boolean) -> Unit,
     onGroupOutClicked: () -> Unit,
@@ -263,8 +293,8 @@ fun CategoryInfoScreen(
             }
             CategoryType(type)
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
-            if (groupReader != null) {
-                GroupReader(groupReader)
+            if (ownerNickname != null) {
+                GroupReader(ownerNickname)
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
             }
             if (!isOffline) {
@@ -278,7 +308,7 @@ fun CategoryInfoScreen(
                 )
             }
             HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
-            if (type == CategoryType.GENERAL) {
+            if (type == CategoryType.PERSONAL) {
                 Spacer(Modifier.height(37.dp))
                 if (!isOffline) {
                     CustomTextButton(
@@ -300,7 +330,7 @@ fun CategoryInfoScreen(
                 HorizontalDivider(color = PomoroDoTheme.colorScheme.gray90)
                 Spacer(Modifier.height(37.dp))
                 if (!isOffline) {
-                    if (isGroupReader == true) {
+                    if (ownerFlag) {
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                             CustomTextButton(
                                 modifier = Modifier.weight(1f),
@@ -322,7 +352,7 @@ fun CategoryInfoScreen(
                                 verticalPadding = 12.dp,
                             )
                         }
-                    } else if (isGroupReader == false) {
+                    } else {
                         CustomTextButton(
                             text = stringResource(id = R.string.content_group_out),
                             containerColor = Color.Unspecified,
@@ -372,7 +402,7 @@ private fun CategoryType(type: CategoryType) {
         )
         Spacer(modifier = Modifier.weight(1f))
         SimpleText(
-            textId = if (type == CategoryType.GENERAL) R.string.content_category_general else R.string.content_category_group,
+            textId = if (type == CategoryType.PERSONAL) R.string.content_category_personal else R.string.content_category_group,
             style = PomoroDoTheme.typography.laundryGothicRegular14,
             color = PomoroDoTheme.colorScheme.onBackground
         )
@@ -383,7 +413,7 @@ private fun Category.isReadOnly(isOffline: Boolean): Boolean {
     return if (isOffline) {
         this.type == CategoryType.GROUP
     } else {
-        this.type == CategoryType.GROUP && this.isGroupReader == false
+        this.type == CategoryType.GROUP && !ownerFlag
     }
 }
 
@@ -392,10 +422,11 @@ private fun GroupCategoryDeleteDialog(
     groupDeleteFirstDialogVisible: Boolean,
     setGroupDeleteFirstDialogVisible: (Boolean) -> Unit,
     category: Category,
-    onGroupDeleteClicked: () -> Unit
+    onGroupDeleteClicked: (DeletionOption) -> Unit
 ) {
     var deleteDialogInputText by rememberSaveable { mutableStateOf("") }
     var groupDeleteSecondDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var deleteOption: DeletionOption? by rememberSaveable { mutableStateOf(null) }
 
     if (groupDeleteFirstDialogVisible) {
         CategoryDeleteOptionDialog(
@@ -405,14 +436,17 @@ private fun GroupCategoryDeleteDialog(
                 category.title
             ),
             onAllDeleteClicked = {
+                deleteOption = DeletionOption.DELETE_ALL
                 setGroupDeleteFirstDialogVisible(false)
                 groupDeleteSecondDialogVisible = true
             },
             onIncompleteTodoDeleteClicked = {
+                deleteOption = DeletionOption.RETAIN_COMPLETED
                 setGroupDeleteFirstDialogVisible(false)
                 groupDeleteSecondDialogVisible = true
             },
             onNoDeleteClicked = {
+                deleteOption = DeletionOption.RETAIN_ALL
                 setGroupDeleteFirstDialogVisible(false)
                 groupDeleteSecondDialogVisible = true
             },
@@ -425,7 +459,12 @@ private fun GroupCategoryDeleteDialog(
             enabled = deleteDialogInputText == category.title.getNoSpace(),
             value = deleteDialogInputText,
             onValueChange = { deleteDialogInputText = it },
-            onConfirmation = onGroupDeleteClicked,
+            onConfirmation = {
+                groupDeleteSecondDialogVisible = false
+                deleteOption?.let {
+                    onGroupDeleteClicked(it)
+                }
+            },
             onDismissRequest = { groupDeleteSecondDialogVisible = false })
     }
 }

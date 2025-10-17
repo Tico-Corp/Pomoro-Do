@@ -312,7 +312,7 @@ fun CategoryWithTodoItems(
 ) {
     CategoryTag(
         title = categoryWithTodoItem.title,
-        groupMemberCount = categoryWithTodoItem.groupMemberCount,
+        totalMemberCount = categoryWithTodoItem.totalMemberCount,
         onAddClicked = onClickedCategoryTag,
         isAddButton = (!isFriend && !isOffline) || (isOffline && !isGroupCategory),
         enabled = (!isFriend && !isOffline) || (isOffline && !isGroupCategory)

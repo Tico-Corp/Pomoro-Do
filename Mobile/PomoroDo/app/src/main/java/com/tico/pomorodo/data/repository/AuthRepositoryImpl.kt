@@ -2,11 +2,9 @@ package com.tico.pomorodo.data.repository
 
 import com.tico.pomorodo.common.util.wrapToResource
 import com.tico.pomorodo.data.local.PreferencesManager
-import com.tico.pomorodo.data.model.Base
 import com.tico.pomorodo.data.model.Token
 import com.tico.pomorodo.data.remote.datasource.AuthDataSource
-import com.tico.pomorodo.data.remote.models.response.toBase
-import com.tico.pomorodo.data.remote.models.response.toToken
+import com.tico.pomorodo.data.remote.models.response.user.toToken
 import com.tico.pomorodo.domain.model.ProfileImageType
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.AuthRepository
@@ -61,11 +59,10 @@ class AuthRepositoryImpl @Inject constructor(
         return preferencesManager.getFID()
     }
 
-    override suspend fun requestLogin(): Flow<Resource<Base<Token>>> = flow {
+    override suspend fun requestLogin(): Flow<Resource<Token>> = flow {
         emit(Resource.Loading)
         val data = wrapToResource(Dispatchers.IO) {
-            val response = authDataSource.requestLogin()
-            response.toBase { tokenResponse -> tokenResponse.toToken() }
+            authDataSource.requestLogin().data.toToken()
         }
         emit(data)
     }.flowOn(Dispatchers.IO)
@@ -75,13 +72,11 @@ class AuthRepositoryImpl @Inject constructor(
         name: String,
         profile: File?,
         profileImageType: ProfileImageType
-    ): Flow<Resource<Base<Token>>> =
+    ): Flow<Resource<Token>> =
         flow {
             emit(Resource.Loading)
             val data = wrapToResource(Dispatchers.IO) {
-                val response =
-                    authDataSource.requestJoin(name, profile, profileImageType)
-                response.toBase { tokenResponse -> tokenResponse.toToken() }
+                authDataSource.requestJoin(name, profile, profileImageType).data.toToken()
             }
             emit(data)
         }.flowOn(Dispatchers.IO)

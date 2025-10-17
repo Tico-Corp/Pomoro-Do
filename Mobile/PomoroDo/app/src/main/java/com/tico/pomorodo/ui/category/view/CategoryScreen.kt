@@ -23,8 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.tico.pomorodo.R
-import com.tico.pomorodo.data.model.Category
-import com.tico.pomorodo.data.model.InviteCategory
+import com.tico.pomorodo.data.model.CategoryInvitation
+import com.tico.pomorodo.data.model.CategoryList
+import com.tico.pomorodo.data.model.Decision
 import com.tico.pomorodo.ui.category.viewModel.CategoryViewModel
 import com.tico.pomorodo.ui.common.view.CustomTextButton
 import com.tico.pomorodo.ui.common.view.CustomTopAppBar
@@ -38,10 +39,11 @@ import com.tico.pomorodo.ui.todo.view.CategoryTag
 @Composable
 fun CategoryScreen(
     isOffline: Boolean,
-    generalCategoryList: List<Category>,
-    groupCategoryList: List<Category>,
-    inviteGroupCategoryList: List<InviteCategory>,
-    onCategoryClicked: (Int) -> Unit
+    personalCategoryList: List<CategoryList>,
+    groupCategoryList: List<CategoryList>,
+    inviteGroupCategoryList: List<CategoryInvitation>,
+    onCategoryClicked: (Int) -> Unit,
+    onInvitationDecisionClicked: (Int, Decision) -> Unit,
 ) {
     val context = LocalContext.current
     Surface(
@@ -55,7 +57,7 @@ fun CategoryScreen(
         ) {
             Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 SimpleText(
-                    textId = R.string.content_category_general,
+                    textId = R.string.content_category_personal,
                     style = PomoroDoTheme.typography.laundryGothicBold16,
                     color = PomoroDoTheme.colorScheme.onBackground
                 )
@@ -63,20 +65,19 @@ fun CategoryScreen(
                     modifier = Modifier,
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    generalCategoryList.forEach { category ->
+                    personalCategoryList.forEach { category ->
                         Row(
                             modifier = Modifier
                                 .clickableWithoutRipple(
                                     enabled = true,
-                                    onClick = { onCategoryClicked(category.id) }
+                                    onClick = { onCategoryClicked(category.categoryId) }
                                 )
                                 .fillMaxWidth()
                         ) {
                             CategoryTag(
-                                title = category.title,
-                                groupMemberCount = category.groupMemberCount,
+                                title = category.categoryName,
                                 isAddButton = false,
-                                onAddClicked = { onCategoryClicked(category.id) }
+                                onAddClicked = { onCategoryClicked(category.categoryId) }
                             )
                         }
                     }
@@ -96,18 +97,18 @@ fun CategoryScreen(
                                     enabled = true,
                                     onClick = {
                                         if (isOffline) context.executeToast(R.string.title_not_support_offline_mode)
-                                        else onCategoryClicked(category.id)
+                                        else onCategoryClicked(category.categoryId)
                                     }
                                 )
                                 .fillMaxWidth()
                         ) {
                             CategoryTag(
-                                title = category.title,
-                                groupMemberCount = category.groupMemberCount,
+                                title = category.categoryName,
+                                totalMemberCount = category.totalMemberCount,
                                 isAddButton = false,
                                 onAddClicked = {
                                     if (isOffline) context.executeToast(R.string.title_not_support_offline_mode)
-                                    else onCategoryClicked(category.id)
+                                    else onCategoryClicked(category.categoryId)
                                 }
                             )
                         }
@@ -122,12 +123,22 @@ fun CategoryScreen(
                         color = PomoroDoTheme.colorScheme.onBackground
                     )
                     Column(modifier = Modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        inviteGroupCategoryList.forEach { category ->
+                        inviteGroupCategoryList.forEach { invitation ->
                             InvitedCategoryItem(
-                                title = category.title,
-                                groupReader = category.groupReader,
-                                onAcceptButtonClicked = {},
-                                onRejectButtonClicked = {}
+                                title = invitation.categoryName,
+                                groupReader = invitation.ownerNickname,
+                                onAcceptButtonClicked = {
+                                    onInvitationDecisionClicked(
+                                        invitation.categoryInvitationId,
+                                        Decision.ACCEPTED
+                                    )
+                                },
+                                onRejectButtonClicked = {
+                                    onInvitationDecisionClicked(
+                                        invitation.categoryInvitationId,
+                                        Decision.REJECTED
+                                    )
+                                }
                             )
                         }
                     }
@@ -212,8 +223,9 @@ fun CategoryScreenRoute(
     navigateToInfoCategory: (Int) -> Unit,
     isOffline: Boolean,
 ) {
-    val categoryList by categoryViewModel.categoryList.collectAsState()
-    val inviteGroupCategoryList by categoryViewModel.inviteGroupCategoryList.collectAsState()
+    val personalCategories by categoryViewModel.personalCategories.collectAsState()
+    val groupCategories by categoryViewModel.groupCategories.collectAsState()
+    val categoryInvitations by categoryViewModel.categoryInvitations.collectAsState()
     Surface(
         modifier = Modifier,
         color = PomoroDoTheme.colorScheme.background,
@@ -232,11 +244,12 @@ fun CategoryScreenRoute(
                 onBackClickedListener = navigateToBack
             )
             CategoryScreen(
-                inviteGroupCategoryList = inviteGroupCategoryList,
-                generalCategoryList = categoryList.filter { it.groupMemberCount == 0 },
-                groupCategoryList = categoryList.filter { it.groupMemberCount > 0 },
+                inviteGroupCategoryList = categoryInvitations,
+                personalCategoryList = personalCategories,
+                groupCategoryList = groupCategories,
                 onCategoryClicked = navigateToInfoCategory,
-                isOffline = isOffline
+                isOffline = isOffline,
+                onInvitationDecisionClicked = categoryViewModel::decideCategoryInvitation
             )
         }
     }

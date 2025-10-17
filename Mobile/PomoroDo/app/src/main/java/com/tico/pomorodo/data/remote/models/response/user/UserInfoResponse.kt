@@ -1,4 +1,4 @@
-package com.tico.pomorodo.data.remote.models.response
+package com.tico.pomorodo.data.remote.models.response.user
 
 import com.tico.pomorodo.data.model.UserProfile
 import kotlinx.serialization.Serializable

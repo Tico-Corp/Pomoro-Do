@@ -1,29 +1,37 @@
 package com.tico.pomorodo.data.model
 
 import com.tico.pomorodo.data.local.entity.CategoryEntity
+import com.tico.pomorodo.data.local.entity.SyncState
+import com.tico.pomorodo.data.remote.models.request.category.CategoryUpdateRequest
 
 data class Category(
     val id: Int = 0,
     val title: String,
     val type: CategoryType,
-    val openSettings: OpenSettings = OpenSettings.FULL,
-    val groupReader: String? = null,
-    val isGroupReader: Boolean? = null,
-    val groupMemberCount: Int = 0,
-    val groupMember: List<User>? = null
+    val openSettings: OpenSettings = OpenSettings.PUBLIC,
+    val ownerNickname: String? = null,
+    val ownerFlag: Boolean,
+    val groupMembers: List<User>? = null,
+    val totalMemberCount: Int
 )
 
 enum class CategoryType {
-    GENERAL, GROUP
+    PERSONAL, GROUP
 }
 
-fun Category.toCategoryEntity() = CategoryEntity(
+fun Category.toCategoryEntity(syncState: SyncState = SyncState.SYNCED) = CategoryEntity(
     id = id,
     title = title,
     type = type,
     openSettings = openSettings,
-    groupReader = groupReader,
-    isGroupReader = isGroupReader,
-    groupMemberCount = groupMemberCount,
-    groupMember = groupMember?.map(User::toUserEntity)
+    ownerNickname = ownerNickname,
+    ownerFlag = ownerFlag,
+    groupMember = groupMembers?.map(User::toUserEntity),
+    totalMemberCount = totalMemberCount,
+    syncState = syncState
+)
+
+fun Category.toCategoryUpdateRequest() = CategoryUpdateRequest(
+    title = title,
+    openSettings = openSettings
 )

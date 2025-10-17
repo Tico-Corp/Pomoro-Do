@@ -3,6 +3,7 @@ package com.tico.pomorodo.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tico.pomorodo.data.model.Category
+import com.tico.pomorodo.data.model.CategoryList
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.OpenSettings
 import kotlinx.serialization.Serializable
@@ -15,20 +16,27 @@ data class CategoryEntity(
     val title: String,
     val type: CategoryType,
     val openSettings: OpenSettings,
-    val groupReader: String?,
-    val isGroupReader: Boolean?,
-    val groupMemberCount: Int = 0,
-    val groupMember: List<UserEntity>?
+    val ownerNickname: String? = null,
+    val ownerFlag: Boolean = true,
+    val groupMember: List<UserEntity>? = null,
+    val totalMemberCount: Int = 0,
+    val syncState: SyncState = SyncState.SYNCED
 )
 
-fun CategoryEntity.toCategory() =
-    Category(
-        id = id,
-        title = title,
-        type = type,
-        openSettings = openSettings,
-        groupReader = groupReader,
-        isGroupReader = isGroupReader,
-        groupMemberCount = groupMemberCount,
-        groupMember = groupMember?.map { it.toUser() }
-    )
+fun CategoryEntity.toCategory() = Category(
+    id = id,
+    title = title,
+    type = type,
+    openSettings = openSettings,
+    ownerNickname = ownerNickname,
+    ownerFlag = ownerFlag,
+    groupMembers = groupMember?.map { it.toUser() },
+    totalMemberCount = totalMemberCount
+)
+
+fun CategoryEntity.toCategoryList() = CategoryList(
+    categoryId = id,
+    categoryName = title,
+    type = type,
+    totalMemberCount = totalMemberCount
+)

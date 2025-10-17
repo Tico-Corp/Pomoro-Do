@@ -11,8 +11,8 @@ import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.User
 import com.tico.pomorodo.data.model.toTodoEntity
 import com.tico.pomorodo.data.remote.datasource.TodoRemoteDataSource
-import com.tico.pomorodo.data.remote.models.response.CategoryWithTodoItemResponse
-import com.tico.pomorodo.data.remote.models.response.toCategoryWithTodoItem
+import com.tico.pomorodo.data.remote.models.response.todo.CategoryWithTodoItemResponse
+import com.tico.pomorodo.data.remote.models.response.todo.toCategoryWithTodoItem
 import com.tico.pomorodo.domain.model.Resource
 import com.tico.pomorodo.domain.repository.TodoRepository
 import kotlinx.coroutines.Dispatchers
@@ -67,9 +67,9 @@ class TodoRepositoryImpl @Inject constructor(
                                 title = categoryEntity.title,
                                 openSettings = categoryEntity.openSettings,
                                 type = categoryEntity.type,
-                                groupMemberCount = categoryEntity.groupMemberCount,
-                                groupMember = categoryEntity.groupMember?.map { it.toUser() },
-                                todoList = todoListEntity.map(TodoEntity::toTodoData)
+                                groupMembers = categoryEntity.groupMember?.map { it.toUser() },
+                                todoList = todoListEntity.map(TodoEntity::toTodoData),
+                                totalMemberCount = categoryEntity.totalMemberCount
                             )
                         }.let { wrapToResource(Dispatchers.IO) { it } }
                     }

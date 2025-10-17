@@ -5,9 +5,9 @@ import com.tico.pomorodo.data.local.entity.CategoryEntity
 import com.tico.pomorodo.data.local.entity.TodoEntity
 import com.tico.pomorodo.data.local.entity.UserEntity
 import com.tico.pomorodo.data.model.CalendarFocusState
+import com.tico.pomorodo.data.model.CategoryInvitation
 import com.tico.pomorodo.data.model.CategoryType
 import com.tico.pomorodo.data.model.CategoryWithTodoItem
-import com.tico.pomorodo.data.model.InviteCategory
 import com.tico.pomorodo.data.model.OpenSettings
 import com.tico.pomorodo.data.model.TodoData
 import com.tico.pomorodo.data.model.TodoState
@@ -17,35 +17,75 @@ import kotlinx.datetime.LocalDate
 
 object DataSource {
     val userList = listOf<User>(
-        User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
-        User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
-        User(id = 3, name = "사용자 3", email = "abce@abc.abc"),
-        User(id = 4, name = "구름이2", email = "abc@gmail.com"),
-        User(id = 5, name = "구름이3", email = "abc@gmail.com"),
-        User(id = 6, name = "구름이4", email = "abc@gmail.com"),
-        User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
-        User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
-        User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
-        User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
-        User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
-        User(id = 12, name = "a", email = "abc@gmail.com"),
-        User(id = 13, name = "b", email = "abc@gmail.com"),
-        User(id = 14, name = "차돌1", email = "abc@gmail.com"),
-        User(id = 15, name = "차돌2", email = "abc@gmail.com"),
-        User(id = 16, name = "구름이1", email = "abc@gmail.com"),
+        User(id = 1, name = "사용자 1"),
+        User(id = 2, name = "사용자 2"),
+        User(id = 3, name = "사용자 3"),
+        User(id = 4, name = "구름이2"),
+        User(id = 5, name = "구름이3"),
+        User(id = 6, name = "구름이4"),
+        User(id = 7, name = "모카커피1"),
+        User(id = 8, name = "모카커피2"),
+        User(id = 9, name = "모카커피3"),
+        User(id = 10, name = "모카커피4"),
+        User(id = 11, name = "모카커피5"),
+        User(id = 12, name = "a"),
+        User(id = 13, name = "b"),
+        User(id = 14, name = "차돌1"),
+        User(id = 15, name = "차돌2"),
+        User(id = 16, name = "구름이1"),
     )
 
-    val inviteList = listOf<InviteCategory>(
-        InviteCategory(id = "1", title = "알고리즘 뿌셔!", groupReader = "랑드샤 쿠키"),
-        InviteCategory(id = "2", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "3", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피2"),
-        InviteCategory(id = "4", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피3"),
-        InviteCategory(id = "5", title = "알고리즘 뿌셔!", groupReader = "모카커피4"),
-        InviteCategory(id = "6", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
-        InviteCategory(id = "7", title = "공작 영애들의 우아한 코딩 궁전", groupReader = "모카커피1"),
+    val inviteList = listOf<CategoryInvitation>(
+        CategoryInvitation(
+            categoryInvitationId = 1,
+            categoryName = "알고리즘 뿌셔!",
+            ownerNickname = "랑드샤 쿠키"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 2,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 3,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피2"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 4,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피3"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 5,
+            categoryName = "알고리즘 뿌셔!",
+            ownerNickname = "모카커피4"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 6,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 7,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 8,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 9,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
+        CategoryInvitation(
+            categoryInvitationId = 10,
+            categoryName = "공작 영애들의 우아한 코딩 궁전",
+            ownerNickname = "모카커피1"
+        ),
     )
 
     val followList = listOf(
@@ -161,51 +201,53 @@ object DataSource {
             type = CategoryType.GROUP,
             openSettings = OpenSettings.GROUP,
             title = "그룹 카테고리 1",
-            groupMemberCount = 2,
-            isGroupReader = true,
-            groupReader = "사용자 1",
+            ownerFlag = true,
+            ownerNickname = "사용자 1",
             groupMember = listOf(
-                UserEntity(id = 1, name = "사용자 1", email = "abc@abc.abc"),
-                UserEntity(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
-                UserEntity(id = 3, name = "사용자 3", email = "abce@abc.abc"),
-                UserEntity(id = 4, name = "구름이2", email = "abc@gmail.com"),
-                UserEntity(id = 5, name = "구름이3", email = "abc@gmail.com"),
-                UserEntity(id = 6, name = "구름이4", email = "abc@gmail.com"),
+                UserEntity(id = 1, name = "사용자 1"),
+                UserEntity(id = 2, name = "사용자 2"),
+                UserEntity(id = 3, name = "사용자 3"),
+                UserEntity(id = 4, name = "구름이2"),
+                UserEntity(id = 5, name = "구름이3"),
+                UserEntity(id = 6, name = "구름이4"),
             ),
+            totalMemberCount = 6
         ),
         CategoryEntity(
             id = 2,
             type = CategoryType.GROUP,
             openSettings = OpenSettings.GROUP,
             title = "그룹 카테고리 2",
-            groupMemberCount = 2,
-            isGroupReader = false,
-            groupReader = "사용자 2",
+            ownerFlag = false,
+            ownerNickname = "사용자 2",
             groupMember = listOf(
-                UserEntity(id = 7, name = "모카커피1", email = "abc@gmail.com"),
-                UserEntity(id = 8, name = "모카커피2", email = "abc@gmail.com"),
-                UserEntity(id = 9, name = "모카커피3", email = "abc@gmail.com"),
-                UserEntity(id = 10, name = "모카커피4", email = "abc@gmail.com"),
-                UserEntity(id = 11, name = "모카커피5", email = "abc@gmail.com"),
+                UserEntity(id = 7, name = "모카커피1"),
+                UserEntity(id = 8, name = "모카커피2"),
+                UserEntity(id = 9, name = "모카커피3"),
+                UserEntity(id = 10, name = "모카커피4"),
+                UserEntity(id = 11, name = "모카커피5"),
             ),
+            totalMemberCount = 5
         ),
         CategoryEntity(
             id = 3,
-            type = CategoryType.GENERAL,
-            openSettings = OpenSettings.ME,
-            title = "일반 카테고리 1",
-            isGroupReader = true,
-            groupReader = "사용자 1",
-            groupMember = null
+            type = CategoryType.PERSONAL,
+            openSettings = OpenSettings.PRIVATE,
+            title = "개인 카테고리 1",
+            ownerFlag = true,
+            ownerNickname = "사용자 1",
+            groupMember = null,
+            totalMemberCount = 0
         ),
         CategoryEntity(
             id = 4,
-            type = CategoryType.GENERAL,
-            openSettings = OpenSettings.FOLLOWER,
-            title = "일반 카테고리 2",
-            isGroupReader = true,
-            groupReader = "사용자 1",
-            groupMember = null
+            type = CategoryType.PERSONAL,
+            openSettings = OpenSettings.FOLLOWERS,
+            title = "개인 카테고리 2",
+            ownerFlag = true,
+            ownerNickname = "사용자 1",
+            groupMember = null,
+            totalMemberCount = 0
         ),
     )
 
@@ -229,14 +271,14 @@ object DataSource {
                         status = TodoState.UNCHECKED,
                         categoryId = 1,
                         completedList = listOf(
-                            User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
-                            User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
-                            User(id = 3, name = "사용자 3", email = "abce@abc.abc")
+                            User(id = 1, name = "사용자 1"),
+                            User(id = 2, name = "사용자 2"),
+                            User(id = 3, name = "사용자 3")
                         ),
                         incompletedList = listOf(
-                            User(id = 4, name = "구름이2", email = "abc@gmail.com"),
-                            User(id = 5, name = "구름이3", email = "abc@gmail.com"),
-                            User(id = 6, name = "구름이4", email = "abc@gmail.com"),
+                            User(id = 4, name = "구름이2"),
+                            User(id = 5, name = "구름이3"),
+                            User(id = 6, name = "구름이4"),
                         ),
                         likes = 2,
                         targetDate = LocalDate(2025, 8, 27),
@@ -249,14 +291,14 @@ object DataSource {
                         status = TodoState.UNCHECKED,
                         categoryId = 1,
                         completedList = listOf(
-                            User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
-                            User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
-                            User(id = 3, name = "사용자 3", email = "abce@abc.abc"),
-                            User(id = 4, name = "구름이2", email = "abc@gmail.com"),
-                            User(id = 5, name = "구름이3", email = "abc@gmail.com"),
+                            User(id = 1, name = "사용자 1"),
+                            User(id = 2, name = "사용자 2"),
+                            User(id = 3, name = "사용자 3"),
+                            User(id = 4, name = "구름이2"),
+                            User(id = 5, name = "구름이3"),
                         ),
                         incompletedList = listOf(
-                            User(id = 6, name = "구름이4", email = "abc@gmail.com"),
+                            User(id = 6, name = "구름이4"),
                         ),
                         likes = 0,
                         targetDate = LocalDate(2025, 8, 27),
@@ -265,15 +307,15 @@ object DataSource {
                     ),
                 ),
                 openSettings = OpenSettings.GROUP,
-                groupMemberCount = 6,
-                groupMember = listOf(
-                    User(id = 1, name = "사용자 1", email = "abc@abc.abc"),
-                    User(id = 2, name = "사용자 2", email = "abcd@abc.abc"),
-                    User(id = 3, name = "사용자 3", email = "abce@abc.abc"),
-                    User(id = 4, name = "구름이2", email = "abc@gmail.com"),
-                    User(id = 5, name = "구름이3", email = "abc@gmail.com"),
-                    User(id = 6, name = "구름이4", email = "abc@gmail.com"),
-                )
+                groupMembers = listOf(
+                    User(id = 1, name = "사용자 1"),
+                    User(id = 2, name = "사용자 2"),
+                    User(id = 3, name = "사용자 3"),
+                    User(id = 4, name = "구름이2"),
+                    User(id = 5, name = "구름이3"),
+                    User(id = 6, name = "구름이4"),
+                ),
+                totalMemberCount = 6
             ),
             CategoryWithTodoItem(
                 categoryId = 2,
@@ -287,11 +329,11 @@ object DataSource {
                         categoryId = 2,
                         completedList = listOf(),
                         incompletedList = listOf(
-                            User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
-                            User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
-                            User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
-                            User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
-                            User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
+                            User(id = 7, name = "모카커피1"),
+                            User(id = 8, name = "모카커피2"),
+                            User(id = 9, name = "모카커피3"),
+                            User(id = 10, name = "모카커피4"),
+                            User(id = 11, name = "모카커피5"),
                         ),
                         likes = 2,
                         targetDate = LocalDate(2025, 8, 27),
@@ -304,11 +346,11 @@ object DataSource {
                         status = TodoState.UNCHECKED,
                         categoryId = 2,
                         completedList = listOf(
-                            User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
-                            User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
-                            User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
-                            User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
-                            User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
+                            User(id = 7, name = "모카커피1"),
+                            User(id = 8, name = "모카커피2"),
+                            User(id = 9, name = "모카커피3"),
+                            User(id = 10, name = "모카커피4"),
+                            User(id = 11, name = "모카커피5"),
                         ),
                         incompletedList = listOf(),
                         likes = 0,
@@ -318,23 +360,23 @@ object DataSource {
                     ),
                 ),
                 openSettings = OpenSettings.GROUP,
-                groupMemberCount = 5,
-                groupMember = listOf(
-                    User(id = 7, name = "모카커피1", email = "abc@gmail.com"),
-                    User(id = 8, name = "모카커피2", email = "abc@gmail.com"),
-                    User(id = 9, name = "모카커피3", email = "abc@gmail.com"),
-                    User(id = 10, name = "모카커피4", email = "abc@gmail.com"),
-                    User(id = 11, name = "모카커피5", email = "abc@gmail.com"),
-                )
+                groupMembers = listOf(
+                    User(id = 7, name = "모카커피1"),
+                    User(id = 8, name = "모카커피2"),
+                    User(id = 9, name = "모카커피3"),
+                    User(id = 10, name = "모카커피4"),
+                    User(id = 11, name = "모카커피5"),
+                ),
+                totalMemberCount = 6
             ),
             CategoryWithTodoItem(
                 categoryId = 3,
                 title = "일반 카테고리 1",
-                type = CategoryType.GENERAL,
+                type = CategoryType.PERSONAL,
                 todoList = listOf(
                     TodoData(
                         id = 5,
-                        title = "General Todo 1",
+                        title = "Personal Todo 1",
                         status = TodoState.UNCHECKED,
                         categoryId = 3,
                         likes = 2,
@@ -344,7 +386,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 6,
-                        title = "General Todo 2",
+                        title = "Personal Todo 2",
                         status = TodoState.UNCHECKED,
                         categoryId = 3,
                         likes = 0,
@@ -354,7 +396,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 7,
-                        title = "General Todo 3",
+                        title = "Personal Todo 3",
                         status = TodoState.UNCHECKED,
                         categoryId = 3,
                         likes = 5,
@@ -363,15 +405,16 @@ object DataSource {
                         updatedAt = System.currentTimeMillis()
                     ),
                 ),
+                totalMemberCount = 0
             ),
             CategoryWithTodoItem(
                 categoryId = 4,
                 title = "일반 카테고리 2",
-                type = CategoryType.GENERAL,
+                type = CategoryType.PERSONAL,
                 todoList = listOf(
                     TodoData(
                         id = 8,
-                        title = "General Todo 1",
+                        title = "Personal Todo 1",
                         status = TodoState.UNCHECKED,
                         categoryId = 4,
                         likes = 2,
@@ -381,7 +424,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 9,
-                        title = "General Todo 2",
+                        title = "Personal Todo 2",
                         status = TodoState.UNCHECKED,
                         categoryId = 4,
                         likes = 0,
@@ -391,7 +434,7 @@ object DataSource {
                     ),
                     TodoData(
                         id = 10,
-                        title = "General Todo 3",
+                        title = "Personal Todo 3",
                         status = TodoState.UNCHECKED,
                         categoryId = 4,
                         likes = 5,
@@ -400,6 +443,7 @@ object DataSource {
                         updatedAt = System.currentTimeMillis()
                     ),
                 ),
+                totalMemberCount = 0
             ),
         )
 }
